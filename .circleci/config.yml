@@ -32,15 +32,6 @@ jobs:
 
 workflows:
   version: 2
-  create_version:
-    jobs:
-      - create_version:
-          filters:
-            branches:
-              only:
-                - master
-            tags:
-              ignore: /.*/
   ci:
     jobs:
       - build:
@@ -49,19 +40,3 @@ workflows:
               only: /.*/
             tags:
               ignore: /.*/
-  publish:
-    jobs:
-      - build:
-          filters:
-            tags:
-              only: /.*/
-            branches:
-              ignore: /.*/
-      - publish:
-          filters:
-            tags:
-              only: /.*/
-            branches:
-              ignore: /.*/
-          requires:
-            - build
