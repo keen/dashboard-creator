@@ -1,0 +1,11 @@
+*.log
+
+.DS_Store
+
+node_modules
+dist
+coverage
+config.js
+.idea/
+.package-lock.json
+.npmrc

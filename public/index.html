@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <title><%= htmlWebpackPlugin.options.title %></title>
+  <link rel="stylesheet" type="text/css" href="https://static.keen.io/assets/keen-fonts.css" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+<body class="dev-body">
+  <div id="root"></div>
+  <div id="modal-root"></div>
+</body>
+<script type="text/javascript">
+   new KeenDashboardCreator({
+     container: '#root',
+   }).render();
+  </script>
+</html>
