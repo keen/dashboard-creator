@@ -1,0 +1,9 @@
+export const FETCH_DASHBOARDS_LIST = '@dashboards/FETCH_DASHBOARDS_LIST';
+export const FETCH_DASHBOARDS_LIST_SUCCESS =
+  '@dashboards/FETCH_DASHBOARDS_LIST_SUCCESS';
+export const FETCH_DASHBOARDS_LIST_ERROR =
+  '@dashboards/FETCH_DASHBOARDS_LIST_ERROR';
+export const EDIT_DASHBOARD = '@dashboards/EDIT_DASHBOARD';
+export const REGISTER_DASHBOARD = '@dashboards/REGISTER_DASHBOARD';
+export const UPDATE_DASHBOARD = '@dashboards/UPDATE_DASHBOARD';
+export const SAVE_DASHBOARD = '@dashboards/SAVE_DASHBOARD';

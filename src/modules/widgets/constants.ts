@@ -1,0 +1,2 @@
+export const REGISTER_WIDGETS = '@widgets/REGISTER_WIDGETS';
+export const UPDATE_WIDGETS_POSITION = '@widgets/UPDATE_WIDGETS_POSITION';
