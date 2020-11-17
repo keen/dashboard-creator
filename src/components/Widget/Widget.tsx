@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Container } from './Widget.styles';
+import ChartWidget from '../ChartWidget';
 
 import { getWidget } from '../../modules/widgets';
 import { RootState } from '../../rootReducer';
@@ -23,7 +24,7 @@ const Widget: FC<Props> = ({ id, onRemoveWidget }) => {
   return (
     <Container>
       <div onClick={onRemoveWidget}>Remove</div>
-      Widget {id}
+      <ChartWidget />
     </Container>
   );
 };
