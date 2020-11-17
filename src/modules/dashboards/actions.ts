@@ -6,7 +6,10 @@ import {
   FETCH_DASHBOARDS_LIST,
   FETCH_DASHBOARDS_LIST_SUCCESS,
   FETCH_DASHBOARDS_LIST_ERROR,
+  ADD_WIDGET_TO_DASHBOARD,
+  REMOVE_WIDGET_FROM_DASHBOARD,
   REGISTER_DASHBOARD,
+  CREATE_DASHBOARD,
   UPDATE_DASHBOARD,
   EDIT_DASHBOARD,
   SAVE_DASHBOARD,
@@ -25,6 +28,35 @@ export const fetchDashboardListSuccess = createAction(
 
 export const fetchDashboardListError = createAction(
   FETCH_DASHBOARDS_LIST_ERROR
+);
+
+export const addWidgetToDashboard = createAction(
+  ADD_WIDGET_TO_DASHBOARD,
+  (dashboardId: string, widgetId: string) => ({
+    payload: {
+      dashboardId,
+      widgetId,
+    },
+  })
+);
+
+export const removeWidgetFromDashboard = createAction(
+  REMOVE_WIDGET_FROM_DASHBOARD,
+  (dashboardId: string, widgetId: string) => ({
+    payload: {
+      dashboardId,
+      widgetId,
+    },
+  })
+);
+
+export const createDashboard = createAction(
+  CREATE_DASHBOARD,
+  (dashboardId: string) => ({
+    payload: {
+      dashboardId,
+    },
+  })
 );
 
 export const editDashboard = createAction(
@@ -68,7 +100,10 @@ export type DashboardsActions =
   | ReturnType<typeof fetchDashboardList>
   | ReturnType<typeof fetchDashboardListSuccess>
   | ReturnType<typeof fetchDashboardListError>
+  | ReturnType<typeof createDashboard>
   | ReturnType<typeof registerDashboard>
   | ReturnType<typeof saveDashboard>
   | ReturnType<typeof updateDashboard>
-  | ReturnType<typeof editDashboard>;
+  | ReturnType<typeof editDashboard>
+  | ReturnType<typeof addWidgetToDashboard>
+  | ReturnType<typeof removeWidgetFromDashboard>;

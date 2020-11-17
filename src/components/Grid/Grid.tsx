@@ -1,6 +1,10 @@
 import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
-import { WidthProvider, Responsive } from 'react-grid-layout';
+import {
+  WidthProvider,
+  Responsive,
+  Layout as LayoutItem,
+} from 'react-grid-layout';
 
 import { Container } from './Grid.styles';
 import Widget from '../Widget';
@@ -15,6 +19,13 @@ type Props = {
   onWidgetResize?: (widgetsPosition: WidgetsPosition) => void;
   /** Drag widget event handler */
   onWidgetDrag?: (widgetsPosition: WidgetsPosition) => void;
+  /** Widget drop event handler */
+  onWidgetDrop?: (
+    widgetsPosition: WidgetsPosition,
+    droppedItem: LayoutItem
+  ) => void;
+  /** Remove widget event handler */
+  onRemoveWidget?: (widgetId: string) => void;
   /** Edit mode indicator */
   isEditorMode?: boolean;
 };
@@ -25,6 +36,8 @@ const Grid: FC<Props> = ({
   widgetsId,
   onWidgetDrag,
   onWidgetResize,
+  onWidgetDrop,
+  onRemoveWidget,
   isEditorMode = false,
 }) => {
   const widgets = useSelector((state: RootState) =>
@@ -39,11 +52,11 @@ const Grid: FC<Props> = ({
         isDroppable={isEditorMode}
         onDragStop={onWidgetDrag}
         onResizeStop={onWidgetResize}
-        onDrop={onWidgetDrag}
+        onDrop={onWidgetDrop}
       >
         {widgets.map(({ id, position }) => (
           <div key={id} data-grid={{ ...position, i: id, static: false }}>
-            <Widget id={id} />
+            <Widget id={id} onRemoveWidget={() => onRemoveWidget(id)} />
           </div>
         ))}
       </ResponsiveReactGridLayout>

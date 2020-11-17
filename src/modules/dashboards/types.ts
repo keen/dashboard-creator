@@ -5,13 +5,11 @@ export type DashboardMetaData = {
 };
 
 export type DashboardModel = {
-  id: string;
   version: string;
   widgets: Widget[];
 };
 
 export type Dashboard = {
-  id: string;
   version: string;
   widgets: string[];
 };

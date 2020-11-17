@@ -1,8 +1,12 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { Widget, WidgetsPosition } from './types';
+import { Widget, GridPosition, WidgetsPosition } from './types';
 
-import { REGISTER_WIDGETS, UPDATE_WIDGETS_POSITION } from './constants';
+import {
+  REGISTER_WIDGETS,
+  CREATE_WIDGET,
+  UPDATE_WIDGETS_POSITION,
+} from './constants';
 
 export const registerWidgets = createAction(
   REGISTER_WIDGETS,
@@ -22,6 +26,22 @@ export const updateWidgetsPosition = createAction(
   })
 );
 
+export const createWidget = createAction(
+  CREATE_WIDGET,
+  (
+    id: string,
+    widgetType: 'visualization' | 'text',
+    gridPosition: GridPosition
+  ) => ({
+    payload: {
+      id,
+      widgetType,
+      gridPosition,
+    },
+  })
+);
+
 export type WidgetsActions =
+  | ReturnType<typeof createWidget>
   | ReturnType<typeof registerWidgets>
   | ReturnType<typeof updateWidgetsPosition>;

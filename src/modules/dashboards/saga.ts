@@ -5,6 +5,7 @@ import {
   fetchDashboardListError,
   registerDashboard,
   updateDashboard,
+  createDashboard as createDashboardAction,
   editDashboard as editDashboardAction,
   saveDashboard as saveDashboardAction,
 } from './actions';
@@ -22,6 +23,7 @@ import { registerWidgets, getWidgetSettings } from '../widgets';
 import { BLOB_API } from '../../constants';
 import {
   FETCH_DASHBOARDS_LIST,
+  CREATE_DASHBOARD,
   SAVE_DASHBOARD,
   EDIT_DASHBOARD,
 } from './constants';
@@ -67,6 +69,20 @@ export function* saveDashboard({
   }
 }
 
+export function* createDashboard({
+  payload,
+}: ReturnType<typeof createDashboardAction>) {
+  const { dashboardId } = payload;
+  const serializedDashboard: Dashboard = {
+    version: __APP_VERSION__,
+    widgets: [],
+  };
+
+  yield put(registerDashboard(dashboardId));
+  yield put(updateDashboard(dashboardId, serializedDashboard));
+  yield put(setViewMode('editor', dashboardId));
+}
+
 export function* editDashboard({
   payload,
 }: ReturnType<typeof editDashboardAction>) {
@@ -85,7 +101,6 @@ export function* editDashboard({
         dashboardId
       );
       const serializedDashboard = serializeDashboard(responseBody);
-
       const { widgets } = responseBody;
 
       yield put(registerWidgets(widgets));
@@ -100,6 +115,7 @@ export function* editDashboard({
 
 export function* dashboardsSaga() {
   yield takeLatest(FETCH_DASHBOARDS_LIST, fetchDashboardList);
+  yield takeLatest(CREATE_DASHBOARD, createDashboard);
   yield takeLatest(SAVE_DASHBOARD, saveDashboard);
   yield takeLatest(EDIT_DASHBOARD, editDashboard);
 }

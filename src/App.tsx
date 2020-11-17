@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { getViewMode, getActiveDashboard } from './modules/app';
 
-import DashboardsManagement from './components/DashboardsManagement';
+import Management from './components/Management';
 import Editor from './components/Editor';
 
 type Props = {};
@@ -14,7 +14,7 @@ const App: FC<Props> = () => {
 
   return (
     <div>
-      {view === 'management' && <DashboardsManagement />}
+      {view === 'management' && <Management />}
       {view === 'editor' && <Editor dashboardId={activeDashboard} />}
     </div>
   );
