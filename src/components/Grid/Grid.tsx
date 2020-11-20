@@ -12,6 +12,8 @@ import Widget from '../Widget';
 import { getWidgetsPosition, WidgetsPosition } from '../../modules/widgets';
 import { RootState } from '../../rootReducer';
 
+import { GRID_CONTAINER_ID } from './constants';
+
 type Props = {
   /** Widgets identifiers used on grid layout */
   widgetsId: string[];
@@ -45,7 +47,7 @@ const Grid: FC<Props> = ({
   );
 
   return (
-    <Container>
+    <Container id={GRID_CONTAINER_ID}>
       <ResponsiveReactGridLayout
         isDraggable={isEditorMode}
         isResizable={isEditorMode}

@@ -41,6 +41,21 @@ class BlobAPI {
       },
       body: JSON.stringify(body),
     });
+
+  saveThumbnail = (dashboardId: string, arrayBuffer: string) =>
+    fetch(`${this.baseUrl}/blobs/thumbnail/${dashboardId}`, {
+      method: 'PUT',
+      headers: {
+        ...this.setAuthorizationHeader(),
+        //  'content-type': 'image/png',
+      },
+      body: `data:image/png;base64,${arrayBuffer}`,
+    });
+
+  getThumbnailByDashboardId = (dashboardId: string): Promise<any> =>
+    fetch(`${this.baseUrl}/blobs/thumbnail/${dashboardId}`, {
+      headers: this.setAuthorizationHeader(),
+    });
 }
 
 export default BlobAPI;

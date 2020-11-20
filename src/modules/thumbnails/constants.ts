@@ -1,0 +1,5 @@
+export const CREATE_DASHBOARD_THUMBNAIL =
+  '@thumbnails/CREATE_DASHBOARD_THUMBNAIL';
+
+export const THUMBNAIL_WIDTH = 380;
+export const THUMBNAIL_HEIGHT = 170;

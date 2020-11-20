@@ -1,5 +1,7 @@
 import React, { FC } from 'react';
 
+import DashboardTile from '../DashboardTile';
+
 import { DashboardMetaData } from '../../modules/dashboards';
 
 type Props = {
@@ -13,9 +15,7 @@ const DashboardsList: FC<Props> = ({ dashboards, onEditDashboard }) => {
   return (
     <div>
       {dashboards.map(({ id }) => (
-        <div key={id}>
-          {id}(<span onClick={() => onEditDashboard(id)}>edit</span>
-        </div>
+        <DashboardTile key={id} id={id} onEdit={() => onEditDashboard(id)} />
       ))}
     </div>
   );

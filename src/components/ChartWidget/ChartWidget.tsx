@@ -13,7 +13,7 @@ const ChartWidget: FC<Props> = () => {
   useEffect(() => {
     new KeenDataviz({
       container: containerRef.current,
-      type: 'heatmap',
+      type: 'bar',
       settings: {
         labelSelector: 'name',
         keys: ['users', 'shops', 'books', 'licenses'],

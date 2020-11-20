@@ -2,6 +2,8 @@ import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Container } from './Widget.styles';
+
+import PreventDragPropagation from '../PreventDragPropagation';
 import ChartWidget from '../ChartWidget';
 
 import { getWidget } from '../../modules/widgets';
@@ -15,15 +17,16 @@ type Props = {
 };
 
 const Widget: FC<Props> = ({ id, onRemoveWidget }) => {
-  const { data } = useSelector((rootState: RootState) =>
-    getWidget(rootState, id)
-  );
-
-  console.log(data, 'sa');
+  const {
+    data: { id: widgetId },
+  } = useSelector((rootState: RootState) => getWidget(rootState, id));
 
   return (
     <Container>
-      <div onClick={onRemoveWidget}>Remove</div>
+      <div>{widgetId}</div>
+      <PreventDragPropagation>
+        <div onClick={onRemoveWidget}>Remove</div>
+      </PreventDragPropagation>
       <ChartWidget />
     </Container>
   );

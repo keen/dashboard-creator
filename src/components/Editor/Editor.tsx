@@ -14,6 +14,7 @@ import {
   updateWidgetsPosition,
   WidgetsPosition,
 } from '../../modules/widgets';
+import { createDashboardThumbnail } from '../../modules/thumbnails';
 import { setViewMode } from '../../modules/app';
 
 import EditorNavigation from '../EditorNavigation';
@@ -66,7 +67,14 @@ const Editor: FC<Props> = ({ dashboardId }) => {
       <Toolbar onWidgetDrag={(widgetType) => setDroppableWidget(widgetType)} />
       {isInitialized ? (
         <>
-          <div onClick={() => dispatch(saveDashboard(dashboardId))}>Save</div>
+          <div
+            onClick={() => {
+              dispatch(saveDashboard(dashboardId));
+              dispatch(createDashboardThumbnail(dashboardId));
+            }}
+          >
+            Save
+          </div>
           <Grid
             isEditorMode={true}
             widgetsId={widgetsId}

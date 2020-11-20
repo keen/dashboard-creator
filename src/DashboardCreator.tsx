@@ -5,11 +5,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
 
 import App from './App';
+import { APIContext } from './contexts';
+import { BlobAPI } from './api';
 import { appStart } from './modules/app';
 
-import { createSagaContext } from './createSagaContext';
 import rootReducer from './rootReducer';
 import rootSaga from './rootSaga';
+
+import { BLOB_API } from './constants';
 
 import { Options } from './types';
 
@@ -35,12 +38,16 @@ export class DashboardCreator {
   }
 
   render() {
+    const blobApi = new BlobAPI({
+      projectId: this.projectId,
+      accessKey: this.accessKey,
+      url: this.blobApiUrl,
+    });
+
     const sagaMiddleware = createSagaMiddleware({
-      context: createSagaContext({
-        accessKey: this.accessKey,
-        blobApiUrl: this.blobApiUrl,
-        projectId: this.projectId,
-      }),
+      context: {
+        [BLOB_API]: blobApi,
+      },
     });
 
     const store = configureStore({
@@ -53,7 +60,9 @@ export class DashboardCreator {
 
     ReactDOM.render(
       <Provider store={store}>
-        <App />
+        <APIContext.Provider value={{ blobApi }}>
+          <App />
+        </APIContext.Provider>
       </Provider>,
       document.querySelector(this.container)
     );
