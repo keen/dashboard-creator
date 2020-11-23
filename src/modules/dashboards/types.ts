@@ -2,6 +2,7 @@ import { Widget } from '../widgets';
 
 export type DashboardMetaData = {
   id: string;
+  widgets: number;
 };
 
 export type DashboardModel = {

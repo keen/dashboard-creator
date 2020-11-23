@@ -1,6 +1,8 @@
 import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 
+import { Container, Content } from './App.styles';
+
 import { getViewMode, getActiveDashboard } from './modules/app';
 
 import Management from './components/Management';
@@ -13,10 +15,12 @@ const App: FC<Props> = () => {
   const activeDashboard = useSelector(getActiveDashboard);
 
   return (
-    <div>
-      {view === 'management' && <Management />}
-      {view === 'editor' && <Editor dashboardId={activeDashboard} />}
-    </div>
+    <Container>
+      <Content>
+        {view === 'management' && <Management />}
+        {view === 'editor' && <Editor dashboardId={activeDashboard} />}
+      </Content>
+    </Container>
   );
 };
 

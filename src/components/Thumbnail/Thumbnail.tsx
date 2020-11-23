@@ -1,5 +1,6 @@
 import React, { FC, useState, useEffect, useContext } from 'react';
 import { OK } from 'http-status-codes';
+import { Icon } from '@keen.io/icons';
 
 import { Container, Gradient } from './Thumbnail.styles';
 
@@ -8,10 +9,13 @@ import { APIContext } from '../../contexts';
 type Props = {
   /** Dashboard identifer */
   dashboardId: string;
+  /** Default thumbnail indicator */
+  useDefaultThumbnail?: boolean;
 };
 
-const Thumbnail: FC<Props> = ({ dashboardId }) => {
+const Thumbnail: FC<Props> = ({ dashboardId, useDefaultThumbnail = false }) => {
   const [image, setImage] = useState(null);
+  const [defaultThumbnail, setDefaultThumbnail] = useState(useDefaultThumbnail);
   const { blobApi } = useContext(APIContext);
 
   useEffect(() => {
@@ -19,19 +23,23 @@ const Thumbnail: FC<Props> = ({ dashboardId }) => {
       .getThumbnailByDashboardId(dashboardId)
       .then((res) => {
         if (res.status === OK) return res.text();
-        throw new Error('sasas');
+        throw new Error();
       })
       .then((t) => {
         setImage(t);
       })
-      .catch((err) => {
-        console.error(err);
-      });
+      .catch(() => setDefaultThumbnail(true));
   }, [dashboardId]);
 
   return (
     <Container>
-      <img src={image} />
+      {defaultThumbnail ? (
+        <div>
+          Default Thumbnail <Icon type="bar-widget-vertical" />
+        </div>
+      ) : (
+        <img src={image} />
+      )}
       <Gradient />
     </Container>
   );

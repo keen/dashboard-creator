@@ -1,5 +1,7 @@
 import { DashboardsActions } from './actions';
 
+import { createDashboardMeta } from './utils';
+
 import {
   FETCH_DASHBOARDS_LIST_SUCCESS,
   REGISTER_DASHBOARD,
@@ -28,6 +30,15 @@ const dashboardsReducer = (
     case REMOVE_WIDGET_FROM_DASHBOARD:
       return {
         ...state,
+        metadata: {
+          ...state.metadata,
+          data: state.metadata.data.map((dashboard) => {
+            if (dashboard.id === action.payload.dashboardId) {
+              return { ...dashboard, widgets: dashboard.widgets - 1 };
+            }
+            return dashboard;
+          }),
+        },
         items: {
           ...state.items,
           [action.payload.dashboardId]: {
@@ -44,6 +55,15 @@ const dashboardsReducer = (
     case ADD_WIDGET_TO_DASHBOARD:
       return {
         ...state,
+        metadata: {
+          ...state.metadata,
+          data: state.metadata.data.map((dashboard) => {
+            if (dashboard.id === action.payload.dashboardId) {
+              return { ...dashboard, widgets: dashboard.widgets + 1 };
+            }
+            return dashboard;
+          }),
+        },
         items: {
           ...state.items,
           [action.payload.dashboardId]: {
@@ -63,7 +83,10 @@ const dashboardsReducer = (
         ...state,
         metadata: {
           ...state.metadata,
-          data: [...state.metadata.data, { id: action.payload.dashboardId }],
+          data: [
+            ...state.metadata.data,
+            createDashboardMeta(action.payload.dashboardId),
+          ],
         },
       };
     case REGISTER_DASHBOARD:

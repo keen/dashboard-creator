@@ -9,12 +9,13 @@ import { APIContext } from './contexts';
 import { BlobAPI } from './api';
 import { appStart } from './modules/app';
 
+import createI18n from './i18n';
 import rootReducer from './rootReducer';
 import rootSaga from './rootSaga';
 
 import { BLOB_API } from './constants';
 
-import { Options } from './types';
+import { Options, TranslationsSettings } from './types';
 
 export class DashboardCreator {
   private container: string;
@@ -28,13 +29,23 @@ export class DashboardCreator {
   /** Blob API url */
   private readonly blobApiUrl: string;
 
+  /** App localization settings */
+  private readonly translationsSettings: TranslationsSettings;
+
   constructor(config: Options) {
-    const { container, accessKey, blobApiUrl, projectId } = config;
+    const {
+      container,
+      accessKey,
+      blobApiUrl,
+      projectId,
+      translations,
+    } = config;
 
     this.container = container;
     this.projectId = projectId;
     this.accessKey = accessKey;
     this.blobApiUrl = blobApiUrl;
+    this.translationsSettings = translations || {};
   }
 
   render() {
@@ -43,6 +54,8 @@ export class DashboardCreator {
       accessKey: this.accessKey,
       url: this.blobApiUrl,
     });
+
+    createI18n(this.translationsSettings);
 
     const sagaMiddleware = createSagaMiddleware({
       context: {

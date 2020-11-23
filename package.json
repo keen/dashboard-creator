@@ -42,9 +42,13 @@
   "dependencies": {
     "@keen.io/colors": "^1.1.0",
     "@keen.io/dataviz": "^2.3.0",
+    "@keen.io/icons": "^1.2.2",
     "@reduxjs/toolkit": "^1.4.0",
     "dom-to-image": "^2.6.0",
     "http-status-codes": "^2.1.4",
+    "i18next": "^19.8.4",
+    "i18next-http-backend": "^1.0.21",
+    "polished": "^4.0.4",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-grid-layout": "^1.1.1",

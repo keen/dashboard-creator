@@ -3,4 +3,11 @@ export type Options = {
   accessKey: string;
   blobApiUrl: string;
   projectId: string;
+  translations?: TranslationsSettings;
+};
+
+export type TranslationsSettings = {
+  backend?: {
+    loadPath?: string;
+  };
 };

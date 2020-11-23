@@ -5,15 +5,16 @@ import Thumbnail from '../Thumbnail';
 type Props = {
   /** Dashboard identifer */
   id: string;
+  /** Default thumbnail indicator */
+  useDefaultThumbnail: boolean;
   /** Edit event handler */
   onEdit: () => void;
 };
 
-const DashboardTile: FC<Props> = ({ id, onEdit }) => {
+const DashboardTile: FC<Props> = ({ id, useDefaultThumbnail, onEdit }) => {
   return (
     <div>
-      {id}
-      <Thumbnail dashboardId={id} />
+      <Thumbnail dashboardId={id} useDefaultThumbnail={useDefaultThumbnail} />
       <span onClick={() => onEdit()}>edit</span>
     </div>
   );
