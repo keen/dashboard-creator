@@ -1,3 +1,5 @@
+import { handleResponse } from './utils';
+
 import { BlobAPIOptions, BlobAPIHeaders } from './types';
 
 import { DashboardModel, DashboardMetaData } from '../modules/dashboards';
@@ -21,12 +23,12 @@ class BlobAPI {
   getDashboardById = (id: string): Promise<DashboardModel> =>
     fetch(`${this.baseUrl}/blobs/dashboard/${id}`, {
       headers: this.setAuthorizationHeader(),
-    }).then((res) => res.json());
+    }).then(handleResponse);
 
   getDashboards = (): Promise<DashboardMetaData[]> =>
     fetch(`${this.baseUrl}/metadata/dashboard`, {
       headers: this.setAuthorizationHeader(),
-    }).then((res) => res.json());
+    }).then(handleResponse);
 
   saveDashboard = (
     id: string,

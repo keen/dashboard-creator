@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`add widget to dashboard 1`] = `
+Object {
+  "items": Object {
+    "@dashboard/01": Object {
+      "initialized": true,
+      "settings": Object {
+        "version": "0.0.1",
+        "widgets": Array [
+          "@widget/01",
+        ],
+      },
+    },
+  },
+  "metadata": Object {
+    "data": Array [
+      Object {
+        "id": "@dashboard/01",
+        "widgets": 1,
+      },
+    ],
+    "error": null,
+    "isLoaded": true,
+  },
+}
+`;
+
+exports[`removes widget from dashboard 1`] = `
+Object {
+  "items": Object {
+    "@dashboard/01": Object {
+      "initialized": true,
+      "settings": Object {
+        "version": "0.0.1",
+        "widgets": Array [],
+      },
+    },
+  },
+  "metadata": Object {
+    "data": Array [
+      Object {
+        "id": "@dashboard/01",
+        "widgets": 0,
+      },
+    ],
+    "error": null,
+    "isLoaded": true,
+  },
+}
+`;

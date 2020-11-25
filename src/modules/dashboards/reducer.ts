@@ -1,6 +1,6 @@
 import { DashboardsActions } from './actions';
 
-import { createDashboardMeta } from './utils';
+import { createDashboardMeta, reduceWidgetsCount } from './utils';
 
 import {
   FETCH_DASHBOARDS_LIST_SUCCESS,
@@ -13,7 +13,7 @@ import {
 
 import { ReducerState } from './types';
 
-const initialState: ReducerState = {
+export const initialState: ReducerState = {
   metadata: {
     isLoaded: false,
     error: null,
@@ -32,12 +32,11 @@ const dashboardsReducer = (
         ...state,
         metadata: {
           ...state.metadata,
-          data: state.metadata.data.map((dashboard) => {
-            if (dashboard.id === action.payload.dashboardId) {
-              return { ...dashboard, widgets: dashboard.widgets - 1 };
-            }
-            return dashboard;
-          }),
+          data: reduceWidgetsCount(
+            action.payload.dashboardId,
+            state.metadata.data,
+            'decrease'
+          ),
         },
         items: {
           ...state.items,
@@ -57,12 +56,11 @@ const dashboardsReducer = (
         ...state,
         metadata: {
           ...state.metadata,
-          data: state.metadata.data.map((dashboard) => {
-            if (dashboard.id === action.payload.dashboardId) {
-              return { ...dashboard, widgets: dashboard.widgets + 1 };
-            }
-            return dashboard;
-          }),
+          data: reduceWidgetsCount(
+            action.payload.dashboardId,
+            state.metadata.data,
+            'increase'
+          ),
         },
         items: {
           ...state.items,

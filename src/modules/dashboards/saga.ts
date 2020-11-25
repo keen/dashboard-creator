@@ -36,6 +36,7 @@ export function* fetchDashboardList() {
 
   try {
     const responseBody = yield blobApi.getDashboards();
+
     yield put(fetchDashboardListSuccess(responseBody));
   } catch (err) {
     yield put(fetchDashboardListError());

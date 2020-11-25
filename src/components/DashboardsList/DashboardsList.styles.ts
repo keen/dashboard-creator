@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const DashboardsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, calc(100% / 3));
+  grid-template-columns: repeat(3, 1fr);
   grid-gap: 30px;
 `;
 

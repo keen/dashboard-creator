@@ -1,3 +1,4 @@
 import createDashboardMeta from './createDashboardMeta';
+import reduceWidgetsCount from './reduceWidgetsCount';
 
-export { createDashboardMeta };
+export { createDashboardMeta, reduceWidgetsCount };
