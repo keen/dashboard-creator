@@ -17,6 +17,8 @@ Object {
     "data": Array [
       Object {
         "id": "@dashboard/01",
+        "isPublic": false,
+        "queries": 0,
         "widgets": 1,
       },
     ],
@@ -41,6 +43,8 @@ Object {
     "data": Array [
       Object {
         "id": "@dashboard/01",
+        "isPublic": false,
+        "queries": 0,
         "widgets": 0,
       },
     ],

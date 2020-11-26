@@ -130,10 +130,14 @@ test('serializes dashboards metadata', () => {
       "data": Array [
         Object {
           "id": "@dashboard/01",
+          "isPublic": true,
+          "queries": 0,
           "widgets": 5,
         },
         Object {
           "id": "@dashboard/02",
+          "isPublic": true,
+          "queries": 2,
           "widgets": 0,
         },
       ],
