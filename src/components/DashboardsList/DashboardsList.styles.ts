@@ -6,4 +6,6 @@ export const DashboardsGrid = styled.div`
   grid-gap: 30px;
 `;
 
-export const DashboardItem = styled.div``;
+export const DashboardItem = styled.div`
+  max-width: 380px;
+`;

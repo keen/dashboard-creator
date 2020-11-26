@@ -4,9 +4,13 @@ export const dashbordsMeta: DashboardMetaData[] = [
   {
     id: '@dashboard/01',
     widgets: 5,
+    queries: 0,
+    isPublic: true,
   },
   {
     id: '@dashboard/02',
     widgets: 0,
+    queries: 2,
+    isPublic: true,
   },
 ];

@@ -1,13 +1,36 @@
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Button } from '@keen.io/ui-core';
+
+import {
+  Container,
+  TopBar,
+  Heading,
+  Message,
+} from './ManagementNavigation.styles';
+
+import Title from '../Title';
 
 type Props = {
+  /** Create dashboard event handler */
   onCreateDashboard: () => void;
 };
 
-const ManagementNavigation: FC<Props> = ({ onCreateDashboard }) => (
-  <div>
-    <button onClick={onCreateDashboard}>Create Dashboard</button>
-  </div>
-);
+const ManagementNavigation: FC<Props> = ({ onCreateDashboard }) => {
+  const { t } = useTranslation();
 
+  return (
+    <Container>
+      <TopBar>
+        <Heading>
+          <Title>{t('dashbord_management.title')}</Title>
+          <Message>{t('dashbord_management.description')}</Message>
+        </Heading>
+        <Button variant="success" onClick={onCreateDashboard}>
+          {t('dashbord_management.create_dashboard')}
+        </Button>
+      </TopBar>
+    </Container>
+  );
+};
 export default ManagementNavigation;

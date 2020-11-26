@@ -8,6 +8,7 @@ import ManagementNavigation from '../ManagementNavigation';
 import {
   createDashboard,
   editDashboard,
+  viewDashboard,
   getDashboardsList,
 } from '../../modules/dashboards';
 
@@ -27,6 +28,10 @@ const Management: FC<Props> = () => {
       />
       <DashboardsList
         onEditDashboard={(id) => dispatch(editDashboard(id))}
+        onPreviewDashboard={(id) => dispatch(viewDashboard(id))}
+        onShowDashboardSettings={() => {
+          console.log('onShowDashboardSettings');
+        }}
         dashboards={dashboards}
       />
     </div>

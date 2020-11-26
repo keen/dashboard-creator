@@ -1,1 +1,17 @@
-{}
+{
+  "dashboard_tile": {
+    "preview_dashboard": "View Dashboard",
+    "add_widgets": "Add widgets",
+    "queries": "Queries"
+  },
+  "actions_menu": {
+    "delete_dashboard": "Delete",
+    "share_dashboard": "Share",
+    "clone_dashboard": "Clone"
+  },
+  "dashbord_management": {
+    "title": "Dashboards",
+    "description": "This is a place for all your dashboards. Organize different queries in one view and share them with your collegues.",
+    "create_dashboard": "New Dashboard"
+  }
+}

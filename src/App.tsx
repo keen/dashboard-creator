@@ -7,6 +7,7 @@ import { getViewMode, getActiveDashboard } from './modules/app';
 
 import Management from './components/Management';
 import Editor from './components/Editor';
+import Viewer from './components/Viewer';
 
 type Props = {};
 
@@ -18,6 +19,7 @@ const App: FC<Props> = () => {
     <Container>
       <Content>
         {view === 'management' && <Management />}
+        {view === 'viewer' && <Viewer dashboardId={activeDashboard} />}
         {view === 'editor' && <Editor dashboardId={activeDashboard} />}
       </Content>
     </Container>

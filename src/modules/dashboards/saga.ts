@@ -8,6 +8,7 @@ import {
   createDashboard as createDashboardAction,
   editDashboard as editDashboardAction,
   saveDashboard as saveDashboardAction,
+  viewDashboard as viewDashboardAction,
 } from './actions';
 
 import { serializeDashboard } from './serializers';
@@ -26,6 +27,7 @@ import {
   CREATE_DASHBOARD,
   SAVE_DASHBOARD,
   EDIT_DASHBOARD,
+  VIEW_DASHBOARD,
 } from './constants';
 
 import { RootState } from '../../rootReducer';
@@ -114,9 +116,40 @@ export function* editDashboard({
   }
 }
 
+export function* viewDashboard({
+  payload,
+}: ReturnType<typeof viewDashboardAction>) {
+  const { dashboardId } = payload;
+  const state: RootState = yield select();
+  const dashboard = yield getDashboard(state, dashboardId);
+
+  if (!dashboard) {
+    yield put(registerDashboard(dashboardId));
+    yield put(setViewMode('viewer', dashboardId));
+
+    const blobApi = yield getContext(BLOB_API);
+
+    try {
+      const responseBody: DashboardModel = yield blobApi.getDashboardById(
+        dashboardId
+      );
+      const serializedDashboard = serializeDashboard(responseBody);
+      const { widgets } = responseBody;
+
+      yield put(registerWidgets(widgets));
+      yield put(updateDashboard(dashboardId, serializedDashboard));
+    } catch (err) {
+      console.error(err);
+    }
+  } else {
+    yield put(setViewMode('viewer', dashboardId));
+  }
+}
+
 export function* dashboardsSaga() {
   yield takeLatest(FETCH_DASHBOARDS_LIST, fetchDashboardList);
   yield takeLatest(CREATE_DASHBOARD, createDashboard);
   yield takeLatest(SAVE_DASHBOARD, saveDashboard);
+  yield takeLatest(VIEW_DASHBOARD, viewDashboard);
   yield takeLatest(EDIT_DASHBOARD, editDashboard);
 }

@@ -68,6 +68,8 @@ test('add widget to dashboard', () => {
         {
           id: '@dashboard/01',
           widgets: 0,
+          queries: 0,
+          isPublic: false,
         },
       ],
     },
@@ -98,6 +100,8 @@ test('removes widget from dashboard', () => {
         {
           id: '@dashboard/01',
           widgets: 1,
+          queries: 0,
+          isPublic: false,
         },
       ],
     },

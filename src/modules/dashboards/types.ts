@@ -3,6 +3,8 @@ import { Widget } from '../widgets';
 export type DashboardMetaData = {
   id: string;
   widgets: number;
+  queries: number;
+  isPublic: boolean;
 };
 
 export type DashboardModel = {
