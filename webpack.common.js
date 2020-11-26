@@ -2,6 +2,10 @@ const webpack = require('webpack');
 const path =  require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
+const { version } = require('./package.json');
+
+console.log(version, 'sa');
+
 const loadAppConfig = () => {
   if (process.env.NODE_ENV === 'development') {
     return require('./config');
@@ -27,6 +31,9 @@ module.exports = {
     ],
   },
   plugins: [
+    new webpack.DefinePlugin({
+      '__APP_VERSION__': JSON.stringify(version),
+    }),
     new HtmlWebpackPlugin({
       inject: true,
       templateParameters: {
