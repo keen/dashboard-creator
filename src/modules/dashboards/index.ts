@@ -13,7 +13,11 @@ import {
   removeWidgetFromDashboard,
 } from './actions';
 
-import { getDashboardsList, getDashboard } from './selectors';
+import {
+  getDashboardsList,
+  getDashboardsLoadState,
+  getDashboard,
+} from './selectors';
 import { DashboardMetaData, DashboardModel } from './types';
 
 export {
@@ -29,6 +33,7 @@ export {
   deleteDashboard,
   saveDashboard,
   fetchDashboardList,
+  getDashboardsLoadState,
   getDashboardsList,
   getDashboard,
   DashboardMetaData,

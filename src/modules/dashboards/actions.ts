@@ -9,6 +9,7 @@ import {
   ADD_WIDGET_TO_DASHBOARD,
   REMOVE_WIDGET_FROM_DASHBOARD,
   REGISTER_DASHBOARD,
+  DEREGISTER_DASHBOARD,
   CREATE_DASHBOARD,
   UPDATE_DASHBOARD,
   SHARE_DASHBOARD,
@@ -17,6 +18,7 @@ import {
   EDIT_DASHBOARD,
   SAVE_DASHBOARD,
   VIEW_DASHBOARD,
+  INITIALIZE_DASHBOARD_WIDGETS,
 } from './constants';
 
 export const fetchDashboardList = createAction(FETCH_DASHBOARDS_LIST);
@@ -126,6 +128,15 @@ export const registerDashboard = createAction(
   })
 );
 
+export const deregisterDashboard = createAction(
+  DEREGISTER_DASHBOARD,
+  (dashboardId: string) => ({
+    payload: {
+      dashboardId,
+    },
+  })
+);
+
 export const updateDashboard = createAction(
   UPDATE_DASHBOARD,
   (dashboardId: string, settings: Dashboard) => ({
@@ -136,7 +147,15 @@ export const updateDashboard = createAction(
   })
 );
 
-deleteDashboard;
+export const initializeDashboardWidgets = createAction(
+  INITIALIZE_DASHBOARD_WIDGETS,
+  (dashboardId: string, widgetsId: string[]) => ({
+    payload: {
+      dashboardId,
+      widgetsId,
+    },
+  })
+);
 
 export type DashboardsActions =
   | ReturnType<typeof fetchDashboardList>
@@ -144,6 +163,7 @@ export type DashboardsActions =
   | ReturnType<typeof fetchDashboardListError>
   | ReturnType<typeof createDashboard>
   | ReturnType<typeof registerDashboard>
+  | ReturnType<typeof deregisterDashboard>
   | ReturnType<typeof shareDashboard>
   | ReturnType<typeof cloneDashboard>
   | ReturnType<typeof deleteDashboard>
@@ -152,4 +172,5 @@ export type DashboardsActions =
   | ReturnType<typeof viewDashboard>
   | ReturnType<typeof editDashboard>
   | ReturnType<typeof addWidgetToDashboard>
-  | ReturnType<typeof removeWidgetFromDashboard>;
+  | ReturnType<typeof removeWidgetFromDashboard>
+  | ReturnType<typeof initializeDashboardWidgets>;

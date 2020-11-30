@@ -5,6 +5,7 @@ import { createDashboardMeta, reduceWidgetsCount } from './utils';
 import {
   FETCH_DASHBOARDS_LIST_SUCCESS,
   REGISTER_DASHBOARD,
+  DEREGISTER_DASHBOARD,
   UPDATE_DASHBOARD,
   CREATE_DASHBOARD,
   ADD_WIDGET_TO_DASHBOARD,
@@ -15,7 +16,7 @@ import { ReducerState } from './types';
 
 export const initialState: ReducerState = {
   metadata: {
-    isLoaded: false,
+    isInitiallyLoaded: false,
     error: null,
     data: [],
   },
@@ -87,6 +88,26 @@ const dashboardsReducer = (
           ],
         },
       };
+    case DEREGISTER_DASHBOARD:
+      return {
+        ...state,
+        metadata: {
+          ...state.metadata,
+          data: state.metadata.data.filter(
+            ({ id }) => id !== action.payload.dashboardId
+          ),
+        },
+        items: Object.keys(state.items).reduce((acc, dashboardId) => {
+          if (dashboardId !== action.payload.dashboardId) {
+            return {
+              ...acc,
+              [dashboardId]: state.items[dashboardId],
+            };
+          }
+
+          return acc;
+        }, {}),
+      };
     case REGISTER_DASHBOARD:
       return {
         ...state,
@@ -114,7 +135,7 @@ const dashboardsReducer = (
         ...state,
         metadata: {
           ...state.metadata,
-          isLoaded: true,
+          isInitiallyLoaded: true,
           error: null,
           data: action.payload.dashboards,
         },

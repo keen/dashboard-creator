@@ -12,7 +12,7 @@ type Props = {
   dashboardId: string;
 };
 
-const Editor: FC<Props> = ({ dashboardId }) => {
+const Viewer: FC<Props> = ({ dashboardId }) => {
   const { widgetsId, isInitialized } = useSelector((state: RootState) => {
     const dashboard = getDashboard(state, dashboardId);
     if (dashboard?.initialized) {
@@ -41,4 +41,4 @@ const Editor: FC<Props> = ({ dashboardId }) => {
   );
 };
 
-export default Editor;
+export default Viewer;

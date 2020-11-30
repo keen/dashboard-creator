@@ -1,3 +1,5 @@
+import { Query } from '@keen.io/parser';
+
 export type GridPosition = { w: number; h: number; x: number; y: number };
 
 export type WidgetsPosition = (GridPosition & { i: string })[];
@@ -9,7 +11,9 @@ export interface BaseWidget {
 
 export interface ChartWidget extends BaseWidget {
   type: 'visualization';
+  query: string | Query;
   settings: {
+    visualizationType: string;
     chartSettings: Record<string, any>;
     widgetSettings: Record<string, any>;
   };
@@ -23,8 +27,12 @@ export interface TextWidget extends BaseWidget {
 export type Widget = ChartWidget | TextWidget;
 
 export type WidgetItem = {
-  data: Widget;
-  isQueryPerforming: boolean;
+  widget: Widget;
+  isConfigured: boolean;
+  isInitialized: boolean;
+  isLoading: boolean;
+  error: string;
+  data: Record<string, any>;
 };
 
 export type ReducerState = {

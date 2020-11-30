@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import KeenAnalysis from 'keen-analysis';
 import { configureStore } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
 
@@ -13,15 +14,21 @@ import createI18n from './i18n';
 import rootReducer from './rootReducer';
 import rootSaga from './rootSaga';
 
-import { BLOB_API } from './constants';
+import { BLOB_API, KEEN_ANALYSIS } from './constants';
 
 import { Options, TranslationsSettings } from './types';
 
 export class DashboardCreator {
   private container: string;
 
-  /** Authorization access key for project */
-  private readonly accessKey: string;
+  /** Master key for Keen project */
+  private readonly masterKey: string;
+
+  /** Read key for Keen project */
+  private readonly readKey: string;
+
+  /** Write key for Keen project */
+  private readonly writeKey: string;
 
   /** Project identifer */
   private readonly projectId: string;
@@ -33,17 +40,15 @@ export class DashboardCreator {
   private readonly translationsSettings: TranslationsSettings;
 
   constructor(config: Options) {
-    const {
-      container,
-      accessKey,
-      blobApiUrl,
-      projectId,
-      translations,
-    } = config;
+    const { container, blobApiUrl, project, translations } = config;
+
+    const { projectId, masterKey, readKey, writeKey } = project;
 
     this.container = container;
     this.projectId = projectId;
-    this.accessKey = accessKey;
+    this.masterKey = masterKey;
+    this.readKey = readKey;
+    this.writeKey = writeKey;
     this.blobApiUrl = blobApiUrl;
     this.translationsSettings = translations || {};
   }
@@ -51,8 +56,16 @@ export class DashboardCreator {
   render() {
     const blobApi = new BlobAPI({
       projectId: this.projectId,
-      accessKey: this.accessKey,
+      accessKey: this.masterKey,
       url: this.blobApiUrl,
+    });
+
+    const keenAnalysis = new KeenAnalysis({
+      projectId: this.projectId,
+      masterKey: this.masterKey,
+      readKey: this.readKey,
+      writeKey: this.writeKey,
+      host: 'staging-api.keen.io',
     });
 
     createI18n(this.translationsSettings);
@@ -60,6 +73,7 @@ export class DashboardCreator {
     const sagaMiddleware = createSagaMiddleware({
       context: {
         [BLOB_API]: blobApi,
+        [KEEN_ANALYSIS]: keenAnalysis,
       },
     });
 
@@ -73,7 +87,7 @@ export class DashboardCreator {
 
     ReactDOM.render(
       <Provider store={store}>
-        <APIContext.Provider value={{ blobApi }}>
+        <APIContext.Provider value={{ blobApi, keenAnalysis }}>
           <App />
         </APIContext.Provider>
       </Provider>,

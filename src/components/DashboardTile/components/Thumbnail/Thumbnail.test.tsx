@@ -19,7 +19,7 @@ const render = (overProps: any = {}, blobApiOverride: any = {}) => {
   };
 
   const wrapper = rtlRender(
-    <APIContext.Provider value={{ blobApi }}>
+    <APIContext.Provider value={{ blobApi, keenAnalysis: {} }}>
       <Thumbnail {...props} />
     </APIContext.Provider>
   );

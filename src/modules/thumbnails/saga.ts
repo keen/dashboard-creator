@@ -26,6 +26,7 @@ export function* createDashboardThumbnail({
   const height = THUMBNAIL_WIDTH / aspectRatio;
 
   try {
+    const t0 = performance.now();
     const imageBlob: Blob = yield domtoimage.toBlob(container, {
       height: THUMBNAIL_HEIGHT,
       width: THUMBNAIL_WIDTH,
@@ -37,6 +38,10 @@ export function* createDashboardThumbnail({
         })`,
       },
     });
+
+    const t1 = performance.now();
+
+    console.log('generate thumbnail took ' + (t1 - t0) + ' milliseconds.');
 
     const blob = bufferToBase64(yield imageBlob.arrayBuffer());
 
