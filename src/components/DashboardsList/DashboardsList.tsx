@@ -20,7 +20,7 @@ const DashboardsList: FC<Props> = ({
   onShowDashboardSettings,
 }) => {
   return (
-    <DashboardsGrid>
+    <DashboardsGrid data-testid="dashboards-grid">
       {dashboards.map(({ id, widgets }) => (
         <DashboardItem key={id}>
           <DashboardTile
