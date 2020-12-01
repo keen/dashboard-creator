@@ -9,9 +9,20 @@
     "share_dashboard": "Share",
     "clone_dashboard": "Clone"
   },
-  "dashbord_management": {
+  "dashboard_management": {
     "title": "Dashboards",
     "description": "This is a place for all your dashboards. Organize different queries in one view and share them with your collegues.",
     "create_dashboard": "New Dashboard"
+  },
+  "dashboard_editor": {
+    "save": "Save",
+    "loading": "Loading",
+    "back": "Back"
+  },
+  "query_picker": {
+    "close": "Close"
+  },
+  "widget": {
+    "remove": "Remove"
   }
 }
