@@ -1,6 +1,7 @@
 import React, { FC, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Layout as LayoutItem } from 'react-grid-layout';
+import { push } from 'connected-react-router';
 
 import {
   addWidgetToDashboard,
@@ -15,12 +16,14 @@ import {
   WidgetsPosition,
 } from '../../modules/widgets';
 import { createDashboardThumbnail } from '../../modules/thumbnails';
-import { setViewMode } from '../../modules/app';
+import { setActiveDashboard } from '../../modules/app';
 
 import EditorNavigation from '../EditorNavigation';
 import QueryPickerModal from '../QueryPickerModal';
 import Toolbar from '../Toolbar';
 import Grid from '../Grid';
+
+import { ROUTES } from '../../constants';
 
 import { RootState } from '../../rootReducer';
 
@@ -64,7 +67,12 @@ const Editor: FC<Props> = ({ dashboardId }) => {
 
   return (
     <>
-      <EditorNavigation onBack={() => dispatch(setViewMode('management'))} />
+      <EditorNavigation
+        onBack={() => {
+          dispatch(setActiveDashboard(null));
+          dispatch(push(ROUTES.MANAGEMENT));
+        }}
+      />
       <Toolbar onWidgetDrag={(widgetType) => setDroppableWidget(widgetType)} />
       {isInitialized ? (
         <>

@@ -1,7 +1,7 @@
 import { AppActions } from './actions';
 
 import {
-  SET_VIEW_MODE,
+  SET_ACTIVE_DASHBOARD,
   SHOW_QUERY_PICKER,
   HIDE_QUERY_PICKER,
 } from './constants';
@@ -37,10 +37,9 @@ const appReducer = (state: ReducerState = initialState, action: AppActions) => {
           isVisible: true,
         },
       };
-    case SET_VIEW_MODE:
+    case SET_ACTIVE_DASHBOARD:
       return {
         ...state,
-        view: action.payload.view,
         activeDashboardId: action.payload.dashboardId,
       };
     default:
