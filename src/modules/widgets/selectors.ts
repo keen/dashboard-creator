@@ -6,11 +6,11 @@ export const getWidgetsPosition = (
 ) =>
   widgetsId.map((id: string) => ({
     id,
-    position: widgets.items[id].data.position,
+    position: widgets.items[id].widget.position,
   }));
 
 export const getWidgetSettings = ({ widgets }: RootState, id: string) =>
-  widgets.items[id].data;
+  widgets.items[id].widget;
 
 export const getWidget = ({ widgets }: RootState, id: string) =>
   widgets.items[id];

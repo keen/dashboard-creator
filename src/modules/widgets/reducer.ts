@@ -7,6 +7,9 @@ import { createWidget } from './utils';
 import {
   REGISTER_WIDGETS,
   UPDATE_WIDGETS_POSITION,
+  FINISH_CHART_WIDGET_CONFIGURATION,
+  SET_WIDGET_LOADING,
+  SET_WIDGET_STATE,
   CREATE_WIDGET,
 } from './constants';
 
@@ -21,12 +24,56 @@ const widgetsReducer = (
   action: WidgetsActions
 ) => {
   switch (action.type) {
+    case FINISH_CHART_WIDGET_CONFIGURATION:
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          [action.payload.id]: {
+            ...state.items[action.payload.id],
+            isConfigured: true,
+            widget: {
+              ...state.items[action.payload.id].widget,
+              query: action.payload.query,
+              settings: {
+                visualizationType: action.payload.visualizationType,
+                chartSettings: action.payload.chartSettings,
+                widgetSettings: action.payload.widgetSettings,
+              },
+            },
+          },
+        },
+      };
+    case SET_WIDGET_LOADING: {
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          [action.payload.id]: {
+            ...state.items[action.payload.id],
+            isLoading: action.payload.isLoading,
+          },
+        },
+      };
+    }
+    case SET_WIDGET_STATE: {
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          [action.payload.id]: {
+            ...state.items[action.payload.id],
+            ...action.payload.widgetState,
+          },
+        },
+      };
+    }
     case CREATE_WIDGET:
       return {
         ...state,
         items: {
           ...state.items,
-          [action.payload.id]: createWidget(action.payload),
+          [action.payload.id]: createWidget(action.payload, false),
         },
       };
     case UPDATE_WIDGETS_POSITION:
@@ -45,7 +92,7 @@ const widgetsReducer = (
           ...action.payload.widgets.reduce(
             (acc, widget) => ({
               ...acc,
-              [widget.id]: serializeWidget(widget),
+              [widget.id]: serializeWidget(widget, true),
             }),
             {}
           ),

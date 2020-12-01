@@ -12,8 +12,8 @@ export const reduceWidgetsPosition = (
       ...acc,
       [id]: {
         ...item,
-        data: {
-          ...item.data,
+        widget: {
+          ...item.widget,
           position: { w, h, x, y },
         },
       },

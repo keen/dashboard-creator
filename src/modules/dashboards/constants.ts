@@ -10,8 +10,11 @@ export const CLONE_DASHBOARD = '@dashboards/CLONE_DASHBOARD';
 export const EDIT_DASHBOARD = '@dashboards/EDIT_DASHBOARD';
 export const VIEW_DASHBOARD = '@dashboards/VIEW_DASHBOARD';
 export const REGISTER_DASHBOARD = '@dashboards/REGISTER_DASHBOARD';
+export const DEREGISTER_DASHBOARD = '@dashboards/DEREGISTER_DASHBOARD';
 export const UPDATE_DASHBOARD = '@dashboards/UPDATE_DASHBOARD';
 export const SAVE_DASHBOARD = '@dashboards/SAVE_DASHBOARD';
 export const ADD_WIDGET_TO_DASHBOARD = '@dashboards/ADD_WIDGET_TO_DASHBOARD';
 export const REMOVE_WIDGET_FROM_DASHBOARD =
   '@dashboards/REMOVE_WIDGET_FROM_DASHBOARD';
+export const INITIALIZE_DASHBOARD_WIDGETS =
+  '@dashboards/INITIALIZE_DASHBOARD_WIDGETS';

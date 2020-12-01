@@ -1,14 +1,17 @@
-import { takeLatest, put, select, getContext } from 'redux-saga/effects';
+import { takeLatest, put, select, all, getContext } from 'redux-saga/effects';
 
 import {
   fetchDashboardListSuccess,
   fetchDashboardListError,
   registerDashboard,
   updateDashboard,
+  deregisterDashboard,
+  initializeDashboardWidgets as initializeDashboardWidgetsAction,
   createDashboard as createDashboardAction,
   editDashboard as editDashboardAction,
   saveDashboard as saveDashboardAction,
   viewDashboard as viewDashboardAction,
+  deleteDashboard as deleteDashboardAction,
 } from './actions';
 
 import { serializeDashboard } from './serializers';
@@ -19,14 +22,20 @@ import {
 } from './selectors';
 
 import { setViewMode } from '../app';
-import { registerWidgets, getWidgetSettings } from '../widgets';
+import {
+  initializeWidget,
+  registerWidgets,
+  getWidgetSettings,
+} from '../widgets';
 
 import { BLOB_API } from '../../constants';
 import {
+  INITIALIZE_DASHBOARD_WIDGETS,
   FETCH_DASHBOARDS_LIST,
   CREATE_DASHBOARD,
   SAVE_DASHBOARD,
   EDIT_DASHBOARD,
+  DELETE_DASHBOARD,
   VIEW_DASHBOARD,
 } from './constants';
 
@@ -86,6 +95,21 @@ export function* createDashboard({
   yield put(setViewMode('editor', dashboardId));
 }
 
+export function* deleteDashboard({
+  payload,
+}: ReturnType<typeof deleteDashboardAction>) {
+  const { dashboardId } = payload;
+
+  try {
+    const blobApi = yield getContext(BLOB_API);
+    yield blobApi.deleteDashboard(dashboardId);
+
+    yield put(deregisterDashboard(dashboardId));
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 export function* editDashboard({
   payload,
 }: ReturnType<typeof editDashboardAction>) {
@@ -108,6 +132,13 @@ export function* editDashboard({
 
       yield put(registerWidgets(widgets));
       yield put(updateDashboard(dashboardId, serializedDashboard));
+
+      yield put(
+        initializeDashboardWidgetsAction(
+          dashboardId,
+          serializedDashboard.widgets
+        )
+      );
     } catch (err) {
       console.error(err);
     }
@@ -146,10 +177,19 @@ export function* viewDashboard({
   }
 }
 
+export function* initializeDashboardWidgets({
+  payload,
+}: ReturnType<typeof initializeDashboardWidgetsAction>) {
+  const { widgetsId } = payload;
+  yield all(widgetsId.map((widgetId) => put(initializeWidget(widgetId))));
+}
+
 export function* dashboardsSaga() {
   yield takeLatest(FETCH_DASHBOARDS_LIST, fetchDashboardList);
   yield takeLatest(CREATE_DASHBOARD, createDashboard);
   yield takeLatest(SAVE_DASHBOARD, saveDashboard);
+  yield takeLatest(DELETE_DASHBOARD, deleteDashboard);
   yield takeLatest(VIEW_DASHBOARD, viewDashboard);
   yield takeLatest(EDIT_DASHBOARD, editDashboard);
+  yield takeLatest(INITIALIZE_DASHBOARD_WIDGETS, initializeDashboardWidgets);
 }

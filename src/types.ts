@@ -1,8 +1,12 @@
 export type Options = {
   container: string;
-  accessKey: string;
   blobApiUrl: string;
-  projectId: string;
+  project: {
+    masterKey: string;
+    readKey: string;
+    writeKey: string;
+    projectId: string;
+  };
   translations?: TranslationsSettings;
 };
 

@@ -18,6 +18,7 @@ import { createDashboardThumbnail } from '../../modules/thumbnails';
 import { setViewMode } from '../../modules/app';
 
 import EditorNavigation from '../EditorNavigation';
+import QueryPickerModal from '../QueryPickerModal';
 import Toolbar from '../Toolbar';
 import Grid from '../Grid';
 
@@ -93,6 +94,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
       ) : (
         <div>Loading</div>
       )}
+      <QueryPickerModal />
     </>
   );
 };

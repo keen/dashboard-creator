@@ -69,6 +69,7 @@ test('add widget to dashboard', () => {
           id: '@dashboard/01',
           widgets: 0,
           queries: 0,
+          title: null,
           isPublic: false,
         },
       ],
@@ -101,6 +102,7 @@ test('removes widget from dashboard', () => {
           id: '@dashboard/01',
           widgets: 1,
           queries: 0,
+          title: null,
           isPublic: false,
         },
       ],
@@ -132,17 +134,19 @@ test('serializes dashboards metadata', () => {
           "id": "@dashboard/01",
           "isPublic": true,
           "queries": 0,
+          "title": "Dashboard 1",
           "widgets": 5,
         },
         Object {
           "id": "@dashboard/02",
           "isPublic": true,
           "queries": 2,
+          "title": "Dashboard 2",
           "widgets": 0,
         },
       ],
       "error": null,
-      "isLoaded": true,
+      "isInitiallyLoaded": true,
     }
   `);
 });

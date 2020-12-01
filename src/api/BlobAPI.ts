@@ -44,12 +44,19 @@ class BlobAPI {
       body: JSON.stringify(body),
     });
 
+  deleteDashboard = (dashboardId: string) =>
+    fetch(`${this.baseUrl}/blobs/dashboard/${dashboardId}`, {
+      method: 'DELETE',
+      headers: {
+        ...this.setAuthorizationHeader(),
+      },
+    });
+
   saveThumbnail = (dashboardId: string, arrayBuffer: string) =>
     fetch(`${this.baseUrl}/blobs/thumbnail/${dashboardId}`, {
       method: 'PUT',
       headers: {
         ...this.setAuthorizationHeader(),
-        //  'content-type': 'image/png',
       },
       body: `data:image/png;base64,${arrayBuffer}`,
     });

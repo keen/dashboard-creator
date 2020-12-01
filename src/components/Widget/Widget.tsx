@@ -18,16 +18,15 @@ type Props = {
 
 const Widget: FC<Props> = ({ id, onRemoveWidget }) => {
   const {
-    data: { id: widgetId },
+    widget: { id: widgetId },
   } = useSelector((rootState: RootState) => getWidget(rootState, id));
 
   return (
     <Container>
-      <div>{widgetId}</div>
       <PreventDragPropagation>
         <div onClick={onRemoveWidget}>Remove</div>
       </PreventDragPropagation>
-      <ChartWidget />
+      <ChartWidget id={widgetId} />
     </Container>
   );
 };

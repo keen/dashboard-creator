@@ -26,8 +26,6 @@ type Props = {
   title: string;
   /** Default thumbnail indicator */
   useDefaultThumbnail: boolean;
-  /** Edit event handler */
-  onEdit: () => void;
   /** Preview event handler */
   onPreview: () => void;
   /** Show dashboard settings event handler */

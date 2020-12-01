@@ -2,6 +2,7 @@ import { Widget } from '../widgets';
 
 export type DashboardMetaData = {
   id: string;
+  title: null | string;
   widgets: number;
   queries: number;
   isPublic: boolean;
@@ -24,7 +25,7 @@ export type DashboardItem = {
 
 export type ReducerState = {
   metadata: {
-    isLoaded: boolean;
+    isInitiallyLoaded: boolean;
     error: boolean;
     data: DashboardMetaData[];
   };

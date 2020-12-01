@@ -8,8 +8,6 @@ import { DashboardMetaData } from '../../modules/dashboards';
 type Props = {
   /** Collection of dashboards */
   dashboards: DashboardMetaData[];
-  /** Edit dashboard event handler */
-  onEditDashboard: (id: string) => void;
   /** Preview dashboard event handler */
   onPreviewDashboard: (id: string) => void;
   /** Show dashboard settings event handler */
@@ -20,7 +18,6 @@ const DashboardsList: FC<Props> = ({
   dashboards,
   onPreviewDashboard,
   onShowDashboardSettings,
-  onEditDashboard,
 }) => {
   return (
     <DashboardsGrid>
@@ -32,7 +29,6 @@ const DashboardsList: FC<Props> = ({
             lastModificationDate="15/03/2020"
             queriesCount={18}
             onPreview={() => onPreviewDashboard(id)}
-            onEdit={() => onEditDashboard(id)}
             onShowSettings={() => onShowDashboardSettings(id)}
             useDefaultThumbnail={widgets === 0}
           />
