@@ -22,14 +22,22 @@ type Props = {
   lastModificationDate: string;
   /** Queries used on dashboardr */
   queriesCount: number;
-  /** Dashboard e */
+  /** Dashboard title */
   title: string;
   /** Default thumbnail indicator */
   useDefaultThumbnail: boolean;
+  /** Public dashboard indicator */
+  isPublic?: boolean;
+  /** Dashboard tags pool */
+  tags?: string[];
   /** Preview event handler */
   onPreview: () => void;
   /** Show dashboard settings event handler */
   onShowSettings: () => void;
+  /** Remove dashboard handler */
+  onRemove: () => void;
+  /** Clone dashboard handler */
+  onClone: () => void;
 };
 
 /** <span onClick={() => onEdit()}>edit</span> */
@@ -40,9 +48,14 @@ const DashboardTile: FC<Props> = ({
   queriesCount,
   lastModificationDate,
   useDefaultThumbnail,
+  isPublic,
+  tags,
   onPreview,
   onShowSettings,
+  onRemove,
+  onClone,
 }) => {
+  console.log(onClone, onRemove);
   const { t } = useTranslation();
   const [showActionsMenu, setActionsMenuVisibility] = useState(false);
   const [isActive, setActive] = useState(null);
@@ -81,7 +94,7 @@ const DashboardTile: FC<Props> = ({
         setActive(false);
       }}
     >
-      <Header title={title} excerpt={excerpt}>
+      <Header title={title} excerpt={excerpt} isPublic={isPublic} tags={tags}>
         <AnimatePresence>
           {isActive && (
             <ActionsMotion {...actionsMotion}>

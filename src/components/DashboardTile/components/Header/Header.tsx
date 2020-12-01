@@ -5,10 +5,11 @@ import {
   Container,
   Details,
   Title,
-  Tag,
+  TagsWrapper,
   Excerpt,
   Heading,
   ActionsContainer,
+  BadgeContainer,
 } from './Header.styles';
 
 type Props = {
@@ -16,19 +17,33 @@ type Props = {
   title: string;
   /** Excerpt message */
   excerpt: string;
+  /** Public dashboard indicator */
+  isPublic?: boolean;
+  /** Dashboard tags pool */
+  tags?: string[];
   /** Children nodes */
   children: React.ReactNode;
 };
 
-const Header: FC<Props> = ({ title, excerpt, children }) => (
+const Header: FC<Props> = ({ title, excerpt, isPublic, tags, children }) => (
   <Container>
     <Heading>
       <Title>{title}</Title>
       <Details>
         <Excerpt>{excerpt}</Excerpt>
-        <Tag>
-          <Badge>test</Badge>
-        </Tag>
+        <TagsWrapper>
+          {isPublic && (
+            <BadgeContainer>
+              <Badge variant="green">Public</Badge>
+            </BadgeContainer>
+          )}
+          {tags?.length > 0 &&
+            tags.map((tag) => (
+              <BadgeContainer key={tag}>
+                <Badge>{tag}</Badge>
+              </BadgeContainer>
+            ))}
+        </TagsWrapper>
       </Details>
     </Heading>
     <ActionsContainer>{children}</ActionsContainer>

@@ -11,7 +11,7 @@
   },
   "dashbord_management": {
     "title": "Dashboards",
-    "description": "This is a place for all your dashboards. Organize different queries in one view and share them with your collegues.",
+    "description": "This is a place for all your dashboards. Organize different queries in one view and share them with your colleagues.",
     "create_dashboard": "New Dashboard"
   }
 }

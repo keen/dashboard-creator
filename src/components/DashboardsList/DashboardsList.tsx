@@ -25,12 +25,16 @@ const DashboardsList: FC<Props> = ({
         <DashboardItem key={id}>
           <DashboardTile
             id={id}
-            title="Dashboard Title"
+            title="Dashboard Title lorem ipsum suhgiuerghiewfjoiwejfiurgejrfiojeroigjeofijeoirjfoerihjgoi"
             lastModificationDate="15/03/2020"
             queriesCount={18}
             onPreview={() => onPreviewDashboard(id)}
             onShowSettings={() => onShowDashboardSettings(id)}
             useDefaultThumbnail={widgets === 0}
+            onRemove={() => console.log('remove')}
+            onClone={() => console.log('clone')}
+            tags={['Sales', 'Marketing', 'Important', 'Review']}
+            isPublic
           />
         </DashboardItem>
       ))}

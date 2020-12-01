@@ -21,14 +21,23 @@ export const Details = styled.div`
   align-items: center;
 `;
 
-export const Tag = styled.div`
+export const TagsWrapper = styled.div`
   margin-left: 6px;
+  display: flex;
+  align-items: center;
+`;
+
+export const BadgeContainer = styled.div`
+  & + & {
+    margin-left: 10px;
+  }
 `;
 
 export const Title = styled.div`
   font-family: 'Gangster Grotesk Regular', sans-serif;
   font-size: 16px;
   line-height: 19px;
+  color: #303e43;
 
   text-overflow: ellipsis;
   white-space: nowrap;
