@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
 import KeenAnalysis from 'keen-analysis';
 import { configureStore } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
@@ -11,7 +12,7 @@ import { BlobAPI } from './api';
 import { appStart } from './modules/app';
 
 import createI18n from './i18n';
-import rootReducer from './rootReducer';
+import rootReducer, { history } from './rootReducer';
 import rootSaga from './rootSaga';
 
 import { BLOB_API, KEEN_ANALYSIS } from './constants';
@@ -79,7 +80,7 @@ export class DashboardCreator {
 
     const store = configureStore({
       reducer: rootReducer,
-      middleware: [sagaMiddleware],
+      middleware: [sagaMiddleware, routerMiddleware(history)],
     });
 
     sagaMiddleware.run(rootSaga);
@@ -87,9 +88,11 @@ export class DashboardCreator {
 
     ReactDOM.render(
       <Provider store={store}>
-        <APIContext.Provider value={{ blobApi, keenAnalysis }}>
-          <App />
-        </APIContext.Provider>
+        <ConnectedRouter history={history}>
+          <APIContext.Provider value={{ blobApi, keenAnalysis }}>
+            <App />
+          </APIContext.Provider>
+        </ConnectedRouter>
       </Provider>,
       document.querySelector(this.container)
     );

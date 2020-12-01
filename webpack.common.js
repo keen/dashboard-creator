@@ -4,8 +4,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const { version } = require('./package.json');
 
-console.log(version, 'sa');
-
 const loadAppConfig = () => {
   if (process.env.NODE_ENV === 'development') {
     return require('./config');

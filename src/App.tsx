@@ -1,26 +1,48 @@
 import React, { FC } from 'react';
+import Loadable from 'react-loadable';
+import { Route, Switch } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import { Container, Content } from './App.styles';
 
-import { getViewMode, getActiveDashboard } from './modules/app';
+import { getActiveDashboard } from './modules/app';
 
 import Management from './components/Management';
-import Editor from './components/Editor';
-import Viewer from './components/Viewer';
+import PageLoader from './components/PageLoader';
+
+import { ROUTES } from './constants';
 
 type Props = {};
 
+const Editor = Loadable({
+  loader: () => import(/* webpackChunkName: "editor" */ './components/Editor'),
+  loading: PageLoader,
+});
+
+const Viewer = Loadable({
+  loader: () => import(/* webpackChunkName: "viewer" */ './components/Viewer'),
+  loading: PageLoader,
+});
+
 const App: FC<Props> = () => {
-  const view = useSelector(getViewMode);
   const activeDashboard = useSelector(getActiveDashboard);
 
   return (
     <Container>
       <Content>
-        {view === 'management' && <Management />}
-        {view === 'viewer' && <Viewer dashboardId={activeDashboard} />}
-        {view === 'editor' && <Editor dashboardId={activeDashboard} />}
+        <Switch>
+          <Route exact path="/" component={Management} />
+          <Route
+            exact
+            path={ROUTES.VIEWER}
+            render={() => <Viewer dashboardId={activeDashboard} />}
+          />
+          <Route
+            exact
+            path={ROUTES.EDITOR}
+            render={() => <Editor dashboardId={activeDashboard} />}
+          />
+        </Switch>
       </Content>
     </Container>
   );
