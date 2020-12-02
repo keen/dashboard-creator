@@ -23,11 +23,11 @@ const ManagementNavigation: FC<Props> = ({ onCreateDashboard }) => {
     <Container>
       <TopBar>
         <Heading>
-          <Title>{t('dashbord_management.title')}</Title>
-          <Message>{t('dashbord_management.description')}</Message>
+          <Title>{t('dashboard_management.title')}</Title>
+          <Message>{t('dashboard_management.description')}</Message>
         </Heading>
         <Button variant="success" onClick={onCreateDashboard}>
-          {t('dashbord_management.create_dashboard')}
+          {t('dashboard_management.create_dashboard')}
         </Button>
       </TopBar>
     </Container>
