@@ -6,18 +6,26 @@ import KeenAnalysis from 'keen-analysis';
 import { ThemeProvider } from 'styled-components';
 import { configureStore } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
+import { PubSub } from '@keen.io/pubsub';
+import { ToastProvider } from '@keen.io/toast-notifications';
 import { screenBreakpoints } from '@keen.io/ui-core';
 
 import App from './App';
 import { APIContext } from './contexts';
 import { BlobAPI } from './api';
 import { appStart } from './modules/app';
+import { NotificationManager } from './modules/notifications';
 
 import createI18n from './i18n';
 import rootReducer, { history } from './rootReducer';
 import rootSaga from './rootSaga';
 
-import { BLOB_API, KEEN_ANALYSIS } from './constants';
+import {
+  BLOB_API,
+  KEEN_ANALYSIS,
+  NOTIFICATION_MANAGER,
+  SHOW_TOAST_NOTIFICATION_EVENT,
+} from './constants';
 
 import { Options, TranslationsSettings } from './types';
 
@@ -69,10 +77,16 @@ export class DashboardCreator {
 
     createI18n(this.translationsSettings);
 
+    const notificationPubSub = new PubSub();
+
     const sagaMiddleware = createSagaMiddleware({
       context: {
         [BLOB_API]: blobApi,
         [KEEN_ANALYSIS]: keenAnalysis,
+        [NOTIFICATION_MANAGER]: new NotificationManager({
+          pubsub: notificationPubSub,
+          eventName: SHOW_TOAST_NOTIFICATION_EVENT,
+        }),
       },
     });
 
@@ -92,9 +106,11 @@ export class DashboardCreator {
           }}
         >
           <ConnectedRouter history={history}>
-            <APIContext.Provider value={{ blobApi, keenAnalysis }}>
-              <App />
-            </APIContext.Provider>
+            <ToastProvider>
+              <APIContext.Provider value={{ blobApi, keenAnalysis }}>
+                <App />
+              </APIContext.Provider>
+            </ToastProvider>
           </ConnectedRouter>
         </ThemeProvider>
       </Provider>,

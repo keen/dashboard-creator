@@ -1139,7 +1139,7 @@
     "@emotion/utils" "0.11.3"
     "@emotion/weak-memoize" "0.2.5"
 
-"@emotion/core@^10.0.9":
+"@emotion/core@^10.0.14", "@emotion/core@^10.0.9":
   version "10.1.1"
   resolved "https://registry.yarnpkg.com/@emotion/core/-/core-10.1.1.tgz#c956c1365f2f2481960064bcb8c4732e5fb612c3"
   integrity sha512-ZMLG6qpXR8x031NXD8HJqugy/AZSkAuMxxqB46pmAR7ze47MhNJ56cdoX243QPZdGctrdfo+s08yZTiwaUcRKA==
@@ -1510,6 +1510,11 @@
   resolved "https://registry.yarnpkg.com/@keen.io/parser/-/parser-2.3.5.tgz#b561afb7ad80b17ce405cb7801826a6812ae89c7"
   integrity sha512-zKMdie4onqgkfbHZ3iulFqq3OAV7R7dtbFMdEM7rZ369aGALvwgYKxOHKkC/I9JdQOmJTnwVhqNeo4T3EBlyvg==
 
+"@keen.io/pubsub@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@keen.io/pubsub/-/pubsub-1.1.1.tgz#80dcb09a849ec665d279234c014e6815e1d075c0"
+  integrity sha512-S9zhZNDSwsL6WXOtFqeZ3+vOdCzykL7pYifRm9dZ7ivLe/frAeyqIQsfRA8Z52DPnRN7d+gKbWrJtlZM22ErjQ==
+
 "@keen.io/react-hooks@^1.0.4":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@keen.io/react-hooks/-/react-hooks-1.0.4.tgz#421dd95d0d7b92113ca7ab77a24dd3383837b3d8"
@@ -1518,6 +1523,21 @@
     d3-array "^2.7.1"
     fuse.js "^6.4.1"
     react "^16.12.0"
+
+"@keen.io/toast-notifications@^1.1.12":
+  version "1.1.12"
+  resolved "https://registry.yarnpkg.com/@keen.io/toast-notifications/-/toast-notifications-1.1.12.tgz#305bba967aa45ccb7d64bf92b77d61f585dd559d"
+  integrity sha512-3dVtBqcKLr68cdJVs4UKORuhbVsJbkzSdCvN2PfByqblpCxm4q6nQlb4T/BisA1G4gyqG5LTlpHnA87qBB8Ykw==
+  dependencies:
+    "@keen.io/colors" "^1.1.0"
+    "@keen.io/ui-core" "^2.5.19"
+    framer-motion "^1.11.1"
+    polished "^3.4.4"
+    react "^16.12.0"
+    react-dom "^16.12.0"
+    react-toast-notifications "^2.4.0"
+    styled-components "^5.1.0"
+    styled-system "5.1.5"
 
 "@keen.io/ui-core@^2.5.19":
   version "2.5.19"
@@ -9674,6 +9694,14 @@ react-select@^3.1.0:
     memoize-one "^5.0.0"
     prop-types "^15.6.0"
     react-input-autosize "^2.2.2"
+    react-transition-group "^4.3.0"
+
+react-toast-notifications@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/react-toast-notifications/-/react-toast-notifications-2.4.0.tgz#6213730bd1fe158fc01aeef200687ea94c5c5b24"
+  integrity sha512-8tkrbNh7LxkiFmtqAL/AiI55efIeI+fBk3c6ImsiZ0VObb4yvOq0cqYuJHyUiv9fuD2aBxvXGVH+n4Snt8qoWA==
+  dependencies:
+    "@emotion/core" "^10.0.14"
     react-transition-group "^4.3.0"
 
 react-transition-group@^4.3.0:

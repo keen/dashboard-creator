@@ -43,6 +43,8 @@
     "@keen.io/colors": "^1.1.0",
     "@keen.io/dataviz": "^2.3.0",
     "@keen.io/icons": "^1.2.2",
+    "@keen.io/pubsub": "^1.1.1",
+    "@keen.io/toast-notifications": "^1.1.12",
     "@keen.io/ui-core": "^2.5.20",
     "@keen.io/widget-picker": "^1.2.31",
     "@reduxjs/toolkit": "^1.4.0",
