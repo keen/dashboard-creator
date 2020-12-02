@@ -1,8 +1,6 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { transparentize } from 'polished';
 import { Button } from '@keen.io/ui-core';
-import { colors } from '@keen.io/colors';
 
 import {
   Container,
@@ -13,13 +11,7 @@ import {
 } from './ManagementNavigation.styles';
 
 import Title from '../Title';
-
-const pulseMotion = {
-  animate: {
-    boxShadow: `0 0 2px 4px ${transparentize(0.6, colors.green[400])}`,
-  },
-  transition: { yoyo: Infinity, repeatDelay: 0.3, duration: 0.5 },
-};
+import { pulseMotion } from './motion';
 
 type Props = {
   /** Create dashboard event handler */
@@ -38,10 +30,10 @@ const ManagementNavigation: FC<Props> = ({
 
   return (
     <Container>
-      <TopBar>
-        <Heading>
-          <Title>{t('dashboard_management.title')}</Title>
-          <Message>{t('dashboard_management.description')}</Message>
+      <TopBar flexDirection={{ xs: 'column', md: 'row' }}>
+        <Heading marginBottom={{ xs: 20, md: 0 }} marginRight={{ md: 10 }}>
+          <Title>{t('dashbord_management.title')}</Title>
+          <Message>{t('dashbord_management.description')}</Message>
         </Heading>
         <ButtonMotion {...buttonMotion}>
           <Button variant="success" onClick={onCreateDashboard}>

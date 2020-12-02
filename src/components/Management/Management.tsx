@@ -29,6 +29,7 @@ const Management: FC<Props> = () => {
   }, []);
 
   const isEmptyProject = dashboardsLoaded && dashboards.length === 0;
+  const showPlaceholders = isEmptyProject || !dashboardsLoaded;
 
   return (
     <div>
@@ -37,7 +38,7 @@ const Management: FC<Props> = () => {
         onCreateDashboard={createDashbord}
       />
       <Content>
-        {isEmptyProject || !dashboardsLoaded ? (
+        {showPlaceholders ? (
           <DashboardsPlaceholder />
         ) : (
           <DashboardsList

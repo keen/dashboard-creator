@@ -3,8 +3,10 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
 import KeenAnalysis from 'keen-analysis';
+import { ThemeProvider } from 'styled-components';
 import { configureStore } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
+import { screenBreakpoints } from '@keen.io/ui-core';
 
 import App from './App';
 import { APIContext } from './contexts';
@@ -88,11 +90,17 @@ export class DashboardCreator {
 
     ReactDOM.render(
       <Provider store={store}>
-        <ConnectedRouter history={history}>
-          <APIContext.Provider value={{ blobApi, keenAnalysis }}>
-            <App />
-          </APIContext.Provider>
-        </ConnectedRouter>
+        <ThemeProvider
+          theme={{
+            breakpoints: screenBreakpoints,
+          }}
+        >
+          <ConnectedRouter history={history}>
+            <APIContext.Provider value={{ blobApi, keenAnalysis }}>
+              <App />
+            </APIContext.Provider>
+          </ConnectedRouter>
+        </ThemeProvider>
       </Provider>,
       document.querySelector(this.container)
     );
