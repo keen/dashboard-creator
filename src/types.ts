@@ -3,9 +3,8 @@ export type Options = {
   blobApiUrl: string;
   project: {
     masterKey: string;
-    readKey: string;
-    writeKey: string;
-    projectId: string;
+    userKey: string;
+    id: string;
   };
   translations?: TranslationsSettings;
 };

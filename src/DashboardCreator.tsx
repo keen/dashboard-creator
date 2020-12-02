@@ -27,11 +27,8 @@ export class DashboardCreator {
   /** Master key for Keen project */
   private readonly masterKey: string;
 
-  /** Read key for Keen project */
-  private readonly readKey: string;
-
-  /** Write key for Keen project */
-  private readonly writeKey: string;
+  /** User key for Keen project */
+  private readonly userKey: string;
 
   /** Project identifer */
   private readonly projectId: string;
@@ -45,13 +42,12 @@ export class DashboardCreator {
   constructor(config: Options) {
     const { container, blobApiUrl, project, translations } = config;
 
-    const { projectId, masterKey, readKey, writeKey } = project;
+    const { id, masterKey, userKey } = project;
 
     this.container = container;
-    this.projectId = projectId;
+    this.projectId = id;
     this.masterKey = masterKey;
-    this.readKey = readKey;
-    this.writeKey = writeKey;
+    this.userKey = userKey;
     this.blobApiUrl = blobApiUrl;
     this.translationsSettings = translations || {};
   }
@@ -59,15 +55,15 @@ export class DashboardCreator {
   render() {
     const blobApi = new BlobAPI({
       projectId: this.projectId,
-      accessKey: this.masterKey,
+      accessKey: this.userKey,
+      masterKey: this.masterKey,
       url: this.blobApiUrl,
     });
 
     const keenAnalysis = new KeenAnalysis({
       projectId: this.projectId,
       masterKey: this.masterKey,
-      readKey: this.readKey,
-      writeKey: this.writeKey,
+      readKey: this.userKey,
       host: 'staging-api.keen.io',
     });
 

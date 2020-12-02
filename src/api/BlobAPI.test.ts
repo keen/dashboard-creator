@@ -5,12 +5,14 @@ import BlobAPI from './BlobAPI';
 const apiUrl = 'apiUrl';
 const projectId = 'projectId';
 const accessKey = 'accessKey';
+const masterKey = 'masterKey';
 
 let blobAPI: BlobAPI;
 
 beforeEach(() => {
   blobAPI = new BlobAPI({
     accessKey,
+    masterKey,
     projectId,
     url: apiUrl,
   });

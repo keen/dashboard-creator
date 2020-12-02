@@ -22,7 +22,7 @@ const CreateFirstDashboard: FC<Props> = ({ isVisible, onClick }) => {
           onClick={onClick}
           data-testid="create-first-dashboard"
         >
-          {t('dashbord_management.empty_project')}
+          {t('dashboard_management.empty_project')}
         </MotionContainer>
       )}
     </AnimatePresence>
