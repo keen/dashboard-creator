@@ -19,6 +19,9 @@ import {
   SAVE_DASHBOARD,
   VIEW_DASHBOARD,
   INITIALIZE_DASHBOARD_WIDGETS,
+  SHOW_DELETE_CONFIRMATION,
+  HIDE_DELETE_CONFIRMATION,
+  CONFIRM_DASHBOARD_DELETE,
 } from './constants';
 
 export const fetchDashboardList = createAction(FETCH_DASHBOARDS_LIST);
@@ -157,6 +160,17 @@ export const initializeDashboardWidgets = createAction(
   })
 );
 
+export const showDeleteConfirmation = createAction(
+  SHOW_DELETE_CONFIRMATION,
+  (dashboardId: string) => ({
+    payload: { dashboardId },
+  })
+);
+
+export const hideDeleteConfirmation = createAction(HIDE_DELETE_CONFIRMATION);
+
+export const confirmDashboardDelete = createAction(CONFIRM_DASHBOARD_DELETE);
+
 export type DashboardsActions =
   | ReturnType<typeof fetchDashboardList>
   | ReturnType<typeof fetchDashboardListSuccess>
@@ -173,4 +187,7 @@ export type DashboardsActions =
   | ReturnType<typeof editDashboard>
   | ReturnType<typeof addWidgetToDashboard>
   | ReturnType<typeof removeWidgetFromDashboard>
-  | ReturnType<typeof initializeDashboardWidgets>;
+  | ReturnType<typeof initializeDashboardWidgets>
+  | ReturnType<typeof showDeleteConfirmation>
+  | ReturnType<typeof hideDeleteConfirmation>
+  | ReturnType<typeof confirmDashboardDelete>;

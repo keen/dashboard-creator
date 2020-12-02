@@ -1,4 +1,11 @@
-import { takeLatest, put, select, all, getContext } from 'redux-saga/effects';
+import {
+  takeLatest,
+  put,
+  select,
+  take,
+  all,
+  getContext,
+} from 'redux-saga/effects';
 import { push } from 'connected-react-router';
 
 import {
@@ -13,6 +20,8 @@ import {
   saveDashboard as saveDashboardAction,
   viewDashboard as viewDashboardAction,
   deleteDashboard as deleteDashboardAction,
+  showDeleteConfirmation,
+  hideDeleteConfirmation,
 } from './actions';
 
 import { serializeDashboard } from './serializers';
@@ -38,6 +47,8 @@ import {
   EDIT_DASHBOARD,
   DELETE_DASHBOARD,
   VIEW_DASHBOARD,
+  CONFIRM_DASHBOARD_DELETE,
+  HIDE_DELETE_CONFIRMATION,
 } from './constants';
 
 import { RootState } from '../../rootReducer';
@@ -111,14 +122,23 @@ export function* deleteDashboard({
   payload,
 }: ReturnType<typeof deleteDashboardAction>) {
   const { dashboardId } = payload;
+  yield put(showDeleteConfirmation(dashboardId));
 
-  try {
-    const blobApi = yield getContext(BLOB_API);
-    yield blobApi.deleteDashboard(dashboardId);
+  const action = yield take([
+    CONFIRM_DASHBOARD_DELETE,
+    HIDE_DELETE_CONFIRMATION,
+  ]);
 
-    yield put(deregisterDashboard(dashboardId));
-  } catch (err) {
-    console.error(err);
+  if (action.type === CONFIRM_DASHBOARD_DELETE) {
+    yield put(hideDeleteConfirmation());
+    try {
+      const blobApi = yield getContext(BLOB_API);
+      yield blobApi.deleteDashboard(dashboardId);
+
+      yield put(deregisterDashboard(dashboardId));
+    } catch (err) {
+      console.error(err);
+    }
   }
 }
 

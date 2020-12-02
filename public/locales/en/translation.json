@@ -11,6 +11,13 @@
     "share_dashboard": "Share",
     "clone_dashboard": "Clone"
   },
+  "delete_dashboard": {
+    "title": "Deleting dashboard",
+    "untitled_dashboard": "Untitled Dashboard",
+    "message": "Do you want to permanently delete dashboard {{name}} from your project?",
+    "confirm": "Delete",
+    "cancel": "Cancel"
+  },
   "dashboard_management": {
     "title": "Dashboards",
     "description": "This is a place for all your dashboards. Organize different queries in one view and share them with your colleagues.",

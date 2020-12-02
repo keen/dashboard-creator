@@ -11,12 +11,17 @@ import {
   fetchDashboardList,
   addWidgetToDashboard,
   removeWidgetFromDashboard,
+  showDeleteConfirmation,
+  hideDeleteConfirmation,
+  confirmDashboardDelete,
 } from './actions';
 
 import {
   getDashboardsList,
   getDashboardsLoadState,
+  getDeleteConfirmation,
   getDashboard,
+  getDashboardMeta,
 } from './selectors';
 import { DashboardMetaData, DashboardModel } from './types';
 
@@ -31,8 +36,13 @@ export {
   cloneDashboard,
   shareDashboard,
   deleteDashboard,
+  showDeleteConfirmation,
+  hideDeleteConfirmation,
+  confirmDashboardDelete,
   saveDashboard,
   fetchDashboardList,
+  getDashboardMeta,
+  getDeleteConfirmation,
   getDashboardsLoadState,
   getDashboardsList,
   getDashboard,

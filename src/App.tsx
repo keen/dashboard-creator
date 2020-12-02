@@ -7,7 +7,6 @@ import { Container, Content } from './App.styles';
 
 import { getActiveDashboard } from './modules/app';
 
-import Management from './components/Management';
 import PageLoader from './components/PageLoader';
 
 import { ROUTES } from './constants';
@@ -21,6 +20,12 @@ const Editor = Loadable({
 
 const Viewer = Loadable({
   loader: () => import(/* webpackChunkName: "viewer" */ './components/Viewer'),
+  loading: PageLoader,
+});
+
+const Management = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: "management" */ './components/Management'),
   loading: PageLoader,
 });
 

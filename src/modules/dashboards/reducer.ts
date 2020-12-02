@@ -10,6 +10,8 @@ import {
   CREATE_DASHBOARD,
   ADD_WIDGET_TO_DASHBOARD,
   REMOVE_WIDGET_FROM_DASHBOARD,
+  SHOW_DELETE_CONFIRMATION,
+  HIDE_DELETE_CONFIRMATION,
 } from './constants';
 
 import { ReducerState } from './types';
@@ -20,6 +22,10 @@ export const initialState: ReducerState = {
     error: null,
     data: [],
   },
+  deleteConfirmation: {
+    isVisible: false,
+    dashboardId: null,
+  },
   items: {},
 };
 
@@ -28,6 +34,24 @@ const dashboardsReducer = (
   action: DashboardsActions
 ) => {
   switch (action.type) {
+    case SHOW_DELETE_CONFIRMATION:
+      return {
+        ...state,
+        deleteConfirmation: {
+          ...state.deleteConfirmation,
+          dashboardId: action.payload.dashboardId,
+          isVisible: true,
+        },
+      };
+    case HIDE_DELETE_CONFIRMATION:
+      return {
+        ...state,
+        deleteConfirmation: {
+          ...state.deleteConfirmation,
+          dashboardId: null,
+          isVisible: false,
+        },
+      };
     case REMOVE_WIDGET_FROM_DASHBOARD:
       return {
         ...state,
