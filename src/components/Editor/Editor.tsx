@@ -1,6 +1,8 @@
 import React, { FC, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { Layout as LayoutItem } from 'react-grid-layout';
+import { push } from 'connected-react-router';
 
 import {
   addWidgetToDashboard,
@@ -15,12 +17,14 @@ import {
   WidgetsPosition,
 } from '../../modules/widgets';
 import { createDashboardThumbnail } from '../../modules/thumbnails';
-import { setViewMode } from '../../modules/app';
+import { setActiveDashboard } from '../../modules/app';
 
 import EditorNavigation from '../EditorNavigation';
 import QueryPickerModal from '../QueryPickerModal';
 import Toolbar from '../Toolbar';
 import Grid from '../Grid';
+
+import { ROUTES } from '../../constants';
 
 import { RootState } from '../../rootReducer';
 
@@ -30,6 +34,7 @@ type Props = {
 };
 
 const Editor: FC<Props> = ({ dashboardId }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const [droppableWidget, setDroppableWidget] = useState(null);
   const { widgetsId, isInitialized } = useSelector((state: RootState) => {
@@ -64,7 +69,12 @@ const Editor: FC<Props> = ({ dashboardId }) => {
 
   return (
     <>
-      <EditorNavigation onBack={() => dispatch(setViewMode('management'))} />
+      <EditorNavigation
+        onBack={() => {
+          dispatch(setActiveDashboard(null));
+          dispatch(push(ROUTES.MANAGEMENT));
+        }}
+      />
       <Toolbar onWidgetDrag={(widgetType) => setDroppableWidget(widgetType)} />
       {isInitialized ? (
         <>
@@ -74,7 +84,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
               dispatch(createDashboardThumbnail(dashboardId));
             }}
           >
-            Save
+            {t('dashboard_editor.save')}
           </div>
           <Grid
             isEditorMode={true}
@@ -92,7 +102,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
           />
         </>
       ) : (
-        <div>Loading</div>
+        <div>{t('dashboard_editor.loading')}</div>
       )}
       <QueryPickerModal />
     </>

@@ -8,8 +8,6 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 
 const commonConfig = require('./webpack.common');
 
-const FILE_NAME = 'dashboard-creator';
-
 module.exports = (env) => {
   const config = merge(commonConfig, {
     context: __dirname,
@@ -23,11 +21,21 @@ module.exports = (env) => {
 
     output: {
       path: path.resolve(__dirname, 'dist'),
-      filename: `${FILE_NAME}.min.js`,
+      filename: `[name].min.js`,
       libraryTarget: 'umd',
     },
 
     optimization: {
+      splitChunks: {
+        cacheGroups: {
+          vendors: {
+            test: /node_modules/,
+            chunks: 'initial',
+            name: 'vendors',
+            enforce: true,
+          },
+        },
+      },
        minimizer: [
          new TerserPlugin({
            terserOptions: {

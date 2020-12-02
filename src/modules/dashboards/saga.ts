@@ -1,4 +1,5 @@
 import { takeLatest, put, select, all, getContext } from 'redux-saga/effects';
+import { push } from 'connected-react-router';
 
 import {
   fetchDashboardListSuccess,
@@ -21,14 +22,14 @@ import {
   getDashboardsMetadata,
 } from './selectors';
 
-import { setViewMode } from '../app';
+import { setActiveDashboard } from '../app';
 import {
   initializeWidget,
   registerWidgets,
   getWidgetSettings,
 } from '../widgets';
 
-import { BLOB_API } from '../../constants';
+import { BLOB_API, ROUTES } from '../../constants';
 import {
   INITIALIZE_DASHBOARD_WIDGETS,
   FETCH_DASHBOARDS_LIST,
@@ -92,7 +93,9 @@ export function* createDashboard({
 
   yield put(registerDashboard(dashboardId));
   yield put(updateDashboard(dashboardId, serializedDashboard));
-  yield put(setViewMode('editor', dashboardId));
+
+  yield put(setActiveDashboard(dashboardId));
+  yield put(push(ROUTES.EDITOR));
 }
 
 export function* deleteDashboard({
@@ -119,7 +122,9 @@ export function* editDashboard({
 
   if (!dashboard) {
     yield put(registerDashboard(dashboardId));
-    yield put(setViewMode('editor', dashboardId));
+
+    yield put(setActiveDashboard(dashboardId));
+    yield put(push(ROUTES.EDITOR));
 
     const blobApi = yield getContext(BLOB_API);
 
@@ -143,7 +148,8 @@ export function* editDashboard({
       console.error(err);
     }
   } else {
-    yield put(setViewMode('editor', dashboardId));
+    yield put(setActiveDashboard(dashboardId));
+    yield put(push(ROUTES.EDITOR));
   }
 }
 
@@ -156,7 +162,8 @@ export function* viewDashboard({
 
   if (!dashboard) {
     yield put(registerDashboard(dashboardId));
-    yield put(setViewMode('viewer', dashboardId));
+    yield put(setActiveDashboard(dashboardId));
+    yield put(push(ROUTES.VIEWER));
 
     const blobApi = yield getContext(BLOB_API);
 
@@ -173,7 +180,8 @@ export function* viewDashboard({
       console.error(err);
     }
   } else {
-    yield put(setViewMode('viewer', dashboardId));
+    yield put(setActiveDashboard(dashboardId));
+    yield put(push(ROUTES.VIEWER));
   }
 }
 
