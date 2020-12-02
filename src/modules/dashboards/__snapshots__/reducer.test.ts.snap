@@ -18,7 +18,9 @@ Object {
       Object {
         "id": "@dashboard/01",
         "isPublic": false,
+        "lastModificationDate": 0,
         "queries": 0,
+        "tags": Array [],
         "title": null,
         "widgets": 1,
       },
@@ -46,7 +48,9 @@ Object {
       Object {
         "id": "@dashboard/01",
         "isPublic": false,
+        "lastModificationDate": 0,
         "queries": 0,
+        "tags": Array [],
         "title": null,
         "widgets": 0,
       },

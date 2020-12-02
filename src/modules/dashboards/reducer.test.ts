@@ -137,14 +137,18 @@ test('serializes dashboards metadata', () => {
         Object {
           "id": "@dashboard/01",
           "isPublic": true,
+          "lastModificationDate": 1606895352390,
           "queries": 0,
+          "tags": Array [],
           "title": "Dashboard 1",
           "widgets": 5,
         },
         Object {
           "id": "@dashboard/02",
           "isPublic": true,
+          "lastModificationDate": 1606895352390,
           "queries": 2,
+          "tags": Array [],
           "title": "Dashboard 2",
           "widgets": 0,
         },
