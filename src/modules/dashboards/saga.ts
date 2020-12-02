@@ -84,6 +84,7 @@ export function* saveDashboard({
 export function* createDashboard({
   payload,
 }: ReturnType<typeof createDashboardAction>) {
+  console.log('create dashboard', payload);
   const { dashboardId } = payload;
   const serializedDashboard: Dashboard = {
     version: __APP_VERSION__,
