@@ -38,7 +38,7 @@ import {
   getWidgetSettings,
 } from '../widgets';
 
-import { BLOB_API, ROUTES } from '../../constants';
+import { BLOB_API, NOTIFICATION_MANAGER, ROUTES } from '../../constants';
 import {
   INITIALIZE_DASHBOARD_WIDGETS,
   FETCH_DASHBOARDS_LIST,
@@ -123,6 +123,7 @@ export function* deleteDashboard({
 }: ReturnType<typeof deleteDashboardAction>) {
   const { dashboardId } = payload;
   yield put(showDeleteConfirmation(dashboardId));
+  const notificationManager = yield getContext(NOTIFICATION_MANAGER);
 
   const action = yield take([
     CONFIRM_DASHBOARD_DELETE,
@@ -136,8 +137,18 @@ export function* deleteDashboard({
       yield blobApi.deleteDashboard(dashboardId);
 
       yield put(deregisterDashboard(dashboardId));
+      yield notificationManager.showNotification({
+        type: 'info',
+        message: 'notifications.dashboard_delete_success',
+        autoDismiss: true,
+      });
     } catch (err) {
-      console.error(err);
+      yield notificationManager.showNotification({
+        type: 'error',
+        message: 'notifications.dashboard_delete_error',
+        showDismissButton: true,
+        autoDismiss: false,
+      });
     }
   }
 }

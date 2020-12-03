@@ -12,6 +12,7 @@ import { colors } from '@keen.io/colors';
 
 import {
   Content,
+  Cancel,
   FooterContent,
   Message,
   Title,
@@ -70,18 +71,21 @@ const DashboardDeleteConfirmation: FC<Props> = () => {
               <ConfirmButton>
                 <Button
                   variant="danger"
+                  htmlType="button"
                   onClick={() => dispatch(confirmDashboardDelete())}
                 >
                   {t('delete_dashboard.confirm')}
                 </Button>
               </ConfirmButton>
-              <Anchor
-                onClick={closeHandler}
-                color={colors.blue[500]}
-                hoverColor={colors.blue[300]}
-              >
-                {t('delete_dashboard.cancel')}
-              </Anchor>
+              <Cancel>
+                <Anchor
+                  onClick={closeHandler}
+                  color={colors.blue[500]}
+                  hoverColor={colors.blue[300]}
+                >
+                  {t('delete_dashboard.cancel')}
+                </Anchor>
+              </Cancel>
             </FooterContent>
           </ModalFooter>
         </>

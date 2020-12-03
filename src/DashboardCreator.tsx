@@ -11,7 +11,7 @@ import { ToastProvider } from '@keen.io/toast-notifications';
 import { screenBreakpoints } from '@keen.io/ui-core';
 
 import App from './App';
-import { APIContext } from './contexts';
+import { APIContext, AppContext } from './contexts';
 import { BlobAPI } from './api';
 import { appStart } from './modules/app';
 import { NotificationManager } from './modules/notifications';
@@ -107,9 +107,11 @@ export class DashboardCreator {
         >
           <ConnectedRouter history={history}>
             <ToastProvider>
-              <APIContext.Provider value={{ blobApi, keenAnalysis }}>
-                <App />
-              </APIContext.Provider>
+              <AppContext.Provider value={{ notificationPubSub }}>
+                <APIContext.Provider value={{ blobApi, keenAnalysis }}>
+                  <App />
+                </APIContext.Provider>
+              </AppContext.Provider>
             </ToastProvider>
           </ConnectedRouter>
         </ThemeProvider>

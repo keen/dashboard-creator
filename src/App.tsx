@@ -8,6 +8,7 @@ import { Container, Content } from './App.styles';
 import { getActiveDashboard } from './modules/app';
 
 import PageLoader from './components/PageLoader';
+import ToastNotifications from './components/ToastNotifications';
 
 import { ROUTES } from './constants';
 
@@ -49,6 +50,7 @@ const App: FC<Props> = () => {
           />
         </Switch>
       </Content>
+      <ToastNotifications />
     </Container>
   );
 };
