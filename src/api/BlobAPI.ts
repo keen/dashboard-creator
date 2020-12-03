@@ -5,29 +5,33 @@ import { BlobAPIOptions, BlobAPIHeaders } from './types';
 import { DashboardModel, DashboardMetaData } from '../modules/dashboards';
 
 class BlobAPI {
-  /** Authorization access key */
-  private readonly accessKey: string;
+  /** Authorization read access key */
+  private readonly readKey: string;
+
+  /** Authorization master key */
+  private readonly masterKey: string;
 
   /** API base url */
   private readonly baseUrl: string;
 
-  private setAuthorizationHeader = () => ({
-    Authorization: this.accessKey,
-  });
-
-  constructor({ url, accessKey, projectId }: BlobAPIOptions) {
-    this.accessKey = accessKey;
+  constructor({ url, accessKey, masterKey, projectId }: BlobAPIOptions) {
+    this.masterKey = masterKey;
+    this.readKey = accessKey;
     this.baseUrl = `${url}/projects/${projectId}`;
   }
 
   getDashboardById = (id: string): Promise<DashboardModel> =>
     fetch(`${this.baseUrl}/blobs/dashboard/${id}`, {
-      headers: this.setAuthorizationHeader(),
+      headers: {
+        Authorization: this.readKey,
+      },
     }).then(handleResponse);
 
   getDashboards = (): Promise<DashboardMetaData[]> =>
     fetch(`${this.baseUrl}/metadata/dashboard`, {
-      headers: this.setAuthorizationHeader(),
+      headers: {
+        Authorization: this.readKey,
+      },
     }).then(handleResponse);
 
   saveDashboard = (
@@ -38,7 +42,7 @@ class BlobAPI {
     fetch(`${this.baseUrl}/blobs/dashboard/${id}`, {
       method: 'PUT',
       headers: {
-        ...this.setAuthorizationHeader(),
+        Authorization: this.masterKey,
         [BlobAPIHeaders.MetaData]: JSON.stringify(metadata),
       },
       body: JSON.stringify(body),
@@ -48,7 +52,7 @@ class BlobAPI {
     fetch(`${this.baseUrl}/blobs/dashboard/${dashboardId}`, {
       method: 'DELETE',
       headers: {
-        ...this.setAuthorizationHeader(),
+        Authorization: this.masterKey,
       },
     });
 
@@ -56,14 +60,16 @@ class BlobAPI {
     fetch(`${this.baseUrl}/blobs/thumbnail/${dashboardId}`, {
       method: 'PUT',
       headers: {
-        ...this.setAuthorizationHeader(),
+        Authorization: this.masterKey,
       },
       body: `data:image/png;base64,${arrayBuffer}`,
     });
 
   getThumbnailByDashboardId = (dashboardId: string): Promise<any> =>
     fetch(`${this.baseUrl}/blobs/thumbnail/${dashboardId}`, {
-      headers: this.setAuthorizationHeader(),
+      headers: {
+        Authorization: this.readKey,
+      },
     });
 }
 
