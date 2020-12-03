@@ -98,7 +98,7 @@ const DashboardTile: FC<Props> = ({
           {isActive && (
             <ActionsMotion data-testid="dashboard-actions" {...actionsMotion}>
               <CircleButton
-                variant="secondary"
+                variant="success"
                 icon={<Icon type="settings" />}
                 onClick={onShowSettings}
               />
@@ -107,7 +107,7 @@ const DashboardTile: FC<Props> = ({
                 style={{ zIndex: UI_LAYERS.dropdown }}
               >
                 <CircleButton
-                  variant="secondary"
+                  variant="success"
                   icon={<Icon type="actions" />}
                   onClick={() => setActionsMenuVisibility(!showActionsMenu)}
                 />

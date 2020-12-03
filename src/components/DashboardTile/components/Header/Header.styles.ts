@@ -21,6 +21,7 @@ export const Details = styled.div`
   height: 20px;
 
   position: relative;
+  box-sizing: border-box;
 `;
 
 export const BadgeContainer = styled.div`
@@ -39,14 +40,13 @@ export const TagsWrapper = styled(motion.div)<{ isOpen: boolean }>`
   height: 20px;
   width: 70%;
   overflow: hidden;
-  position: relative;
+  position: absolute;
+  top: 0;
+  right: 0;
 
   ${(props) =>
     props.isOpen &&
     css`
-      position: absolute;
-      top: 0;
-      right: 0;
       height: auto;
       padding: 5px 25px 5px 5px;
       background: ${colors.white[500]};
@@ -80,6 +80,9 @@ export const Excerpt = styled.div`
   line-height: 15px;
   color: ${transparentize(0.3, colors.black[100])};
   min-width: 70px;
+  max-width: 30%;
+  text-overflow: ellipsis;
+  overflow: hidden;
 `;
 
 export const ActionsContainer = styled.div`

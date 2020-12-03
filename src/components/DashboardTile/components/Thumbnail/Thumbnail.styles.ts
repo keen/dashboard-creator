@@ -3,7 +3,7 @@ import { transparentize } from 'polished';
 import { colors } from '@keen.io/colors';
 
 export const Container = styled.div`
-  width: 380px;
+  max-width: 100%;
   height: 170px;
   position: relative;
   background: ${colors.white[500]};
