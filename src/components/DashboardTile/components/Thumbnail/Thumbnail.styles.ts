@@ -14,7 +14,7 @@ export const Message = styled.div`
   font-family: 'Lato Regular', sans-serif;
   line-height: 17px;
   font-size: 14px;
-  color: ${transparentize(0.8, colors.blue[400])};
+  color: ${transparentize(0.8, colors.blue[500])};
 `;
 
 export const DefaultThumbnail = styled.div`

@@ -1605,10 +1605,10 @@
     styled-system "5.1.5"
     webfontloader "^1.6.28"
 
-"@keen.io/ui-core@^2.5.17":
-  version "2.5.17"
-  resolved "https://registry.yarnpkg.com/@keen.io/ui-core/-/ui-core-2.5.17.tgz#4b953540dd9449d7510df7a428e40bb11cb8c454"
-  integrity sha512-IvZqT4Uw09FNiFi7FalaZRiKLf9zmHvjW6JwBBCfApCcafOu59aNj9Sm+xI9Qr+tf4heIoZOLHmE7Fa+dibcng==
+"@keen.io/ui-core@^2.5.19":
+  version "2.5.19"
+  resolved "https://registry.yarnpkg.com/@keen.io/ui-core/-/ui-core-2.5.19.tgz#bf23fa7cb85c8c42f8eb9d532c05f400c10f32b8"
+  integrity sha512-AgkjTbxgmMLUxPpjQvtYa4pcA2WJ61j3KZnuv0eviewiH8YMmWlFQg2K//zQxS00UBdj3chKkh4gfDlOfH+P8g==
   dependencies:
     "@keen.io/colors" "^1.1.0"
     "@keen.io/icons" "^1.2.2"

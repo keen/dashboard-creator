@@ -23,7 +23,7 @@ test('allows user to create new dashboard', () => {
     props,
   } = render();
 
-  const button = getByText('dashbord_management.create_dashboard');
+  const button = getByText('dashboard_management.create_dashboard');
   fireEvent.click(button);
 
   expect(props.onCreateDashboard).toHaveBeenCalled();
@@ -34,7 +34,7 @@ test('renders section title', () => {
     wrapper: { getByText },
   } = render();
 
-  expect(getByText('dashbord_management.title')).toBeInTheDocument();
+  expect(getByText('dashboard_management.title')).toBeInTheDocument();
 });
 
 test('renders dashboards management description', () => {
@@ -42,5 +42,5 @@ test('renders dashboards management description', () => {
     wrapper: { getByText },
   } = render();
 
-  expect(getByText('dashbord_management.description')).toBeInTheDocument();
+  expect(getByText('dashboard_management.description')).toBeInTheDocument();
 });
