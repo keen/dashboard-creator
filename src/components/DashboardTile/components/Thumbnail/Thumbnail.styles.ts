@@ -3,7 +3,7 @@ import { transparentize } from 'polished';
 import { colors } from '@keen.io/colors';
 
 export const Container = styled.div`
-  width: 380px;
+  max-width: 100%;
   height: 170px;
   position: relative;
   background: ${colors.white[500]};
@@ -14,7 +14,7 @@ export const Message = styled.div`
   font-family: 'Lato Regular', sans-serif;
   line-height: 17px;
   font-size: 14px;
-  color: ${transparentize(0.8, colors.blue[400])};
+  color: ${transparentize(0.8, colors.blue[500])};
 `;
 
 export const DefaultThumbnail = styled.div`

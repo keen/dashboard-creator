@@ -2,7 +2,9 @@
   "dashboard_tile": {
     "preview_dashboard": "View Dashboard",
     "add_widgets": "Add widgets",
-    "queries": "Queries"
+    "queries": "Queries",
+    "public": "Public",
+    "untitled_dashboard": "Untitled dashboard"
   },
   "actions_menu": {
     "delete_dashboard": "Delete",

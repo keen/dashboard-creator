@@ -35,9 +35,9 @@ type Props = {
   /** Show dashboard settings event handler */
   onShowSettings: () => void;
   /** Remove dashboard handler */
-  onRemove: () => void;
+  onRemove?: () => void;
   /** Clone dashboard handler */
-  onClone: () => void;
+  onClone?: () => void;
 };
 
 /** <span onClick={() => onEdit()}>edit</span> */
@@ -52,10 +52,9 @@ const DashboardTile: FC<Props> = ({
   tags,
   onPreview,
   onShowSettings,
-  onRemove,
-  onClone,
+  // onRemove,
+  // onClone,
 }) => {
-  console.log(onClone, onRemove);
   const { t } = useTranslation();
   const [showActionsMenu, setActionsMenuVisibility] = useState(false);
   const [isActive, setActive] = useState(null);
@@ -97,8 +96,9 @@ const DashboardTile: FC<Props> = ({
       <Header title={title} excerpt={excerpt} isPublic={isPublic} tags={tags}>
         <AnimatePresence>
           {isActive && (
-            <ActionsMotion {...actionsMotion}>
+            <ActionsMotion data-testid="dashboard-actions" {...actionsMotion}>
               <CircleButton
+                variant="success"
                 icon={<Icon type="settings" />}
                 onClick={onShowSettings}
               />
@@ -107,6 +107,7 @@ const DashboardTile: FC<Props> = ({
                 style={{ zIndex: UI_LAYERS.dropdown }}
               >
                 <CircleButton
+                  variant="success"
                   icon={<Icon type="actions" />}
                   onClick={() => setActionsMenuVisibility(!showActionsMenu)}
                 />

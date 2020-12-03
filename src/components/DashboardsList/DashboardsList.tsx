@@ -22,7 +22,15 @@ const DashboardsList: FC<Props> = ({
   return (
     <DashboardsGrid data-testid="dashboards-grid">
       {dashboards.map(
-        ({ id, title, widgets, queries, tags, lastModificationDate }) => (
+        ({
+          id,
+          title,
+          widgets,
+          queries,
+          tags,
+          lastModificationDate,
+          isPublic,
+        }) => (
           <DashboardItem key={id} data-testid="dashboard-item">
             <DashboardTile
               id={id}
@@ -37,7 +45,7 @@ const DashboardsList: FC<Props> = ({
               onRemove={() => console.log('remove')}
               onClone={() => console.log('clone')}
               tags={tags}
-              isPublic
+              isPublic={isPublic}
             />
           </DashboardItem>
         )

@@ -5,7 +5,6 @@ import Header from './Header';
 
 const render = (overProps: any = {}) => {
   const props = {
-    title: 'Title',
     excerpt: 'Excerpt',
     ...overProps,
   };
@@ -18,11 +17,18 @@ const render = (overProps: any = {}) => {
   };
 };
 
-test('renders Header title', () => {
+test('renders title placeholder', () => {
   const {
     wrapper: { getByText },
-    props: { title },
   } = render();
+  expect(getByText('dashboard_tile.untitled_dashboard')).toBeInTheDocument();
+});
+
+test('renders Header title', () => {
+  const title = 'Title';
+  const {
+    wrapper: { getByText },
+  } = render({ title });
   expect(getByText(title)).toBeInTheDocument();
 });
 
@@ -38,7 +44,7 @@ test('renders label for public dashboard', () => {
   const {
     wrapper: { getByText },
   } = render({ isPublic: true });
-  expect(getByText('Public')).toBeInTheDocument();
+  expect(getByText('dashboard_tile.public')).toBeInTheDocument();
 });
 
 test('renders dashboard labels', () => {

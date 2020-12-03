@@ -43,7 +43,7 @@
     "@keen.io/colors": "^1.1.0",
     "@keen.io/dataviz": "^2.3.0",
     "@keen.io/icons": "^1.2.2",
-    "@keen.io/ui-core": "^2.5.17",
+    "@keen.io/ui-core": "^2.5.20",
     "@keen.io/widget-picker": "^1.2.31",
     "@reduxjs/toolkit": "^1.4.0",
     "connected-react-router": "^6.8.0",
