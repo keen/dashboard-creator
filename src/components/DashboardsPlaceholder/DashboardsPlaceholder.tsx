@@ -10,7 +10,7 @@ type Props = {
 };
 
 const DashboardsPlaceholder: FC<Props> = ({ placeholdersAmount = 9 }) => (
-  <DashboardsGrid>
+  <DashboardsGrid data-testid="dashboards-placeholder-grid">
     {new Array(placeholdersAmount).fill(true).map((_, idx) => (
       <Placeholder key={idx} />
     ))}

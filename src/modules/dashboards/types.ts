@@ -5,6 +5,8 @@ export type DashboardMetaData = {
   title: null | string;
   widgets: number;
   queries: number;
+  tags: string[];
+  lastModificationDate: number;
   isPublic: boolean;
 };
 

@@ -1,82 +1,53 @@
 import React from 'react';
-import { OK, INTERNAL_SERVER_ERROR } from 'http-status-codes';
-import { render as rtlRender, waitFor } from '@testing-library/react';
-
-import { APIContext } from '../../../../contexts';
+import { render as rtlRender } from '@testing-library/react';
 
 import Thumbnail from './Thumbnail';
 
-const render = (overProps: any = {}, blobApiOverride: any = {}) => {
+const render = (overProps: any = {}) => {
   const props = {
-    dashboardId: '@dashboard/id',
-    useDefaultThumbnail: false,
+    useDefaultThumbnail: true,
+    defaultThumbnailMessage: 'Default messasge',
     ...overProps,
   };
 
-  const blobApi = {
-    getThumbnailByDashboardId: jest.fn(),
-    ...blobApiOverride,
-  };
-
-  const wrapper = rtlRender(
-    <APIContext.Provider value={{ blobApi, keenAnalysis: {} }}>
-      <Thumbnail {...props} />
-    </APIContext.Provider>
-  );
+  const wrapper = rtlRender(<Thumbnail {...props} />);
 
   return {
     props,
-    blobApi,
     wrapper,
   };
 };
 
-test('renders default thumbnail', () => {
+test('should render Gradient', () => {
   const {
-    blobApi,
     wrapper: { getByTestId },
-  } = render({ useDefaultThumbnail: true });
+  } = render();
+  const gradient = getByTestId('thumbnail-gradient');
 
-  expect(getByTestId('default-thumbnail')).toBeInTheDocument();
-  expect(blobApi.getThumbnailByDashboardId).not.toHaveBeenCalled();
+  expect(gradient).toBeInTheDocument();
 });
 
-test('fetch and renders thumbnail from API', async () => {
-  const image = '@image_blob';
-  const blobApiMock = {
-    getThumbnailByDashboardId: jest.fn().mockResolvedValue({
-      status: OK,
-      text: () => Promise.resolve(image),
-    }),
-  };
-
+test('should render default thumbnail', () => {
   const {
-    blobApi,
     wrapper: { getByTestId },
-    props: { dashboardId },
-  } = render({}, blobApiMock);
+  } = render();
+  const thumbnail = getByTestId('default-thumbnail');
 
-  await waitFor(() => {
-    expect(blobApi.getThumbnailByDashboardId).toHaveBeenCalledWith(dashboardId);
-    expect(getByTestId('thumbnail-image')).toHaveAttribute('src', image);
-  });
+  expect(thumbnail).toBeInTheDocument();
 });
 
-test('renders default thumbnail for API error ', async () => {
-  const blobApiMock = {
-    getThumbnailByDashboardId: jest.fn().mockRejectedValue({
-      status: INTERNAL_SERVER_ERROR,
-    }),
-  };
-
+test('should render thumbnail message', () => {
   const {
-    blobApi,
-    wrapper: { getByTestId },
-    props: { dashboardId },
-  } = render({}, blobApiMock);
+    wrapper: { getByText },
+    props: { defaultThumbnailMessage },
+  } = render();
+  expect(getByText(defaultThumbnailMessage)).toBeInTheDocument();
+});
 
-  await waitFor(() => {
-    expect(blobApi.getThumbnailByDashboardId).toHaveBeenCalledWith(dashboardId);
-    expect(getByTestId('default-thumbnail')).toBeInTheDocument();
-  });
+test('should render thumbnail placeholder', () => {
+  const {
+    wrapper: { getByTestId },
+  } = render({ useDefaultThumbnail: false });
+  const placeholder = getByTestId('thumbnail-placeholder');
+  expect(placeholder).toBeInTheDocument();
 });

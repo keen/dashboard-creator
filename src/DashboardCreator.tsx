@@ -3,8 +3,10 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
 import KeenAnalysis from 'keen-analysis';
+import { ThemeProvider } from 'styled-components';
 import { configureStore } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
+import { screenBreakpoints } from '@keen.io/ui-core';
 
 import App from './App';
 import { APIContext } from './contexts';
@@ -25,11 +27,8 @@ export class DashboardCreator {
   /** Master key for Keen project */
   private readonly masterKey: string;
 
-  /** Read key for Keen project */
-  private readonly readKey: string;
-
-  /** Write key for Keen project */
-  private readonly writeKey: string;
+  /** User key for Keen project */
+  private readonly userKey: string;
 
   /** Project identifer */
   private readonly projectId: string;
@@ -43,13 +42,12 @@ export class DashboardCreator {
   constructor(config: Options) {
     const { container, blobApiUrl, project, translations } = config;
 
-    const { projectId, masterKey, readKey, writeKey } = project;
+    const { id, masterKey, userKey } = project;
 
     this.container = container;
-    this.projectId = projectId;
+    this.projectId = id;
     this.masterKey = masterKey;
-    this.readKey = readKey;
-    this.writeKey = writeKey;
+    this.userKey = userKey;
     this.blobApiUrl = blobApiUrl;
     this.translationsSettings = translations || {};
   }
@@ -57,15 +55,15 @@ export class DashboardCreator {
   render() {
     const blobApi = new BlobAPI({
       projectId: this.projectId,
-      accessKey: this.masterKey,
+      accessKey: this.userKey,
+      masterKey: this.masterKey,
       url: this.blobApiUrl,
     });
 
     const keenAnalysis = new KeenAnalysis({
       projectId: this.projectId,
       masterKey: this.masterKey,
-      readKey: this.readKey,
-      writeKey: this.writeKey,
+      readKey: this.userKey,
       host: 'staging-api.keen.io',
     });
 
@@ -88,11 +86,17 @@ export class DashboardCreator {
 
     ReactDOM.render(
       <Provider store={store}>
-        <ConnectedRouter history={history}>
-          <APIContext.Provider value={{ blobApi, keenAnalysis }}>
-            <App />
-          </APIContext.Provider>
-        </ConnectedRouter>
+        <ThemeProvider
+          theme={{
+            breakpoints: screenBreakpoints,
+          }}
+        >
+          <ConnectedRouter history={history}>
+            <APIContext.Provider value={{ blobApi, keenAnalysis }}>
+              <App />
+            </APIContext.Provider>
+          </ConnectedRouter>
+        </ThemeProvider>
       </Provider>,
       document.querySelector(this.container)
     );

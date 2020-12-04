@@ -75,8 +75,17 @@ export function* saveDashboard({
       ({ id }) => id === dashboardId
     );
 
+    const updatedMetadata: DashboardMetaData = {
+      ...metadata,
+      lastModificationDate: +new Date(),
+    };
+
     const blobApi = yield getContext(BLOB_API);
-    yield blobApi.saveDashboard(dashboardId, serializedDashboard, metadata);
+    yield blobApi.saveDashboard(
+      dashboardId,
+      serializedDashboard,
+      updatedMetadata
+    );
   } catch (err) {
     console.error(err);
   }

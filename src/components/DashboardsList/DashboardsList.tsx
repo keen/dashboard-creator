@@ -20,20 +20,36 @@ const DashboardsList: FC<Props> = ({
   onShowDashboardSettings,
 }) => {
   return (
-    <DashboardsGrid>
-      {dashboards.map(({ id, widgets }) => (
-        <DashboardItem key={id}>
-          <DashboardTile
-            id={id}
-            title="Dashboard Title"
-            lastModificationDate="15/03/2020"
-            queriesCount={18}
-            onPreview={() => onPreviewDashboard(id)}
-            onShowSettings={() => onShowDashboardSettings(id)}
-            useDefaultThumbnail={widgets === 0}
-          />
-        </DashboardItem>
-      ))}
+    <DashboardsGrid data-testid="dashboards-grid">
+      {dashboards.map(
+        ({
+          id,
+          title,
+          widgets,
+          queries,
+          tags,
+          lastModificationDate,
+          isPublic,
+        }) => (
+          <DashboardItem key={id} data-testid="dashboard-item">
+            <DashboardTile
+              id={id}
+              title={title}
+              lastModificationDate={new Date(
+                lastModificationDate
+              ).toLocaleDateString()}
+              queriesCount={queries}
+              onPreview={() => onPreviewDashboard(id)}
+              onShowSettings={() => onShowDashboardSettings(id)}
+              useDefaultThumbnail={widgets === 0}
+              onRemove={() => console.log('remove')}
+              onClone={() => console.log('clone')}
+              tags={tags}
+              isPublic={isPublic}
+            />
+          </DashboardItem>
+        )
+      )}
     </DashboardsGrid>
   );
 };

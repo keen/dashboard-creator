@@ -6,6 +6,8 @@ export const dashbordsMeta: DashboardMetaData[] = [
     widgets: 5,
     queries: 0,
     title: 'Dashboard 1',
+    tags: [],
+    lastModificationDate: 1606895352390,
     isPublic: true,
   },
   {
@@ -13,6 +15,8 @@ export const dashbordsMeta: DashboardMetaData[] = [
     widgets: 0,
     queries: 2,
     title: 'Dashboard 2',
+    tags: [],
+    lastModificationDate: 1606895352390,
     isPublic: true,
   },
 ];

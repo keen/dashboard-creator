@@ -8,6 +8,8 @@ import PreventDragPropagation from '../PreventDragPropagation';
 import ChartWidget from '../ChartWidget';
 
 import { getWidget } from '../../modules/widgets';
+
+import { DRAG_HANDLE_ELEMENT } from './constants';
 import { RootState } from '../../rootReducer';
 
 type Props = {
@@ -25,6 +27,7 @@ const Widget: FC<Props> = ({ id, onRemoveWidget }) => {
 
   return (
     <Container>
+      <div className={DRAG_HANDLE_ELEMENT}>DRAG ME</div>
       <PreventDragPropagation>
         <div onClick={onRemoveWidget}>{t('widget.remove')}</div>
       </PreventDragPropagation>

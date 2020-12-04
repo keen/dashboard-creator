@@ -4,7 +4,7 @@ import { colors } from '@keen.io/colors';
 
 export const Placeholder = styled.div`
   height: 250px;
-  width: 380px;
+  width: 100%;
   background: linear-gradient(
     180deg,
     ${transparentize(0.8, colors.gray[500])} 0%,

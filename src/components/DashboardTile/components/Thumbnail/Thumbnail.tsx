@@ -1,5 +1,4 @@
-import React, { FC, useState, useEffect, useContext } from 'react';
-import { OK } from 'http-status-codes';
+import React, { FC } from 'react';
 import { Icon } from '@keen.io/icons';
 import { colors } from '@keen.io/colors';
 
@@ -9,12 +8,11 @@ import {
   Message,
   DefaultThumbnail,
 } from './Thumbnail.styles';
-
-import { APIContext } from '../../../../contexts';
+import Placeholder from '../Placeholder';
 
 type Props = {
   /** Dashboard identifer */
-  dashboardId: string;
+  dashboardId?: string;
   /** Default thumbnail indicator */
   useDefaultThumbnail?: boolean;
   /** Message for default thumbnail */
@@ -22,32 +20,13 @@ type Props = {
 };
 
 const Thumbnail: FC<Props> = ({
-  dashboardId,
   defaultThumbnailMessage,
-  useDefaultThumbnail = false,
+  useDefaultThumbnail,
 }) => {
-  const [image, setImage] = useState(null);
-  const [defaultThumbnail, setDefaultThumbnail] = useState(useDefaultThumbnail);
-  const { blobApi } = useContext(APIContext);
-
-  useEffect(() => {
-    if (!defaultThumbnail) {
-      blobApi
-        .getThumbnailByDashboardId(dashboardId)
-        .then((res) => {
-          if (res.status === OK) return res.text();
-          throw new Error();
-        })
-        .then((blobImage) => {
-          setImage(blobImage);
-        })
-        .catch(() => setDefaultThumbnail(true));
-    }
-  }, [dashboardId, defaultThumbnail]);
-
   return (
     <Container>
-      {defaultThumbnail ? (
+      <Gradient data-testid="thumbnail-gradient" />
+      {useDefaultThumbnail ? (
         <DefaultThumbnail data-testid="default-thumbnail">
           <Icon
             width={40}
@@ -59,9 +38,8 @@ const Thumbnail: FC<Props> = ({
           <Message>{defaultThumbnailMessage}</Message>
         </DefaultThumbnail>
       ) : (
-        <img data-testid="thumbnail-image" src={image} />
+        <Placeholder />
       )}
-      <Gradient />
     </Container>
   );
 };
