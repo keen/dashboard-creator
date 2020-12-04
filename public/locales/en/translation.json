@@ -6,10 +6,21 @@
     "public": "Public",
     "untitled_dashboard": "Untitled dashboard"
   },
+  "notifications": {
+    "dashboard_delete_success": "Dashboard removed",
+    "dashboard_delete_error": "We were not able to delete this dashboard. Try again later."
+  },
   "actions_menu": {
     "delete_dashboard": "Delete",
     "share_dashboard": "Share",
     "clone_dashboard": "Clone"
+  },
+  "delete_dashboard": {
+    "title": "Deleting dashboard",
+    "untitled_dashboard": "Untitled Dashboard",
+    "message": "Do you want to permanently delete dashboard {{name}} from your project?",
+    "confirm": "Delete",
+    "cancel": "Cancel"
   },
   "dashboard_management": {
     "title": "Dashboards",

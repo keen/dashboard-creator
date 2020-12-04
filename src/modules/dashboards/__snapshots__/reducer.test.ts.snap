@@ -2,6 +2,10 @@
 
 exports[`add widget to dashboard 1`] = `
 Object {
+  "deleteConfirmation": Object {
+    "dashboardId": null,
+    "isVisible": false,
+  },
   "items": Object {
     "@dashboard/01": Object {
       "initialized": true,
@@ -34,6 +38,10 @@ Object {
 
 exports[`removes widget from dashboard 1`] = `
 Object {
+  "deleteConfirmation": Object {
+    "dashboardId": null,
+    "isVisible": false,
+  },
   "items": Object {
     "@dashboard/01": Object {
       "initialized": true,

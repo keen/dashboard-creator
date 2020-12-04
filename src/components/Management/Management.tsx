@@ -8,6 +8,7 @@ import CreateFirstDashboard from '../CreateFirstDashboard';
 import DashboardsList from '../DashboardsList';
 import DashboardsPlaceholder from '../DashboardsPlaceholder';
 import ManagementNavigation from '../ManagementNavigation';
+import DashboardDeleteConfirmation from '../DashboardDeleteConfirmation';
 
 import {
   createDashboard,
@@ -49,6 +50,7 @@ const Management: FC<Props> = () => {
             dashboards={dashboards}
           />
         )}
+        <DashboardDeleteConfirmation />
         <CreateFirstDashboard
           onClick={createDashbord}
           isVisible={isEmptyProject}

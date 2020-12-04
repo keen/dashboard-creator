@@ -33,6 +33,10 @@ const render = (storeState: any = {}, overProps: any = {}) => {
 
   const state = {
     dashboards: {
+      deleteConfirmation: {
+        isVisible: false,
+        dashboardId: null,
+      },
       metadata: {
         isInitiallyLoaded: false,
         error: null,
@@ -60,6 +64,10 @@ const render = (storeState: any = {}, overProps: any = {}) => {
 test('renders notification about creating first dashboard in project', async () => {
   const storeState = {
     dashboards: {
+      deleteConfirmation: {
+        isVisible: false,
+        dashboardId: null,
+      },
       metadata: {
         isInitiallyLoaded: true,
         error: null,
@@ -87,6 +95,10 @@ test('renders dashboards loading placeholder', () => {
 test('renders dashboards grid', () => {
   const storeState = {
     dashboards: {
+      deleteConfirmation: {
+        isVisible: false,
+        dashboardId: null,
+      },
       metadata: {
         isInitiallyLoaded: true,
         error: null,

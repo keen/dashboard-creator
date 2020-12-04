@@ -26,6 +26,10 @@ export type DashboardItem = {
 };
 
 export type ReducerState = {
+  deleteConfirmation: {
+    isVisible: false;
+    dashboardId?: string;
+  };
   metadata: {
     isInitiallyLoaded: boolean;
     error: boolean;

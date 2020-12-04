@@ -5,7 +5,6 @@ import {
   Responsive,
   Layout as LayoutItem,
 } from 'react-grid-layout';
-import { screenBreakpoints } from '@keen.io/ui-core';
 
 import { Container } from './Grid.styles';
 import Widget, { DRAG_HANDLE_ELEMENT } from '../Widget';
@@ -57,8 +56,6 @@ const Grid: FC<Props> = ({
         onDragStop={onWidgetDrag}
         onResizeStop={onWidgetResize}
         onDrop={onWidgetDrop}
-        breakpoints={screenBreakpoints}
-        cols={{ xs: 12 }}
       >
         {widgets.map(({ id, position }) => (
           <div key={id} data-grid={{ ...position, i: id, static: false }}>
