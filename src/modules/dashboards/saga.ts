@@ -7,6 +7,7 @@ import {
   getContext,
 } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
+import deepmerge from 'deepmerge';
 
 import {
   fetchDashboardListSuccess,
@@ -30,6 +31,7 @@ import {
   getDashboardSettings,
   getDashboardsMetadata,
 } from './selectors';
+import { getBaseTheme, getDashboardTheme } from '../theme/selectors';
 
 import { setActiveDashboard } from '../app';
 import {
@@ -37,6 +39,7 @@ import {
   registerWidgets,
   getWidgetSettings,
 } from '../widgets';
+import { removeDashboardTheme, updateDashboardTheme } from '../theme';
 
 import { BLOB_API, NOTIFICATION_MANAGER, ROUTES } from '../../constants';
 import {
@@ -74,11 +77,14 @@ export function* saveDashboard({
 
   try {
     const dashboard: Dashboard = yield getDashboardSettings(state, dashboardId);
+    const baseTheme = yield getBaseTheme(state);
+    const dashboardTheme = yield getDashboardTheme(state, dashboardId);
     const serializedDashboard = {
       ...dashboard,
       widgets: dashboard.widgets.map((widgetId) =>
         getWidgetSettings(state, widgetId)
       ),
+      baseTheme: deepmerge(baseTheme, dashboardTheme),
     };
 
     const dashboardsMeta = yield select(getDashboardsMetadata);
@@ -137,6 +143,7 @@ export function* deleteDashboard({
       yield blobApi.deleteDashboard(dashboardId);
 
       yield put(deregisterDashboard(dashboardId));
+      yield put(removeDashboardTheme(dashboardId));
       yield notificationManager.showNotification({
         type: 'info',
         message: 'notifications.dashboard_delete_success',
@@ -173,10 +180,11 @@ export function* editDashboard({
         dashboardId
       );
       const serializedDashboard = serializeDashboard(responseBody);
-      const { widgets } = responseBody;
+      const { widgets, baseTheme } = responseBody;
 
       yield put(registerWidgets(widgets));
       yield put(updateDashboard(dashboardId, serializedDashboard));
+      yield put(updateDashboardTheme(dashboardId, baseTheme));
 
       yield put(
         initializeDashboardWidgetsAction(

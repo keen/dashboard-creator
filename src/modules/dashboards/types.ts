@@ -1,3 +1,4 @@
+import { Theme } from '@keen.io/charts';
 import { Widget } from '../widgets';
 
 export type DashboardMetaData = {
@@ -13,11 +14,13 @@ export type DashboardMetaData = {
 export type DashboardModel = {
   version: string;
   widgets: Widget[];
+  baseTheme?: Partial<Theme>;
 };
 
 export type Dashboard = {
   version: string;
   widgets: string[];
+  // baseTheme?: Partial<Theme>;
 };
 
 export type DashboardItem = {

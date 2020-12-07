@@ -49,6 +49,7 @@
     "@keen.io/widget-picker": "^1.2.31",
     "@reduxjs/toolkit": "^1.4.0",
     "connected-react-router": "^6.8.0",
+    "deepmerge": "^4.2.2",
     "dom-to-image": "^2.6.0",
     "framer-motion": "^1.11.1",
     "history": "^4.10.1",
