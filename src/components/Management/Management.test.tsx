@@ -144,3 +144,33 @@ test('allows user to search dashboards based on phrase', () => {
   expect(getByText('Dashboard 1')).toBeInTheDocument();
   expect(dashboardItems.length).toEqual(1);
 });
+
+test('renders empty search results message', () => {
+  const storeState = {
+    dashboards: {
+      deleteConfirmation: {
+        isVisible: false,
+        dashboardId: null,
+      },
+      metadata: {
+        isInitiallyLoaded: true,
+        error: null,
+        data: dashboardsMeta,
+      },
+    },
+  };
+
+  const {
+    wrapper: { container, getByText, queryAllByTestId },
+  } = render(storeState);
+
+  const searchInput = container.querySelector('input[type="text"]');
+  fireEvent.change(searchInput, { target: { value: 'Empty search' } });
+
+  const dashboardItems = queryAllByTestId('dashboard-item');
+
+  expect(
+    getByText('dashboard_management.empty_search_results')
+  ).toBeInTheDocument();
+  expect(dashboardItems.length).toEqual(0);
+});
