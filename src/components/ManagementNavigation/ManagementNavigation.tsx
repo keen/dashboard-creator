@@ -3,9 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@keen.io/ui-core';
 
 import {
-  Container,
   ButtonMotion,
-  TopBar,
+  Container,
   Heading,
   Message,
 } from './ManagementNavigation.styles';
@@ -29,18 +28,16 @@ const ManagementNavigation: FC<Props> = ({
   const buttonMotion = attractNewDashboardButton ? pulseMotion : {};
 
   return (
-    <Container>
-      <TopBar flexDirection={{ xs: 'column', md: 'row' }}>
-        <Heading marginBottom={{ xs: 20, md: 0 }} marginRight={{ md: 10 }}>
-          <Title>{t('dashboard_management.title')}</Title>
-          <Message>{t('dashboard_management.description')}</Message>
-        </Heading>
-        <ButtonMotion {...buttonMotion}>
-          <Button variant="success" onClick={onCreateDashboard}>
-            {t('dashboard_management.create_dashboard')}
-          </Button>
-        </ButtonMotion>
-      </TopBar>
+    <Container flexDirection={{ xs: 'column', md: 'row' }}>
+      <Heading marginBottom={{ xs: 20, md: 0 }} marginRight={{ md: 10 }}>
+        <Title>{t('dashboard_management.title')}</Title>
+        <Message>{t('dashboard_management.description')}</Message>
+      </Heading>
+      <ButtonMotion {...buttonMotion}>
+        <Button variant="success" onClick={onCreateDashboard}>
+          {t('dashboard_management.create_dashboard')}
+        </Button>
+      </ButtonMotion>
     </Container>
   );
 };

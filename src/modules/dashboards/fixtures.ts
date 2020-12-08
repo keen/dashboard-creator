@@ -1,6 +1,6 @@
 import { DashboardMetaData } from './types';
 
-export const dashbordsMeta: DashboardMetaData[] = [
+export const dashboardsMeta: DashboardMetaData[] = [
   {
     id: '@dashboard/01',
     widgets: 5,
@@ -15,6 +15,15 @@ export const dashbordsMeta: DashboardMetaData[] = [
     widgets: 0,
     queries: 2,
     title: 'Dashboard 2',
+    tags: [],
+    lastModificationDate: 1606895352390,
+    isPublic: true,
+  },
+  {
+    id: '@dashboard/03',
+    widgets: 0,
+    queries: 0,
+    title: null,
     tags: [],
     lastModificationDate: 1606895352390,
     isPublic: true,

@@ -1,11 +1,15 @@
 /* eslint-disable react/display-name */
 import React, { forwardRef } from 'react';
-import { render as rtlRender, waitFor } from '@testing-library/react';
+import {
+  render as rtlRender,
+  waitFor,
+  fireEvent,
+} from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 
 import Management from './Management';
-import { dashbordsMeta } from '../../modules/dashboards/fixtures';
+import { dashboardsMeta } from '../../modules/dashboards/fixtures';
 
 jest.mock('framer-motion', () => {
   const AnimatePresence = jest.fn(({ children }) => children);
@@ -102,7 +106,7 @@ test('renders dashboards grid', () => {
       metadata: {
         isInitiallyLoaded: true,
         error: null,
-        data: dashbordsMeta,
+        data: dashboardsMeta,
       },
     },
   };
@@ -111,4 +115,32 @@ test('renders dashboards grid', () => {
   } = render(storeState);
 
   expect(getByTestId('dashboards-grid')).toBeInTheDocument();
+});
+
+test('allows user to search dashboards based on phrase', () => {
+  const storeState = {
+    dashboards: {
+      deleteConfirmation: {
+        isVisible: false,
+        dashboardId: null,
+      },
+      metadata: {
+        isInitiallyLoaded: true,
+        error: null,
+        data: dashboardsMeta,
+      },
+    },
+  };
+
+  const {
+    wrapper: { container, getByText, getAllByTestId },
+  } = render(storeState);
+
+  const searchInput = container.querySelector('input[type="text"]');
+  fireEvent.change(searchInput, { target: { value: 'Dashboard 1' } });
+
+  const dashboardItems = getAllByTestId('dashboard-item');
+
+  expect(getByText('Dashboard 1')).toBeInTheDocument();
+  expect(dashboardItems.length).toEqual(1);
 });

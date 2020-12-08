@@ -16,7 +16,6 @@ import {
   updateWidgetsPosition,
   WidgetsPosition,
 } from '../../modules/widgets';
-import { createDashboardThumbnail } from '../../modules/thumbnails';
 import { setActiveDashboard } from '../../modules/app';
 
 import EditorNavigation from '../EditorNavigation';
@@ -82,7 +81,6 @@ const Editor: FC<Props> = ({ dashboardId }) => {
           <div
             onClick={() => {
               dispatch(saveDashboard(dashboardId));
-              dispatch(createDashboardThumbnail(dashboardId));
             }}
           >
             {t('dashboard_editor.save')}

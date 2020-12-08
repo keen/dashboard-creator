@@ -8,7 +8,7 @@ import {
   fetchDashboardListSuccess,
 } from './actions';
 
-import { dashbordsMeta } from './fixtures';
+import { dashboardsMeta } from './fixtures';
 
 test('register a new dashboard', () => {
   const action = registerDashboard('@dashboard/01');
@@ -128,7 +128,7 @@ test('removes widget from dashboard', () => {
 });
 
 test('serializes dashboards metadata', () => {
-  const action = fetchDashboardListSuccess(dashbordsMeta);
+  const action = fetchDashboardListSuccess(dashboardsMeta);
   const { metadata } = dashboardsReducer(initialState, action);
 
   expect(metadata).toMatchInlineSnapshot(`
@@ -150,6 +150,15 @@ test('serializes dashboards metadata', () => {
           "queries": 2,
           "tags": Array [],
           "title": "Dashboard 2",
+          "widgets": 0,
+        },
+        Object {
+          "id": "@dashboard/03",
+          "isPublic": true,
+          "lastModificationDate": 1606895352390,
+          "queries": 0,
+          "tags": Array [],
+          "title": null,
           "widgets": 0,
         },
       ],
