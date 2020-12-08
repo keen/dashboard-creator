@@ -1,9 +1,11 @@
 import React, { FC, useCallback, useRef } from 'react';
 import ReactDOM from 'react-dom';
+import { useTranslation } from 'react-i18next';
 
 import { Container } from './Toolbar.styles';
 
 import ChartDragGhost from '../ChartDragGhost';
+import WidgetItem from '../WidgetItem';
 
 type Props = {
   /** Widget drag event handler */
@@ -11,6 +13,7 @@ type Props = {
 };
 
 const Toolbar: FC<Props> = ({ onWidgetDrag }) => {
+  const { t } = useTranslation();
   const dragGhostElement = useRef<HTMLDivElement>(null);
   const dragEndHandler = useCallback(() => {
     if (dragGhostElement.current) dragGhostElement.current.remove();
@@ -42,7 +45,7 @@ const Toolbar: FC<Props> = ({ onWidgetDrag }) => {
         onDragStart={dragStartHandler}
         onDragEnd={dragEndHandler}
       >
-        Chart
+        <WidgetItem icon="bar-widget-vertical" text={t('widget_item.chart')} />
       </div>
       <div
         draggable
