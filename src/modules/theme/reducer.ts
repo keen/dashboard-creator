@@ -1,19 +1,19 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import deepmerge from 'deepmerge';
 import { ThemeActions } from './actions';
 
 import {
   SET_BASE_THEME,
   UPDATE_BASE_THEME,
-  RESET_BASE_THEME,
-  UPDATE_DASHBOARD_THEME,
+  SET_DASHBOARD_THEME,
   REMOVE_DASHBOARD_THEME,
 } from './constants';
 
 import { ReducerState } from './types';
 
-const initialState: ReducerState = {
+export const initialState: ReducerState = {
   base: {},
-  dashboards: [],
+  dashboards: {},
 };
 
 const themeReducer = (
@@ -33,12 +33,7 @@ const themeReducer = (
         ...state,
         base: deepmerge(state.base, action.payload.theme),
       };
-    case RESET_BASE_THEME:
-      return {
-        ...state,
-        base: {},
-      };
-    case UPDATE_DASHBOARD_THEME:
+    case SET_DASHBOARD_THEME:
       return {
         ...state,
         dashboards: {
@@ -47,11 +42,13 @@ const themeReducer = (
         },
       };
     case REMOVE_DASHBOARD_THEME:
+      const {
+        [action.payload.dashboardId]: _value,
+        ...dashboards
+      } = state.dashboards;
       return {
         ...state,
-        dashboards: state.dashboards.filter(
-          (dashboard) => !dashboard[action.payload.dashboardId]
-        ),
+        dashboards,
       };
     default:
       return state;

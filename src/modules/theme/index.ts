@@ -2,8 +2,7 @@ import themeReducer from './reducer';
 import {
   setBaseTheme,
   updateBaseTheme,
-  resetBaseTheme,
-  updateDashboardTheme,
+  setDashboardTheme,
   removeDashboardTheme,
 } from './actions';
 
@@ -14,8 +13,7 @@ export {
   themeReducer,
   setBaseTheme,
   updateBaseTheme,
-  resetBaseTheme,
-  updateDashboardTheme,
+  setDashboardTheme,
   removeDashboardTheme,
   getBaseTheme,
   getDashboardTheme,

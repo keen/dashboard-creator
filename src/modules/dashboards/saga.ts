@@ -39,7 +39,7 @@ import {
   registerWidgets,
   getWidgetSettings,
 } from '../widgets';
-import { removeDashboardTheme, updateDashboardTheme } from '../theme';
+import { removeDashboardTheme, setDashboardTheme } from '../theme';
 
 import { BLOB_API, NOTIFICATION_MANAGER, ROUTES } from '../../constants';
 import {
@@ -179,12 +179,13 @@ export function* editDashboard({
       const responseBody: DashboardModel = yield blobApi.getDashboardById(
         dashboardId
       );
-      const serializedDashboard = serializeDashboard(responseBody);
-      const { widgets, baseTheme } = responseBody;
+      const { baseTheme, ...dashboard } = responseBody;
+      const serializedDashboard = serializeDashboard(dashboard);
+      const { widgets } = responseBody;
 
       yield put(registerWidgets(widgets));
       yield put(updateDashboard(dashboardId, serializedDashboard));
-      yield put(updateDashboardTheme(dashboardId, baseTheme));
+      yield put(setDashboardTheme(dashboardId, baseTheme));
 
       yield put(
         initializeDashboardWidgetsAction(

@@ -1,4 +1,5 @@
 import { createAction } from '@reduxjs/toolkit';
+import { Theme } from '@keen.io/charts';
 
 import {
   APP_START,
@@ -7,7 +8,14 @@ import {
   HIDE_QUERY_PICKER,
 } from './constants';
 
-export const appStart = createAction(APP_START);
+export const appStart = createAction(
+  APP_START,
+  (baseTheme: Partial<Theme>) => ({
+    payload: {
+      baseTheme,
+    },
+  })
+);
 
 export const showQueryPicker = createAction(SHOW_QUERY_PICKER);
 

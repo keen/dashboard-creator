@@ -16,7 +16,6 @@ import { APIContext, AppContext } from './contexts';
 import { BlobAPI } from './api';
 import { appStart } from './modules/app';
 import { NotificationManager } from './modules/notifications';
-import { setBaseTheme } from './modules/theme';
 
 import createI18n from './i18n';
 import rootReducer, { history } from './rootReducer';
@@ -102,11 +101,7 @@ export class DashboardCreator {
     });
 
     sagaMiddleware.run(rootSaga);
-    store.dispatch(appStart());
-
-    if (Object.entries(this.themeSettings).length > 0) {
-      store.dispatch(setBaseTheme(this.themeSettings));
-    }
+    store.dispatch(appStart(this.themeSettings));
 
     ReactDOM.render(
       <Provider store={store}>
