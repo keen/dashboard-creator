@@ -8,6 +8,7 @@ import { Container, DeleteDashboard } from './ActionsMenu.styles';
 import {
   cloneDashboard,
   shareDashboard,
+  editDashboard,
   deleteDashboard,
 } from '../../../../modules/dashboards';
 
@@ -34,6 +35,14 @@ const ActionsMenu: FC<Props> = ({ dashboardId, onClose }) => {
           {t('actions_menu.share_dashboard')}
         </DropdownMenu.Item>
         <DropdownMenu.Divider />
+        <DropdownMenu.Item
+          onClick={() => {
+            onClose();
+            dispatch(editDashboard(dashboardId));
+          }}
+        >
+          {t('actions_menu.edit_dashboard')}
+        </DropdownMenu.Item>
         <DropdownMenu.Item
           onClick={() => {
             onClose();

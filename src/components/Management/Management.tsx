@@ -20,7 +20,7 @@ import DashboardDeleteConfirmation from '../DashboardDeleteConfirmation';
 
 import {
   createDashboard,
-  editDashboard,
+  viewDashboard,
   getDashboardsList,
   getDashboardsLoadState,
 } from '../../modules/dashboards';
@@ -80,7 +80,7 @@ const Management: FC<Props> = () => {
           <DashboardsPlaceholder />
         ) : (
           <DashboardsList
-            onPreviewDashboard={(id) => dispatch(editDashboard(id))}
+            onPreviewDashboard={(id) => dispatch(viewDashboard(id))}
             onShowDashboardSettings={() => {
               console.log('onShowDashboardSettings');
             }}

@@ -13,6 +13,7 @@
   "actions_menu": {
     "delete_dashboard": "Delete",
     "share_dashboard": "Share",
+    "edit_dashboard": "Edit",
     "clone_dashboard": "Clone"
   },
   "delete_dashboard": {
