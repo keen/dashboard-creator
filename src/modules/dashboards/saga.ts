@@ -72,8 +72,6 @@ export function* saveDashboard({
   const { dashboardId } = payload;
   const state: RootState = yield select();
 
-  console.log('SAVE!');
-
   try {
     const dashboard: Dashboard = yield getDashboardSettings(state, dashboardId);
     const serializedDashboard = {
@@ -100,7 +98,6 @@ export function* saveDashboard({
       updatedMetadata
     );
   } catch (err) {
-    console.log('err', err);
     console.error(err);
   }
 }
