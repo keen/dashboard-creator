@@ -8,6 +8,7 @@ export const Container = styled.div`
   border-radius: 4px;
   display: flex;
   align-items: center;
+  margin-right: 10px;
 `;
 
 export const IconWrapper = styled.div`

@@ -54,7 +54,37 @@ const Toolbar: FC<Props> = ({ onWidgetDrag }) => {
         onDragStart={dragStartHandler}
         onDragEnd={dragEndHandler}
       >
-        Text
+        <WidgetItem icon="text" text={t('widget_item.text')} />
+      </div>
+      <div
+        draggable
+        unselectable="on"
+        data-widget-type="visualization"
+        onDragStart={dragStartHandler}
+        onDragEnd={dragEndHandler}
+      >
+        <WidgetItem icon="image" text={t('widget_item.image')} />
+      </div>
+      <div
+        draggable
+        unselectable="on"
+        data-widget-type="visualization"
+        onDragStart={dragStartHandler}
+        onDragEnd={dragEndHandler}
+      >
+        <WidgetItem
+          icon="funnel-widget-vertical"
+          text={t('widget_item.filter')}
+        />
+      </div>
+      <div
+        draggable
+        unselectable="on"
+        data-widget-type="visualization"
+        onDragStart={dragStartHandler}
+        onDragEnd={dragEndHandler}
+      >
+        <WidgetItem icon="date-picker" text={t('widget_item.date_picker')} />
       </div>
     </Container>
   );

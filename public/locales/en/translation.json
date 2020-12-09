@@ -44,6 +44,13 @@
   },
   "widget_item": {
     "chart": "Chart",
-    "filter": "Filter"
+    "date_picker": "Date picker",
+    "filter": "Filter",
+    "image": "Image",
+    "text": "Text"
+  },
+  "editor_bar": {
+    "finish_edition": "Finish Edition",
+    "saved": "Saved"
   }
 }

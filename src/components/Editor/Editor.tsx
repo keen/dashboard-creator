@@ -22,6 +22,7 @@ import EditorNavigation from '../EditorNavigation';
 import QueryPickerModal from '../QueryPickerModal';
 import DashboardDeleteConfirmation from '../DashboardDeleteConfirmation';
 import Toolbar from '../Toolbar';
+import EditorBar from '../EditorBar';
 import Grid from '../Grid';
 
 import { ROUTES } from '../../constants';
@@ -75,7 +76,16 @@ const Editor: FC<Props> = ({ dashboardId }) => {
           dispatch(push(ROUTES.MANAGEMENT));
         }}
       />
-      <Toolbar onWidgetDrag={(widgetType) => setDroppableWidget(widgetType)} />
+      <EditorBar
+        isSaving={false}
+        onFinishEdit={() => ({})}
+        lastSaveTime={1607525787826}
+      >
+        <Toolbar
+          onWidgetDrag={(widgetType) => setDroppableWidget(widgetType)}
+        />
+      </EditorBar>
+
       {isInitialized ? (
         <>
           <div
