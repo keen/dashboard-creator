@@ -30,4 +30,8 @@ export const Message = styled.div`
   line-height: 26px;
   font-family: 'Lato Regular', sans-serif;
   color: ${colors.black[400]};
+
+  strong {
+    font-family: 'Lato Bold', sans-serif;
+  }
 `;
