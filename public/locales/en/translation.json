@@ -41,5 +41,9 @@
   },
   "widget": {
     "remove": "Remove"
+  },
+  "widget_item": {
+    "chart": "Chart",
+    "filter": "Filter"
   }
 }
