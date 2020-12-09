@@ -70,6 +70,27 @@ test('allows user to clone dashbord', () => {
   `);
 });
 
+test('allows user to edit dashbord', () => {
+  const {
+    wrapper: { getByText },
+    store,
+  } = render();
+
+  const cloneLink = getByText('actions_menu.edit_dashboard');
+  fireEvent.click(cloneLink);
+
+  expect(store.getActions()).toMatchInlineSnapshot(`
+    Array [
+      Object {
+        "payload": Object {
+          "dashboardId": "@dashboard/id",
+        },
+        "type": "@dashboards/EDIT_DASHBOARD",
+      },
+    ]
+  `);
+});
+
 test('allows user to share dashbord', () => {
   const {
     wrapper: { getByText },
