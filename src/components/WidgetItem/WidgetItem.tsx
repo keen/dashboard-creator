@@ -11,11 +11,9 @@ type Props = {
 const WidgetItem: FC<Props> = ({ icon, text }) => {
   return (
     <Container>
-      {icon && (
-        <IconWrapper>
-          <Icon type={icon} fill={colors.black[100]} />
-        </IconWrapper>
-      )}
+      <IconWrapper>
+        {icon && <Icon type={icon} fill={colors.black[100]} />}
+      </IconWrapper>
       <TextWrapper>{text}</TextWrapper>
     </Container>
   );

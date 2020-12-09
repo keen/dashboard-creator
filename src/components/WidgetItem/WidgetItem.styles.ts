@@ -4,7 +4,7 @@ import { colors } from '@keen.io/colors';
 export const Container = styled.div`
   box-sizing: border-box;
   height: 37px;
-  border: 1px dashed #cdcfd3;
+  border: 1px dashed ${colors.gray[500]};
   border-radius: 4px;
   display: flex;
   align-items: center;
