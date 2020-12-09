@@ -53,7 +53,7 @@ const DashboardDeleteConfirmation: FC<Props> = () => {
     >
       {(_, closeHandler) => (
         <>
-          <ModalHeader>
+          <ModalHeader onClose={closeHandler}>
             <Title>{t('delete_dashboard.title')}</Title>
           </ModalHeader>
           <Content data-testid="delete-confirmation-content">

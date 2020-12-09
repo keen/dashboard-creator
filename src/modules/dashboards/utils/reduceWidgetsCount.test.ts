@@ -1,11 +1,11 @@
 import reduceWidgetsCount from './reduceWidgetsCount';
 
-import { dashbordsMeta } from '../fixtures';
+import { dashboardsMeta } from '../fixtures';
 
 test('increase the number of widgets for specific dashboard', () => {
   const [dashboard] = reduceWidgetsCount(
     '@dashboard/01',
-    dashbordsMeta,
+    dashboardsMeta,
     'increase'
   );
   const { widgets } = dashboard;
@@ -16,7 +16,7 @@ test('increase the number of widgets for specific dashboard', () => {
 test('decrease the number of widgets for specific dashboard', () => {
   const [dashboard] = reduceWidgetsCount(
     '@dashboard/01',
-    dashbordsMeta,
+    dashboardsMeta,
     'decrease'
   );
   const { widgets } = dashboard;

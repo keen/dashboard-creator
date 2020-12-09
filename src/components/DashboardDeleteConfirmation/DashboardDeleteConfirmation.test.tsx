@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 
 import DashboardDeleteConfirmation from './DashboardDeleteConfirmation';
-import { dashbordsMeta } from '../../modules/dashboards/fixtures';
+import { dashboardsMeta } from '../../modules/dashboards/fixtures';
 
 const render = (storeState: any = {}, overProps: any = {}) => {
   const props = {
@@ -20,7 +20,7 @@ const render = (storeState: any = {}, overProps: any = {}) => {
       metadata: {
         isInitiallyLoaded: true,
         error: null,
-        data: dashbordsMeta,
+        data: dashboardsMeta,
       },
     },
     ...storeState,
@@ -60,7 +60,7 @@ test('allows user to confirm dashboard delete', () => {
       metadata: {
         isInitiallyLoaded: true,
         error: null,
-        data: dashbordsMeta,
+        data: dashboardsMeta,
       },
     },
   };
@@ -92,7 +92,7 @@ test('allows user to cancel dashboard delete', () => {
       metadata: {
         isInitiallyLoaded: true,
         error: null,
-        data: dashbordsMeta,
+        data: dashboardsMeta,
       },
     },
   };

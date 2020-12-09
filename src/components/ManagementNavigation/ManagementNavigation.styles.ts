@@ -9,11 +9,7 @@ import { transparentize } from 'polished';
 import { motion } from 'framer-motion';
 import { colors } from '@keen.io/colors';
 
-export const Container = styled.div`
-  padding: 30px 0;
-`;
-
-export const TopBar = styled.div<FlexDirectionProps>`
+export const Container = styled.div<FlexDirectionProps>`
   display: flex;
   align-items: center;
   ${flexDirection};
