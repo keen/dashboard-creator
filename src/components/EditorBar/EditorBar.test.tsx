@@ -5,7 +5,7 @@ import EditorBar from './EditorBar';
 
 const render = (overProps: any = {}) => {
   const props = {
-    onFinishEdit: () => ({}),
+    onFinishEdit: jest.fn(),
     lastSaveTime: null,
     isSaving: false,
     ...overProps,
@@ -38,26 +38,26 @@ describe('EditorBar', () => {
   });
 
   describe('isSaving set to true', () => {
-    test('it renders "Is saving..." text', () => {
+    test('it renders editor_bar.is_saving text', () => {
       const {
         wrapper: { getByText },
       } = render({ isSaving: true });
 
       expect(getByText('Children Element')).toBeInTheDocument();
-      expect(getByText('Is saving...')).toBeInTheDocument();
+      expect(getByText('editor_bar.is_saving')).toBeInTheDocument();
     });
   });
 
   describe('finish edition function', () => {
     test('it triggers correctly', () => {
-      let result = 1;
       const {
         wrapper: { getByText },
-      } = render({ onFinishEdit: () => (result = 10) });
+        props,
+      } = render();
 
       const finishButton = getByText(`editor_bar.finish_edition`);
       fireEvent.click(finishButton);
-      expect(result).toBe(10);
+      expect(props.onFinishEdit).toHaveBeenCalled();
     });
   });
 });

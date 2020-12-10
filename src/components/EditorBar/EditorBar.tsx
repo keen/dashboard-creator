@@ -1,9 +1,9 @@
-import React, { FC, ReactNode } from 'react';
-import { Container, ConfirmButton, ChildrenWrapper } from './EditorBar.styles';
+import React, { FC, ReactNode, useMemo } from 'react';
+import { Container, ChildrenWrapper, TimeAgo, Right } from './EditorBar.styles';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
-import SquareButton from '../shared/buttons/SubmitButton';
+import SubmitButton from '../SubmitButton';
 
 type Props = {
   onFinishEdit: () => void;
@@ -19,27 +19,24 @@ const EditorBar: FC<Props> = ({
   children,
 }) => {
   const { t } = useTranslation();
-  const timeAgo =
-    lastSaveTime &&
-    `${t('editor_bar.saved')} ${moment(lastSaveTime).fromNow()}`;
+  const timeAgo = useMemo(
+    () =>
+      lastSaveTime &&
+      `${t('editor_bar.saved')} ${moment(lastSaveTime).fromNow()}`,
+    [lastSaveTime]
+  );
 
   return (
     <Container>
       <ChildrenWrapper>{children}</ChildrenWrapper>
 
-      <div className="right">
-        <div className="timeAgo">{isSaving ? 'Is saving...' : timeAgo}</div>
+      <Right>
+        <TimeAgo>{isSaving ? t('editor_bar.is_saving') : timeAgo}</TimeAgo>
 
-        <ConfirmButton>
-          <SquareButton
-            text={t('editor_bar.finish_edition')}
-            onClick={onFinishEdit}
-            styles={{
-              height: '47px',
-            }}
-          />
-        </ConfirmButton>
-      </div>
+        <SubmitButton onClick={onFinishEdit}>
+          {t('editor_bar.finish_edition')}
+        </SubmitButton>
+      </Right>
     </Container>
   );
 };

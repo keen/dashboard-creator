@@ -51,6 +51,7 @@
   },
   "editor_bar": {
     "finish_edition": "Finish Edition",
-    "saved": "Saved"
+    "saved": "Saved",
+    "is_saving": "Is saving..."
   }
 }

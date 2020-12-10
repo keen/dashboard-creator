@@ -6,6 +6,7 @@ import { Container } from './Toolbar.styles';
 
 import ChartDragGhost from '../ChartDragGhost';
 import WidgetItem from '../WidgetItem';
+import { IconType } from '@keen.io/icons';
 
 type Props = {
   /** Widget drag event handler */
@@ -36,56 +37,27 @@ const Toolbar: FC<Props> = ({ onWidgetDrag }) => {
     [onWidgetDrag]
   );
 
+  const item = (type: string, icon: IconType, text: string): JSX.Element => {
+    return (
+      <div
+        draggable
+        unselectable="on"
+        data-widget-type={type}
+        onDragStart={dragStartHandler}
+        onDragEnd={dragEndHandler}
+      >
+        <WidgetItem icon={icon} text={text} />
+      </div>
+    );
+  };
+
   return (
     <Container>
-      <div
-        draggable
-        unselectable="on"
-        data-widget-type="visualization"
-        onDragStart={dragStartHandler}
-        onDragEnd={dragEndHandler}
-      >
-        <WidgetItem icon="bar-widget-vertical" text={t('widget_item.chart')} />
-      </div>
-      <div
-        draggable
-        unselectable="on"
-        data-widget-type="text"
-        onDragStart={dragStartHandler}
-        onDragEnd={dragEndHandler}
-      >
-        <WidgetItem icon="text" text={t('widget_item.text')} />
-      </div>
-      <div
-        draggable
-        unselectable="on"
-        data-widget-type="visualization"
-        onDragStart={dragStartHandler}
-        onDragEnd={dragEndHandler}
-      >
-        <WidgetItem icon="image" text={t('widget_item.image')} />
-      </div>
-      <div
-        draggable
-        unselectable="on"
-        data-widget-type="visualization"
-        onDragStart={dragStartHandler}
-        onDragEnd={dragEndHandler}
-      >
-        <WidgetItem
-          icon="funnel-widget-vertical"
-          text={t('widget_item.filter')}
-        />
-      </div>
-      <div
-        draggable
-        unselectable="on"
-        data-widget-type="visualization"
-        onDragStart={dragStartHandler}
-        onDragEnd={dragEndHandler}
-      >
-        <WidgetItem icon="date-picker" text={t('widget_item.date_picker')} />
-      </div>
+      {item('visualization', 'bar-widget-vertical', t('widget_item.chart'))}
+      {item('text', 'text', t('widget_item.text'))}
+      {item('visualization', 'image', t('widget_item.image'))}
+      {item('visualization', 'funnel-widget-vertical', t('widget_item.filter'))}
+      {item('visualization', 'date-picker', t('widget_item.date_picker'))}
     </Container>
   );
 };
