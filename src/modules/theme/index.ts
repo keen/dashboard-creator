@@ -1,7 +1,6 @@
 import themeReducer from './reducer';
 import {
   setBaseTheme,
-  updateBaseTheme,
   setDashboardTheme,
   removeDashboardTheme,
 } from './actions';
@@ -12,7 +11,6 @@ import { SET_BASE_THEME } from './constants';
 export {
   themeReducer,
   setBaseTheme,
-  updateBaseTheme,
   setDashboardTheme,
   removeDashboardTheme,
   getBaseTheme,

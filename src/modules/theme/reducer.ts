@@ -1,10 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import deepmerge from 'deepmerge';
 import { ThemeActions } from './actions';
 
 import {
   SET_BASE_THEME,
-  UPDATE_BASE_THEME,
   SET_DASHBOARD_THEME,
   REMOVE_DASHBOARD_THEME,
 } from './constants';
@@ -24,14 +22,7 @@ const themeReducer = (
     case SET_BASE_THEME:
       return {
         ...state,
-        base: {
-          ...action.payload.theme,
-        },
-      };
-    case UPDATE_BASE_THEME:
-      return {
-        ...state,
-        base: deepmerge(state.base, action.payload.theme),
+        base: action.payload.theme,
       };
     case SET_DASHBOARD_THEME:
       return {

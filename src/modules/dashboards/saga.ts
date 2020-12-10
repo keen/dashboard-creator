@@ -7,7 +7,7 @@ import {
   getContext,
 } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
-import deepmerge from 'deepmerge';
+import { Theme } from '@keen.io/charts';
 
 import {
   fetchDashboardListSuccess,
@@ -77,14 +77,13 @@ export function* saveDashboard({
 
   try {
     const dashboard: Dashboard = yield getDashboardSettings(state, dashboardId);
-    const baseTheme = yield getBaseTheme(state);
     const dashboardTheme = yield getDashboardTheme(state, dashboardId);
     const serializedDashboard = {
       ...dashboard,
       widgets: dashboard.widgets.map((widgetId) =>
         getWidgetSettings(state, widgetId)
       ),
-      baseTheme: deepmerge(baseTheme, dashboardTheme),
+      baseTheme: dashboardTheme,
     };
 
     const dashboardsMeta = yield select(getDashboardsMetadata);
@@ -112,6 +111,9 @@ export function* createDashboard({
   payload,
 }: ReturnType<typeof createDashboardAction>) {
   const { dashboardId } = payload;
+  const state: RootState = yield select();
+
+  const baseTheme: Partial<Theme> = yield getBaseTheme(state);
   const serializedDashboard: Dashboard = {
     version: __APP_VERSION__,
     widgets: [],
@@ -119,6 +121,7 @@ export function* createDashboard({
 
   yield put(registerDashboard(dashboardId));
   yield put(updateDashboard(dashboardId, serializedDashboard));
+  yield put(setDashboardTheme(dashboardId, baseTheme));
 
   yield put(setActiveDashboard(dashboardId));
   yield put(push(ROUTES.EDITOR));
@@ -220,11 +223,14 @@ export function* viewDashboard({
       const responseBody: DashboardModel = yield blobApi.getDashboardById(
         dashboardId
       );
-      const serializedDashboard = serializeDashboard(responseBody);
+
+      const { baseTheme, ...dashboard } = responseBody;
+      const serializedDashboard = serializeDashboard(dashboard);
       const { widgets } = responseBody;
 
       yield put(registerWidgets(widgets));
       yield put(updateDashboard(dashboardId, serializedDashboard));
+      yield put(setDashboardTheme(dashboardId, baseTheme));
     } catch (err) {
       console.error(err);
     }

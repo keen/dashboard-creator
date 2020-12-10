@@ -1,11 +1,9 @@
-import deepmerge from 'deepmerge';
 import { Theme } from '@keen.io/charts';
 import themeReducer, { initialState } from './reducer';
 import { ReducerState } from './types';
 
 import {
   setBaseTheme,
-  updateBaseTheme,
   setDashboardTheme,
   removeDashboardTheme,
 } from './actions';
@@ -39,46 +37,6 @@ test('set base theme', () => {
   `);
 });
 
-test('update base theme', () => {
-  const updatedTheme = {
-    metric: {
-      value: {
-        typography: {
-          fontColor: 'blue',
-        },
-      },
-    },
-  } as Partial<Theme>;
-  const initialState = {
-    base: {
-      metric: {
-        value: {
-          typography: {
-            fontColor: 'red',
-            fontSize: 10,
-          },
-        },
-      },
-    },
-    dashboards: {},
-  } as ReducerState;
-  const action = updateBaseTheme(updatedTheme);
-  const { base } = themeReducer(initialState, action);
-
-  expect(base).toMatchInlineSnapshot(`
-    Object {
-      "metric": Object {
-        "value": Object {
-          "typography": Object {
-            "fontColor": "blue",
-            "fontSize": 10,
-          },
-        },
-      },
-    }
-  `);
-});
-
 test('set dashboard theme', () => {
   const dashboardId = '@dashboard/01';
   const action = setDashboardTheme(dashboardId, theme);
@@ -100,22 +58,37 @@ test('set dashboard theme', () => {
 
 test('remove dashboard theme', () => {
   const dashboardId = '@dashboard/01';
-  const dashboardsTheme = {
+  const state: ReducerState = {
+    base: {},
     dashboards: {
       [dashboardId]: {
         metric: {
+          prefix: null,
+          suffix: null,
+          caption: null,
+          excerpt: null,
           value: {
             typography: {
               fontColor: 'blue',
+              fontStyle: 'normal',
+              fontWeight: 'normal',
+              fontSize: 10,
             },
           },
         },
       },
       '@dashboard/02': {
         metric: {
+          prefix: null,
+          suffix: null,
+          caption: null,
+          excerpt: null,
           value: {
             typography: {
               fontColor: 'red',
+              fontStyle: 'normal',
+              fontWeight: 'normal',
+              fontSize: 12,
             },
           },
         },
@@ -123,17 +96,23 @@ test('remove dashboard theme', () => {
     },
   };
 
-  const updatedState = deepmerge(initialState, dashboardsTheme);
   const action = removeDashboardTheme(dashboardId);
-  const { dashboards } = themeReducer(updatedState, action);
+  const { dashboards } = themeReducer(state, action);
 
   expect(dashboards).toMatchInlineSnapshot(`
     Object {
       "@dashboard/02": Object {
         "metric": Object {
+          "caption": null,
+          "excerpt": null,
+          "prefix": null,
+          "suffix": null,
           "value": Object {
             "typography": Object {
               "fontColor": "red",
+              "fontSize": 12,
+              "fontStyle": "normal",
+              "fontWeight": "normal",
             },
           },
         },
