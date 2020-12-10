@@ -15,7 +15,7 @@ import CreateFirstDashboard from '../CreateFirstDashboard';
 import DashboardsList from '../DashboardsList';
 import DashboardsPlaceholder from '../DashboardsPlaceholder';
 import ManagementNavigation from '../ManagementNavigation';
-import SearchDashboard from '../SearchDashboard';
+import SearchInput from '../SearchInput';
 import DashboardDeleteConfirmation from '../DashboardDeleteConfirmation';
 
 import {
@@ -66,7 +66,7 @@ const Management: FC<Props> = () => {
         />
         <Filters>
           <Search>
-            <SearchDashboard
+            <SearchInput
               searchPhrase={searchPhrase}
               placeholder={t('dashboard_management.search_input_placeholder')}
               onChangePhrase={(phrase) => setSearchPhrase(phrase)}

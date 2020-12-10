@@ -1,13 +1,13 @@
 import { createAction } from '@reduxjs/toolkit';
-import { Query } from '@keen.io/parser';
+
+import { SavedQuery } from './types';
 
 import { SELECT_SAVED_QUERY } from './constants';
 
 export const selectSavedQuery = createAction(
   SELECT_SAVED_QUERY,
-  (queryName: string, query: Query) => ({
+  (query: SavedQuery) => ({
     payload: {
-      queryName,
       query,
     },
   })

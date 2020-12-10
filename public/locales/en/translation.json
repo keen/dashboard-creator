@@ -37,7 +37,10 @@
     "back": "Back"
   },
   "query_picker": {
-    "close": "Close"
+    "close": "Close",
+    "title": "What do you want to visualize?",
+    "search_query_placeholder": "Search saved query",
+    "empty_search_results": "No queries found with this criteria."
   },
   "widget": {
     "remove": "Remove"

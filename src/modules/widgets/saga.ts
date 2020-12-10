@@ -7,7 +7,6 @@ import {
   fork,
   getContext,
 } from 'redux-saga/effects';
-import { getAvailableWidgets } from '@keen.io/widget-picker';
 
 import {
   createWidget as createWidgetAction,
@@ -21,7 +20,7 @@ import {
 import { getWidgetSettings } from './selectors';
 
 import { removeWidgetFromDashboard } from '../dashboards';
-import { SELECT_SAVED_QUERY } from '../queries';
+import { SELECT_SAVED_QUERY, SavedQuery } from '../queries';
 import {
   getActiveDashboard,
   showQueryPicker,
@@ -85,13 +84,22 @@ function* visualizationWizard(widgetId: string) {
   if (action.type === HIDE_QUERY_PICKER) {
     yield cancelWidgetConfiguration(widgetId);
   } else if (action.type === SELECT_SAVED_QUERY) {
-    const { queryName, query } = action.payload;
-
-    const [defaultWidget] = getAvailableWidgets(query);
+    const {
+      query: {
+        id: queryId,
+        visualization: { type: widgetType, chartSettings, widgetSettings },
+      },
+    } = action.payload as { query: SavedQuery };
 
     yield put(hideQueryPicker());
     yield put(
-      finishChartWidgetConfiguration(widgetId, queryName, defaultWidget, {}, {})
+      finishChartWidgetConfiguration(
+        widgetId,
+        queryId,
+        widgetType,
+        chartSettings,
+        widgetSettings
+      )
     );
     yield put(initializeChartWidgetAction(widgetId));
   }

@@ -1480,7 +1480,7 @@
     react "^16.12.0"
     react-dom "^16.12.0"
 
-"@keen.io/icons@^1.2.2", "@keen.io/icons@^1.3.0":
+"@keen.io/icons@^1.3.0":
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/@keen.io/icons/-/icons-1.3.0.tgz#ab0c06f3e1ba009d8a7a1956d2406452de5b5547"
   integrity sha512-U1aUSioiXvUOFrqiJaW7f7a24PfG/y9WoZ/k27S2oClv4a9QN6cQTpLvhUPkffbUElnjdK20jMYq1WWPaJkTBA==
@@ -1488,7 +1488,12 @@
     "@keen.io/colors" "^1.1.0"
     react "^16.12.0"
 
-"@keen.io/parser@^2.3.3", "@keen.io/parser@^2.3.8":
+"@keen.io/parser@^2.3.3":
+  version "2.3.5"
+  resolved "https://registry.yarnpkg.com/@keen.io/parser/-/parser-2.3.5.tgz#b561afb7ad80b17ce405cb7801826a6812ae89c7"
+  integrity sha512-zKMdie4onqgkfbHZ3iulFqq3OAV7R7dtbFMdEM7rZ369aGALvwgYKxOHKkC/I9JdQOmJTnwVhqNeo4T3EBlyvg==
+
+"@keen.io/parser@^2.3.8":
   version "2.3.8"
   resolved "https://registry.yarnpkg.com/@keen.io/parser/-/parser-2.3.8.tgz#f24bf4783bc5bb5233ec2c6b5a961878af85b02c"
   integrity sha512-k5VLWJJrX3QukP74y59/lQ3d+GPUgi18uYm6op5ESyhy+pxxMOX5y2PewN+yJAaOP4ORmZ8YwyN/zHsNcvVDKA==

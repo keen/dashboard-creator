@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
-import { Query } from '@keen.io/parser';
+
+import QueryItem from '../QueryItem';
 
 import { SavedQuery } from '../../../../modules/queries';
 
@@ -7,18 +8,25 @@ type Props = {
   /** Collection of saved queries */
   queries: SavedQuery[];
   /** Select query event handler */
-  onSelectQuery: (id: string, query: Query) => void;
+  onSelectQuery: (query: SavedQuery) => void;
 };
 
 const QueriesList: FC<Props> = ({ queries, onSelectQuery }) => {
   return (
-    <div>
-      {queries.map(({ id, settings }) => (
-        <div key={id} onClick={() => onSelectQuery(id, settings)}>
-          {id}
-        </div>
-      ))}
-    </div>
+    <>
+      {queries.map((query) => {
+        const { id, displayName, visualization } = query;
+
+        return (
+          <QueryItem
+            key={id}
+            name={displayName}
+            visualization={visualization}
+            onClick={() => onSelectQuery(query)}
+          />
+        );
+      })}
+    </>
   );
 };
 
