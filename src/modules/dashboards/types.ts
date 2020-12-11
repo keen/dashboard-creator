@@ -20,7 +20,6 @@ export type DashboardModel = {
 export type Dashboard = {
   version: string;
   widgets: string[];
-  // baseTheme?: Partial<Theme>;
 };
 
 export type DashboardItem = {
