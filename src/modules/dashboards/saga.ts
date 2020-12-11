@@ -7,6 +7,7 @@ import {
   getContext,
 } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
+import { Theme } from '@keen.io/charts';
 
 import {
   fetchDashboardListSuccess,
@@ -30,6 +31,7 @@ import {
   getDashboardSettings,
   getDashboardsMetadata,
 } from './selectors';
+import { getBaseTheme, getDashboardTheme } from '../theme/selectors';
 
 import { setActiveDashboard } from '../app';
 import {
@@ -37,6 +39,7 @@ import {
   registerWidgets,
   getWidgetSettings,
 } from '../widgets';
+import { removeDashboardTheme, setDashboardTheme } from '../theme';
 
 import { BLOB_API, NOTIFICATION_MANAGER, ROUTES } from '../../constants';
 import {
@@ -74,11 +77,13 @@ export function* saveDashboard({
 
   try {
     const dashboard: Dashboard = yield getDashboardSettings(state, dashboardId);
+    const dashboardTheme = yield getDashboardTheme(state, dashboardId);
     const serializedDashboard = {
       ...dashboard,
       widgets: dashboard.widgets.map((widgetId) =>
         getWidgetSettings(state, widgetId)
       ),
+      baseTheme: dashboardTheme,
     };
 
     const dashboardsMeta = yield select(getDashboardsMetadata);
@@ -106,6 +111,9 @@ export function* createDashboard({
   payload,
 }: ReturnType<typeof createDashboardAction>) {
   const { dashboardId } = payload;
+  const state: RootState = yield select();
+
+  const baseTheme: Partial<Theme> = yield getBaseTheme(state);
   const serializedDashboard: Dashboard = {
     version: __APP_VERSION__,
     widgets: [],
@@ -113,6 +121,7 @@ export function* createDashboard({
 
   yield put(registerDashboard(dashboardId));
   yield put(updateDashboard(dashboardId, serializedDashboard));
+  yield put(setDashboardTheme(dashboardId, baseTheme));
 
   yield put(setActiveDashboard(dashboardId));
   yield put(push(ROUTES.EDITOR));
@@ -137,6 +146,7 @@ export function* deleteDashboard({
       yield blobApi.deleteDashboard(dashboardId);
 
       yield put(deregisterDashboard(dashboardId));
+      yield put(removeDashboardTheme(dashboardId));
       yield notificationManager.showNotification({
         type: 'info',
         message: 'notifications.dashboard_delete_success',
@@ -172,11 +182,13 @@ export function* editDashboard({
       const responseBody: DashboardModel = yield blobApi.getDashboardById(
         dashboardId
       );
-      const serializedDashboard = serializeDashboard(responseBody);
+      const { baseTheme, ...dashboard } = responseBody;
+      const serializedDashboard = serializeDashboard(dashboard);
       const { widgets } = responseBody;
 
       yield put(registerWidgets(widgets));
       yield put(updateDashboard(dashboardId, serializedDashboard));
+      yield put(setDashboardTheme(dashboardId, baseTheme));
 
       yield put(
         initializeDashboardWidgetsAction(
@@ -211,11 +223,14 @@ export function* viewDashboard({
       const responseBody: DashboardModel = yield blobApi.getDashboardById(
         dashboardId
       );
-      const serializedDashboard = serializeDashboard(responseBody);
+
+      const { baseTheme, ...dashboard } = responseBody;
+      const serializedDashboard = serializeDashboard(dashboard);
       const { widgets } = responseBody;
 
       yield put(registerWidgets(widgets));
       yield put(updateDashboard(dashboardId, serializedDashboard));
+      yield put(setDashboardTheme(dashboardId, baseTheme));
     } catch (err) {
       console.error(err);
     }
