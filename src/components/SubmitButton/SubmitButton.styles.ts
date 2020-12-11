@@ -19,7 +19,7 @@ export const SuccessButton = styled.button`
     background-color: ${colors.green['300']};
   }
   letter-spacing: 0;
-  font-family: 'Lato', sans-serif;
+  font-family: 'Lato Regular', sans-serif;
   outline: none;
   border: none;
   cursor: pointer;
