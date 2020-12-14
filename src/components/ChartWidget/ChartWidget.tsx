@@ -5,7 +5,7 @@ import { KeenDataviz } from '@keen.io/dataviz';
 import { Container } from './ChartWidget.styles';
 
 import { getWidget, ChartWidget } from '../../modules/widgets';
-import { getDashboardTheme } from '../../modules/theme';
+import { getActiveDashboardTheme } from '../../modules/theme';
 import { RootState } from '../../rootReducer';
 
 type Props = {
@@ -22,7 +22,9 @@ const ChartWidget: FC<Props> = ({ id }) => {
     data,
     widget,
   } = useSelector((state: RootState) => getWidget(state, id));
-  const theme = useSelector((state: RootState) => getDashboardTheme(state, id));
+  const theme = useSelector((state: RootState) =>
+    getActiveDashboardTheme(state)
+  );
 
   const showVisualization = isConfigured && isInitialized && !isLoading;
 
