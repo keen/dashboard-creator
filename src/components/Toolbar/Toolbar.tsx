@@ -5,8 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Container } from './Toolbar.styles';
 
 import ChartDragGhost from '../ChartDragGhost';
-import WidgetItem from '../WidgetItem';
-import { IconType } from '@keen.io/icons';
+import DraggableItem from '../DraggableItem';
 
 type Props = {
   /** Widget drag event handler */
@@ -37,27 +36,48 @@ const Toolbar: FC<Props> = ({ onWidgetDrag }) => {
     [onWidgetDrag]
   );
 
-  const item = (type: string, icon: IconType, text: string): JSX.Element => {
-    return (
-      <div
-        draggable
-        unselectable="on"
-        data-widget-type={type}
-        onDragStart={dragStartHandler}
-        onDragEnd={dragEndHandler}
-      >
-        <WidgetItem icon={icon} text={text} />
-      </div>
-    );
-  };
-
   return (
     <Container>
-      {item('visualization', 'bar-widget-vertical', t('widget_item.chart'))}
-      {item('text', 'text', t('widget_item.text'))}
-      {item('visualization', 'image', t('widget_item.image'))}
-      {item('visualization', 'funnel-widget-vertical', t('widget_item.filter'))}
-      {item('visualization', 'date-picker', t('widget_item.date_picker'))}
+      <DraggableItem
+        type="visualization"
+        icon="bar-widget-vertical"
+        text={t('widget_item.chart')}
+        dragStartHandler={(e) => dragStartHandler(e)}
+        dragEndHandler={dragEndHandler}
+        key="chart"
+      />
+      <DraggableItem
+        type="text"
+        icon="text"
+        text={t('widget_item.text')}
+        dragStartHandler={(e) => dragStartHandler(e)}
+        dragEndHandler={dragEndHandler}
+        key="text"
+      />
+      <DraggableItem
+        type="visualization"
+        icon="bar-widget-vertical"
+        text={t('widget_item.image')}
+        dragStartHandler={(e) => dragStartHandler(e)}
+        dragEndHandler={dragEndHandler}
+        key="image"
+      />
+      <DraggableItem
+        type="visualization"
+        icon="bar-widget-vertical"
+        text={t('widget_item.filter')}
+        dragStartHandler={(e) => dragStartHandler(e)}
+        dragEndHandler={dragEndHandler}
+        key="filter"
+      />
+      <DraggableItem
+        type="visualization"
+        icon="bar-widget-vertical"
+        text={t('widget_item.date_picker')}
+        dragStartHandler={(e) => dragStartHandler(e)}
+        dragEndHandler={dragEndHandler}
+        key="date_picker"
+      />
     </Container>
   );
 };

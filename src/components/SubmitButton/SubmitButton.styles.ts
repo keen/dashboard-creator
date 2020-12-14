@@ -13,14 +13,14 @@ export const SuccessButton = styled.button`
   font-size: 14px;
   line-height: 17px;
   box-shadow: 0 2px 4px 0 ${transparentize(0.85, colors.black['500'])};
-  &:hover {
-    box-shadow: none;
-    color: ${colors.white['500']};
-    background-color: ${colors.green['300']};
-  }
   letter-spacing: 0;
   font-family: 'Lato Regular', sans-serif;
   outline: none;
   border: none;
   cursor: pointer;
+  &:hover {
+    box-shadow: none;
+    color: ${colors.white['500']};
+    background-color: ${colors.green['300']};
+  }
 `;
