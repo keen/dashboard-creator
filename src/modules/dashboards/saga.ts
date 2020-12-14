@@ -31,7 +31,7 @@ import {
   getDashboardSettings,
   getDashboardsMetadata,
 } from './selectors';
-import { getBaseTheme, getDashboardTheme } from '../theme/selectors';
+import { getBaseTheme, getActiveDashboardTheme } from '../theme/selectors';
 
 import { setActiveDashboard } from '../app';
 import {
@@ -77,7 +77,7 @@ export function* saveDashboard({
 
   try {
     const dashboard: Dashboard = yield getDashboardSettings(state, dashboardId);
-    const dashboardTheme = yield getDashboardTheme(state, dashboardId);
+    const dashboardTheme = yield getActiveDashboardTheme(state);
     const serializedDashboard = {
       ...dashboard,
       widgets: dashboard.widgets.map((widgetId) =>

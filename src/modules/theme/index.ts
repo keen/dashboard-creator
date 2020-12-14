@@ -5,7 +5,7 @@ import {
   removeDashboardTheme,
 } from './actions';
 
-import { getBaseTheme, getDashboardTheme } from './selectors';
+import { getBaseTheme, getActiveDashboardTheme } from './selectors';
 import { SET_BASE_THEME } from './constants';
 
 export {
@@ -14,6 +14,6 @@ export {
   setDashboardTheme,
   removeDashboardTheme,
   getBaseTheme,
-  getDashboardTheme,
+  getActiveDashboardTheme,
   SET_BASE_THEME,
 };
