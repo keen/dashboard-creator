@@ -1488,12 +1488,15 @@
     "@keen.io/colors" "^1.1.0"
     react "^16.12.0"
 
-"@keen.io/parser@^2.3.3":
-  version "2.3.5"
-  resolved "https://registry.yarnpkg.com/@keen.io/parser/-/parser-2.3.5.tgz#b561afb7ad80b17ce405cb7801826a6812ae89c7"
-  integrity sha512-zKMdie4onqgkfbHZ3iulFqq3OAV7R7dtbFMdEM7rZ369aGALvwgYKxOHKkC/I9JdQOmJTnwVhqNeo4T3EBlyvg==
+"@keen.io/icons@^1.3.1":
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/@keen.io/icons/-/icons-1.3.1.tgz#5f0a670525b42a6601a6c1024520b56dd2ddd5c5"
+  integrity sha512-o5TlJ30CLv7/kOmECnj713k+/6mi8l+mMlnHKzfJNcof3Lv0DieAhQw/GouPynW+u1cDXYUawH9zqZ6FjMhj1g==
+  dependencies:
+    "@keen.io/colors" "^1.1.0"
+    react "^16.12.0"
 
-"@keen.io/parser@^2.3.8":
+"@keen.io/parser@^2.3.3", "@keen.io/parser@^2.3.8":
   version "2.3.8"
   resolved "https://registry.yarnpkg.com/@keen.io/parser/-/parser-2.3.8.tgz#f24bf4783bc5bb5233ec2c6b5a961878af85b02c"
   integrity sha512-k5VLWJJrX3QukP74y59/lQ3d+GPUgi18uYm6op5ESyhy+pxxMOX5y2PewN+yJAaOP4ORmZ8YwyN/zHsNcvVDKA==

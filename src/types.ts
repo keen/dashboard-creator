@@ -17,3 +17,12 @@ export type TranslationsSettings = {
     loadPath?: string;
   };
 };
+
+export type WidgetType = 'visualization' | 'text';
+
+export type GridSize = {
+  cols: number;
+  containerPadding?: [number, number];
+  containerWidth: number;
+  margin: [number, number];
+};
