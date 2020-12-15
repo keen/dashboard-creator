@@ -64,7 +64,7 @@ const Toolbar: FC<Props> = ({ onWidgetDrag }) => {
       />
       <DraggableItem
         type="visualization"
-        icon="bar-widget-vertical"
+        icon="funnel-widget-vertical"
         text={t('widget_item.filter')}
         dragStartHandler={dragStartHandler}
         dragEndHandler={dragEndHandler}
