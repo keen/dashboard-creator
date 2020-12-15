@@ -19,6 +19,7 @@ import {
   createDashboard as createDashboardAction,
   editDashboard as editDashboardAction,
   saveDashboard as saveDashboardAction,
+  saveDashboardMeta as saveDashboardMetaAction,
   viewDashboard as viewDashboardAction,
   deleteDashboard as deleteDashboardAction,
   showDeleteConfirmation,
@@ -47,6 +48,7 @@ import {
   FETCH_DASHBOARDS_LIST,
   CREATE_DASHBOARD,
   SAVE_DASHBOARD,
+  SAVE_DASHBOARD_METADATA,
   EDIT_DASHBOARD,
   DELETE_DASHBOARD,
   VIEW_DASHBOARD,
@@ -66,6 +68,19 @@ export function* fetchDashboardList() {
     yield put(fetchDashboardListSuccess(responseBody));
   } catch (err) {
     yield put(fetchDashboardListError());
+  }
+}
+
+export function* saveDashboardMetadata({
+  payload,
+}: ReturnType<typeof saveDashboardMetaAction>) {
+  console.log('SAVE_DASHBOARD_METADATA !!!!!');
+  const { dashboardId, metadata } = payload;
+  try {
+    const blobApi = yield getContext(BLOB_API);
+    yield blobApi.saveDashboardMeta(dashboardId, metadata);
+  } catch (err) {
+    console.error(err);
   }
 }
 
@@ -231,6 +246,13 @@ export function* viewDashboard({
       yield put(registerWidgets(widgets));
       yield put(updateDashboard(dashboardId, serializedDashboard));
       yield put(setDashboardTheme(dashboardId, baseTheme));
+
+      yield put(
+        initializeDashboardWidgetsAction(
+          dashboardId,
+          serializedDashboard.widgets
+        )
+      );
     } catch (err) {
       console.error(err);
     }
@@ -251,6 +273,7 @@ export function* dashboardsSaga() {
   yield takeLatest(FETCH_DASHBOARDS_LIST, fetchDashboardList);
   yield takeLatest(CREATE_DASHBOARD, createDashboard);
   yield takeLatest(SAVE_DASHBOARD, saveDashboard);
+  yield takeLatest(SAVE_DASHBOARD_METADATA, saveDashboardMetadata);
   yield takeLatest(DELETE_DASHBOARD, deleteDashboard);
   yield takeLatest(VIEW_DASHBOARD, viewDashboard);
   yield takeLatest(EDIT_DASHBOARD, editDashboard);
