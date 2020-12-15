@@ -7,6 +7,7 @@ import {
   hideDeleteConfirmation,
   deregisterDashboard,
 } from './actions';
+import { removeDashboardTheme } from '../theme/actions';
 import { deleteDashboard } from './saga';
 
 import {
@@ -89,6 +90,10 @@ describe('deleteDashboard()', () => {
 
     test('triggers dashboard deregister action with dashboard identifer', (result) => {
       expect(result).toEqual(put(deregisterDashboard(dashboardId)));
+    });
+
+    test('triggers dashboard theme removal action with dashboard identifer', (result) => {
+      expect(result).toEqual(put(removeDashboardTheme(dashboardId)));
     });
 
     test('calls show notification method', () => {

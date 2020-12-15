@@ -17,10 +17,22 @@
   <div id="modal-root"></div>
 </body>
 <script type="text/javascript">
+  const theme = {
+    metric: {
+      value: {
+        typography: {
+          fontColor: 'red',
+          fontSize: 10
+        },
+      },
+    }
+  };
+
    new KeenDashboardCreator({
      container: '#root',
      blobApiUrl: 'https://blob-service.us-west-2.test.aws.keen.io',
-     project: <%= config %>
+     project: <%= config %>,
+     theme
    }).render();
   </script>
 </html>

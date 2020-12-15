@@ -1,3 +1,5 @@
+import { Theme } from '@keen.io/charts';
+
 export type Options = {
   container: string;
   blobApiUrl: string;
@@ -7,6 +9,7 @@ export type Options = {
     id: string;
   };
   translations?: TranslationsSettings;
+  theme?: Partial<Theme>;
 };
 
 export type TranslationsSettings = {

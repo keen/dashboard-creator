@@ -9,6 +9,7 @@ import createSagaMiddleware from 'redux-saga';
 import { PubSub } from '@keen.io/pubsub';
 import { ToastProvider } from '@keen.io/toast-notifications';
 import { screenBreakpoints } from '@keen.io/ui-core';
+import { Theme } from '@keen.io/charts';
 
 import App from './App';
 import { APIContext, AppContext } from './contexts';
@@ -47,8 +48,11 @@ export class DashboardCreator {
   /** App localization settings */
   private readonly translationsSettings: TranslationsSettings;
 
+  /** Charts theme settings */
+  private readonly themeSettings: Partial<Theme>;
+
   constructor(config: Options) {
-    const { container, blobApiUrl, project, translations } = config;
+    const { container, blobApiUrl, project, translations, theme } = config;
 
     const { id, masterKey, userKey } = project;
 
@@ -58,6 +62,7 @@ export class DashboardCreator {
     this.userKey = userKey;
     this.blobApiUrl = blobApiUrl;
     this.translationsSettings = translations || {};
+    this.themeSettings = theme || {};
   }
 
   render() {
@@ -96,7 +101,7 @@ export class DashboardCreator {
     });
 
     sagaMiddleware.run(rootSaga);
-    store.dispatch(appStart());
+    store.dispatch(appStart(this.themeSettings));
 
     ReactDOM.render(
       <Provider store={store}>
