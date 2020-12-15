@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Container } from './Toolbar.styles';
 
 import ChartDragGhost from '../ChartDragGhost';
-import WidgetItem from '../WidgetItem';
+import DraggableItem from '../DraggableItem';
 
 type Props = {
   /** Widget drag event handler */
@@ -38,24 +38,46 @@ const Toolbar: FC<Props> = ({ onWidgetDrag }) => {
 
   return (
     <Container>
-      <div
-        draggable
-        unselectable="on"
-        data-widget-type="visualization"
-        onDragStart={dragStartHandler}
-        onDragEnd={dragEndHandler}
-      >
-        <WidgetItem icon="bar-widget-vertical" text={t('widget_item.chart')} />
-      </div>
-      <div
-        draggable
-        unselectable="on"
-        data-widget-type="text"
-        onDragStart={dragStartHandler}
-        onDragEnd={dragEndHandler}
-      >
-        Text
-      </div>
+      <DraggableItem
+        type="visualization"
+        icon="bar-widget-vertical"
+        text={t('widget_item.chart')}
+        dragStartHandler={dragStartHandler}
+        dragEndHandler={dragEndHandler}
+        key="chart"
+      />
+      <DraggableItem
+        type="text"
+        icon="text"
+        text={t('widget_item.text')}
+        dragStartHandler={dragStartHandler}
+        dragEndHandler={dragEndHandler}
+        key="text"
+      />
+      <DraggableItem
+        type="visualization"
+        icon="image"
+        text={t('widget_item.image')}
+        dragStartHandler={dragStartHandler}
+        dragEndHandler={dragEndHandler}
+        key="image"
+      />
+      <DraggableItem
+        type="visualization"
+        icon="funnel-widget-vertical"
+        text={t('widget_item.filter')}
+        dragStartHandler={dragStartHandler}
+        dragEndHandler={dragEndHandler}
+        key="filter"
+      />
+      <DraggableItem
+        type="visualization"
+        icon="date-picker"
+        text={t('widget_item.date_picker')}
+        dragStartHandler={dragStartHandler}
+        dragEndHandler={dragEndHandler}
+        key="date_picker"
+      />
     </Container>
   );
 };

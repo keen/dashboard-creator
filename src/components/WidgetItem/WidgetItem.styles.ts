@@ -8,11 +8,13 @@ export const Container = styled.div`
   border-radius: 4px;
   display: flex;
   align-items: center;
+  margin-right: 10px;
 `;
 
 export const IconWrapper = styled.div`
   display: inline-block;
   padding-left: 14px;
+  line-height: 1;
 `;
 
 export const TextWrapper = styled.div`
