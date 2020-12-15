@@ -4,7 +4,7 @@ import DraggableItem from './DraggableItem';
 
 const render = (overProps: any = {}) => {
   const props = {
-    text: 'simple Text',
+    text: 'Draggable item',
     type: 'text',
     dragStartHandler: jest.fn(),
     dragEndHandler: jest.fn(),
@@ -37,11 +37,11 @@ describe('DraggableItem', () => {
         props,
       } = render();
 
-      const finishButton = getByText('simple Text');
-      fireEvent.dragStart(finishButton);
+      const item = getByText('Draggable item');
+      fireEvent.dragStart(item);
       expect(props.dragStartHandler).toHaveBeenCalled();
 
-      fireEvent.dragEnd(finishButton);
+      fireEvent.dragEnd(item);
       expect(props.dragEndHandler).toHaveBeenCalled();
     });
   });
