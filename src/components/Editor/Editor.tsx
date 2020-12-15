@@ -9,6 +9,7 @@ import {
   removeWidgetFromDashboard,
   getDashboard,
   saveDashboard,
+  getDashboardMeta,
 } from '../../modules/dashboards';
 import {
   createWidget,
@@ -16,7 +17,7 @@ import {
   updateWidgetsPosition,
   WidgetsPosition,
 } from '../../modules/widgets';
-import { setActiveDashboard } from '../../modules/app';
+import { setActiveDashboard, getActiveDashboard } from '../../modules/app';
 
 import EditorNavigation from '../EditorNavigation';
 import QueryPickerModal from '../QueryPickerModal';
@@ -68,6 +69,13 @@ const Editor: FC<Props> = ({ dashboardId }) => {
     [droppableWidget]
   );
 
+  const activeDashboardId = useSelector((state: RootState) =>
+    getActiveDashboard(state)
+  );
+  const { lastModificationDate } = useSelector((state: RootState) =>
+    getDashboardMeta(state, activeDashboardId)
+  );
+
   return (
     <>
       <EditorNavigation
@@ -79,7 +87,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
       <EditorBar
         isSaving={false}
         onFinishEdit={() => ({})}
-        lastSaveTime={1607525787826}
+        lastSaveTime={lastModificationDate}
       >
         <Toolbar
           onWidgetDrag={(widgetType) => setDroppableWidget(widgetType)}

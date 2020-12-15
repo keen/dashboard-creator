@@ -14,6 +14,7 @@ export const Container = styled.div`
 export const IconWrapper = styled.div`
   display: inline-block;
   padding-left: 14px;
+  line-height: 1;
 `;
 
 export const TextWrapper = styled.div`

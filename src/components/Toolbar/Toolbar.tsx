@@ -42,7 +42,7 @@ const Toolbar: FC<Props> = ({ onWidgetDrag }) => {
         type="visualization"
         icon="bar-widget-vertical"
         text={t('widget_item.chart')}
-        dragStartHandler={(e) => dragStartHandler(e)}
+        dragStartHandler={dragStartHandler}
         dragEndHandler={dragEndHandler}
         key="chart"
       />
@@ -50,15 +50,15 @@ const Toolbar: FC<Props> = ({ onWidgetDrag }) => {
         type="text"
         icon="text"
         text={t('widget_item.text')}
-        dragStartHandler={(e) => dragStartHandler(e)}
+        dragStartHandler={dragStartHandler}
         dragEndHandler={dragEndHandler}
         key="text"
       />
       <DraggableItem
         type="visualization"
-        icon="bar-widget-vertical"
+        icon="image"
         text={t('widget_item.image')}
-        dragStartHandler={(e) => dragStartHandler(e)}
+        dragStartHandler={dragStartHandler}
         dragEndHandler={dragEndHandler}
         key="image"
       />
@@ -66,15 +66,15 @@ const Toolbar: FC<Props> = ({ onWidgetDrag }) => {
         type="visualization"
         icon="bar-widget-vertical"
         text={t('widget_item.filter')}
-        dragStartHandler={(e) => dragStartHandler(e)}
+        dragStartHandler={dragStartHandler}
         dragEndHandler={dragEndHandler}
         key="filter"
       />
       <DraggableItem
         type="visualization"
-        icon="bar-widget-vertical"
+        icon="date-picker"
         text={t('widget_item.date_picker')}
-        dragStartHandler={(e) => dragStartHandler(e)}
+        dragStartHandler={dragStartHandler}
         dragEndHandler={dragEndHandler}
         key="date_picker"
       />
