@@ -1,6 +1,41 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
-import { SavedQuery } from './types';
+import { SavedQuery, SavedQueryAPIResponse } from './types';
+
+export const savedQueriesResponse: SavedQueryAPIResponse[] = [
+  {
+    query: {
+      analysis_type: 'count',
+      event_collection: 'logins',
+      order_by: null,
+    },
+    query_name: '@query/01',
+    metadata: {
+      display_name: 'Query 01',
+      visualization: {
+        type: 'bar',
+        chart_settings: {},
+        widget_settings: {},
+      },
+    },
+  },
+  {
+    query: {
+      analysis_type: 'sum',
+      event_collection: 'purchases',
+      order_by: null,
+    },
+    query_name: '@query/02',
+    metadata: {
+      display_name: 'Query 02',
+      visualization: {
+        type: 'area',
+        chart_settings: {},
+        widget_settings: {},
+      },
+    },
+  },
+];
 
 export const savedQueries: SavedQuery[] = [
   {

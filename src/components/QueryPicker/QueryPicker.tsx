@@ -1,12 +1,12 @@
 import React, { FC, useContext, useState, useMemo, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { Loader } from '@keen.io/ui-core';
+import { Loader, Alert } from '@keen.io/ui-core';
 
 import {
   LoaderContainer,
   QueriesContainer,
-  EmptySearch,
+  Message,
 } from './QueryPicker.styles';
 
 import SearchInput from '../SearchInput';
@@ -24,6 +24,7 @@ const QueryPicker: FC<{}> = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
+  const [error, setError] = useState(null);
   const [isLoaded, setLoaded] = useState(false);
   const [isLoadingQueries, setQueriesLoading] = useState(null);
 
@@ -44,8 +45,8 @@ const QueryPicker: FC<{}> = () => {
       .then((queries: SavedQueryAPIResponse[]) =>
         setSavedQueries(queries.map(serializeSavedQuery))
       )
-      .catch((err) => {
-        console.error(err);
+      .catch(() => {
+        setError(true);
       })
       .finally(() => {
         setLoaded(true);
@@ -66,6 +67,7 @@ const QueryPicker: FC<{}> = () => {
     return queriesList;
   }, [searchPhrase, savedQueries]);
 
+  const isEmptyList = isLoaded && filteredQueries.length === 0;
   const isEmptySearch = searchPhrase && filteredQueries.length === 0;
 
   return (
@@ -75,7 +77,10 @@ const QueryPicker: FC<{}> = () => {
           <Loader width={50} height={50} />
         </LoaderContainer>
       )}
-      {isLoaded && (
+      {error && (
+        <Alert type="error">{t('query_picker.saved_queries_error')}</Alert>
+      )}
+      {isLoaded && !error && (
         <>
           <SearchInput
             placeholder={t('query_picker.search_query_placeholder')}
@@ -84,14 +89,20 @@ const QueryPicker: FC<{}> = () => {
             onClearSearch={() => setSearchPhrase('')}
           />
           {isEmptySearch ? (
-            <EmptySearch>{t('query_picker.empty_search_results')}</EmptySearch>
+            <Message>{t('query_picker.empty_search_results')}</Message>
           ) : (
-            <QueriesContainer>
-              <QueriesList
-                queries={filteredQueries}
-                onSelectQuery={(query) => dispatch(selectSavedQuery(query))}
-              />
-            </QueriesContainer>
+            <>
+              {isEmptyList ? (
+                <Message>{t('query_picker.empty_project')}</Message>
+              ) : (
+                <QueriesContainer>
+                  <QueriesList
+                    queries={filteredQueries}
+                    onSelectQuery={(query) => dispatch(selectSavedQuery(query))}
+                  />
+                </QueriesContainer>
+              )}
+            </>
           )}
         </>
       )}

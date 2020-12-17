@@ -12,7 +12,7 @@ export const QueriesContainer = styled.div`
   overflow-y: scroll;
 `;
 
-export const EmptySearch = styled.div`
+export const Message = styled.div`
   margin-top: 15px;
   font-size: 14px;
   font-family: 'Lato Regular', sans-serif;

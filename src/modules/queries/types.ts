@@ -1,4 +1,4 @@
-import { Query } from '@keen.io/parser';
+import { Query } from '@keen.io/query';
 import { PickerWidgets } from '@keen.io/widget-picker';
 
 export type SavedQueryAPIResponse = {

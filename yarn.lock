@@ -1503,6 +1503,11 @@
   resolved "https://registry.yarnpkg.com/@keen.io/pubsub/-/pubsub-1.1.1.tgz#80dcb09a849ec665d279234c014e6815e1d075c0"
   integrity sha512-S9zhZNDSwsL6WXOtFqeZ3+vOdCzykL7pYifRm9dZ7ivLe/frAeyqIQsfRA8Z52DPnRN7d+gKbWrJtlZM22ErjQ==
 
+"@keen.io/query@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@keen.io/query/-/query-1.0.1.tgz#1d8c6199001d3d445bd3d832799b49cdfd0a4959"
+  integrity sha512-B1fLFc0tOa8UVoV0gnFFn3NJ4hBCFbBzSw8ajzWCuMfLBfQScdnd31NqV3zoFUpnPsqqxH1y7BW6zuea8/ATYg==
+
 "@keen.io/react-hooks@^1.0.4":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@keen.io/react-hooks/-/react-hooks-1.0.4.tgz#421dd95d0d7b92113ca7ab77a24dd3383837b3d8"
