@@ -7,6 +7,7 @@ import { push } from 'connected-react-router';
 import {
   addWidgetToDashboard,
   removeWidgetFromDashboard,
+  viewDashboard,
   getDashboard,
   saveDashboard,
   getDashboardMeta,
@@ -86,38 +87,31 @@ const Editor: FC<Props> = ({ dashboardId }) => {
       />
       <EditorBar
         isSaving={false}
-        onFinishEdit={() => ({})}
+        onFinishEdit={() => {
+          dispatch(saveDashboard(dashboardId));
+          dispatch(viewDashboard(dashboardId));
+        }}
         lastSaveTime={lastModificationDate}
       >
         <Toolbar
           onWidgetDrag={(widgetType) => setDroppableWidget(widgetType)}
         />
       </EditorBar>
-
       {isInitialized ? (
-        <>
-          <div
-            onClick={() => {
-              dispatch(saveDashboard(dashboardId));
-            }}
-          >
-            {t('dashboard_editor.save')}
-          </div>
-          <Grid
-            isEditorMode={true}
-            widgetsId={widgetsId}
-            onWidgetDrop={addWidgetHandler}
-            onWidgetDrag={(gridPositions) =>
-              dispatch(updateWidgetsPosition(gridPositions))
-            }
-            onWidgetResize={(gridPositions) =>
-              dispatch(updateWidgetsPosition(gridPositions))
-            }
-            onRemoveWidget={(widgetId) => {
-              dispatch(removeWidgetFromDashboard(dashboardId, widgetId));
-            }}
-          />
-        </>
+        <Grid
+          isEditorMode={true}
+          widgetsId={widgetsId}
+          onWidgetDrop={addWidgetHandler}
+          onWidgetDrag={(gridPositions) =>
+            dispatch(updateWidgetsPosition(gridPositions))
+          }
+          onWidgetResize={(gridPositions) =>
+            dispatch(updateWidgetsPosition(gridPositions))
+          }
+          onRemoveWidget={(widgetId) => {
+            dispatch(removeWidgetFromDashboard(dashboardId, widgetId));
+          }}
+        />
       ) : (
         <div>{t('dashboard_editor.loading')}</div>
       )}

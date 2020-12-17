@@ -1,14 +1,19 @@
 import React, { FC, ReactNode, useMemo } from 'react';
-import { Container, ChildrenWrapper, TimeAgo, Right } from './EditorBar.styles';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
+
+import { Container, ChildrenWrapper, TimeAgo, Right } from './EditorBar.styles';
 
 import SubmitButton from '../SubmitButton';
 
 type Props = {
+  /** Finish edit event handler */
   onFinishEdit: () => void;
+  /** Last save time */
   lastSaveTime: number | null;
+  /** Saving indicator */
   isSaving: boolean;
+  /** React children nodes */
   children?: ReactNode;
 };
 
@@ -29,10 +34,8 @@ const EditorBar: FC<Props> = ({
   return (
     <Container>
       <ChildrenWrapper>{children}</ChildrenWrapper>
-
       <Right>
         <TimeAgo>{isSaving ? t('editor_bar.is_saving') : timeAgo}</TimeAgo>
-
         <SubmitButton onClick={onFinishEdit}>
           {t('editor_bar.finish_edition')}
         </SubmitButton>

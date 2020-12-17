@@ -74,7 +74,6 @@ export function* fetchDashboardList() {
 export function* saveDashboardMetadata({
   payload,
 }: ReturnType<typeof saveDashboardMetaAction>) {
-  console.log('SAVE_DASHBOARD_METADATA !!!!!');
   const { dashboardId, metadata } = payload;
   try {
     const blobApi = yield getContext(BLOB_API);
