@@ -53,6 +53,7 @@ const ChartWidget: FC<Props> = ({ id }) => {
   }, [showVisualization]);
 
   useEffect(() => {
+    if (!editorPubSub) return;
     const dispose = editorPubSub.subscribe((eventName, meta) => {
       switch (eventName) {
         case RESIZE_WIDGET_EVENT:
