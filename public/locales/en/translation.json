@@ -31,6 +31,9 @@
     "search_input_placeholder": "Search name",
     "empty_search_results": "No dashboards found with this criteria."
   },
+  "viewer": {
+    "edit_dashboard_button": "Edit"
+  },
   "dashboard_editor": {
     "save": "Save",
     "loading": "Loading",
@@ -40,9 +43,9 @@
     "close": "Close",
     "title": "What do you want to visualize?",
     "search_query_placeholder": "Search saved query",
-    "saved_queries_error": "There was a problem with fetching list of saved queries. Try again later.",
-    "empty_search_results": "No queries found with this criteria.",
-    "empty_project": "There are no saved queries in project. Create the first saved query."
+    "saved_queries_error": "We could not load your saved queries at the moment. Please close this window and try adding a chart again or create a New Query.",
+    "empty_search_results": "No queries found with this name.",
+    "empty_project": "There are no saved queries in this project. Create a New Query from scratch."
   },
   "widget": {
     "remove": "Remove"

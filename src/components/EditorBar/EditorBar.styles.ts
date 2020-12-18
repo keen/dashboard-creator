@@ -11,16 +11,22 @@ export const Container = styled.div`
   box-shadow: 0 10px 24px 0 ${transparentize(0.85, colors.black[500])};
 `;
 
-export const Right = styled.div`
+export const Aside = styled.div`
+  display: flex;
+  align-items: center;
   margin-left: auto;
 `;
 
-export const TimeAgo = styled.span`
-  margin-right: 20px;
+export const SavingIndicator = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+export const Message = styled.span`
+  margin: 0 20px 0 6px;
   color: ${transparentize(0.5, colors.black[100])};
   font-family: 'Lato Medium', sans-serif;
   font-size: 12px;
-  line-height: 15px;
 `;
 
 export const ChildrenWrapper = styled.div`

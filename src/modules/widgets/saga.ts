@@ -19,7 +19,8 @@ import {
 
 import { getWidgetSettings } from './selectors';
 
-import { removeWidgetFromDashboard } from '../dashboards';
+import { removeWidgetFromDashboard, saveDashboard } from '../dashboards';
+
 import { SELECT_SAVED_QUERY, SavedQuery } from '../queries';
 import {
   getActiveDashboard,
@@ -102,6 +103,9 @@ function* visualizationWizard(widgetId: string) {
       )
     );
     yield put(initializeChartWidgetAction(widgetId));
+
+    const dashboardId = yield select(getActiveDashboard);
+    yield put(saveDashboard(dashboardId));
   }
 }
 

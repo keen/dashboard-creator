@@ -14,7 +14,10 @@ import {
   fetchDashboardListError,
   registerDashboard,
   updateDashboard,
-  deregisterDashboard,
+  deleteDashboardSuccess,
+  saveDashboardSuccess,
+  saveDashboardError,
+  updateDashboardMeta,
   initializeDashboardWidgets as initializeDashboardWidgetsAction,
   createDashboard as createDashboardAction,
   editDashboard as editDashboardAction,
@@ -116,8 +119,11 @@ export function* saveDashboard({
       serializedDashboard,
       updatedMetadata
     );
+
+    yield put(updateDashboardMeta(dashboardId, updatedMetadata));
+    yield put(saveDashboardSuccess(dashboardId));
   } catch (err) {
-    console.error(err);
+    yield put(saveDashboardError(dashboardId));
   }
 }
 
@@ -159,8 +165,9 @@ export function* deleteDashboard({
       const blobApi = yield getContext(BLOB_API);
       yield blobApi.deleteDashboard(dashboardId);
 
-      yield put(deregisterDashboard(dashboardId));
+      yield put(deleteDashboardSuccess(dashboardId));
       yield put(removeDashboardTheme(dashboardId));
+
       yield notificationManager.showNotification({
         type: 'info',
         message: 'notifications.dashboard_delete_success',

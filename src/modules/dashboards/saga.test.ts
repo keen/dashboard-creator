@@ -5,7 +5,7 @@ import {
   deleteDashboard as deleteDashboardAction,
   showDeleteConfirmation,
   hideDeleteConfirmation,
-  deregisterDashboard,
+  deleteDashboardSuccess,
 } from './actions';
 import { removeDashboardTheme } from '../theme/actions';
 import { deleteDashboard } from './saga';
@@ -88,8 +88,8 @@ describe('deleteDashboard()', () => {
       expect(blobApiMock.deleteDashboard).toHaveBeenCalledWith(dashboardId);
     });
 
-    test('triggers dashboard deregister action with dashboard identifer', (result) => {
-      expect(result).toEqual(put(deregisterDashboard(dashboardId)));
+    test('triggers dashboard delete success action with dashboard identifer', (result) => {
+      expect(result).toEqual(put(deleteDashboardSuccess(dashboardId)));
     });
 
     test('triggers dashboard theme removal action with dashboard identifer', (result) => {

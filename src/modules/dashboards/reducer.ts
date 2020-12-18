@@ -4,8 +4,12 @@ import { createDashboardMeta, reduceWidgetsCount } from './utils';
 
 import {
   FETCH_DASHBOARDS_LIST_SUCCESS,
+  SAVE_DASHBOARD,
+  SAVE_DASHBOARD_SUCCESS,
+  SAVE_DASHBOARD_ERROR,
+  UPDATE_DASHBOARD_METADATA,
   REGISTER_DASHBOARD,
-  DEREGISTER_DASHBOARD,
+  DELETE_DASHBOARD_SUCCESS,
   UPDATE_DASHBOARD,
   CREATE_DASHBOARD,
   ADD_WIDGET_TO_DASHBOARD,
@@ -34,6 +38,23 @@ const dashboardsReducer = (
   action: DashboardsActions
 ) => {
   switch (action.type) {
+    case UPDATE_DASHBOARD_METADATA:
+      return {
+        ...state,
+        metadata: {
+          ...state.metadata,
+          data: state.metadata.data.map((dashboardMeta) => {
+            if (action.payload.dashboardId === dashboardMeta.id) {
+              return {
+                ...dashboardMeta,
+                ...action.payload.metadata,
+              };
+            }
+
+            return dashboardMeta;
+          }),
+        },
+      };
     case SHOW_DELETE_CONFIRMATION:
       return {
         ...state,
@@ -112,7 +133,7 @@ const dashboardsReducer = (
           ],
         },
       };
-    case DEREGISTER_DASHBOARD:
+    case DELETE_DASHBOARD_SUCCESS:
       return {
         ...state,
         metadata: {
@@ -139,7 +160,41 @@ const dashboardsReducer = (
           ...state.items,
           [action.payload.dashboardId]: {
             initialized: false,
+            isSaving: false,
             settings: null,
+          },
+        },
+      };
+    case SAVE_DASHBOARD:
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          [action.payload.dashboardId]: {
+            ...state.items[action.payload.dashboardId],
+            isSaving: true,
+          },
+        },
+      };
+    case SAVE_DASHBOARD_SUCCESS:
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          [action.payload.dashboardId]: {
+            ...state.items[action.payload.dashboardId],
+            isSaving: false,
+          },
+        },
+      };
+    case SAVE_DASHBOARD_ERROR:
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          [action.payload.dashboardId]: {
+            ...state.items[action.payload.dashboardId],
+            isSaving: false,
           },
         },
       };
@@ -149,6 +204,7 @@ const dashboardsReducer = (
         items: {
           ...state.items,
           [action.payload.dashboardId]: {
+            ...state.items[action.payload.dashboardId],
             initialized: true,
             settings: action.payload.settings,
           },
