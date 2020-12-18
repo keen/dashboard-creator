@@ -1,7 +1,7 @@
 import React from 'react';
 import { render as rtlRender, fireEvent } from '@testing-library/react';
 
-import SearchDashboard from './SearchDashboard';
+import SearchInput from './SearchInput';
 
 const render = (overProps: any = {}) => {
   const props = {
@@ -12,7 +12,7 @@ const render = (overProps: any = {}) => {
     ...overProps,
   };
 
-  const wrapper = rtlRender(<SearchDashboard {...props} />);
+  const wrapper = rtlRender(<SearchInput {...props} />);
 
   return {
     wrapper,
@@ -41,7 +41,7 @@ test('calls "onClearSearch" handler', () => {
     searchPhrase: 'phrase',
   });
 
-  const element = getByTestId('clear-dashboard-search');
+  const element = getByTestId('clear-search');
   fireEvent.click(element);
 
   expect(props.onClearSearch).toHaveBeenCalled();

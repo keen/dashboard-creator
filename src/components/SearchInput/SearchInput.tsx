@@ -3,7 +3,7 @@ import { Input } from '@keen.io/ui-core';
 import { Icon } from '@keen.io/icons';
 import { colors } from '@keen.io/colors';
 
-import { ClearPhrase } from './SearchDashboard.styles';
+import { ClearPhrase } from './SearchInput.styles';
 
 type Props = {
   /** Search phrase */
@@ -16,7 +16,7 @@ type Props = {
   onClearSearch: () => void;
 };
 
-const SearchDashboard: FC<Props> = ({
+const SearchInput: FC<Props> = ({
   searchPhrase,
   onChangePhrase,
   onClearSearch,
@@ -36,7 +36,7 @@ const SearchDashboard: FC<Props> = ({
         <ClearPhrase
           role="button"
           onClick={onClearSearch}
-          data-testid="clear-dashboard-search"
+          data-testid="clear-search"
         >
           <Icon type="close" width={10} height={10} fill={colors.gray[500]} />
         </ClearPhrase>
@@ -45,4 +45,4 @@ const SearchDashboard: FC<Props> = ({
   />
 );
 
-export default SearchDashboard;
+export default SearchInput;

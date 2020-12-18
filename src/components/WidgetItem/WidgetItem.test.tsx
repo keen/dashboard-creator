@@ -1,5 +1,6 @@
 import React from 'react';
 import { render as rtlRender } from '@testing-library/react';
+
 import WidgetItem from './WidgetItem';
 
 const render = (overProps: any = {}) => {
@@ -16,32 +17,19 @@ const render = (overProps: any = {}) => {
   };
 };
 
-describe('WidgetItem', () => {
-  describe('correct icon type', () => {
-    test('renders the component', () => {
-      const {
-        wrapper: { getByText },
-      } = render({ icon: 'arrow-up', text: 'Arrow Up' });
+test('renders provided text', () => {
+  const text = 'Arrow up';
+  const {
+    wrapper: { getByText },
+  } = render({ icon: 'arrow-up', text });
 
-      expect(getByText('Arrow Up')).toBeInTheDocument();
-    });
-  });
+  expect(getByText(text)).toBeInTheDocument();
+});
 
-  describe('no icon type', () => {
-    test('renders the component', () => {
-      const {
-        wrapper: { getByText },
-      } = render();
+test('do not renders the icon', () => {
+  const {
+    wrapper: { container },
+  } = render({ text: 'text' });
 
-      expect(getByText('simple Text')).toBeInTheDocument();
-    });
-  });
-
-  describe('not supported icon type', () => {
-    test('does not render the component', () => {
-      expect(() => {
-        render({ icon: 'incorrect-type', text: 'Arrow Up' });
-      }).toThrowError();
-    });
-  });
+  expect(container.querySelector('svg')).not.toBeInTheDocument();
 });

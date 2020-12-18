@@ -17,6 +17,7 @@ import {
   DELETE_DASHBOARD,
   EDIT_DASHBOARD,
   SAVE_DASHBOARD,
+  SAVE_DASHBOARD_METADATA,
   VIEW_DASHBOARD,
   INITIALIZE_DASHBOARD_WIDGETS,
   SHOW_DELETE_CONFIRMATION,
@@ -146,6 +147,16 @@ export const updateDashboard = createAction(
     payload: {
       dashboardId,
       settings,
+    },
+  })
+);
+
+export const saveDashboardMeta = createAction(
+  SAVE_DASHBOARD_METADATA,
+  (dashboardId: string, metadata: Partial<DashboardMetaData>) => ({
+    payload: {
+      dashboardId,
+      metadata,
     },
   })
 );

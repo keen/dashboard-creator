@@ -1,7 +1,9 @@
 import React, { FC } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { Modal } from '@keen.io/ui-core';
+import { Modal, ModalHeader } from '@keen.io/ui-core';
+
+import { Content } from './QueryPickerModal.styles';
 
 import QueryPicker from '../QueryPicker';
 
@@ -13,16 +15,18 @@ const QueryPickerModal: FC<{}> = () => {
   const { isVisible } = useSelector(getQueryPicker);
 
   return (
-    <div>
-      <Modal isOpen={isVisible} onClose={() => dispatch(hideQueryPicker())}>
-        {(_, closeHandler) => (
-          <>
-            <div onClick={closeHandler}>{t('query_picker.close')}</div>
+    <Modal isOpen={isVisible} onClose={() => dispatch(hideQueryPicker())}>
+      {(_, closeHandler) => (
+        <>
+          <ModalHeader onClose={closeHandler}>
+            {t('query_picker.title')}
+          </ModalHeader>
+          <Content>
             <QueryPicker />
-          </>
-        )}
-      </Modal>
-    </div>
+          </Content>
+        </>
+      )}
+    </Modal>
   );
 };
 

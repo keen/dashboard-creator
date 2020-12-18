@@ -12,6 +12,7 @@ export const VIEW_DASHBOARD = '@dashboards/VIEW_DASHBOARD';
 export const REGISTER_DASHBOARD = '@dashboards/REGISTER_DASHBOARD';
 export const DEREGISTER_DASHBOARD = '@dashboards/DEREGISTER_DASHBOARD';
 export const UPDATE_DASHBOARD = '@dashboards/UPDATE_DASHBOARD';
+export const SAVE_DASHBOARD_METADATA = '@dashboards/SAVE_DASHBOARD_METADATA';
 export const SAVE_DASHBOARD = '@dashboards/SAVE_DASHBOARD';
 export const ADD_WIDGET_TO_DASHBOARD = '@dashboards/ADD_WIDGET_TO_DASHBOARD';
 export const REMOVE_WIDGET_FROM_DASHBOARD =

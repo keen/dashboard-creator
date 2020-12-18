@@ -48,6 +48,15 @@ class BlobAPI {
       body: JSON.stringify(body),
     });
 
+  saveDashboardMeta = (id: string, metadata: DashboardMetaData) =>
+    fetch(`${this.baseUrl}/metadata/dashboard/${id}`, {
+      method: 'PUT',
+      headers: {
+        Authorization: this.masterKey,
+        [BlobAPIHeaders.MetaData]: JSON.stringify(metadata),
+      },
+    });
+
   deleteDashboard = (dashboardId: string) =>
     fetch(`${this.baseUrl}/blobs/dashboard/${dashboardId}`, {
       method: 'DELETE',
