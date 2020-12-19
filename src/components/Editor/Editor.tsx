@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { Layout as LayoutItem } from 'react-grid-layout';
 import { push } from 'connected-react-router';
 
+import { EditorContainer } from './Editor.styles';
+
 import {
   addWidgetToDashboard,
   removeWidgetFromDashboard,
@@ -18,7 +20,7 @@ import {
   updateWidgetsPosition,
   WidgetsPosition,
 } from '../../modules/widgets';
-import { setActiveDashboard, getActiveDashboard } from '../../modules/app';
+import { setActiveDashboard } from '../../modules/app';
 
 import EditorNavigation from '../EditorNavigation';
 import QueryPickerModal from '../QueryPickerModal';
@@ -40,20 +42,24 @@ const Editor: FC<Props> = ({ dashboardId }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const [droppableWidget, setDroppableWidget] = useState(null);
-  const { widgetsId, isInitialized } = useSelector((state: RootState) => {
-    const dashboard = getDashboard(state, dashboardId);
-    if (dashboard?.initialized) {
+  const { widgetsId, isInitialized, isSaving } = useSelector(
+    (state: RootState) => {
+      const dashboard = getDashboard(state, dashboardId);
+      if (dashboard?.initialized) {
+        return {
+          isInitialized: true,
+          isSaving: dashboard.isSaving,
+          widgetsId: dashboard.settings.widgets,
+        };
+      }
+
       return {
-        isInitialized: true,
-        widgetsId: dashboard.settings.widgets,
+        widgetsId: [],
+        isSaving: false,
+        isInitialized: false,
       };
     }
-
-    return {
-      widgetsId: [],
-      isInitialized: false,
-    };
-  });
+  );
 
   const addWidgetHandler = useCallback(
     (widgetsPosition: WidgetsPosition, droppedItem: LayoutItem) => {
@@ -70,33 +76,33 @@ const Editor: FC<Props> = ({ dashboardId }) => {
     [droppableWidget]
   );
 
-  const activeDashboardId = useSelector((state: RootState) =>
-    getActiveDashboard(state)
-  );
   const { lastModificationDate } = useSelector((state: RootState) =>
-    getDashboardMeta(state, activeDashboardId)
+    getDashboardMeta(state, dashboardId)
   );
 
   return (
     <>
       <EditorNavigation
+        onShowSettings={() => console.log('show settings')}
         onBack={() => {
           dispatch(setActiveDashboard(null));
           dispatch(push(ROUTES.MANAGEMENT));
         }}
       />
-      <EditorBar
-        isSaving={false}
-        onFinishEdit={() => {
-          dispatch(saveDashboard(dashboardId));
-          dispatch(viewDashboard(dashboardId));
-        }}
-        lastSaveTime={lastModificationDate}
-      >
-        <Toolbar
-          onWidgetDrag={(widgetType) => setDroppableWidget(widgetType)}
-        />
-      </EditorBar>
+      <EditorContainer>
+        <EditorBar
+          isSaving={isSaving}
+          onFinishEdit={() => {
+            dispatch(saveDashboard(dashboardId));
+            dispatch(viewDashboard(dashboardId));
+          }}
+          lastSaveTime={lastModificationDate}
+        >
+          <Toolbar
+            onWidgetDrag={(widgetType) => setDroppableWidget(widgetType)}
+          />
+        </EditorBar>
+      </EditorContainer>
       {isInitialized ? (
         <Grid
           isEditorMode={true}

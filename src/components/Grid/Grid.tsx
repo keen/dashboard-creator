@@ -56,6 +56,7 @@ const Grid: FC<Props> = ({
         onDragStop={onWidgetDrag}
         onResizeStop={onWidgetResize}
         onDrop={onWidgetDrop}
+        measureBeforeMount
       >
         {widgets.map(({ id, position }) => (
           <div key={id} data-grid={{ ...position, i: id, static: false }}>

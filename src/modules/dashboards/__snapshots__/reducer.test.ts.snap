@@ -9,6 +9,7 @@ Object {
   "items": Object {
     "@dashboard/01": Object {
       "initialized": true,
+      "isSaving": false,
       "settings": Object {
         "version": "0.0.1",
         "widgets": Array [
@@ -45,6 +46,7 @@ Object {
   "items": Object {
     "@dashboard/01": Object {
       "initialized": true,
+      "isSaving": false,
       "settings": Object {
         "version": "0.0.1",
         "widgets": Array [],

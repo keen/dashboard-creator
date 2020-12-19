@@ -15,9 +15,13 @@ import {
   SHARE_DASHBOARD,
   CLONE_DASHBOARD,
   DELETE_DASHBOARD,
+  DELETE_DASHBOARD_SUCCESS,
   EDIT_DASHBOARD,
   SAVE_DASHBOARD,
+  SAVE_DASHBOARD_SUCCESS,
+  SAVE_DASHBOARD_ERROR,
   SAVE_DASHBOARD_METADATA,
+  UPDATE_DASHBOARD_METADATA,
   VIEW_DASHBOARD,
   INITIALIZE_DASHBOARD_WIDGETS,
   SHOW_DELETE_CONFIRMATION,
@@ -87,6 +91,15 @@ export const viewDashboard = createAction(
   })
 );
 
+export const deleteDashboardSuccess = createAction(
+  DELETE_DASHBOARD_SUCCESS,
+  (dashboardId: string) => ({
+    payload: {
+      dashboardId,
+    },
+  })
+);
+
 export const deleteDashboard = createAction(
   DELETE_DASHBOARD,
   (dashboardId: string) => ({
@@ -116,6 +129,24 @@ export const shareDashboard = createAction(
 
 export const saveDashboard = createAction(
   SAVE_DASHBOARD,
+  (dashboardId: string) => ({
+    payload: {
+      dashboardId,
+    },
+  })
+);
+
+export const saveDashboardSuccess = createAction(
+  SAVE_DASHBOARD_SUCCESS,
+  (dashboardId: string) => ({
+    payload: {
+      dashboardId,
+    },
+  })
+);
+
+export const saveDashboardError = createAction(
+  SAVE_DASHBOARD_ERROR,
   (dashboardId: string) => ({
     payload: {
       dashboardId,
@@ -161,6 +192,16 @@ export const saveDashboardMeta = createAction(
   })
 );
 
+export const updateDashboardMeta = createAction(
+  UPDATE_DASHBOARD_METADATA,
+  (dashboardId: string, metadata: Partial<DashboardMetaData>) => ({
+    payload: {
+      dashboardId,
+      metadata,
+    },
+  })
+);
+
 export const initializeDashboardWidgets = createAction(
   INITIALIZE_DASHBOARD_WIDGETS,
   (dashboardId: string, widgetsId: string[]) => ({
@@ -187,12 +228,16 @@ export type DashboardsActions =
   | ReturnType<typeof fetchDashboardListSuccess>
   | ReturnType<typeof fetchDashboardListError>
   | ReturnType<typeof createDashboard>
+  | ReturnType<typeof updateDashboardMeta>
   | ReturnType<typeof registerDashboard>
   | ReturnType<typeof deregisterDashboard>
   | ReturnType<typeof shareDashboard>
   | ReturnType<typeof cloneDashboard>
   | ReturnType<typeof deleteDashboard>
+  | ReturnType<typeof deleteDashboardSuccess>
   | ReturnType<typeof saveDashboard>
+  | ReturnType<typeof saveDashboardSuccess>
+  | ReturnType<typeof saveDashboardError>
   | ReturnType<typeof updateDashboard>
   | ReturnType<typeof viewDashboard>
   | ReturnType<typeof editDashboard>

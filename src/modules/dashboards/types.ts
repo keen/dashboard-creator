@@ -24,6 +24,7 @@ export type Dashboard = {
 
 export type DashboardItem = {
   initialized: boolean;
+  isSaving: boolean;
   settings: Dashboard;
 };
 

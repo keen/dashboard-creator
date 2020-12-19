@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import { render as rtlRender, fireEvent } from '@testing-library/react';
+
 import EditorBar from './EditorBar';
 
 const render = (overProps: any = {}) => {
@@ -23,41 +24,40 @@ const render = (overProps: any = {}) => {
   };
 };
 
-describe('EditorBar', () => {
-  describe('lastSaveTime is set correctly', () => {
-    test('it renders the component with children elements', () => {
-      const timestamp = 1607525787826;
-      const text = moment(timestamp).fromNow();
-      const {
-        wrapper: { getByText },
-      } = render({ lastSaveTime: timestamp });
+test('renders information about last save time', () => {
+  const timestamp = 1607525787826;
+  const timeAgo = moment(timestamp).fromNow();
+  const {
+    wrapper: { getByText },
+  } = render({ lastSaveTime: timestamp });
 
-      expect(getByText('Children Element')).toBeInTheDocument();
-      expect(getByText(`editor_bar.saved ${text}`)).toBeInTheDocument();
-    });
-  });
+  expect(getByText(`editor_bar.saved ${timeAgo}`)).toBeInTheDocument();
+});
 
-  describe('isSaving set to true', () => {
-    test('it renders editor_bar.is_saving text', () => {
-      const {
-        wrapper: { getByText },
-      } = render({ isSaving: true });
+test('renders children nodes', () => {
+  const {
+    wrapper: { getByText },
+  } = render();
 
-      expect(getByText('Children Element')).toBeInTheDocument();
-      expect(getByText('editor_bar.is_saving')).toBeInTheDocument();
-    });
-  });
+  expect(getByText('Children Element')).toBeInTheDocument();
+});
 
-  describe('finish edition function', () => {
-    test('it triggers correctly', () => {
-      const {
-        wrapper: { getByText },
-        props,
-      } = render();
+test('renders saving indicator', () => {
+  const {
+    wrapper: { getByText },
+  } = render({ isSaving: true });
 
-      const finishButton = getByText(`editor_bar.finish_edition`);
-      fireEvent.click(finishButton);
-      expect(props.onFinishEdit).toHaveBeenCalled();
-    });
-  });
+  expect(getByText('editor_bar.is_saving')).toBeInTheDocument();
+});
+
+test('allows user to finish dashboard edition', () => {
+  const {
+    wrapper: { getByText },
+    props,
+  } = render();
+
+  const finishButton = getByText(`editor_bar.finish_edition`);
+  fireEvent.click(finishButton);
+
+  expect(props.onFinishEdit).toHaveBeenCalled();
 });

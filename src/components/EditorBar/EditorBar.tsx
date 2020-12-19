@@ -1,8 +1,15 @@
 import React, { FC, ReactNode, useMemo } from 'react';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
+import { Loader } from '@keen.io/ui-core';
 
-import { Container, ChildrenWrapper, TimeAgo, Right } from './EditorBar.styles';
+import {
+  Aside,
+  Container,
+  ChildrenWrapper,
+  Message,
+  SavingIndicator,
+} from './EditorBar.styles';
 
 import SubmitButton from '../SubmitButton';
 
@@ -34,12 +41,21 @@ const EditorBar: FC<Props> = ({
   return (
     <Container>
       <ChildrenWrapper>{children}</ChildrenWrapper>
-      <Right>
-        <TimeAgo>{isSaving ? t('editor_bar.is_saving') : timeAgo}</TimeAgo>
+      <Aside>
+        <SavingIndicator>
+          {isSaving ? (
+            <>
+              <Loader width={20} height={20} />
+              <Message>{t('editor_bar.is_saving')}</Message>
+            </>
+          ) : (
+            <Message>{timeAgo}</Message>
+          )}
+        </SavingIndicator>
         <SubmitButton onClick={onFinishEdit}>
           {t('editor_bar.finish_edition')}
         </SubmitButton>
-      </Right>
+      </Aside>
     </Container>
   );
 };

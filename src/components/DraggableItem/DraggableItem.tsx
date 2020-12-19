@@ -1,6 +1,8 @@
 import React, { FC } from 'react';
 import { IconType } from '@keen.io/icons';
 
+import { Container } from './DraggableItem.styles';
+
 import WidgetItem from '../WidgetItem';
 
 type Props = {
@@ -19,7 +21,7 @@ const DraggableItem: FC<Props> = ({
   dragEndHandler,
 }) => {
   return (
-    <div
+    <Container
       draggable
       unselectable="on"
       data-widget-type={type}
@@ -27,7 +29,7 @@ const DraggableItem: FC<Props> = ({
       onDragEnd={dragEndHandler}
     >
       <WidgetItem icon={icon} text={text} />
-    </div>
+    </Container>
   );
 };
 

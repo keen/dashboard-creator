@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Navigation } from './Viewer.styles';
 
-import { getDashboard } from '../../modules/dashboards';
+import { getDashboard, editDashboard } from '../../modules/dashboards';
 
 import Grid from '../Grid';
 import ViewerNavigation from '../ViewerNavigation';
@@ -16,6 +16,8 @@ type Props = {
 };
 
 const Viewer: FC<Props> = ({ dashboardId }) => {
+  const dispatch = useDispatch();
+
   const { widgetsId, isInitialized } = useSelector((state: RootState) => {
     const dashboard = getDashboard(state, dashboardId);
     if (dashboard?.initialized) {
@@ -34,7 +36,13 @@ const Viewer: FC<Props> = ({ dashboardId }) => {
   return (
     <>
       <Navigation>
-        <ViewerNavigation />
+        <ViewerNavigation
+          onEditDashboard={() => dispatch(editDashboard(dashboardId))}
+          onShowSettings={() => {
+            console.log('onShowDashboardSettings');
+          }}
+          editPrivileges
+        />
       </Navigation>
       {isInitialized ? (
         <>
