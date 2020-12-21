@@ -13,7 +13,11 @@ import { EditorContext } from '../../contexts';
 import { Container } from './Grid.styles';
 import Widget, { DRAG_HANDLE_ELEMENT } from '../Widget';
 
-import { getWidgetsPosition, WidgetsPosition } from '../../modules/widgets';
+import {
+  getWidgetsPosition,
+  WidgetsPosition,
+  GridPosition,
+} from '../../modules/widgets';
 import { RootState } from '../../rootReducer';
 import { getDroppingItemSize } from '../../utils';
 
@@ -62,11 +66,16 @@ const Grid: FC<Props> = ({
     setResize(true);
   };
 
-  const onResizeStop = (_items, item) => {
+  const onResizeStop = (
+    items: WidgetsPosition,
+    item: GridPosition & {
+      i: string;
+    }
+  ) => {
     const { i: id } = item;
     setResize(false);
     editorPubSub.publish(RESIZE_WIDGET_EVENT, { id });
-    if (onWidgetResize) onWidgetResize;
+    if (onWidgetResize) onWidgetResize(items);
   };
 
   return (
@@ -103,13 +112,14 @@ const Grid: FC<Props> = ({
           <div
             key={id}
             data-grid={{ ...position, i: id, static: false }}
-            onMouseOver={() => !isResize && showCover(id)}
+            onMouseEnter={() => !isResize && showCover(id)}
             onMouseLeave={() => showCover(null)}
           >
             <Widget
               id={id}
               onRemoveWidget={() => onRemoveWidget(id)}
               showCover={isEditorMode && id === cover}
+              disableInteractions={isEditorMode}
             />
           </div>
         ))}

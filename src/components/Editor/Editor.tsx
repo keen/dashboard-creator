@@ -75,9 +75,11 @@ const Editor: FC<Props> = ({ dashboardId }) => {
       const gridPositions = widgetsPosition.filter(({ i }) => i !== id);
 
       const widgetId = createWidgetId();
-      const { x, y, w, h } = droppedItem;
+      const { x, y, w, h, minW, minH } = droppedItem;
 
-      dispatch(createWidget(widgetId, droppableWidget, { x, y, w, h }));
+      dispatch(
+        createWidget(widgetId, droppableWidget, { x, y, w, h, minW, minH })
+      );
       dispatch(addWidgetToDashboard(dashboardId, widgetId));
       dispatch(updateWidgetsPosition(gridPositions));
     },

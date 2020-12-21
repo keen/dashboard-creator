@@ -17,9 +17,11 @@ import createDataviz from './utils/createDataviz';
 type Props = {
   /** Widget identifier */
   id: string;
+  /** Disable chart interactions */
+  disableInteractions?: boolean;
 };
 
-const ChartWidget: FC<Props> = ({ id }) => {
+const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
   const containerRef = useRef(null);
   const loaderRef = useRef(null);
   const datavizRef = useRef(null);
@@ -82,6 +84,7 @@ const ChartWidget: FC<Props> = ({ id }) => {
         <Container
           ref={containerRef}
           data-testid="chart-widget-container"
+          disableInteractions={disableInteractions}
         ></Container>
       ) : (
         <LoaderWrapper ref={loaderRef}>

@@ -20,11 +20,18 @@ type Props = {
   id: string;
   /** Show cover with editing buttons */
   showCover: boolean;
+  /** Disable interactions on charts */
+  disableInteractions?: boolean;
   /** Remove widget event handler */
   onRemoveWidget: () => void;
 };
 
-const Widget: FC<Props> = ({ id, showCover, onRemoveWidget }) => {
+const Widget: FC<Props> = ({
+  id,
+  showCover,
+  onRemoveWidget,
+  disableInteractions = false,
+}) => {
   const { t } = useTranslation();
   const {
     widget: { id: widgetId },
@@ -32,7 +39,7 @@ const Widget: FC<Props> = ({ id, showCover, onRemoveWidget }) => {
 
   return (
     <Container>
-      <ChartWidget id={widgetId} />
+      <ChartWidget id={widgetId} disableInteractions={disableInteractions} />
       <Cover className={DRAG_HANDLE_ELEMENT} enabled={showCover}>
         <ButtonsContainer>
           <PreventDragPropagation>

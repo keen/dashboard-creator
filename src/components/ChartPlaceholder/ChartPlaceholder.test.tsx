@@ -23,11 +23,3 @@ test('renders placeholder icon', () => {
   const svg = container.querySelector('svg');
   expect(svg).toBeInTheDocument();
 });
-
-test('renders ghost image version', () => {
-  const {
-    wrapper: { getByTestId },
-  } = render({ isGhostImage: true });
-  const style = window.getComputedStyle(getByTestId('chart-placeholder'));
-  expect(style.transform).toEqual('translateX(-100%)');
-});

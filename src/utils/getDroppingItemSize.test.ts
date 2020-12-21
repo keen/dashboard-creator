@@ -6,6 +6,8 @@ test('get dropping item size for "visualization" item', () => {
     Object {
       "h": 7,
       "i": "dropping-item",
+      "minH": 6,
+      "minW": 2,
       "w": 3,
     }
   `);
@@ -17,6 +19,8 @@ test('get dropping item size for "text" item', () => {
     Object {
       "h": 3,
       "i": "dropping-item",
+      "minH": 1,
+      "minW": 2,
       "w": 3,
     }
   `);

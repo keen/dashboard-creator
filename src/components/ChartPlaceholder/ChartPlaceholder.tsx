@@ -7,22 +7,12 @@ import { Container } from './ChartPlaceholder.styles';
 type Props = {
   width?: number;
   height?: number;
-  isGhostImage?: boolean;
 };
 
 const ICON_FACTOR = 0.3;
 
-const ChartPlaceholder: FC<Props> = ({
-  width = 100,
-  height = 100,
-  isGhostImage = false,
-}) => (
-  <Container
-    width={width}
-    height={height}
-    isGhostImage={isGhostImage}
-    data-testid="chart-placeholder"
-  >
+const ChartPlaceholder: FC<Props> = ({ width = 100, height = 100 }) => (
+  <Container width={width} height={height} data-testid="chart-placeholder">
     <Icon
       type="bar-widget-vertical"
       width={Math.floor(ICON_FACTOR * width)}

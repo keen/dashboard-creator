@@ -1,6 +1,13 @@
 import { Query } from '@keen.io/parser';
 
-export type GridPosition = { w: number; h: number; x: number; y: number };
+export type GridPosition = {
+  w: number;
+  h: number;
+  x: number;
+  y: number;
+  minH?: number;
+  minW?: number;
+};
 
 export type WidgetsPosition = (GridPosition & { i: string })[];
 

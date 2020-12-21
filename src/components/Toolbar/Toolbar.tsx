@@ -40,9 +40,17 @@ const Toolbar: FC<Props> = ({ onWidgetDrag }) => {
       const { width, height } = calculateGhostSize(gridSize, widgetType);
       const element = document.createElement('div');
 
+      const styles = {
+        width,
+        height,
+        transform: 'translateX(-100%)',
+        overflow: 'hidden',
+      };
+      Object.assign(element.style, styles);
+
       dragGhostElement.current = element;
       ReactDOM.render(
-        <ChartPlaceholder width={width} height={height} isGhostImage />,
+        <ChartPlaceholder width={width} height={height} />,
         element
       );
 
