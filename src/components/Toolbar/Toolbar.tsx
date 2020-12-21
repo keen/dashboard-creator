@@ -1,11 +1,17 @@
-import React, { FC, useCallback, useRef } from 'react';
+import React, { FC, useCallback, useRef, useContext } from 'react';
 import ReactDOM from 'react-dom';
 import { useTranslation } from 'react-i18next';
 
+import { EditorContext } from '../../contexts';
+
 import { Container } from './Toolbar.styles';
 
-import ChartDragGhost from '../ChartDragGhost';
+import ChartPlaceholder from '../ChartPlaceholder';
 import DraggableItem from '../DraggableItem';
+
+import { calculateGhostSize } from './utils';
+
+import { WidgetType } from '../../types';
 
 type Props = {
   /** Widget drag event handler */
@@ -16,17 +22,37 @@ const Toolbar: FC<Props> = ({ onWidgetDrag }) => {
   const { t } = useTranslation();
   const dragGhostElement = useRef<HTMLDivElement>(null);
   const dragEndHandler = useCallback(() => {
-    if (dragGhostElement.current) dragGhostElement.current.remove();
+    if (dragGhostElement.current) {
+      dragGhostElement.current.remove();
+      ReactDOM.unmountComponentAtNode(dragGhostElement.current);
+      dragGhostElement.current = null;
+    }
   }, []);
+
+  const { gridSize } = useContext(EditorContext);
 
   const dragStartHandler = useCallback(
     (e: React.DragEvent<HTMLDivElement>) => {
       e.dataTransfer.setData('text/plain', '');
-      const widgetType = e.currentTarget.getAttribute('data-widget-type');
+      const widgetType = e.currentTarget.getAttribute(
+        'data-widget-type'
+      ) as WidgetType;
+      const { width, height } = calculateGhostSize(gridSize, widgetType);
       const element = document.createElement('div');
 
+      const styles = {
+        width,
+        height,
+        transform: 'translateX(-100%)',
+        overflow: 'hidden',
+      };
+      Object.assign(element.style, styles);
+
       dragGhostElement.current = element;
-      ReactDOM.render(<ChartDragGhost />, element);
+      ReactDOM.render(
+        <ChartPlaceholder width={width} height={height} />,
+        element
+      );
 
       document.body.appendChild(element);
       e.dataTransfer.setDragImage(element, 0, 0);

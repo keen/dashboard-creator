@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import { colors } from '@keen.io/colors';
+import { UI_LAYERS } from '@keen.io/ui-core';
 
 export const Container = styled.div`
   .react-grid-layout {
@@ -21,10 +23,15 @@ export const Container = styled.div`
     will-change: width, height;
   }
 
+  .react-grid-item.react-draggable {
+    cursor: grab;
+  }
+
   .react-grid-item.react-draggable-dragging {
     transition: none;
     z-index: 3;
     will-change: transform;
+    cursor: grabbing;
   }
 
   .react-grid-item.dropping {
@@ -32,8 +39,8 @@ export const Container = styled.div`
   }
 
   .react-grid-item.react-grid-placeholder {
-    background: red;
-    opacity: 0.2;
+    background: none;
+    border: 1px dashed ${colors.gray[500]};
     transition-duration: 100ms;
     z-index: 2;
     -webkit-user-select: none;
@@ -45,19 +52,19 @@ export const Container = styled.div`
 
   .react-grid-item > .react-resizable-handle {
     position: absolute;
-    width: 20px;
-    height: 20px;
+    width: 30px;
+    height: 30px;
+    padding: 5px;
+    opacity: 0;
+    z-index: ${UI_LAYERS.tooltip};
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
   }
 
-  .react-grid-item > .react-resizable-handle::after {
-    content: '';
-    position: absolute;
-    right: 3px;
-    bottom: 3px;
-    width: 5px;
-    height: 5px;
-    border-right: 2px solid rgba(0, 0, 0, 0.4);
-    border-bottom: 2px solid rgba(0, 0, 0, 0.4);
+  .react-grid-item.react-resizable:hover > .react-resizable-handle {
+    opacity: 1;
   }
 
   .react-resizable-hide > .react-resizable-handle {

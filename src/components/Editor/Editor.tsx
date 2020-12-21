@@ -1,8 +1,9 @@
-import React, { FC, useState, useCallback } from 'react';
+import React, { FC, useState, useCallback, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Layout as LayoutItem } from 'react-grid-layout';
 import { push } from 'connected-react-router';
+import { PubSub } from '@keen.io/pubsub';
 
 import { EditorContainer } from './Editor.styles';
 
@@ -22,6 +23,8 @@ import {
 } from '../../modules/widgets';
 import { setActiveDashboard } from '../../modules/app';
 
+import { EditorContext } from '../../contexts';
+
 import EditorNavigation from '../EditorNavigation';
 import QueryPickerModal from '../QueryPickerModal';
 import DashboardDeleteConfirmation from '../DashboardDeleteConfirmation';
@@ -30,6 +33,7 @@ import EditorBar from '../EditorBar';
 import Grid from '../Grid';
 
 import { ROUTES } from '../../constants';
+import { INITIAL_GRID_SIZE } from './constants';
 
 import { RootState } from '../../rootReducer';
 
@@ -41,6 +45,10 @@ type Props = {
 const Editor: FC<Props> = ({ dashboardId }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+
+  const editorPubSub = useRef(new PubSub());
+  const [gridSize, setGridSize] = useState(INITIAL_GRID_SIZE);
+
   const [droppableWidget, setDroppableWidget] = useState(null);
   const { widgetsId, isInitialized, isSaving } = useSelector(
     (state: RootState) => {
@@ -67,9 +75,11 @@ const Editor: FC<Props> = ({ dashboardId }) => {
       const gridPositions = widgetsPosition.filter(({ i }) => i !== id);
 
       const widgetId = createWidgetId();
-      const { x, y, w, h } = droppedItem;
+      const { x, y, w, h, minW, minH } = droppedItem;
 
-      dispatch(createWidget(widgetId, droppableWidget, { x, y, w, h }));
+      dispatch(
+        createWidget(widgetId, droppableWidget, { x, y, w, h, minW, minH })
+      );
       dispatch(addWidgetToDashboard(dashboardId, widgetId));
       dispatch(updateWidgetsPosition(gridPositions));
     },
@@ -81,7 +91,14 @@ const Editor: FC<Props> = ({ dashboardId }) => {
   );
 
   return (
-    <>
+    <EditorContext.Provider
+      value={{
+        gridSize,
+        droppableWidget,
+        setGridSize,
+        editorPubSub: editorPubSub.current,
+      }}
+    >
       <EditorNavigation
         onShowSettings={() => console.log('show settings')}
         onBack={() => {
@@ -108,12 +125,14 @@ const Editor: FC<Props> = ({ dashboardId }) => {
           isEditorMode={true}
           widgetsId={widgetsId}
           onWidgetDrop={addWidgetHandler}
-          onWidgetDrag={(gridPositions) =>
-            dispatch(updateWidgetsPosition(gridPositions))
-          }
-          onWidgetResize={(gridPositions) =>
-            dispatch(updateWidgetsPosition(gridPositions))
-          }
+          onWidgetDrag={(gridPositions) => {
+            dispatch(updateWidgetsPosition(gridPositions));
+            dispatch(saveDashboard(dashboardId));
+          }}
+          onWidgetResize={(gridPositions) => {
+            dispatch(updateWidgetsPosition(gridPositions));
+            dispatch(saveDashboard(dashboardId));
+          }}
           onRemoveWidget={(widgetId) => {
             dispatch(removeWidgetFromDashboard(dashboardId, widgetId));
           }}
@@ -123,7 +142,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
       )}
       <DashboardDeleteConfirmation />
       <QueryPickerModal />
-    </>
+    </EditorContext.Provider>
   );
 };
 

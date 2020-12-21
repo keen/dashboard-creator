@@ -1,10 +1,11 @@
 import { serializeWidget } from '../serializers';
 
+import { WidgetType } from '../../../types';
 import { GridPosition, TextWidget, ChartWidget } from '../types';
 
 type Options = {
   id: string;
-  widgetType: 'visualization' | 'text';
+  widgetType: WidgetType;
   gridPosition: GridPosition;
 };
 

@@ -1,6 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 import { Query } from '@keen.io/parser';
 
+import { WidgetType } from '../../types';
 import { Widget, WidgetItem, GridPosition, WidgetsPosition } from './types';
 
 import {
@@ -35,11 +36,7 @@ export const updateWidgetsPosition = createAction(
 
 export const createWidget = createAction(
   CREATE_WIDGET,
-  (
-    id: string,
-    widgetType: 'visualization' | 'text',
-    gridPosition: GridPosition
-  ) => ({
+  (id: string, widgetType: WidgetType, gridPosition: GridPosition) => ({
     payload: {
       id,
       widgetType,

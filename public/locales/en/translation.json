@@ -48,6 +48,7 @@
     "empty_project": "There are no saved queries in this project. Create a New Query from scratch."
   },
   "widget": {
+    "edit_chart": "Edit Chart",
     "remove": "Remove"
   },
   "widget_item": {

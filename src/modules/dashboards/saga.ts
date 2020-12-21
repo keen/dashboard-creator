@@ -138,7 +138,6 @@ export function* createDashboard({
     version: __APP_VERSION__,
     widgets: [],
   };
-
   yield put(registerDashboard(dashboardId));
   yield put(updateDashboard(dashboardId, serializedDashboard));
   yield put(setDashboardTheme(dashboardId, baseTheme));
