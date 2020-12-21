@@ -91,7 +91,6 @@ const Grid: FC<Props> = ({
         onDrop={onWidgetDrop}
         rowHeight={ROW_HEIGHT}
         margin={GRID_MARGIN}
-        measureBeforeMount
         resizeHandle={
           <div className="react-resizable-handle react-resizable-handle-se">
             <Icon
