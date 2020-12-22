@@ -1,4 +1,4 @@
-import React, { FC, useContext, useState } from 'react';
+import React, { FC, useContext, useState, useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import {
   WidthProvider,
@@ -21,7 +21,14 @@ import {
 import { RootState } from '../../rootReducer';
 import { getDroppingItemSize } from '../../utils';
 
-import { GRID_CONTAINER_ID, ROW_HEIGHT, GRID_MARGIN } from './constants';
+import {
+  GRID_CONTAINER_ID,
+  ROW_HEIGHT,
+  GRID_MARGIN,
+  GRID_BREAKPOINTS,
+  GRID_COLS,
+  GRID_CONTAINER_PADDING,
+} from './constants';
 
 type Props = {
   /** Widgets identifiers used on grid layout */
@@ -54,8 +61,9 @@ const Grid: FC<Props> = ({
   const widgets = useSelector((state: RootState) =>
     getWidgetsPosition(state, widgetsId)
   );
+  const containerRef = useRef(null);
 
-  const { setGridSize, droppableWidget } = useContext(EditorContext);
+  const { droppableWidget, setContainerWidth } = useContext(EditorContext);
   const [cover, showCover] = useState(null);
   const [isResize, setResize] = useState(false);
 
@@ -74,8 +82,14 @@ const Grid: FC<Props> = ({
     if (onWidgetResize) onWidgetResize(items, id);
   };
 
+  useEffect(() => {
+    if (containerRef.current) {
+      setContainerWidth && setContainerWidth(containerRef.current.offsetWidth);
+    }
+  }, [containerRef.current]);
+
   return (
-    <Container id={GRID_CONTAINER_ID}>
+    <Container id={GRID_CONTAINER_ID} ref={containerRef}>
       <ResponsiveReactGridLayout
         draggableHandle={`.${DRAG_HANDLE_ELEMENT}`}
         isDraggable={isEditorMode}
@@ -85,8 +99,11 @@ const Grid: FC<Props> = ({
         onResizeStart={onResizeStart}
         onResizeStop={onResizeStop}
         onDrop={onWidgetDrop}
+        breakpoints={GRID_BREAKPOINTS}
+        cols={GRID_COLS}
+        containerPadding={GRID_CONTAINER_PADDING as [number, number]}
         rowHeight={ROW_HEIGHT}
-        margin={GRID_MARGIN}
+        margin={GRID_MARGIN as [number, number]}
         resizeHandle={
           <div className="react-resizable-handle react-resizable-handle-se">
             <Icon
@@ -98,10 +115,11 @@ const Grid: FC<Props> = ({
           </div>
         }
         droppingItem={getDroppingItemSize(droppableWidget)}
-        onWidthChange={(containerWidth, margin, cols, containerPadding) =>
-          setGridSize &&
-          setGridSize({ containerWidth, margin, cols, containerPadding })
+        onWidthChange={(containerWidth) =>
+          setContainerWidth && setContainerWidth(containerWidth)
         }
+        measureBeforeMount
+        // useCSSTransforms={false}
       >
         {widgets.map(({ id, position }) => (
           <div

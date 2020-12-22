@@ -1,35 +1,29 @@
 import calculateGhostSize from './calculateGhostSize';
 
-import { GridSize } from '../../../types';
-
 jest.mock('../../../utils', () => {
   return {
     getDroppingItemSize: () => ({ w: 2, h: 2 }),
   };
 });
 
-const gridSize: GridSize = {
-  cols: 10,
-  containerWidth: 1200,
-  margin: [15, 15],
-};
+const containerWidth = 1200;
 
 test('get ghost size for chart widget', () => {
-  const ghost = calculateGhostSize(gridSize, 'visualization');
+  const ghost = calculateGhostSize(containerWidth, 'visualization');
   expect(ghost).toMatchInlineSnapshot(`
     Object {
-      "height": 45,
-      "width": 222,
+      "height": 50,
+      "width": 216,
     }
   `);
 });
 
 test('get ghost size for text widget', () => {
-  const ghost = calculateGhostSize(gridSize, 'text');
+  const ghost = calculateGhostSize(containerWidth, 'text');
   expect(ghost).toMatchInlineSnapshot(`
     Object {
-      "height": 45,
-      "width": 222,
+      "height": 50,
+      "width": 216,
     }
   `);
 });

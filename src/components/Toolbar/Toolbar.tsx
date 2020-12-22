@@ -29,7 +29,7 @@ const Toolbar: FC<Props> = ({ onWidgetDrag }) => {
     }
   }, []);
 
-  const { gridSize } = useContext(EditorContext);
+  const { containerWidth } = useContext(EditorContext);
 
   const dragStartHandler = useCallback(
     (e: React.DragEvent<HTMLDivElement>) => {
@@ -37,7 +37,7 @@ const Toolbar: FC<Props> = ({ onWidgetDrag }) => {
       const widgetType = e.currentTarget.getAttribute(
         'data-widget-type'
       ) as WidgetType;
-      const { width, height } = calculateGhostSize(gridSize, widgetType);
+      const { width, height } = calculateGhostSize(containerWidth, widgetType);
       const element = document.createElement('div');
 
       const styles = {

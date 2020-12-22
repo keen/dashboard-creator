@@ -33,7 +33,6 @@ import EditorBar from '../EditorBar';
 import Grid from '../Grid';
 
 import { ROUTES, RESIZE_WIDGET_EVENT } from '../../constants';
-import { INITIAL_GRID_SIZE } from './constants';
 
 import { RootState } from '../../rootReducer';
 
@@ -47,7 +46,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
   const dispatch = useDispatch();
 
   const editorPubSub = useRef(new PubSub());
-  const [gridSize, setGridSize] = useState(INITIAL_GRID_SIZE);
+  const [containerWidth, setContainerWidth] = useState(0);
 
   const [droppableWidget, setDroppableWidget] = useState(null);
   const { widgetsId, isInitialized, isSaving } = useSelector(
@@ -93,9 +92,9 @@ const Editor: FC<Props> = ({ dashboardId }) => {
   return (
     <EditorContext.Provider
       value={{
-        gridSize,
         droppableWidget,
-        setGridSize,
+        containerWidth,
+        setContainerWidth,
         editorPubSub: editorPubSub.current,
       }}
     >
