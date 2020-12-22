@@ -1,4 +1,11 @@
-import React, { FC, useRef, useEffect, useState, useContext } from 'react';
+import React, {
+  FC,
+  useRef,
+  useEffect,
+  useState,
+  useContext,
+  useCallback,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { Loader } from '@keen.io/ui-core';
 import { colors } from '@keen.io/colors';
@@ -27,8 +34,26 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
   const datavizRef = useRef(null);
 
   const { editorPubSub } = useContext(EditorContext);
-
   const [placeholder, setPlaceholder] = useState({ width: 0, height: 0 });
+
+  const getChartInput = useCallback((data: Record<string, any>) => {
+    const isSavedQuery = 'query_name' in data;
+    const { result } = data;
+
+    if (isSavedQuery && typeof result === 'object' && 'steps' in result) {
+      const {
+        query,
+        result: { steps, result: analysisResult },
+      } = data;
+      return {
+        query,
+        steps,
+        result: analysisResult,
+      };
+    }
+
+    return data;
+  }, []);
 
   const {
     isConfigured,
@@ -50,7 +75,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
         theme,
         containerRef.current
       );
-      datavizRef.current.render(data);
+      datavizRef.current.render(getChartInput(data));
     }
   }, [showVisualization]);
 
@@ -62,14 +87,14 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
           const { id: widgetId } = meta;
           if (datavizRef.current && widgetId === id) {
             datavizRef.current.destroy();
-            datavizRef.current.render(data);
+            datavizRef.current.render(getChartInput(data));
           }
           break;
       }
     });
 
     return () => dispose();
-  }, [data]);
+  }, [data, editorPubSub]);
 
   useEffect(() => {
     if (loaderRef.current) {

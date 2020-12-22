@@ -21,14 +21,13 @@ import {
 import { RootState } from '../../rootReducer';
 import { getDroppingItemSize } from '../../utils';
 
-import { RESIZE_WIDGET_EVENT } from '../../constants';
 import { GRID_CONTAINER_ID, ROW_HEIGHT, GRID_MARGIN } from './constants';
 
 type Props = {
   /** Widgets identifiers used on grid layout */
   widgetsId: string[];
   /** Resize widgets event handler */
-  onWidgetResize?: (widgetsPosition: WidgetsPosition) => void;
+  onWidgetResize?: (widgetsPosition: WidgetsPosition, widgetId: string) => void;
   /** Drag widget event handler */
   onWidgetDrag?: (widgetsPosition: WidgetsPosition) => void;
   /** Widget drop event handler */
@@ -56,9 +55,7 @@ const Grid: FC<Props> = ({
     getWidgetsPosition(state, widgetsId)
   );
 
-  const { setGridSize, droppableWidget, editorPubSub } = useContext(
-    EditorContext
-  );
+  const { setGridSize, droppableWidget } = useContext(EditorContext);
   const [cover, showCover] = useState(null);
   const [isResize, setResize] = useState(false);
 
@@ -74,8 +71,7 @@ const Grid: FC<Props> = ({
   ) => {
     const { i: id } = item;
     setResize(false);
-    editorPubSub.publish(RESIZE_WIDGET_EVENT, { id });
-    if (onWidgetResize) onWidgetResize(items);
+    if (onWidgetResize) onWidgetResize(items, id);
   };
 
   return (

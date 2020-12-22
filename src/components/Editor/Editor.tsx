@@ -32,7 +32,7 @@ import Toolbar from '../Toolbar';
 import EditorBar from '../EditorBar';
 import Grid from '../Grid';
 
-import { ROUTES } from '../../constants';
+import { ROUTES, RESIZE_WIDGET_EVENT } from '../../constants';
 import { INITIAL_GRID_SIZE } from './constants';
 
 import { RootState } from '../../rootReducer';
@@ -129,9 +129,10 @@ const Editor: FC<Props> = ({ dashboardId }) => {
             dispatch(updateWidgetsPosition(gridPositions));
             dispatch(saveDashboard(dashboardId));
           }}
-          onWidgetResize={(gridPositions) => {
+          onWidgetResize={(gridPositions, widgetId) => {
             dispatch(updateWidgetsPosition(gridPositions));
             dispatch(saveDashboard(dashboardId));
+            editorPubSub.current.publish(RESIZE_WIDGET_EVENT, { id: widgetId });
           }}
           onRemoveWidget={(widgetId) => {
             dispatch(removeWidgetFromDashboard(dashboardId, widgetId));

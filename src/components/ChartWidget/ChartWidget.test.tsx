@@ -2,11 +2,26 @@ import React from 'react';
 import { render as rtlRender } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
+import { PubSub } from '@keen.io/pubsub';
+import { KeenDataviz } from '@keen.io/dataviz';
 
 import { EditorContext } from '../../contexts';
 
+import { RESIZE_WIDGET_EVENT } from '../../constants';
+
 import ChartWidget from './ChartWidget';
 import { GridSize, WidgetType } from '../../types';
+
+const renderMock = jest.fn();
+const destroyMock = jest.fn();
+
+jest.mock('@keen.io/dataviz', () => {
+  return {
+    KeenDataviz: jest.fn().mockImplementation(() => {
+      return { render: renderMock, destroy: destroyMock };
+    }),
+  };
+});
 
 const id = 'widget-1';
 
@@ -39,8 +54,10 @@ const render = (storeState: any = {}, overProps: any = {}) => {
               h: 7,
             },
             settings: {
-              visualizationType: 'visualization',
-              chartSettings: {},
+              visualizationType: 'bar',
+              chartSettings: {
+                layout: 'vertical',
+              },
               widgetSettings: {},
             },
           },
@@ -58,12 +75,10 @@ const render = (storeState: any = {}, overProps: any = {}) => {
   const mockStore = configureStore([]);
   const store = mockStore({ ...state });
 
+  const editorPubSub = new PubSub();
+
   const initialContext = {
-    editorPubSub: {
-      publish: () => jest.fn(),
-      subscribe: () => jest.fn(),
-      subscriptions: [],
-    },
+    editorPubSub,
     gridSize: {
       cols: 10,
       containerWidth: 1200,
@@ -85,18 +100,41 @@ const render = (storeState: any = {}, overProps: any = {}) => {
     store,
     props,
     wrapper,
+    editorPubSub,
   };
 };
 
-test('render ChartWidget container', () => {
-  const {
-    wrapper: { getByTestId },
-  } = render();
-  const container = getByTestId('chart-widget-container');
-  expect(container).toBeInTheDocument();
+beforeEach(() => {
+  (KeenDataviz as any).mockClear();
+  destroyMock.mockClear();
+  renderMock.mockClear();
 });
 
-test('render chart placeholder', () => {
+test('remount visualization after user resize widget', () => {
+  const { editorPubSub } = render();
+
+  editorPubSub.publish(RESIZE_WIDGET_EVENT, { id });
+
+  expect(destroyMock).toHaveBeenCalled();
+  expect(renderMock).toHaveBeenCalledTimes(2);
+});
+
+test('renders visualization', () => {
+  render();
+
+  expect(KeenDataviz).toHaveBeenCalledWith(
+    expect.objectContaining({
+      type: 'bar',
+      settings: {
+        layout: 'vertical',
+        theme: {},
+      },
+      widget: {},
+    })
+  );
+});
+
+test('renders chart placeholder', () => {
   const storeState = {
     widgets: {
       items: {
@@ -130,10 +168,11 @@ test('render chart placeholder', () => {
     wrapper: { getByTestId },
   } = render(storeState);
   const placeholder = getByTestId('chart-placeholder');
+
   expect(placeholder).toBeInTheDocument();
 });
 
-test('render loader', () => {
+test('renders loader', () => {
   const storeState = {
     widgets: {
       items: {
@@ -167,5 +206,6 @@ test('render loader', () => {
     wrapper: { getByTestId },
   } = render(storeState);
   const loader = getByTestId('chart-widget-loader');
+
   expect(loader).toBeInTheDocument();
 });
