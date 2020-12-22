@@ -136,6 +136,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
           }}
           onRemoveWidget={(widgetId) => {
             dispatch(removeWidgetFromDashboard(dashboardId, widgetId));
+            dispatch(saveDashboard(dashboardId));
           }}
         />
       ) : (

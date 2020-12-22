@@ -7,6 +7,7 @@ import { Widget, WidgetItem, GridPosition, WidgetsPosition } from './types';
 import {
   REGISTER_WIDGETS,
   CREATE_WIDGET,
+  REMOVE_WIDGET,
   UPDATE_WIDGETS_POSITION,
   FINISH_CHART_WIDGET_CONFIGURATION,
   INITIALIZE_WIDGET,
@@ -44,6 +45,12 @@ export const createWidget = createAction(
     },
   })
 );
+
+export const removeWidget = createAction(REMOVE_WIDGET, (id: string) => ({
+  payload: {
+    id,
+  },
+}));
 
 export const finishChartWidgetConfiguration = createAction(
   FINISH_CHART_WIDGET_CONFIGURATION,
@@ -110,6 +117,7 @@ export const setWidgetState = createAction(
 
 export type WidgetsActions =
   | ReturnType<typeof createWidget>
+  | ReturnType<typeof removeWidget>
   | ReturnType<typeof registerWidgets>
   | ReturnType<typeof updateWidgetsPosition>
   | ReturnType<typeof initializeWidget>

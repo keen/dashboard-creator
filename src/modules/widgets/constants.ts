@@ -1,6 +1,7 @@
 export const REGISTER_WIDGETS = '@widgets/REGISTER_WIDGETS';
 export const UPDATE_WIDGETS_POSITION = '@widgets/UPDATE_WIDGETS_POSITION';
 export const CREATE_WIDGET = '@widgets/CREATE_WIDGET';
+export const REMOVE_WIDGET = '@widgets/REMOVE_WIDGET';
 export const START_VISUALIZATION_WIZARD = '@widgets/START_VISUALIZATION_WIZARD';
 
 export const SET_WIDGET_STATE = '@widgets/SET_WIDGET_STATE';

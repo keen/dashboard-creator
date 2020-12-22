@@ -5,7 +5,7 @@ export const reduceWidgetsPosition = (
   gridPositions: WidgetsPosition
 ) =>
   gridPositions.reduce((acc, position) => {
-    const { i: id, x, y, w, h } = position;
+    const { i: id, x, y, w, h, minH, minW } = position;
     const item = items[id];
 
     return {
@@ -14,7 +14,7 @@ export const reduceWidgetsPosition = (
         ...item,
         widget: {
           ...item.widget,
-          position: { w, h, x, y },
+          position: { w, h, x, y, minH, minW },
         },
       },
     };

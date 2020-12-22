@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { WidgetsActions } from './actions';
 
 import { serializeWidget } from './serializers';
@@ -6,6 +7,7 @@ import { createWidget } from './utils';
 
 import {
   REGISTER_WIDGETS,
+  REMOVE_WIDGET,
   UPDATE_WIDGETS_POSITION,
   FINISH_CHART_WIDGET_CONFIGURATION,
   SET_WIDGET_LOADING,
@@ -15,7 +17,7 @@ import {
 
 import { ReducerState } from './types';
 
-const initialState: ReducerState = {
+export const initialState: ReducerState = {
   items: {},
 };
 
@@ -24,6 +26,14 @@ const widgetsReducer = (
   action: WidgetsActions
 ) => {
   switch (action.type) {
+    case REMOVE_WIDGET:
+      const {
+        items: { [action.payload.id]: widget, ...restItems },
+      } = state;
+      return {
+        ...state,
+        items: restItems,
+      };
     case FINISH_CHART_WIDGET_CONFIGURATION:
       return {
         ...state,
