@@ -15,15 +15,6 @@ import {
   SET_WIDGET_LOADING,
   SET_WIDGET_INITIALIZATION,
   SET_WIDGET_STATE,
-  CHART_WIDGET_EDITOR_RUN_QUERY,
-  CHART_WIDGET_EDITOR_RUN_QUERY_SUCCESS,
-  CHART_WIDGET_EDITOR_RUN_QUERY_ERROR,
-  CHART_WIDGET_EDITOR_APPLY_CONFIGURATION,
-  CHART_WIDGET_EDITOR_SET_QUERY_SETTINGS,
-  RESET_CHART_WIDGET_EDITOR,
-  OPEN_CHART_WIDGET_EDITOR,
-  CLOSE_CHART_WIDGET_EDITOR,
-  CHART_WIDGET_EDITOR_MOUNTED,
 } from './constants';
 
 export const registerWidgets = createAction(
@@ -124,46 +115,6 @@ export const setWidgetState = createAction(
   })
 );
 
-export const setQuerySettings = createAction(
-  CHART_WIDGET_EDITOR_SET_QUERY_SETTINGS,
-  (query: Partial<Query>) => ({
-    payload: {
-      query,
-    },
-  })
-);
-
-export const resetChartWidgetEditor = createAction(RESET_CHART_WIDGET_EDITOR);
-
-export const openChartWidgetEditor = createAction(OPEN_CHART_WIDGET_EDITOR);
-
-export const closeChartWidgetEditor = createAction(CLOSE_CHART_WIDGET_EDITOR);
-
-export const chartWidgetEditorMounted = createAction(
-  CHART_WIDGET_EDITOR_MOUNTED
-);
-
-export const chartWidgetEditorRunQuery = createAction(
-  CHART_WIDGET_EDITOR_RUN_QUERY
-);
-
-export const chartWidgetEditorRunQuerySuccess = createAction(
-  CHART_WIDGET_EDITOR_RUN_QUERY_SUCCESS,
-  (results: Record<string, any>) => ({
-    payload: {
-      results,
-    },
-  })
-);
-
-export const chartWidgetEditorRunQueryError = createAction(
-  CHART_WIDGET_EDITOR_RUN_QUERY_ERROR
-);
-
-export const applyChartWidgetEditorConfiguration = createAction(
-  CHART_WIDGET_EDITOR_APPLY_CONFIGURATION
-);
-
 export type WidgetsActions =
   | ReturnType<typeof createWidget>
   | ReturnType<typeof removeWidget>
@@ -174,13 +125,4 @@ export type WidgetsActions =
   | ReturnType<typeof setWidgetLoading>
   | ReturnType<typeof setWidgetState>
   | ReturnType<typeof setWidgetInitialization>
-  | ReturnType<typeof finishChartWidgetConfiguration>
-  | ReturnType<typeof openChartWidgetEditor>
-  | ReturnType<typeof closeChartWidgetEditor>
-  | ReturnType<typeof resetChartWidgetEditor>
-  | ReturnType<typeof setQuerySettings>
-  | ReturnType<typeof chartWidgetEditorMounted>
-  | ReturnType<typeof chartWidgetEditorRunQuery>
-  | ReturnType<typeof chartWidgetEditorRunQuerySuccess>
-  | ReturnType<typeof chartWidgetEditorRunQueryError>
-  | ReturnType<typeof applyChartWidgetEditorConfiguration>;
+  | ReturnType<typeof finishChartWidgetConfiguration>;

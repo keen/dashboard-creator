@@ -1,21 +1,50 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getAvailableWidgets, WidgetPicker } from '@keen.io/widget-picker';
 
 import { Placeholder, Container } from './WidgetVisualization.styles';
 
+import { getDefaultSettings } from '../../utils';
+
+import { VisualizationSettings } from './types';
+
 type Props = {
-  /** Query results */
-  analysisResult?: Record<string, any>;
+  visualization: VisualizationSettings;
   /** Query settings */
   querySettings: Record<string, any>;
+  /** Change visualization settings event handler */
+  onChangeVisualization: (settings: VisualizationSettings) => void;
+  /** Query results */
+  analysisResult?: Record<string, any>;
 };
 
-const WidgetVisualization: FC<Props> = ({ querySettings, analysisResult }) => {
+const WidgetVisualization: FC<Props> = ({
+  visualization,
+  querySettings,
+  analysisResult,
+  onChangeVisualization,
+}) => {
   const { t } = useTranslation();
   const widgets = useMemo(() => getAvailableWidgets(querySettings), [
     analysisResult,
   ]);
+
+  const { type, chartSettings, widgetSettings } = visualization;
+
+  useEffect(() => {
+    if (!widgets.includes(type)) {
+      const [defaultWidget] = widgets;
+      const { chartSettings, widgetSettings } = getDefaultSettings(
+        defaultWidget
+      );
+
+      onChangeVisualization({
+        type: defaultWidget,
+        chartSettings,
+        widgetSettings,
+      });
+    }
+  }, [widgets, type]);
 
   return (
     <Container>
@@ -24,20 +53,19 @@ const WidgetVisualization: FC<Props> = ({ querySettings, analysisResult }) => {
           <div>
             <WidgetPicker
               widgets={widgets}
-              currentWidget={null}
-              chartSettings={{}}
-              widgetSettings={{}}
-              onUpdateSettings={(widgetType, chartSettings, widgetSettings) => {
-                console.log(
-                  'onUpdateSettings',
-                  widgetType,
+              currentWidget={type}
+              chartSettings={chartSettings}
+              widgetSettings={widgetSettings}
+              onUpdateSettings={(widgetType, chartSettings, widgetSettings) =>
+                onChangeVisualization({
+                  type: widgetType,
                   chartSettings,
-                  widgetSettings
-                );
-              }}
+                  widgetSettings,
+                })
+              }
             />
           </div>
-          <div>chart</div>
+          {widgets.includes(type) && <div>chart</div>}
         </>
       ) : (
         <Placeholder>

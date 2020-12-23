@@ -15,17 +15,20 @@ import {
   initializeChartWidget as initializeChartWidgetAction,
   setWidgetLoading,
   setWidgetState,
-  openChartWidgetEditor,
-  chartWidgetEditorRunQuerySuccess,
-  chartWidgetEditorRunQueryError,
-  resetChartWidgetEditor,
-  closeChartWidgetEditor,
   finishChartWidgetConfiguration,
 } from './actions';
 
-import { getWidgetSettings, getChartWidgetEditor } from './selectors';
+import { getWidgetSettings } from './selectors';
 
 import { removeWidgetFromDashboard, saveDashboard } from '../dashboards';
+import {
+  openEditor,
+  closeEditor,
+  resetEditor,
+  getChartEditor,
+  CLOSE_EDITOR,
+  APPLY_CONFIGURATION,
+} from '../chartEditor';
 
 import { SELECT_SAVED_QUERY, CREATE_QUERY, SavedQuery } from '../queries';
 import {
@@ -39,9 +42,6 @@ import {
   CREATE_WIDGET,
   INITIALIZE_WIDGET,
   INITIALIZE_CHART_WIDGET,
-  CHART_WIDGET_EDITOR_RUN_QUERY,
-  CHART_WIDGET_EDITOR_APPLY_CONFIGURATION,
-  CLOSE_CHART_WIDGET_EDITOR,
 } from './constants';
 import { KEEN_ANALYSIS } from '../../constants';
 
@@ -87,42 +87,49 @@ function* cancelWidgetConfiguration(widgetId: string) {
   yield put(removeWidgetFromDashboard(dashboardId, widgetId));
 }
 
-function* chartEditorPerformQuery() {
-  const { querySettings } = yield select(getChartWidgetEditor);
-  const keenAnalysis = yield getContext(KEEN_ANALYSIS);
+/**
+ * Flow responsible for creating ad-hoc query for chart widget.
+ *
+ * @param widgetId - Widget identifer
+ * @return void
+ *
+ */
+function* createQueryForWidget(widgetId: string) {
+  yield put(openEditor());
+  const action = yield take([CLOSE_EDITOR, APPLY_CONFIGURATION]);
 
-  try {
-    const analysisResult = yield keenAnalysis.query(querySettings);
-    yield put(chartWidgetEditorRunQuerySuccess(analysisResult));
-  } catch (err) {
-    yield put(chartWidgetEditorRunQueryError());
-    console.error(err);
-  }
-}
-
-function* createNewQuery(widgetId: string) {
-  yield put(openChartWidgetEditor());
-
-  const action = yield take([
-    CHART_WIDGET_EDITOR_APPLY_CONFIGURATION,
-    CLOSE_CHART_WIDGET_EDITOR,
-  ]);
-
-  if (action.type === CLOSE_CHART_WIDGET_EDITOR) {
+  if (action.type === CLOSE_EDITOR) {
     yield cancelWidgetConfiguration(widgetId);
   } else {
-    const { querySettings } = yield select(getChartWidgetEditor);
+    const {
+      querySettings,
+      visualization: { type, chartSettings, widgetSettings },
+    } = yield select(getChartEditor);
+
     yield put(
-      finishChartWidgetConfiguration(widgetId, querySettings, 'table', {}, {})
+      finishChartWidgetConfiguration(
+        widgetId,
+        querySettings,
+        type,
+        chartSettings,
+        widgetSettings
+      )
     );
 
-    yield put(closeChartWidgetEditor());
+    yield put(closeEditor());
     yield put(initializeChartWidgetAction(widgetId));
-    yield put(resetChartWidgetEditor());
+    yield put(resetEditor());
   }
 }
 
-function* visualizationWizard(widgetId: string) {
+/**
+ * Initial flow for creating chart widget.
+ *
+ * @param widgetId - Widget identifer
+ * @return void
+ *
+ */
+function* selectQueryForWidget(widgetId: string) {
   yield put(showQueryPicker());
   const action = yield take([
     SELECT_SAVED_QUERY,
@@ -134,7 +141,7 @@ function* visualizationWizard(widgetId: string) {
     yield cancelWidgetConfiguration(widgetId);
   } else if (action.type === CREATE_QUERY) {
     yield put(hideQueryPicker());
-    yield call(createNewQuery, widgetId);
+    yield call(createQueryForWidget, widgetId);
   } else if (action.type === SELECT_SAVED_QUERY) {
     const {
       query: {
@@ -163,11 +170,10 @@ function* visualizationWizard(widgetId: string) {
 function* createWidget({ payload }: ReturnType<typeof createWidgetAction>) {
   const { id } = payload;
   // @TODO: Implement different flows based on widget type
-  yield fork(visualizationWizard, id);
+  yield fork(selectQueryForWidget, id);
 }
 
 export function* widgetsSaga() {
-  yield takeLatest(CHART_WIDGET_EDITOR_RUN_QUERY, chartEditorPerformQuery);
   yield takeLatest(CREATE_WIDGET, createWidget);
   yield takeEvery(INITIALIZE_WIDGET, initializeWidget);
   yield takeEvery(INITIALIZE_CHART_WIDGET, initializeChartWidget);

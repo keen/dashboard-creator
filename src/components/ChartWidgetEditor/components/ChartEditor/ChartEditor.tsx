@@ -13,12 +13,13 @@ import {
 } from './ChartEditor.styles';
 
 import {
-  applyChartWidgetEditorConfiguration,
-  chartWidgetEditorMounted,
-  chartWidgetEditorRunQuery,
+  applyConfiguration,
+  editorMounted,
+  runQuery,
   setQuerySettings,
-  getChartWidgetEditor,
-} from '../../../../modules/widgets';
+  setVisualizationSettings,
+  getChartEditor,
+} from '../../../../modules/chartEditor';
 
 import WidgetVisualization from '../WidgetVisualization';
 import { AppContext } from '../../../../contexts';
@@ -36,18 +37,29 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
     project: { id, userKey, masterKey },
   } = useContext(AppContext);
 
-  const { analysisResult, querySettings } = useSelector(getChartWidgetEditor);
+  const {
+    analysisResult,
+    querySettings,
+    visualization,
+    isQueryPerforming,
+  } = useSelector(getChartEditor);
 
   useEffect(() => {
-    dispatch(chartWidgetEditorMounted());
+    dispatch(editorMounted());
   }, []);
 
   return (
     <Container>
       <VisualizationContainer>
         <WidgetVisualization
+          visualization={visualization}
           analysisResult={analysisResult}
           querySettings={querySettings}
+          onChangeVisualization={({ type, chartSettings, widgetSettings }) =>
+            dispatch(
+              setVisualizationSettings(type, chartSettings, widgetSettings)
+            )
+          }
         />
       </VisualizationContainer>
       <QueryCreator
@@ -60,7 +72,8 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
       <Footer>
         <Button
           variant="success"
-          onClick={() => dispatch(chartWidgetEditorRunQuery())}
+          isDisabled={isQueryPerforming}
+          onClick={() => dispatch(runQuery())}
         >
           {t('chart_widget_editor.run_query')}
         </Button>
@@ -68,7 +81,8 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
           <Anchor onClick={onClose}>{t('chart_widget_editor.cancel')}</Anchor>
           <Button
             variant="secondary"
-            onClick={() => dispatch(applyChartWidgetEditorConfiguration())}
+            isDisabled={isQueryPerforming}
+            onClick={() => dispatch(applyConfiguration())}
           >
             {t('chart_widget_editor.add_to_dashboard')}
           </Button>

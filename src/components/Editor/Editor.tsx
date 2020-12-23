@@ -19,9 +19,9 @@ import {
   createWidget,
   createWidgetId,
   updateWidgetsPosition,
-  getChartWidgetEditor,
   WidgetsPosition,
 } from '../../modules/widgets';
+import { getChartEditor } from '../../modules/chartEditor';
 import { setActiveDashboard } from '../../modules/app';
 
 import { EditorContext } from '../../contexts';
@@ -51,7 +51,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
   const [containerWidth, setContainerWidth] = useState(0);
 
   const [droppableWidget, setDroppableWidget] = useState(null);
-  const { isOpen: chartWidgetEditorOpen } = useSelector(getChartWidgetEditor);
+  const { isOpen: chartWidgetEditorOpen } = useSelector(getChartEditor);
   const { widgetsId, isInitialized, isSaving } = useSelector(
     (state: RootState) => {
       const dashboard = getDashboard(state, dashboardId);

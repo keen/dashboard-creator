@@ -13,13 +13,6 @@ import {
   SET_WIDGET_LOADING,
   SET_WIDGET_STATE,
   CREATE_WIDGET,
-  CHART_WIDGET_EDITOR_RUN_QUERY,
-  CHART_WIDGET_EDITOR_SET_QUERY_SETTINGS,
-  CHART_WIDGET_EDITOR_RUN_QUERY_SUCCESS,
-  CHART_WIDGET_EDITOR_RUN_QUERY_ERROR,
-  RESET_CHART_WIDGET_EDITOR,
-  OPEN_CHART_WIDGET_EDITOR,
-  CLOSE_CHART_WIDGET_EDITOR,
 } from './constants';
 
 import { ReducerState } from './types';
@@ -44,60 +37,6 @@ const widgetsReducer = (
   action: WidgetsActions
 ) => {
   switch (action.type) {
-    case RESET_CHART_WIDGET_EDITOR:
-      return {
-        ...state,
-        chartWidgetEditor: initialState.chartWidgetEditor,
-      };
-    case CHART_WIDGET_EDITOR_RUN_QUERY_ERROR:
-      return {
-        ...state,
-        chartWidgetEditor: {
-          ...state.chartWidgetEditor,
-          isQueryPerforming: false,
-        },
-      };
-    case CHART_WIDGET_EDITOR_RUN_QUERY_SUCCESS:
-      return {
-        ...state,
-        chartWidgetEditor: {
-          ...state.chartWidgetEditor,
-          isQueryPerforming: false,
-          analysisResult: action.payload.results,
-        },
-      };
-    case CHART_WIDGET_EDITOR_RUN_QUERY:
-      return {
-        ...state,
-        chartWidgetEditor: {
-          ...state.chartWidgetEditor,
-          isQueryPerforming: true,
-        },
-      };
-    case CHART_WIDGET_EDITOR_SET_QUERY_SETTINGS:
-      return {
-        ...state,
-        chartWidgetEditor: {
-          ...state.chartWidgetEditor,
-          querySettings: action.payload.query,
-        },
-      };
-    case OPEN_CHART_WIDGET_EDITOR:
-      return {
-        ...state,
-        chartWidgetEditor: {
-          ...state.chartWidgetEditor,
-          isOpen: true,
-        },
-      };
-    case CLOSE_CHART_WIDGET_EDITOR:
-      return {
-        ...state,
-        chartWidgetEditor: {
-          ...state.chartWidgetEditor,
-          isOpen: false,
-        },
-      };
     case REMOVE_WIDGET:
       const {
         items: { [action.payload.id]: widget, ...restItems },

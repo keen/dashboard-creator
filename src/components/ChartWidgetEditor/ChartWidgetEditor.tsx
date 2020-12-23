@@ -4,7 +4,7 @@ import { Modal } from '@keen.io/ui-core';
 
 import { ChartEditor } from './components';
 
-import { closeChartWidgetEditor } from '../../modules/widgets';
+import { closeEditor } from '../../modules/chartEditor';
 
 type Props = {
   /** Chart editor open indicator */
@@ -15,7 +15,7 @@ const ChartWidgetEditor: FC<Props> = ({ isOpen }) => {
   const dispatch = useDispatch();
 
   return (
-    <Modal isOpen={isOpen} onClose={() => dispatch(closeChartWidgetEditor())}>
+    <Modal isOpen={isOpen} onClose={() => dispatch(closeEditor())}>
       {(_, closeHandler) => (
         <div>
           <ChartEditor onClose={closeHandler} />
