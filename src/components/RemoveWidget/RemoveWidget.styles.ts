@@ -26,8 +26,11 @@ export const Message = styled.div`
 `;
 
 export const ButtonsContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  justify-items: center;
-  grid-column-gap: 25px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  & > button {
+    margin: 0 12.5px 10px 12.5px;
+  }
 `;

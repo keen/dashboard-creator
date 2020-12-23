@@ -42,6 +42,7 @@
   "query_picker": {
     "close": "Close",
     "title": "What do you want to visualize?",
+    "new_query_button": "New query",
     "search_query_placeholder": "Search saved query",
     "saved_queries_error": "We could not load your saved queries at the moment. Please close this window and try adding a chart again or create a New Query.",
     "empty_search_results": "No queries found with this name.",
@@ -65,5 +66,11 @@
     "finish_edition": "Finish Edition",
     "saved": "Saved",
     "is_saving": "Is saving..."
+  },
+  "chart_widget_editor": {
+    "add_to_dashboard": "Add to Dashboard",
+    "cancel": "Cancel",
+    "run_query_placeholder": "Run Query to visualize your data",
+    "run_query": "Run Query"
   }
 }

@@ -2,7 +2,7 @@ import { createAction } from '@reduxjs/toolkit';
 
 import { SavedQuery } from './types';
 
-import { SELECT_SAVED_QUERY } from './constants';
+import { SELECT_SAVED_QUERY, CREATE_QUERY } from './constants';
 
 export const selectSavedQuery = createAction(
   SELECT_SAVED_QUERY,
@@ -13,4 +13,8 @@ export const selectSavedQuery = createAction(
   })
 );
 
-export type QueriesActions = ReturnType<typeof selectSavedQuery>;
+export const createQuery = createAction(CREATE_QUERY);
+
+export type QueriesActions =
+  | ReturnType<typeof selectSavedQuery>
+  | ReturnType<typeof createQuery>;

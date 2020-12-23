@@ -5,6 +5,7 @@ import {
   select,
   take,
   fork,
+  call,
   getContext,
 } from 'redux-saga/effects';
 
@@ -14,14 +15,19 @@ import {
   initializeChartWidget as initializeChartWidgetAction,
   setWidgetLoading,
   setWidgetState,
+  openChartWidgetEditor,
+  chartWidgetEditorRunQuerySuccess,
+  chartWidgetEditorRunQueryError,
+  resetChartWidgetEditor,
+  closeChartWidgetEditor,
   finishChartWidgetConfiguration,
 } from './actions';
 
-import { getWidgetSettings } from './selectors';
+import { getWidgetSettings, getChartWidgetEditor } from './selectors';
 
 import { removeWidgetFromDashboard, saveDashboard } from '../dashboards';
 
-import { SELECT_SAVED_QUERY, SavedQuery } from '../queries';
+import { SELECT_SAVED_QUERY, CREATE_QUERY, SavedQuery } from '../queries';
 import {
   getActiveDashboard,
   showQueryPicker,
@@ -33,6 +39,9 @@ import {
   CREATE_WIDGET,
   INITIALIZE_WIDGET,
   INITIALIZE_CHART_WIDGET,
+  CHART_WIDGET_EDITOR_RUN_QUERY,
+  CHART_WIDGET_EDITOR_APPLY_CONFIGURATION,
+  CLOSE_CHART_WIDGET_EDITOR,
 } from './constants';
 import { KEEN_ANALYSIS } from '../../constants';
 
@@ -78,12 +87,54 @@ function* cancelWidgetConfiguration(widgetId: string) {
   yield put(removeWidgetFromDashboard(dashboardId, widgetId));
 }
 
+function* chartEditorPerformQuery() {
+  const { querySettings } = yield select(getChartWidgetEditor);
+  const keenAnalysis = yield getContext(KEEN_ANALYSIS);
+
+  try {
+    const analysisResult = yield keenAnalysis.query(querySettings);
+    yield put(chartWidgetEditorRunQuerySuccess(analysisResult));
+  } catch (err) {
+    yield put(chartWidgetEditorRunQueryError());
+    console.error(err);
+  }
+}
+
+function* createNewQuery(widgetId: string) {
+  yield put(openChartWidgetEditor());
+
+  const action = yield take([
+    CHART_WIDGET_EDITOR_APPLY_CONFIGURATION,
+    CLOSE_CHART_WIDGET_EDITOR,
+  ]);
+
+  if (action.type === CLOSE_CHART_WIDGET_EDITOR) {
+    yield cancelWidgetConfiguration(widgetId);
+  } else {
+    const { querySettings } = yield select(getChartWidgetEditor);
+    yield put(
+      finishChartWidgetConfiguration(widgetId, querySettings, 'table', {}, {})
+    );
+
+    yield put(closeChartWidgetEditor());
+    yield put(initializeChartWidgetAction(widgetId));
+    yield put(resetChartWidgetEditor());
+  }
+}
+
 function* visualizationWizard(widgetId: string) {
   yield put(showQueryPicker());
+  const action = yield take([
+    SELECT_SAVED_QUERY,
+    CREATE_QUERY,
+    HIDE_QUERY_PICKER,
+  ]);
 
-  const action = yield take([SELECT_SAVED_QUERY, HIDE_QUERY_PICKER]);
   if (action.type === HIDE_QUERY_PICKER) {
     yield cancelWidgetConfiguration(widgetId);
+  } else if (action.type === CREATE_QUERY) {
+    yield put(hideQueryPicker());
+    yield call(createNewQuery, widgetId);
   } else if (action.type === SELECT_SAVED_QUERY) {
     const {
       query: {
@@ -116,6 +167,7 @@ function* createWidget({ payload }: ReturnType<typeof createWidgetAction>) {
 }
 
 export function* widgetsSaga() {
+  yield takeLatest(CHART_WIDGET_EDITOR_RUN_QUERY, chartEditorPerformQuery);
   yield takeLatest(CREATE_WIDGET, createWidget);
   yield takeEvery(INITIALIZE_WIDGET, initializeWidget);
   yield takeEvery(INITIALIZE_CHART_WIDGET, initializeChartWidget);

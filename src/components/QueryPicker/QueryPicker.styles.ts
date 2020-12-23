@@ -6,6 +6,15 @@ export const LoaderContainer = styled.div`
   justify-content: center;
 `;
 
+export const CreateNewQuery = styled.div`
+  padding: 15px;
+  border-bottom: solid 1px ${colors.white[300]};
+`;
+
+export const SavedQueries = styled.div`
+  padding: 15px;
+`;
+
 export const QueriesContainer = styled.div`
   margin-top: 15px;
   max-height: 370px;

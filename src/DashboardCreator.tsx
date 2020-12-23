@@ -103,6 +103,12 @@ export class DashboardCreator {
     sagaMiddleware.run(rootSaga);
     store.dispatch(appStart(this.themeSettings));
 
+    const projectSettings = {
+      id: this.projectId,
+      userKey: this.userKey,
+      masterKey: this.masterKey,
+    };
+
     ReactDOM.render(
       <Provider store={store}>
         <ThemeProvider
@@ -112,7 +118,9 @@ export class DashboardCreator {
         >
           <ConnectedRouter history={history}>
             <ToastProvider>
-              <AppContext.Provider value={{ notificationPubSub }}>
+              <AppContext.Provider
+                value={{ notificationPubSub, project: projectSettings }}
+              >
                 <APIContext.Provider value={{ blobApi, keenAnalysis }}>
                   <App />
                 </APIContext.Provider>
