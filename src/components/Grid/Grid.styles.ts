@@ -4,6 +4,7 @@ import { UI_LAYERS } from '@keen.io/ui-core';
 
 export const Container = styled.div`
   .react-grid-layout {
+    height: 20px;
     position: relative;
     transition: height 200ms ease;
   }
