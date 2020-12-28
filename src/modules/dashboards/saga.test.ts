@@ -6,9 +6,12 @@ import {
   showDeleteConfirmation,
   hideDeleteConfirmation,
   deleteDashboardSuccess,
+  removeWidgetFromDashboard as removeWidgetFromDashboardAction,
 } from './actions';
 import { removeDashboardTheme } from '../theme/actions';
-import { deleteDashboard } from './saga';
+import { deleteDashboard, removeWidgetFromDashboard } from './saga';
+
+import { removeWidget } from '../widgets';
 
 import {
   CONFIRM_DASHBOARD_DELETE,
@@ -16,6 +19,15 @@ import {
 } from './constants';
 
 import { NOTIFICATION_MANAGER, BLOB_API } from '../../constants';
+
+describe('removeWidgetFromDashboard()', () => {
+  const action = removeWidgetFromDashboardAction('@dashboard/01', '@widget/01');
+  const test = sagaHelper(removeWidgetFromDashboard(action));
+
+  test('triggers remove widget', (result) => {
+    expect(result).toEqual(put(removeWidget('@widget/01')));
+  });
+});
 
 describe('deleteDashboard()', () => {
   const dashboardId = '@dashboard/01';

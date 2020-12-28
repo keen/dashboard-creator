@@ -49,7 +49,10 @@
   },
   "widget": {
     "edit_chart": "Edit Chart",
-    "remove": "Remove"
+    "remove": "Remove",
+    "remove_confirm_button": "Yes, delete",
+    "remove_dismiss_button": "No, keep it",
+    "remove_confirmation": "Are you sure you want to delete this widget?"
   },
   "widget_item": {
     "chart": "Chart",

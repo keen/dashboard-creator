@@ -18,6 +18,7 @@ import {
   saveDashboardSuccess,
   saveDashboardError,
   updateDashboardMeta,
+  removeWidgetFromDashboard as removeWidgetFromDashboardAction,
   initializeDashboardWidgets as initializeDashboardWidgetsAction,
   createDashboard as createDashboardAction,
   editDashboard as editDashboardAction,
@@ -41,6 +42,7 @@ import { setActiveDashboard } from '../app';
 import {
   initializeWidget,
   registerWidgets,
+  removeWidget,
   getWidgetSettings,
 } from '../widgets';
 import { removeDashboardTheme, setDashboardTheme } from '../theme';
@@ -53,6 +55,7 @@ import {
   SAVE_DASHBOARD,
   SAVE_DASHBOARD_METADATA,
   EDIT_DASHBOARD,
+  REMOVE_WIDGET_FROM_DASHBOARD,
   DELETE_DASHBOARD,
   VIEW_DASHBOARD,
   CONFIRM_DASHBOARD_DELETE,
@@ -183,6 +186,13 @@ export function* deleteDashboard({
   }
 }
 
+export function* removeWidgetFromDashboard({
+  payload,
+}: ReturnType<typeof removeWidgetFromDashboardAction>) {
+  const { widgetId } = payload;
+  yield put(removeWidget(widgetId));
+}
+
 export function* editDashboard({
   payload,
 }: ReturnType<typeof editDashboardAction>) {
@@ -282,5 +292,6 @@ export function* dashboardsSaga() {
   yield takeLatest(DELETE_DASHBOARD, deleteDashboard);
   yield takeLatest(VIEW_DASHBOARD, viewDashboard);
   yield takeLatest(EDIT_DASHBOARD, editDashboard);
+  yield takeLatest(REMOVE_WIDGET_FROM_DASHBOARD, removeWidgetFromDashboard);
   yield takeLatest(INITIALIZE_DASHBOARD_WIDGETS, initializeDashboardWidgets);
 }

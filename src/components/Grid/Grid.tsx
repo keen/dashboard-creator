@@ -64,7 +64,7 @@ const Grid: FC<Props> = ({
   const containerRef = useRef(null);
 
   const { droppableWidget, setContainerWidth } = useContext(EditorContext);
-  const [cover, showCover] = useState(null);
+  const [activeWidget, setActiveWidget] = useState(null);
   const [isResize, setResize] = useState(false);
 
   const onResizeStart = () => {
@@ -119,19 +119,18 @@ const Grid: FC<Props> = ({
           setContainerWidth && setContainerWidth(containerWidth)
         }
         measureBeforeMount
-        // useCSSTransforms={false}
       >
         {widgets.map(({ id, position }) => (
           <div
             key={id}
             data-grid={{ ...position, i: id, static: false }}
-            onMouseEnter={() => !isResize && showCover(id)}
-            onMouseLeave={() => showCover(null)}
+            onMouseEnter={() => !isResize && setActiveWidget(id)}
+            onMouseLeave={() => setActiveWidget(null)}
           >
             <Widget
               id={id}
               onRemoveWidget={() => onRemoveWidget(id)}
-              showCover={isEditorMode && id === cover}
+              isHoverActive={isEditorMode && id === activeWidget}
               disableInteractions={isEditorMode}
             />
           </div>

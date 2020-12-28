@@ -1,68 +1,72 @@
 import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
-import { useTranslation } from 'react-i18next';
-import { colors } from '@keen.io/colors';
-import { Button, CircleButton } from '@keen.io/ui-core';
-import { Icon } from '@keen.io/icons';
 
-import { Container, Cover, ButtonsContainer } from './Widget.styles';
+import { Container } from './Widget.styles';
 
-import PreventDragPropagation from '../PreventDragPropagation';
+import { ChartManagement } from './components';
 import ChartWidget from '../ChartWidget';
 
 import { getWidget } from '../../modules/widgets';
 
-import { DRAG_HANDLE_ELEMENT } from './constants';
 import { RootState } from '../../rootReducer';
+import { RenderOptions } from './types';
 
 type Props = {
   /** Widget identifier */
   id: string;
-  /** Show cover with editing buttons */
-  showCover: boolean;
+  /** Widget hover indicator */
+  isHoverActive: boolean;
   /** Disable interactions on charts */
   disableInteractions?: boolean;
   /** Remove widget event handler */
   onRemoveWidget: () => void;
 };
 
+const renderWidget = ({
+  widgetType,
+  widgetId,
+  disableInteractions,
+  isHoverActive,
+  onRemoveWidget,
+}: RenderOptions) => {
+  switch (widgetType) {
+    case 'visualization':
+      return (
+        <>
+          <ChartWidget
+            id={widgetId}
+            disableInteractions={disableInteractions}
+          />
+          <ChartManagement
+            isHoverActive={isHoverActive}
+            onRemoveWidget={onRemoveWidget}
+          />
+        </>
+      );
+    default:
+      return null;
+  }
+};
+
 const Widget: FC<Props> = ({
   id,
-  showCover,
+  isHoverActive,
   onRemoveWidget,
   disableInteractions = false,
 }) => {
-  const { t } = useTranslation();
   const {
-    widget: { id: widgetId },
+    widget: { id: widgetId, type: widgetType },
   } = useSelector((rootState: RootState) => getWidget(rootState, id));
 
   return (
     <Container>
-      <ChartWidget id={widgetId} disableInteractions={disableInteractions} />
-      <Cover className={DRAG_HANDLE_ELEMENT} enabled={showCover}>
-        <ButtonsContainer>
-          <PreventDragPropagation>
-            <Button variant="blank" onClick={() => console.log('Edit')}>
-              {t('widget.edit_chart')}
-            </Button>
-          </PreventDragPropagation>
-          <PreventDragPropagation>
-            <CircleButton
-              variant="blank"
-              onClick={onRemoveWidget}
-              icon={<Icon type="delete" fill={colors.red[500]} />}
-            />
-          </PreventDragPropagation>
-          <PreventDragPropagation>
-            <CircleButton
-              variant="blank"
-              onClick={() => console.log('Clone')}
-              icon={<Icon type="clone" fill={colors.black[500]} />}
-            />
-          </PreventDragPropagation>
-        </ButtonsContainer>
-      </Cover>
+      {renderWidget({
+        widgetType,
+        widgetId,
+        disableInteractions,
+        isHoverActive,
+        onRemoveWidget,
+      })}
     </Container>
   );
 };
