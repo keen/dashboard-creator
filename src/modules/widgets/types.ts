@@ -1,25 +1,7 @@
 import { Query } from '@keen.io/query';
-import {
-  PickerWidgets,
-  ChartSettings,
-  WidgetSettings,
-} from '@keen.io/widget-picker';
 
 export type ReducerState = {
   items: Record<string, WidgetItem>;
-  chartWidgetEditor: ChartWidgetEditor;
-};
-
-export type ChartWidgetEditor = {
-  isOpen: boolean;
-  isQueryPerforming: boolean;
-  querySettings: Record<string, any>;
-  analysisResult: Record<string, any> | null;
-  visualization: {
-    type: PickerWidgets;
-    chartSettings: ChartSettings;
-    widgetSettings: WidgetSettings;
-  };
 };
 
 export type GridPosition = {

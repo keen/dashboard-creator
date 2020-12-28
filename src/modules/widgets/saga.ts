@@ -94,12 +94,12 @@ function* cancelWidgetConfiguration(widgetId: string) {
  * @return void
  *
  */
-function* createQueryForWidget(widgetId: string) {
+export function* createQueryForWidget(widgetId: string) {
   yield put(openEditor());
   const action = yield take([CLOSE_EDITOR, APPLY_CONFIGURATION]);
 
   if (action.type === CLOSE_EDITOR) {
-    yield cancelWidgetConfiguration(widgetId);
+    yield* cancelWidgetConfiguration(widgetId);
   } else {
     const {
       querySettings,
@@ -129,7 +129,7 @@ function* createQueryForWidget(widgetId: string) {
  * @return void
  *
  */
-function* selectQueryForWidget(widgetId: string) {
+export function* selectQueryForWidget(widgetId: string) {
   yield put(showQueryPicker());
   const action = yield take([
     SELECT_SAVED_QUERY,
@@ -138,7 +138,7 @@ function* selectQueryForWidget(widgetId: string) {
   ]);
 
   if (action.type === HIDE_QUERY_PICKER) {
-    yield cancelWidgetConfiguration(widgetId);
+    yield* cancelWidgetConfiguration(widgetId);
   } else if (action.type === CREATE_QUERY) {
     yield put(hideQueryPicker());
     yield call(createQueryForWidget, widgetId);
@@ -167,7 +167,9 @@ function* selectQueryForWidget(widgetId: string) {
   }
 }
 
-function* createWidget({ payload }: ReturnType<typeof createWidgetAction>) {
+export function* createWidget({
+  payload,
+}: ReturnType<typeof createWidgetAction>) {
   const { id } = payload;
   // @TODO: Implement different flows based on widget type
   yield fork(selectQueryForWidget, id);

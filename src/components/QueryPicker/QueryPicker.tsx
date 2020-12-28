@@ -7,8 +7,10 @@ import {
   LoaderContainer,
   QueriesContainer,
   CreateNewQuery,
+  NewQueryButton,
   SavedQueries,
   Message,
+  Description,
 } from './QueryPicker.styles';
 
 import SearchInput from '../SearchInput';
@@ -76,9 +78,12 @@ const QueryPicker: FC<{}> = () => {
   return (
     <div>
       <CreateNewQuery>
-        <Button variant="success" onClick={() => dispatch(createQuery())}>
-          {t('query_picker.new_query_button')}
-        </Button>
+        <NewQueryButton>
+          <Button variant="success" onClick={() => dispatch(createQuery())}>
+            {t('query_picker.new_query_button')}
+          </Button>
+        </NewQueryButton>
+        <Description>{t('query_picker.new_query_description')}</Description>
       </CreateNewQuery>
       <SavedQueries>
         {isLoadingQueries && (

@@ -19,17 +19,6 @@ import { ReducerState } from './types';
 
 export const initialState: ReducerState = {
   items: {},
-  chartWidgetEditor: {
-    isOpen: false,
-    isQueryPerforming: false,
-    querySettings: {},
-    visualization: {
-      type: null,
-      chartSettings: {},
-      widgetSettings: {},
-    },
-    analysisResult: null,
-  },
 };
 
 const widgetsReducer = (

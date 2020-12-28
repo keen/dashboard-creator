@@ -43,6 +43,7 @@
     "close": "Close",
     "title": "What do you want to visualize?",
     "new_query_button": "New query",
+    "new_query_description": "Create the query from scratch or select the saved query from the list",
     "search_query_placeholder": "Search saved query",
     "saved_queries_error": "We could not load your saved queries at the moment. Please close this window and try adding a chart again or create a New Query.",
     "empty_search_results": "No queries found with this name.",

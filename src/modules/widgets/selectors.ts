@@ -14,6 +14,3 @@ export const getWidgetSettings = ({ widgets }: RootState, id: string) =>
 
 export const getWidget = ({ widgets }: RootState, id: string) =>
   widgets.items[id];
-
-export const getChartWidgetEditor = ({ widgets }: RootState) =>
-  widgets.chartWidgetEditor;
