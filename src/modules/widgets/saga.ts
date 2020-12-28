@@ -8,17 +8,19 @@ import {
   call,
   getContext,
 } from 'redux-saga/effects';
+import { SET_QUERY_EVENT } from '@keen.io/query-creator';
 
 import {
   createWidget as createWidgetAction,
   initializeWidget as initializeWidgetAction,
   initializeChartWidget as initializeChartWidgetAction,
+  editChartWidget as editChartWidgetAction,
   setWidgetLoading,
   setWidgetState,
   finishChartWidgetConfiguration,
 } from './actions';
 
-import { getWidgetSettings } from './selectors';
+import { getWidgetSettings, getWidget } from './selectors';
 
 import { removeWidgetFromDashboard, saveDashboard } from '../dashboards';
 import {
@@ -26,7 +28,12 @@ import {
   closeEditor,
   resetEditor,
   getChartEditor,
+  setEditMode,
+  setQuerySettings,
+  setQueryResult,
+  setVisualizationSettings,
   CLOSE_EDITOR,
+  EDITOR_MOUNTED,
   APPLY_CONFIGURATION,
 } from '../chartEditor';
 
@@ -40,10 +47,13 @@ import {
 
 import {
   CREATE_WIDGET,
+  EDIT_CHART_WIDGET,
   INITIALIZE_WIDGET,
   INITIALIZE_CHART_WIDGET,
 } from './constants';
-import { KEEN_ANALYSIS } from '../../constants';
+import { PUBSUB, KEEN_ANALYSIS } from '../../constants';
+
+import { ChartWidget } from './types';
 
 function* initializeChartWidget({
   payload,
@@ -167,6 +177,46 @@ export function* selectQueryForWidget(widgetId: string) {
   }
 }
 
+// TODO: Implement save query edit
+
+export function* editChartWidget({
+  payload,
+}: ReturnType<typeof editChartWidgetAction>) {
+  const { id } = payload;
+
+  const state = yield select();
+  const widgetItem = getWidget(state, id);
+
+  const {
+    widget,
+    data: { query },
+  } = widgetItem;
+
+  const {
+    settings: { visualizationType, chartSettings, widgetSettings },
+  } = widget as ChartWidget;
+  //  const isSavedQuery = typeof widgetQuery === 'string';
+
+  yield put(
+    setVisualizationSettings(visualizationType, chartSettings, widgetSettings)
+  );
+  yield put(setEditMode(true));
+  yield put(setQuerySettings(query));
+  yield put(setQueryResult(widgetItem.data));
+
+  yield put(openEditor());
+
+  yield take(EDITOR_MOUNTED);
+  const pubsub = yield getContext(PUBSUB);
+  yield pubsub.publish(SET_QUERY_EVENT, { query });
+
+  const action = yield take([CLOSE_EDITOR, APPLY_CONFIGURATION]);
+
+  if (action.type === CLOSE_EDITOR) {
+    yield put(resetEditor());
+  }
+}
+
 export function* createWidget({
   payload,
 }: ReturnType<typeof createWidgetAction>) {
@@ -177,6 +227,7 @@ export function* createWidget({
 
 export function* widgetsSaga() {
   yield takeLatest(CREATE_WIDGET, createWidget);
+  yield takeLatest(EDIT_CHART_WIDGET, editChartWidget);
   yield takeEvery(INITIALIZE_WIDGET, initializeWidget);
   yield takeEvery(INITIALIZE_CHART_WIDGET, initializeChartWidget);
 }

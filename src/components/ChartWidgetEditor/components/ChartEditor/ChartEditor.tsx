@@ -2,12 +2,14 @@ import React, { FC, useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import QueryCreator from '@keen.io/query-creator';
-import { Button, Anchor } from '@keen.io/ui-core';
+import { Button, Anchor, FadeLoader } from '@keen.io/ui-core';
 import { Query } from '@keen.io/query';
 
 import {
   Container,
+  QueryCreatorContainer,
   VisualizationContainer,
+  Cancel,
   Footer,
   FooterAside,
 } from './ChartEditor.styles';
@@ -20,6 +22,7 @@ import {
   setVisualizationSettings,
   getChartEditor,
 } from '../../../../modules/chartEditor';
+import { getActiveDashboardTheme } from '../../../../modules/theme';
 
 import WidgetVisualization from '../WidgetVisualization';
 import { AppContext } from '../../../../contexts';
@@ -28,12 +31,13 @@ type Props = {
   onClose: () => void;
 };
 
-// @TODO: Modal container
+// @TODO: Host
 
 const ChartEditor: FC<Props> = ({ onClose }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const {
+    modalContainer,
     project: { id, userKey, masterKey },
   } = useContext(AppContext);
 
@@ -41,8 +45,10 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
     analysisResult,
     querySettings,
     visualization,
+    isEditMode,
     isQueryPerforming,
   } = useSelector(getChartEditor);
+  const baseTheme = useSelector(getActiveDashboardTheme);
 
   useEffect(() => {
     dispatch(editorMounted());
@@ -53,6 +59,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
       <VisualizationContainer>
         <WidgetVisualization
           visualization={visualization}
+          baseTheme={baseTheme}
           analysisResult={analysisResult}
           querySettings={querySettings}
           onChangeVisualization={({ type, chartSettings, widgetSettings }) =>
@@ -62,29 +69,39 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
           }
         />
       </VisualizationContainer>
-      <QueryCreator
-        projectId={id}
-        readKey={userKey}
-        masterKey={masterKey}
-        onUpdateQuery={(query: Query) => dispatch(setQuerySettings(query))}
-        host="staging-api.keen.io"
-      />
+      <QueryCreatorContainer>
+        <QueryCreator
+          projectId={id}
+          readKey={userKey}
+          masterKey={masterKey}
+          modalContainer={modalContainer}
+          onUpdateQuery={(query: Query) => dispatch(setQuerySettings(query))}
+          host="staging-api.keen.io"
+        />
+      </QueryCreatorContainer>
       <Footer>
         <Button
           variant="success"
           isDisabled={isQueryPerforming}
+          icon={isQueryPerforming && <FadeLoader />}
           onClick={() => dispatch(runQuery())}
         >
-          {t('chart_widget_editor.run_query')}
+          {isQueryPerforming
+            ? t('chart_widget_editor.run_query_loading')
+            : t('chart_widget_editor.run_query')}
         </Button>
         <FooterAside>
-          <Anchor onClick={onClose}>{t('chart_widget_editor.cancel')}</Anchor>
+          <Cancel>
+            <Anchor onClick={onClose}>{t('chart_widget_editor.cancel')}</Anchor>
+          </Cancel>
           <Button
             variant="secondary"
             isDisabled={isQueryPerforming}
             onClick={() => dispatch(applyConfiguration())}
           >
-            {t('chart_widget_editor.add_to_dashboard')}
+            {isEditMode
+              ? t('chart_widget_editor.save')
+              : t('chart_widget_editor.add_to_dashboard')}
           </Button>
         </FooterAside>
       </Footer>

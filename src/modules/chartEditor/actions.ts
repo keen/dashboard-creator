@@ -11,12 +11,14 @@ import {
   RUN_QUERY_ERROR,
   RUN_QUERY_SUCCESS,
   EDITOR_MOUNTED,
+  SET_EDIT_MODE,
   SET_VISUALIZATION_SETTINGS,
   SET_QUERY_SETTINGS,
   APPLY_CONFIGURATION,
   RESET_EDITOR,
   OPEN_EDITOR,
   CLOSE_EDITOR,
+  SET_QUERY_RESULT,
 } from './constants';
 
 export const setQuerySettings = createAction(
@@ -24,6 +26,24 @@ export const setQuerySettings = createAction(
   (query: Partial<Query>) => ({
     payload: {
       query,
+    },
+  })
+);
+
+export const setQueryResult = createAction(
+  SET_QUERY_RESULT,
+  (results: Record<string, any>) => ({
+    payload: {
+      results,
+    },
+  })
+);
+
+export const setEditMode = createAction(
+  SET_EDIT_MODE,
+  (isEditMode: boolean) => ({
+    payload: {
+      isEditMode,
     },
   })
 );
@@ -70,7 +90,9 @@ export type ChartEditorActions =
   | ReturnType<typeof openEditor>
   | ReturnType<typeof closeEditor>
   | ReturnType<typeof resetEditor>
+  | ReturnType<typeof setQueryResult>
   | ReturnType<typeof setQuerySettings>
+  | ReturnType<typeof setEditMode>
   | ReturnType<typeof setVisualizationSettings>
   | ReturnType<typeof editorMounted>
   | ReturnType<typeof runQuery>

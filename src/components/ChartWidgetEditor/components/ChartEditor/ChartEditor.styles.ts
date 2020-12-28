@@ -8,6 +8,15 @@ export const VisualizationContainer = styled.div`
   padding: 10px;
 `;
 
+export const QueryCreatorContainer = styled.div`
+  padding: 0 10px;
+`;
+
+export const Cancel = styled.div`
+  cursor: pointer;
+  margin-right: 15px;
+`;
+
 export const Footer = styled.div`
   display: flex;
   padding: 10px 25px;
@@ -15,5 +24,6 @@ export const Footer = styled.div`
 
 export const FooterAside = styled.div`
   display: flex;
+  align-items: center;
   margin-left: auto;
 `;

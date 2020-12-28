@@ -1,4 +1,5 @@
 import { Query } from '@keen.io/query';
+import { PickerWidgets } from '@keen.io/widget-picker';
 
 export type ReducerState = {
   items: Record<string, WidgetItem>;
@@ -24,7 +25,7 @@ export interface ChartWidget extends BaseWidget {
   type: 'visualization';
   query: string | Query;
   settings: {
-    visualizationType: string;
+    visualizationType: PickerWidgets;
     chartSettings: Record<string, any>;
     widgetSettings: Record<string, any>;
   };

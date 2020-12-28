@@ -2,6 +2,7 @@ import widgetsReducer from './reducer';
 import {
   registerWidgets,
   createWidget,
+  editChartWidget,
   removeWidget,
   initializeWidget,
   initializeChartWidget,
@@ -23,6 +24,7 @@ export {
   removeWidget,
   registerWidgets,
   initializeWidget,
+  editChartWidget,
   initializeChartWidget,
   updateWidgetsPosition,
   getWidget,

@@ -7,11 +7,12 @@ import {
 
 export type ReducerState = {
   isOpen: boolean;
+  isEditMode: boolean;
   isQueryPerforming: boolean;
   querySettings: Partial<Query>;
   analysisResult: Record<string, any> | null;
   visualization: {
-    type: PickerWidgets;
+    type: Exclude<PickerWidgets, 'json'>;
     chartSettings: ChartSettings;
     widgetSettings: WidgetSettings;
   };

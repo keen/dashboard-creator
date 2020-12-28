@@ -5,7 +5,7 @@ import { runQuerySuccess, runQueryError } from './actions';
 import { getChartEditor } from './selectors';
 
 import { RUN_QUERY } from './constants';
-import { KEEN_ANALYSIS } from '../../constants';
+import { KEEN_ANALYSIS, NOTIFICATION_MANAGER } from '../../constants';
 
 function* runQuery() {
   const { querySettings } = yield select(getChartEditor);
@@ -14,9 +14,15 @@ function* runQuery() {
   try {
     const analysisResult = yield keenAnalysis.query(querySettings);
     yield put(runQuerySuccess(analysisResult));
-  } catch (err) {
+  } catch (error) {
+    const { body } = error;
     yield put(runQueryError());
-    console.error(err);
+    const notificationManager = yield getContext(NOTIFICATION_MANAGER);
+    yield notificationManager.showNotification({
+      type: 'error',
+      translateMessage: false,
+      message: body,
+    });
   }
 }
 

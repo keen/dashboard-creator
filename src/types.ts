@@ -2,6 +2,7 @@ import { Theme } from '@keen.io/charts';
 
 export type Options = {
   container: string;
+  modalContainer: string;
   blobApiUrl: string;
   project: {
     masterKey: string;

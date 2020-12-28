@@ -38,6 +38,7 @@ const renderWidget = ({
             disableInteractions={disableInteractions}
           />
           <ChartManagement
+            widgetId={widgetId}
             isHoverActive={isHoverActive}
             onRemoveWidget={onRemoveWidget}
           />

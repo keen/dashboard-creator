@@ -2,6 +2,8 @@ import React, { FC } from 'react';
 import { useDispatch } from 'react-redux';
 import { Modal } from '@keen.io/ui-core';
 
+import { Container } from './ChartWidgetEditor.styles';
+
 import { ChartEditor } from './components';
 
 import { closeEditor } from '../../modules/chartEditor';
@@ -17,9 +19,9 @@ const ChartWidgetEditor: FC<Props> = ({ isOpen }) => {
   return (
     <Modal isOpen={isOpen} onClose={() => dispatch(closeEditor())}>
       {(_, closeHandler) => (
-        <div>
+        <Container>
           <ChartEditor onClose={closeHandler} />
-        </div>
+        </Container>
       )}
     </Modal>
   );

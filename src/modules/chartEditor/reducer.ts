@@ -6,6 +6,8 @@ import {
   RUN_QUERY_SUCCESS,
   SET_VISUALIZATION_SETTINGS,
   SET_QUERY_SETTINGS,
+  SET_QUERY_RESULT,
+  SET_EDIT_MODE,
   RESET_EDITOR,
   OPEN_EDITOR,
   CLOSE_EDITOR,
@@ -15,6 +17,7 @@ import { ReducerState } from './types';
 
 export const initialState: ReducerState = {
   isOpen: false,
+  isEditMode: false,
   isQueryPerforming: false,
   querySettings: {},
   visualization: {
@@ -30,6 +33,11 @@ const chartEditorReducer = (
   action: ChartEditorActions
 ) => {
   switch (action.type) {
+    case SET_EDIT_MODE:
+      return {
+        ...state,
+        isEditMode: action.payload.isEditMode,
+      };
     case SET_VISUALIZATION_SETTINGS:
       return {
         ...state,
@@ -41,6 +49,11 @@ const chartEditorReducer = (
       };
     case RESET_EDITOR:
       return initialState;
+    case SET_QUERY_RESULT:
+      return {
+        ...state,
+        analysisResult: action.payload.results,
+      };
     case RUN_QUERY_ERROR:
       return {
         ...state,
