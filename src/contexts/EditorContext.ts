@@ -1,16 +1,16 @@
 import { createContext } from 'react';
 import { PubSub } from '@keen.io/pubsub';
 
-import { GridSize, WidgetType } from '../types';
+import { WidgetType } from '../types';
 
 export const EditorContext = createContext<{
-  gridSize: GridSize;
   droppableWidget: WidgetType;
-  setGridSize: (gridSize: GridSize) => void;
+  containerWidth: number;
+  setContainerWidth: (width: number) => void;
   editorPubSub: PubSub;
 }>({
-  gridSize: null,
   droppableWidget: null,
-  setGridSize: null,
+  containerWidth: null,
+  setContainerWidth: null,
   editorPubSub: null,
 });

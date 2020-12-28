@@ -10,7 +10,7 @@ import { EditorContext } from '../../contexts';
 import { RESIZE_WIDGET_EVENT } from '../../constants';
 
 import ChartWidget from './ChartWidget';
-import { GridSize, WidgetType } from '../../types';
+import { WidgetType } from '../../types';
 
 const renderMock = jest.fn();
 const destroyMock = jest.fn();
@@ -79,13 +79,9 @@ const render = (storeState: any = {}, overProps: any = {}) => {
 
   const initialContext = {
     editorPubSub,
-    gridSize: {
-      cols: 10,
-      containerWidth: 1200,
-      margin: [10, 10],
-    } as GridSize,
     droppableWidget: 'text' as WidgetType,
-    setGridSize: jest.fn(),
+    containerWidth: 1200,
+    setContainerWidth: jest.fn(),
   };
 
   const wrapper = rtlRender(
