@@ -43,6 +43,6 @@ export type WidgetItem = {
   isConfigured: boolean;
   isInitialized: boolean;
   isLoading: boolean;
-  error: string;
+  error: string | null;
   data: Record<string, any>;
 };

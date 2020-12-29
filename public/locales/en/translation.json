@@ -74,7 +74,8 @@
     "cancel": "Cancel",
     "run_query_placeholder": "Run Query to visualize your data",
     "run_query": "Run Query",
-    "run_query_loading": "Loading"
+    "run_query_loading": "Loading",
+    "widget_error": "The selected visualization cannot be used with current query settings. Run query and select visualization."
   },
   "query_creator_analysis": {
     "placeholder": "Select analysis type",

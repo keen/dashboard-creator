@@ -1,10 +1,18 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import React, { FC, useState, useEffect, useRef, useContext } from 'react';
+import React, {
+  FC,
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useContext,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import deepEqual from 'deep-equal';
 import QueryCreator from '@keen.io/query-creator';
-import { Button, Anchor, FadeLoader } from '@keen.io/ui-core';
+import { getAvailableWidgets } from '@keen.io/widget-picker';
+import { Button, Alert, Anchor, FadeLoader } from '@keen.io/ui-core';
 import { Query } from '@keen.io/query';
 
 import {
@@ -14,6 +22,7 @@ import {
   Cancel,
   Footer,
   FooterAside,
+  WidgetError,
 } from './ChartEditor.styles';
 
 import {
@@ -44,6 +53,8 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
     project: { id, userKey, masterKey },
   } = useContext(AppContext);
 
+  const [widgetError, setWidgetError] = useState(null);
+
   const {
     analysisResult,
     querySettings,
@@ -56,6 +67,18 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
   const queryRef = useRef(null);
   const [initialQuery, setInitialQuery] = useState(null);
   queryRef.current = initialQuery;
+
+  const { type: widgetType } = visualization;
+
+  const handleConfigurationApply = useCallback(() => {
+    const availableWidgets = getAvailableWidgets(querySettings);
+    if (availableWidgets.includes(widgetType)) {
+      setWidgetError(null);
+      dispatch(applyConfiguration());
+    } else {
+      setWidgetError(true);
+    }
+  }, [widgetType, querySettings]);
 
   useEffect(() => {
     dispatch(editorMounted());
@@ -72,6 +95,11 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
 
   return (
     <Container>
+      {widgetError && (
+        <WidgetError>
+          <Alert type="error">{t('chart_widget_editor.widget_error')}</Alert>
+        </WidgetError>
+      )}
       <VisualizationContainer>
         <WidgetVisualization
           visualization={visualization}
@@ -106,7 +134,10 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
           variant="success"
           isDisabled={isQueryPerforming}
           icon={isQueryPerforming && <FadeLoader />}
-          onClick={() => dispatch(runQuery())}
+          onClick={() => {
+            setWidgetError(null);
+            dispatch(runQuery());
+          }}
         >
           {isQueryPerforming
             ? t('chart_widget_editor.run_query_loading')
@@ -119,7 +150,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
           <Button
             variant="secondary"
             isDisabled={isQueryPerforming}
-            onClick={() => dispatch(applyConfiguration())}
+            onClick={handleConfigurationApply}
           >
             {isEditMode
               ? t('chart_widget_editor.save')

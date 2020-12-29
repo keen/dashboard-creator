@@ -1,7 +1,13 @@
 import styled from 'styled-components';
 
+// TODO: Handle inline color
+
 export const Container = styled.div`
   background: #f1f5f8;
+`;
+
+export const WidgetError = styled.div`
+  padding: 10px;
 `;
 
 export const VisualizationContainer = styled.div`

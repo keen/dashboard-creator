@@ -89,7 +89,13 @@ function* initializeChartWidget({
 
     yield put(setWidgetState(id, widgetState));
   } catch (err) {
-    console.error(err);
+    const { body } = err;
+    yield put(
+      setWidgetState(id, {
+        isInitialized: true,
+        error: body,
+      })
+    );
   } finally {
     yield put(setWidgetLoading(id, false));
   }
@@ -193,7 +199,7 @@ export function* selectQueryForWidget(widgetId: string) {
   }
 }
 
-// TODO: Implement save query edit
+// TODO: Refactor logic
 /**
  * Flow responsible for editing chart widget.
  *
@@ -294,6 +300,20 @@ export function* editChartWidget({
           );
         } catch (err) {}
       }
+    } else if (isSavedQuery) {
+      yield put(closeEditor());
+      yield put(setWidgetState(id, widgetState));
+      const { query: queryName } = yield select(getWidgetSettings, id);
+
+      yield put(
+        finishChartWidgetConfiguration(
+          id,
+          queryName,
+          widgetType,
+          chartSettings,
+          widgetSettings
+        )
+      );
     } else {
       yield put(setWidgetState(id, widgetState));
       yield put(
