@@ -9,6 +9,7 @@ export const savedQueriesResponse: SavedQueryAPIResponse[] = [
       event_collection: 'logins',
       order_by: null,
     },
+    refresh_rate: 0,
     query_name: '@query/01',
     metadata: {
       display_name: 'Query 01',
@@ -25,6 +26,7 @@ export const savedQueriesResponse: SavedQueryAPIResponse[] = [
       event_collection: 'purchases',
       order_by: null,
     },
+    refresh_rate: 0,
     query_name: '@query/02',
     metadata: {
       display_name: 'Query 02',

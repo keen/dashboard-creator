@@ -7,7 +7,7 @@ import { getChartEditor } from './selectors';
 import { RUN_QUERY } from './constants';
 import { KEEN_ANALYSIS, NOTIFICATION_MANAGER } from '../../constants';
 
-function* runQuery() {
+export function* runQuery() {
   const { querySettings } = yield select(getChartEditor);
   const keenAnalysis = yield getContext(KEEN_ANALYSIS);
 

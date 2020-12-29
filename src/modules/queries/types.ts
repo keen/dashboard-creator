@@ -4,6 +4,7 @@ import { PickerWidgets } from '@keen.io/widget-picker';
 export type SavedQueryAPIResponse = {
   query: Query;
   query_name: string;
+  refresh_rate: number;
   metadata?: SavedQueryMetadata;
 };
 

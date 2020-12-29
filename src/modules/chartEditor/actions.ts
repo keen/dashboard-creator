@@ -12,6 +12,8 @@ import {
   RUN_QUERY_SUCCESS,
   EDITOR_MOUNTED,
   SET_EDIT_MODE,
+  SET_QUERY_TYPE,
+  SET_QUERY_CHANGE,
   SET_VISUALIZATION_SETTINGS,
   SET_QUERY_SETTINGS,
   APPLY_CONFIGURATION,
@@ -19,6 +21,10 @@ import {
   OPEN_EDITOR,
   CLOSE_EDITOR,
   SET_QUERY_RESULT,
+  SHOW_QUERY_CHANGE_CONFIRMATION,
+  HIDE_QUERY_CHANGE_CONFIRMATION,
+  CONFIRM_SAVE_QUERY_UPDATE,
+  USE_QUERY_FOR_WIDGET,
 } from './constants';
 
 export const setQuerySettings = createAction(
@@ -26,6 +32,24 @@ export const setQuerySettings = createAction(
   (query: Partial<Query>) => ({
     payload: {
       query,
+    },
+  })
+);
+
+export const setQueryType = createAction(
+  SET_QUERY_TYPE,
+  (isSavedQuery: boolean) => ({
+    payload: {
+      isSavedQuery,
+    },
+  })
+);
+
+export const setQueryChange = createAction(
+  SET_QUERY_CHANGE,
+  (hasQueryChanged: boolean) => ({
+    payload: {
+      hasQueryChanged,
     },
   })
 );
@@ -86,11 +110,25 @@ export const runQueryError = createAction(RUN_QUERY_ERROR);
 
 export const applyConfiguration = createAction(APPLY_CONFIGURATION);
 
+export const showQueryChangeConfirmation = createAction(
+  SHOW_QUERY_CHANGE_CONFIRMATION
+);
+
+export const hideQueryChangeConfirmation = createAction(
+  HIDE_QUERY_CHANGE_CONFIRMATION
+);
+
+export const confirmSaveQueryUpdate = createAction(CONFIRM_SAVE_QUERY_UPDATE);
+
+export const useQueryForWidget = createAction(USE_QUERY_FOR_WIDGET);
+
 export type ChartEditorActions =
   | ReturnType<typeof openEditor>
   | ReturnType<typeof closeEditor>
   | ReturnType<typeof resetEditor>
+  | ReturnType<typeof setQueryType>
   | ReturnType<typeof setQueryResult>
+  | ReturnType<typeof setQueryChange>
   | ReturnType<typeof setQuerySettings>
   | ReturnType<typeof setEditMode>
   | ReturnType<typeof setVisualizationSettings>
@@ -98,4 +136,8 @@ export type ChartEditorActions =
   | ReturnType<typeof runQuery>
   | ReturnType<typeof runQuerySuccess>
   | ReturnType<typeof runQueryError>
-  | ReturnType<typeof applyConfiguration>;
+  | ReturnType<typeof applyConfiguration>
+  | ReturnType<typeof showQueryChangeConfirmation>
+  | ReturnType<typeof hideQueryChangeConfirmation>
+  | ReturnType<typeof confirmSaveQueryUpdate>
+  | ReturnType<typeof useQueryForWidget>;

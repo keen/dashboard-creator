@@ -1,6 +1,8 @@
-import React, { FC, useEffect, useContext } from 'react';
+/* eslint-disable @typescript-eslint/no-empty-function */
+import React, { FC, useState, useEffect, useRef, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import deepEqual from 'deep-equal';
 import QueryCreator from '@keen.io/query-creator';
 import { Button, Anchor, FadeLoader } from '@keen.io/ui-core';
 import { Query } from '@keen.io/query';
@@ -19,6 +21,7 @@ import {
   editorMounted,
   runQuery,
   setQuerySettings,
+  setQueryChange,
   setVisualizationSettings,
   getChartEditor,
 } from '../../../../modules/chartEditor';
@@ -31,7 +34,7 @@ type Props = {
   onClose: () => void;
 };
 
-// @TODO: Host
+// @TODO: Support host as context argument
 
 const ChartEditor: FC<Props> = ({ onClose }) => {
   const { t } = useTranslation();
@@ -50,9 +53,22 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
   } = useSelector(getChartEditor);
   const baseTheme = useSelector(getActiveDashboardTheme);
 
+  const queryRef = useRef(null);
+  const [initialQuery, setInitialQuery] = useState(null);
+  queryRef.current = initialQuery;
+
   useEffect(() => {
     dispatch(editorMounted());
   }, []);
+
+  useEffect(() => {
+    if (initialQuery) {
+      const hasQueryChanged = !deepEqual(initialQuery, querySettings, {
+        strict: true,
+      });
+      dispatch(setQueryChange(hasQueryChanged));
+    }
+  }, [querySettings, initialQuery]);
 
   return (
     <Container>
@@ -75,7 +91,13 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
           readKey={userKey}
           masterKey={masterKey}
           modalContainer={modalContainer}
-          onUpdateQuery={(query: Query) => dispatch(setQuerySettings(query))}
+          onUpdateChartSettings={() => {}}
+          onUpdateQuery={(query: Query) => {
+            dispatch(setQuerySettings(query));
+            if (!queryRef.current) {
+              setInitialQuery(query);
+            }
+          }}
           host="staging-api.keen.io"
         />
       </QueryCreatorContainer>

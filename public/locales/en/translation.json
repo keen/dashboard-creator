@@ -70,7 +70,7 @@
   },
   "chart_widget_editor": {
     "add_to_dashboard": "Add to Dashboard",
-    "save": "Save",
+    "save": "Update widget",
     "cancel": "Cancel",
     "run_query_placeholder": "Run Query to visualize your data",
     "run_query": "Run Query",

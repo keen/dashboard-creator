@@ -4,13 +4,17 @@ import {
   RUN_QUERY,
   RUN_QUERY_ERROR,
   RUN_QUERY_SUCCESS,
+  SET_QUERY_TYPE,
   SET_VISUALIZATION_SETTINGS,
   SET_QUERY_SETTINGS,
   SET_QUERY_RESULT,
+  SET_QUERY_CHANGE,
   SET_EDIT_MODE,
   RESET_EDITOR,
   OPEN_EDITOR,
   CLOSE_EDITOR,
+  SHOW_QUERY_CHANGE_CONFIRMATION,
+  HIDE_QUERY_CHANGE_CONFIRMATION,
 } from './constants';
 
 import { ReducerState } from './types';
@@ -18,7 +22,9 @@ import { ReducerState } from './types';
 export const initialState: ReducerState = {
   isOpen: false,
   isEditMode: false,
+  isSavedQuery: false,
   isQueryPerforming: false,
+  hasQueryChanged: false,
   querySettings: {},
   visualization: {
     type: null,
@@ -26,6 +32,7 @@ export const initialState: ReducerState = {
     widgetSettings: {},
   },
   analysisResult: null,
+  changeQueryConfirmation: false,
 };
 
 const chartEditorReducer = (
@@ -33,6 +40,26 @@ const chartEditorReducer = (
   action: ChartEditorActions
 ) => {
   switch (action.type) {
+    case HIDE_QUERY_CHANGE_CONFIRMATION:
+      return {
+        ...state,
+        changeQueryConfirmation: false,
+      };
+    case SHOW_QUERY_CHANGE_CONFIRMATION:
+      return {
+        ...state,
+        changeQueryConfirmation: true,
+      };
+    case SET_QUERY_TYPE:
+      return {
+        ...state,
+        isSavedQuery: action.payload.isSavedQuery,
+      };
+    case SET_QUERY_CHANGE:
+      return {
+        ...state,
+        hasQueryChanged: action.payload.hasQueryChanged,
+      };
     case SET_EDIT_MODE:
       return {
         ...state,

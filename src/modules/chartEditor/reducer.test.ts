@@ -10,10 +10,32 @@ import {
   runQueryError,
   runQuerySuccess,
   runQuery,
+  setQueryType,
+  setQueryChange,
   setQueryResult,
   setQuerySettings,
   setVisualizationSettings,
 } from './actions';
+
+test('set query type', () => {
+  const action = setQueryType(false);
+  const { isSavedQuery } = chartEditorReducer(
+    { ...initialState, isSavedQuery: true },
+    action
+  );
+
+  expect(isSavedQuery).toEqual(false);
+});
+
+test('set query change indicator', () => {
+  const action = setQueryChange(false);
+  const { hasQueryChanged } = chartEditorReducer(
+    { ...initialState, hasQueryChanged: true },
+    action
+  );
+
+  expect(hasQueryChanged).toEqual(false);
+});
 
 test('set state for successful query perform', () => {
   const queryResult = {

@@ -8,6 +8,9 @@ import {
 export type ReducerState = {
   isOpen: boolean;
   isEditMode: boolean;
+  isSavedQuery: boolean;
+  hasQueryChanged: boolean;
+  changeQueryConfirmation: boolean;
   isQueryPerforming: boolean;
   querySettings: Partial<Query>;
   analysisResult: Record<string, any> | null;

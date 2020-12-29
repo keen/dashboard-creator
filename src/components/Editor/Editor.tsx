@@ -29,6 +29,7 @@ import { EditorContext } from '../../contexts';
 import EditorNavigation from '../EditorNavigation';
 import QueryPickerModal from '../QueryPickerModal';
 import ChartWidgetEditor from '../ChartWidgetEditor';
+import ConfirmQueryChange from '../ConfirmQueryChange';
 import DashboardDeleteConfirmation from '../DashboardDeleteConfirmation';
 import Toolbar from '../Toolbar';
 import EditorBar from '../EditorBar';
@@ -51,7 +52,10 @@ const Editor: FC<Props> = ({ dashboardId }) => {
   const [containerWidth, setContainerWidth] = useState(0);
 
   const [droppableWidget, setDroppableWidget] = useState(null);
-  const { isOpen: chartWidgetEditorOpen } = useSelector(getChartEditor);
+  const {
+    isOpen: chartWidgetEditorOpen,
+    changeQueryConfirmation,
+  } = useSelector(getChartEditor);
   const { widgetsId, isInitialized, isSaving } = useSelector(
     (state: RootState) => {
       const dashboard = getDashboard(state, dashboardId);
@@ -145,6 +149,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
         <div>{t('dashboard_editor.loading')}</div>
       )}
       <ChartWidgetEditor isOpen={chartWidgetEditorOpen} />
+      <ConfirmQueryChange isOpen={changeQueryConfirmation} />
       <DashboardDeleteConfirmation />
       <QueryPickerModal />
     </EditorContext.Provider>
