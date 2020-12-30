@@ -212,6 +212,33 @@ describe('editChartWidget()', () => {
       expect(result).toEqual(put(resetEditor()));
     });
   });
+
+  describe('Scenario 2: User edits widget with saved query', () => {
+    const test = sagaHelper(editChartWidget(action));
+    const query = 'financial-report';
+
+    test('get widget from state', () => {
+      return {
+        widgets: {
+          items: {
+            [widgetId]: {
+              ...widgetItem,
+              data: { query, result: 10 },
+              widget: {
+                ...widgetItem.widget,
+                settings: visualizationSettings,
+                query,
+              },
+            },
+          },
+        },
+      };
+    });
+
+    test('set chart editor query type', (result) => {
+      expect(result).toEqual(put(setQueryType(true)));
+    });
+  });
 });
 
 describe('createQueryForWidget()', () => {

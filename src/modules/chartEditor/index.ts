@@ -1,4 +1,4 @@
-import chartEditorReducer from './reducer';
+import chartEditorReducer, { initialState } from './reducer';
 import {
   setQuerySettings,
   setVisualizationSettings,
@@ -27,10 +27,12 @@ import {
   CONFIRM_SAVE_QUERY_UPDATE,
   USE_QUERY_FOR_WIDGET,
   HIDE_QUERY_UPDATE_CONFIRMATION,
+  RUN_QUERY,
 } from './constants';
 
 export {
   chartEditorReducer,
+  initialState,
   setQuerySettings,
   setQueryChange,
   setVisualizationSettings,
@@ -55,4 +57,5 @@ export {
   CONFIRM_SAVE_QUERY_UPDATE,
   USE_QUERY_FOR_WIDGET,
   HIDE_QUERY_UPDATE_CONFIRMATION,
+  RUN_QUERY,
 };

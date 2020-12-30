@@ -5,8 +5,6 @@ import { KeenDataviz } from '@keen.io/dataviz';
 
 import DataViz from './Dataviz';
 
-import { DEFAULT_WIDGET_SETTINGS } from './constants';
-
 const renderMock = jest.fn();
 const errorMock = jest.fn();
 
@@ -49,9 +47,7 @@ test('creates KeenDataviz instance with theme settings', () => {
       settings: {
         theme,
       },
-      widget: {
-        ...DEFAULT_WIDGET_SETTINGS,
-      },
+      widget: {},
     })
   );
 });
