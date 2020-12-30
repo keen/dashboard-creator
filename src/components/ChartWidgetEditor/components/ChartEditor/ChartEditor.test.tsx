@@ -131,3 +131,30 @@ test('allows user to apply chart editor configuration', () => {
 
   jest.clearAllTimers();
 });
+
+test('renders visualization settings error', () => {
+  const {
+    wrapper: { getByText },
+  } = render();
+
+  const button = getByText('chart_widget_editor.add_to_dashboard');
+  fireEvent.click(button);
+
+  expect(getByText('chart_widget_editor.widget_error')).toBeInTheDocument();
+
+  jest.clearAllTimers();
+});
+
+test('calls "onClose" event handler', () => {
+  const {
+    props,
+    wrapper: { getByText },
+  } = render();
+
+  const cancelButton = getByText('chart_widget_editor.cancel');
+  fireEvent.click(cancelButton);
+
+  expect(props.onClose).toHaveBeenCalled();
+
+  jest.clearAllTimers();
+});
