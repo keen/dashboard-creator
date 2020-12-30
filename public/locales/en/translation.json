@@ -1,4 +1,7 @@
 {
+  "notifications": {
+    "update_save_query_error": "We were not able to update this save query. Try again later."
+  },
   "dashboard_tile": {
     "preview_dashboard": "View Dashboard",
     "add_widgets": "Add widgets",

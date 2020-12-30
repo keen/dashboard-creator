@@ -13,8 +13,8 @@ import {
   RESET_EDITOR,
   OPEN_EDITOR,
   CLOSE_EDITOR,
-  SHOW_QUERY_CHANGE_CONFIRMATION,
-  HIDE_QUERY_CHANGE_CONFIRMATION,
+  SHOW_QUERY_UPDATE_CONFIRMATION,
+  HIDE_QUERY_UPDATE_CONFIRMATION,
 } from './constants';
 
 import { ReducerState } from './types';
@@ -40,12 +40,12 @@ const chartEditorReducer = (
   action: ChartEditorActions
 ) => {
   switch (action.type) {
-    case HIDE_QUERY_CHANGE_CONFIRMATION:
+    case SHOW_QUERY_UPDATE_CONFIRMATION:
       return {
         ...state,
         changeQueryConfirmation: false,
       };
-    case SHOW_QUERY_CHANGE_CONFIRMATION:
+    case HIDE_QUERY_UPDATE_CONFIRMATION:
       return {
         ...state,
         changeQueryConfirmation: true,

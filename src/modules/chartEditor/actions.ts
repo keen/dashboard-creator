@@ -21,8 +21,8 @@ import {
   OPEN_EDITOR,
   CLOSE_EDITOR,
   SET_QUERY_RESULT,
-  SHOW_QUERY_CHANGE_CONFIRMATION,
-  HIDE_QUERY_CHANGE_CONFIRMATION,
+  SHOW_QUERY_UPDATE_CONFIRMATION,
+  HIDE_QUERY_UPDATE_CONFIRMATION,
   CONFIRM_SAVE_QUERY_UPDATE,
   USE_QUERY_FOR_WIDGET,
 } from './constants';
@@ -110,12 +110,12 @@ export const runQueryError = createAction(RUN_QUERY_ERROR);
 
 export const applyConfiguration = createAction(APPLY_CONFIGURATION);
 
-export const showQueryChangeConfirmation = createAction(
-  SHOW_QUERY_CHANGE_CONFIRMATION
+export const showQueryUpdateConfirmation = createAction(
+  SHOW_QUERY_UPDATE_CONFIRMATION
 );
 
-export const hideQueryChangeConfirmation = createAction(
-  HIDE_QUERY_CHANGE_CONFIRMATION
+export const hideQueryUpdateConfirmation = createAction(
+  HIDE_QUERY_UPDATE_CONFIRMATION
 );
 
 export const confirmSaveQueryUpdate = createAction(CONFIRM_SAVE_QUERY_UPDATE);
@@ -137,7 +137,7 @@ export type ChartEditorActions =
   | ReturnType<typeof runQuerySuccess>
   | ReturnType<typeof runQueryError>
   | ReturnType<typeof applyConfiguration>
-  | ReturnType<typeof showQueryChangeConfirmation>
-  | ReturnType<typeof hideQueryChangeConfirmation>
+  | ReturnType<typeof showQueryUpdateConfirmation>
+  | ReturnType<typeof hideQueryUpdateConfirmation>
   | ReturnType<typeof confirmSaveQueryUpdate>
   | ReturnType<typeof useQueryForWidget>;

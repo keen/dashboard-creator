@@ -12,8 +12,8 @@ import {
   closeEditor,
   editorMounted,
   applyConfiguration,
-  showQueryChangeConfirmation,
-  hideQueryChangeConfirmation,
+  showQueryUpdateConfirmation,
+  hideQueryUpdateConfirmation,
   confirmSaveQueryUpdate,
   useQueryForWidget,
 } from './actions';
@@ -26,7 +26,7 @@ import {
   EDITOR_MOUNTED,
   CONFIRM_SAVE_QUERY_UPDATE,
   USE_QUERY_FOR_WIDGET,
-  HIDE_QUERY_CHANGE_CONFIRMATION,
+  HIDE_QUERY_UPDATE_CONFIRMATION,
 } from './constants';
 
 export {
@@ -45,8 +45,8 @@ export {
   getChartEditor,
   applyConfiguration,
   chartEditorSaga,
-  showQueryChangeConfirmation,
-  hideQueryChangeConfirmation,
+  showQueryUpdateConfirmation,
+  hideQueryUpdateConfirmation,
   confirmSaveQueryUpdate,
   useQueryForWidget,
   APPLY_CONFIGURATION,
@@ -54,5 +54,5 @@ export {
   EDITOR_MOUNTED,
   CONFIRM_SAVE_QUERY_UPDATE,
   USE_QUERY_FOR_WIDGET,
-  HIDE_QUERY_CHANGE_CONFIRMATION,
+  HIDE_QUERY_UPDATE_CONFIRMATION,
 };
