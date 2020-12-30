@@ -2,12 +2,20 @@
 import sagaHelper from 'redux-saga-testing';
 import { put, take, call } from 'redux-saga/effects';
 import { Query } from '@keen.io/query';
+import { PickerWidgets, ChartSettings } from '@keen.io/widget-picker';
+import { SET_QUERY_EVENT } from '@keen.io/query-creator';
 
 import {
+  setWidgetState,
   finishChartWidgetConfiguration,
   initializeChartWidget,
+  editChartWidget as editChartWidgetAction,
 } from './actions';
-import { selectQueryForWidget, createQueryForWidget } from './saga';
+import {
+  selectQueryForWidget,
+  createQueryForWidget,
+  editChartWidget,
+} from './saga';
 
 import { showQueryPicker, hideQueryPicker, HIDE_QUERY_PICKER } from '../app';
 import { saveDashboard, removeWidgetFromDashboard } from '../dashboards';
@@ -24,12 +32,187 @@ import {
   closeEditor,
   resetEditor,
   applyConfiguration,
+  setVisualizationSettings,
+  setQueryType,
+  setQuerySettings,
+  setEditMode,
+  setQueryResult,
+  EDITOR_MOUNTED,
   CLOSE_EDITOR,
   APPLY_CONFIGURATION,
 } from '../chartEditor';
 
+import { widget as widgetItem } from './fixtures';
+
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
+
+describe('editChartWidget()', () => {
+  const action = editChartWidgetAction(widgetId);
+  const visualizationSettings = {
+    chartSettings: {
+      stackMode: 'percent',
+    } as ChartSettings,
+    visualizationType: 'area' as PickerWidgets,
+    widgetSettings: {},
+  };
+
+  describe('Scenario 1: User edits widget with ad-hoc query', () => {
+    const test = sagaHelper(editChartWidget(action));
+    const query: Query = {
+      analysis_type: 'count',
+      event_collection: 'logins',
+      order_by: null,
+    };
+
+    const pubsub = {
+      publish: jest.fn(),
+    };
+
+    const chartEditor = {
+      isSavedQuery: false,
+      visualization: {
+        chartSettings: {
+          stackMode: 'percent',
+        } as ChartSettings,
+        type: 'bar' as PickerWidgets,
+        widgetSettings: {},
+      },
+      querySettings: {
+        analysis_type: 'count',
+        event_collection: 'purchases',
+        order_by: null,
+      } as Query,
+    };
+
+    test('get widget from state', () => {
+      return {
+        widgets: {
+          items: {
+            [widgetId]: {
+              ...widgetItem,
+              data: { query, result: 10 },
+              widget: {
+                ...widgetItem.widget,
+                settings: visualizationSettings,
+                query,
+              },
+            },
+          },
+        },
+      };
+    });
+
+    test('set chart editor query type', (result) => {
+      expect(result).toEqual(put(setQueryType(false)));
+    });
+
+    test('set visualization settings in chart editor', (result) => {
+      const {
+        visualizationType,
+        chartSettings,
+        widgetSettings,
+      } = visualizationSettings;
+
+      expect(result).toEqual(
+        put(
+          setVisualizationSettings(
+            visualizationType,
+            chartSettings,
+            widgetSettings
+          )
+        )
+      );
+    });
+
+    test('set edit mode in chart editor', (result) => {
+      expect(result).toEqual(put(setEditMode(true)));
+    });
+
+    test('set query settings in chart editor', (result) => {
+      expect(result).toEqual(put(setQuerySettings(query)));
+    });
+
+    test('set query results in chart editor', (result) => {
+      expect(result).toEqual(put(setQueryResult({ query, result: 10 })));
+    });
+
+    test('opens chart editor', (result) => {
+      expect(result).toEqual(put(openEditor()));
+    });
+
+    test('waits until chart editor is mounted', (result) => {
+      expect(result).toEqual(take(EDITOR_MOUNTED));
+    });
+
+    test('get pubsub from context', () => {
+      return pubsub;
+    });
+
+    test('updates query creator settings', () => {
+      expect(pubsub.publish).toHaveBeenCalledWith(SET_QUERY_EVENT, { query });
+    });
+
+    test('waits until user applies chart editor settigs', (result) => {
+      expect(result).toEqual(take([CLOSE_EDITOR, APPLY_CONFIGURATION]));
+
+      return applyConfiguration();
+    });
+
+    test('gets chart editor settings', () => {
+      return chartEditor;
+    });
+
+    test('updates widget state', (result) => {
+      expect(result).toEqual(
+        put(
+          setWidgetState(widgetId, {
+            isInitialized: false,
+            isConfigured: false,
+            data: null,
+          })
+        )
+      );
+    });
+
+    test('finishes chart widget configuration', (result) => {
+      const {
+        querySettings,
+        visualization: { type, chartSettings, widgetSettings },
+      } = chartEditor;
+
+      const action = finishChartWidgetConfiguration(
+        widgetId,
+        querySettings,
+        type,
+        chartSettings,
+        widgetSettings
+      );
+
+      expect(result).toEqual(put(action));
+    });
+
+    test('initializes chart widget', (result) => {
+      expect(result).toEqual(put(initializeChartWidget(widgetId)));
+    });
+
+    test('close chart editor', (result) => {
+      expect(result).toEqual(put(closeEditor()));
+    });
+
+    test('gets active dashboard identifier', () => {
+      return dashboardId;
+    });
+
+    test('triggers save dashboard action', (result) => {
+      expect(result).toEqual(put(saveDashboard(dashboardId)));
+    });
+
+    test('reset chart editor', (result) => {
+      expect(result).toEqual(put(resetEditor()));
+    });
+  });
+});
 
 describe('createQueryForWidget()', () => {
   describe('Scenario 1: User close chart widget editor', () => {
