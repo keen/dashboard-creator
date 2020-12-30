@@ -6,7 +6,7 @@ import { Anchor, Modal, ModalHeader, ModalFooter } from '@keen.io/ui-core';
 import { Container, Cancel } from './ConfirmQueryChange.styles';
 
 import {
-  hideQueryChangeConfirmation,
+  hideQueryUpdateConfirmation,
   confirmSaveQueryUpdate,
   useQueryForWidget,
 } from '../../modules/chartEditor';
@@ -23,7 +23,7 @@ const ConfirmQueryChange: FC<Props> = ({ isOpen }) => {
   return (
     <Modal
       isOpen={isOpen}
-      onClose={() => dispatch(hideQueryChangeConfirmation())}
+      onClose={() => dispatch(hideQueryUpdateConfirmation())}
     >
       {(_, closeHandler) => (
         <Container>
