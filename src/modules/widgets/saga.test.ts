@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import sagaHelper from 'redux-saga-testing';
-import { put, take, call } from 'redux-saga/effects';
+import { put, take, call, select } from 'redux-saga/effects';
 import { Query } from '@keen.io/query';
 import { PickerWidgets, ChartSettings } from '@keen.io/widget-picker';
 import { SET_QUERY_EVENT } from '@keen.io/query-creator';
@@ -9,13 +9,18 @@ import {
   setWidgetState,
   finishChartWidgetConfiguration,
   initializeChartWidget,
+  initializeWidget as initializeWidgetAction,
   editChartWidget as editChartWidgetAction,
 } from './actions';
 import {
   selectQueryForWidget,
   createQueryForWidget,
   editChartWidget,
+  editChartSavedQuery,
+  initializeWidget,
 } from './saga';
+
+import { getWidgetSettings } from './selectors';
 
 import { showQueryPicker, hideQueryPicker, HIDE_QUERY_PICKER } from '../app';
 import { saveDashboard, removeWidgetFromDashboard } from '../dashboards';
@@ -37,6 +42,7 @@ import {
   setQuerySettings,
   setEditMode,
   setQueryResult,
+  getChartEditor,
   EDITOR_MOUNTED,
   CLOSE_EDITOR,
   APPLY_CONFIGURATION,
@@ -46,6 +52,98 @@ import { widget as widgetItem } from './fixtures';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
+
+describe('initializeWidget()', () => {
+  const action = initializeWidgetAction(widgetId);
+
+  describe('Scenario 1: User initializes visualization widget', () => {
+    const test = sagaHelper(initializeWidget(action));
+
+    test('get widget settings', (result) => {
+      expect(result).toEqual(select(getWidgetSettings, widgetId));
+
+      return {
+        type: 'visualization',
+      };
+    });
+
+    test('initializes visualization widget', (result) => {
+      expect(result).toEqual(put(initializeChartWidget(widgetId)));
+    });
+  });
+});
+
+describe('editChartSavedQuery()', () => {
+  describe('Scenario 1: User edits widget settings without changing query', () => {
+    const test = sagaHelper(editChartSavedQuery(widgetId));
+
+    const chartEditor = {
+      isSavedQuery: false,
+      hasQueryChanged: false,
+      visualization: {
+        chartSettings: {
+          stackMode: 'normal',
+        } as ChartSettings,
+        type: 'area' as PickerWidgets,
+        widgetSettings: {},
+      },
+      querySettings: {
+        analysis_type: 'count',
+        event_collection: 'purchases',
+        order_by: null,
+      } as Query,
+    };
+
+    test('get chart editor state', (result) => {
+      expect(result).toEqual(select(getChartEditor));
+      return chartEditor;
+    });
+
+    test('close chart editor', (result) => {
+      expect(result).toEqual(put(closeEditor()));
+    });
+
+    test('updates widget state', (result) => {
+      expect(result).toEqual(
+        put(
+          setWidgetState(widgetId, {
+            isInitialized: false,
+            isConfigured: false,
+            data: null,
+          })
+        )
+      );
+    });
+
+    test('get widget settings', (result) => {
+      expect(result).toEqual(select(getWidgetSettings, widgetId));
+
+      return {
+        query: 'purchases',
+      };
+    });
+
+    test('finishes chart widget configuration', (result) => {
+      const {
+        visualization: { type, chartSettings, widgetSettings },
+      } = chartEditor;
+
+      const action = finishChartWidgetConfiguration(
+        widgetId,
+        'purchases',
+        type,
+        chartSettings,
+        widgetSettings
+      );
+
+      expect(result).toEqual(put(action));
+    });
+
+    test('initializes chart widget', (result) => {
+      expect(result).toEqual(put(initializeChartWidget(widgetId)));
+    });
+  });
+});
 
 describe('editChartWidget()', () => {
   const action = editChartWidgetAction(widgetId);

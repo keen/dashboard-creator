@@ -99,7 +99,7 @@ function* initializeChartWidget({
   }
 }
 
-function* initializeWidget({
+export function* initializeWidget({
   payload,
 }: ReturnType<typeof initializeWidgetAction>) {
   const { id } = payload;
