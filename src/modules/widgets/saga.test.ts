@@ -43,9 +43,13 @@ import {
   setEditMode,
   setQueryResult,
   getChartEditor,
+  showQueryUpdateConfirmation,
   EDITOR_MOUNTED,
   CLOSE_EDITOR,
   APPLY_CONFIGURATION,
+  HIDE_QUERY_UPDATE_CONFIRMATION,
+  CONFIRM_SAVE_QUERY_UPDATE,
+  USE_QUERY_FOR_WIDGET,
 } from '../chartEditor';
 
 import { widget as widgetItem } from './fixtures';
@@ -74,25 +78,25 @@ describe('initializeWidget()', () => {
 });
 
 describe('editChartSavedQuery()', () => {
+  const chartEditor = {
+    isSavedQuery: false,
+    hasQueryChanged: false,
+    visualization: {
+      chartSettings: {
+        stackMode: 'normal',
+      } as ChartSettings,
+      type: 'area' as PickerWidgets,
+      widgetSettings: {},
+    },
+    querySettings: {
+      analysis_type: 'count',
+      event_collection: 'purchases',
+      order_by: null,
+    } as Query,
+  };
+
   describe('Scenario 1: User edits widget settings without changing query', () => {
     const test = sagaHelper(editChartSavedQuery(widgetId));
-
-    const chartEditor = {
-      isSavedQuery: false,
-      hasQueryChanged: false,
-      visualization: {
-        chartSettings: {
-          stackMode: 'normal',
-        } as ChartSettings,
-        type: 'area' as PickerWidgets,
-        widgetSettings: {},
-      },
-      querySettings: {
-        analysis_type: 'count',
-        event_collection: 'purchases',
-        order_by: null,
-      } as Query,
-    };
 
     test('get chart editor state', (result) => {
       expect(result).toEqual(select(getChartEditor));
@@ -141,6 +145,48 @@ describe('editChartSavedQuery()', () => {
 
     test('initializes chart widget', (result) => {
       expect(result).toEqual(put(initializeChartWidget(widgetId)));
+    });
+
+    test('gets active dashboard identifier', () => {
+      return dashboardId;
+    });
+
+    test('triggers save dashboard action', (result) => {
+      expect(result).toEqual(put(saveDashboard(dashboardId)));
+    });
+
+    test('reset chart editor', (result) => {
+      expect(result).toEqual(put(resetEditor()));
+    });
+  });
+
+  describe('Scenario 2: User edits query and widget settings ', () => {
+    const test = sagaHelper(editChartSavedQuery(widgetId));
+
+    test('get chart editor state', (result) => {
+      expect(result).toEqual(select(getChartEditor));
+      return {
+        ...chartEditor,
+        hasQueryChanged: true,
+      };
+    });
+
+    test('close chart editor', (result) => {
+      expect(result).toEqual(put(closeEditor()));
+    });
+
+    test('shows query update confirmation', (result) => {
+      expect(result).toEqual(put(showQueryUpdateConfirmation()));
+    });
+
+    test('waits for user action', (result) => {
+      expect(result).toEqual(
+        take([
+          HIDE_QUERY_UPDATE_CONFIRMATION,
+          CONFIRM_SAVE_QUERY_UPDATE,
+          USE_QUERY_FOR_WIDGET,
+        ])
+      );
     });
   });
 });
