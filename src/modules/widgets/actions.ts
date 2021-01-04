@@ -1,5 +1,5 @@
 import { createAction } from '@reduxjs/toolkit';
-import { Query } from '@keen.io/parser';
+import { Query } from '@keen.io/query';
 
 import { WidgetType } from '../../types';
 import { Widget, WidgetItem, GridPosition, WidgetsPosition } from './types';
@@ -12,6 +12,7 @@ import {
   FINISH_CHART_WIDGET_CONFIGURATION,
   INITIALIZE_WIDGET,
   INITIALIZE_CHART_WIDGET,
+  EDIT_CHART_WIDGET,
   SET_WIDGET_LOADING,
   SET_WIDGET_INITIALIZATION,
   SET_WIDGET_STATE,
@@ -71,6 +72,13 @@ export const finishChartWidgetConfiguration = createAction(
   })
 );
 
+export const editChartWidget = createAction(
+  EDIT_CHART_WIDGET,
+  (id: string) => ({
+    payload: { id },
+  })
+);
+
 export const initializeChartWidget = createAction(
   INITIALIZE_CHART_WIDGET,
   (id: string) => ({
@@ -122,6 +130,7 @@ export type WidgetsActions =
   | ReturnType<typeof updateWidgetsPosition>
   | ReturnType<typeof initializeWidget>
   | ReturnType<typeof initializeChartWidget>
+  | ReturnType<typeof editChartWidget>
   | ReturnType<typeof setWidgetLoading>
   | ReturnType<typeof setWidgetState>
   | ReturnType<typeof setWidgetInitialization>

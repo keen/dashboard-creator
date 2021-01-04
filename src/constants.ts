@@ -1,5 +1,6 @@
 export const BLOB_API = 'BLOB_API';
 export const KEEN_ANALYSIS = 'KEEN_ANALYSIS';
+export const PUBSUB = 'PUBSUB';
 export const NOTIFICATION_MANAGER = 'NOTIFICATION_MANAGER';
 
 export const SHOW_TOAST_NOTIFICATION_EVENT =

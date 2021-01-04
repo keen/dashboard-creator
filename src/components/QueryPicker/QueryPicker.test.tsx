@@ -85,6 +85,31 @@ test('allows user to select saved query', async () => {
   });
 });
 
+test('allows user to create new query', async () => {
+  const keenAnalysis = {
+    send: jest.fn().mockResolvedValue(savedQueriesResponse),
+  };
+
+  const {
+    store,
+    wrapper: { getByText },
+  } = render({}, keenAnalysis);
+
+  await waitFor(() => getByText('Query 01'));
+
+  const button = getByText('query_picker.new_query_button');
+  fireEvent.click(button);
+
+  expect(store.getActions()).toMatchInlineSnapshot(`
+    Array [
+      Object {
+        "payload": undefined,
+        "type": "@queries/CREATE_QUERY",
+      },
+    ]
+  `);
+});
+
 test('allows user to search for specific saved query', async () => {
   const keenAnalysis = {
     send: jest.fn().mockResolvedValue(savedQueriesResponse),

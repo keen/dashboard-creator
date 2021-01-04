@@ -11,6 +11,7 @@ test('serializes query without metadata', () => {
       order_by: null,
     },
     query_name: 'purchases',
+    refresh_rate: 0,
   };
 
   expect(serializeSavedQuery(savedQuery)).toMatchObject({
@@ -32,6 +33,7 @@ test('serializes query with metadata', () => {
       order_by: null,
     },
     query_name: 'purchases',
+    refresh_rate: 0,
     metadata: {
       visualization: {
         type: 'bar',

@@ -1,4 +1,9 @@
-import { Query } from '@keen.io/parser';
+import { Query } from '@keen.io/query';
+import { PickerWidgets } from '@keen.io/widget-picker';
+
+export type ReducerState = {
+  items: Record<string, WidgetItem>;
+};
 
 export type GridPosition = {
   w: number;
@@ -20,7 +25,7 @@ export interface ChartWidget extends BaseWidget {
   type: 'visualization';
   query: string | Query;
   settings: {
-    visualizationType: string;
+    visualizationType: PickerWidgets;
     chartSettings: Record<string, any>;
     widgetSettings: Record<string, any>;
   };
@@ -38,10 +43,6 @@ export type WidgetItem = {
   isConfigured: boolean;
   isInitialized: boolean;
   isLoading: boolean;
-  error: string;
+  error: string | null;
   data: Record<string, any>;
-};
-
-export type ReducerState = {
-  items: Record<string, WidgetItem>;
 };

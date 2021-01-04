@@ -6,7 +6,7 @@ import KeenAnalysis from 'keen-analysis';
 import { ThemeProvider } from 'styled-components';
 import { configureStore } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
-import { PubSub } from '@keen.io/pubsub';
+import { PubSub, getPubSub } from '@keen.io/pubsub';
 import { ToastProvider } from '@keen.io/toast-notifications';
 import { screenBreakpoints } from '@keen.io/ui-core';
 import { Theme } from '@keen.io/charts';
@@ -22,6 +22,7 @@ import rootReducer, { history } from './rootReducer';
 import rootSaga from './rootSaga';
 
 import {
+  PUBSUB,
   BLOB_API,
   KEEN_ANALYSIS,
   NOTIFICATION_MANAGER,
@@ -32,6 +33,8 @@ import { Options, TranslationsSettings } from './types';
 
 export class DashboardCreator {
   private container: string;
+
+  private modalContainer: string;
 
   /** Master key for Keen project */
   private readonly masterKey: string;
@@ -52,11 +55,19 @@ export class DashboardCreator {
   private readonly themeSettings: Partial<Theme>;
 
   constructor(config: Options) {
-    const { container, blobApiUrl, project, translations, theme } = config;
+    const {
+      container,
+      modalContainer,
+      blobApiUrl,
+      project,
+      translations,
+      theme,
+    } = config;
 
     const { id, masterKey, userKey } = project;
 
     this.container = container;
+    this.modalContainer = modalContainer;
     this.projectId = id;
     this.masterKey = masterKey;
     this.userKey = userKey;
@@ -88,6 +99,7 @@ export class DashboardCreator {
       context: {
         [BLOB_API]: blobApi,
         [KEEN_ANALYSIS]: keenAnalysis,
+        [PUBSUB]: getPubSub(),
         [NOTIFICATION_MANAGER]: new NotificationManager({
           pubsub: notificationPubSub,
           eventName: SHOW_TOAST_NOTIFICATION_EVENT,
@@ -103,6 +115,12 @@ export class DashboardCreator {
     sagaMiddleware.run(rootSaga);
     store.dispatch(appStart(this.themeSettings));
 
+    const projectSettings = {
+      id: this.projectId,
+      userKey: this.userKey,
+      masterKey: this.masterKey,
+    };
+
     ReactDOM.render(
       <Provider store={store}>
         <ThemeProvider
@@ -112,7 +130,13 @@ export class DashboardCreator {
         >
           <ConnectedRouter history={history}>
             <ToastProvider>
-              <AppContext.Provider value={{ notificationPubSub }}>
+              <AppContext.Provider
+                value={{
+                  notificationPubSub,
+                  project: projectSettings,
+                  modalContainer: this.modalContainer,
+                }}
+              >
                 <APIContext.Provider value={{ blobApi, keenAnalysis }}>
                   <App />
                 </APIContext.Provider>

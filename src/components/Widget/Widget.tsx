@@ -38,6 +38,7 @@ const renderWidget = ({
             disableInteractions={disableInteractions}
           />
           <ChartManagement
+            widgetId={widgetId}
             isHoverActive={isHoverActive}
             onRemoveWidget={onRemoveWidget}
           />
@@ -55,18 +56,25 @@ const Widget: FC<Props> = ({
   disableInteractions = false,
 }) => {
   const {
+    error,
     widget: { id: widgetId, type: widgetType },
   } = useSelector((rootState: RootState) => getWidget(rootState, id));
 
   return (
     <Container>
-      {renderWidget({
-        widgetType,
-        widgetId,
-        disableInteractions,
-        isHoverActive,
-        onRemoveWidget,
-      })}
+      {error ? (
+        <>{error}</>
+      ) : (
+        <>
+          {renderWidget({
+            widgetType,
+            widgetId,
+            disableInteractions,
+            isHoverActive,
+            onRemoveWidget,
+          })}
+        </>
+      )}
     </Container>
   );
 };

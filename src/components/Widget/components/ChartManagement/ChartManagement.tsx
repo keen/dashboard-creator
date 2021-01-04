@@ -1,6 +1,7 @@
 import React, { FC, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence } from 'framer-motion';
+import { useDispatch } from 'react-redux';
 import { colors } from '@keen.io/colors';
 import { Button, CircleButton } from '@keen.io/ui-core';
 import { Icon } from '@keen.io/icons';
@@ -14,17 +15,27 @@ import {
 import RemoveWidget from '../../../RemoveWidget';
 import PreventDragPropagation from '../../../PreventDragPropagation';
 
+import { editChartWidget } from '../../../../modules/widgets';
+
 import { settingsMotion, removeMotion } from './motions';
 import { DRAG_HANDLE_ELEMENT } from '../../constants';
 
 type Props = {
+  /** Widget identifier */
+  widgetId: string;
+  /** Hover state indicator */
   isHoverActive: boolean;
   /** Remove widget event handler */
   onRemoveWidget: () => void;
 };
 
-const ChartManagement: FC<Props> = ({ isHoverActive, onRemoveWidget }) => {
+const ChartManagement: FC<Props> = ({
+  widgetId,
+  isHoverActive,
+  onRemoveWidget,
+}) => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const [removeConfirmation, setRemoveConfirmation] = useState(false);
 
   const showManagementSettings = isHoverActive && !removeConfirmation;
@@ -56,7 +67,10 @@ const ChartManagement: FC<Props> = ({ isHoverActive, onRemoveWidget }) => {
             <ButtonsContainer>
               <PreventDragPropagation>
                 <div data-testid="edit-chart">
-                  <Button variant="blank" onClick={() => console.log('Edit')}>
+                  <Button
+                    variant="blank"
+                    onClick={() => dispatch(editChartWidget(widgetId))}
+                  >
                     {t('widget.edit_chart')}
                   </Button>
                 </div>

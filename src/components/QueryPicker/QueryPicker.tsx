@@ -1,17 +1,22 @@
 import React, { FC, useContext, useState, useMemo, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { Loader, Alert } from '@keen.io/ui-core';
+import { Alert, Button, Loader } from '@keen.io/ui-core';
 
 import {
   LoaderContainer,
   QueriesContainer,
+  CreateNewQuery,
+  NewQueryButton,
+  SavedQueries,
   Message,
+  Description,
 } from './QueryPicker.styles';
 
 import SearchInput from '../SearchInput';
 import { QueriesList } from './components';
 import {
+  createQuery,
   selectSavedQuery,
   serializeSavedQuery,
   SavedQuery,
@@ -72,40 +77,52 @@ const QueryPicker: FC<{}> = () => {
 
   return (
     <div>
-      {isLoadingQueries && (
-        <LoaderContainer>
-          <Loader width={50} height={50} />
-        </LoaderContainer>
-      )}
-      {error && (
-        <Alert type="error">{t('query_picker.saved_queries_error')}</Alert>
-      )}
-      {isLoaded && !error && (
-        <>
-          <SearchInput
-            placeholder={t('query_picker.search_query_placeholder')}
-            searchPhrase={searchPhrase}
-            onChangePhrase={(phrase) => setSearchPhrase(phrase)}
-            onClearSearch={() => setSearchPhrase('')}
-          />
-          {isEmptySearch ? (
-            <Message>{t('query_picker.empty_search_results')}</Message>
-          ) : (
-            <>
-              {isEmptyList ? (
-                <Message>{t('query_picker.empty_project')}</Message>
-              ) : (
-                <QueriesContainer>
-                  <QueriesList
-                    queries={filteredQueries}
-                    onSelectQuery={(query) => dispatch(selectSavedQuery(query))}
-                  />
-                </QueriesContainer>
-              )}
-            </>
-          )}
-        </>
-      )}
+      <CreateNewQuery>
+        <NewQueryButton>
+          <Button variant="success" onClick={() => dispatch(createQuery())}>
+            {t('query_picker.new_query_button')}
+          </Button>
+        </NewQueryButton>
+        <Description>{t('query_picker.new_query_description')}</Description>
+      </CreateNewQuery>
+      <SavedQueries>
+        {isLoadingQueries && (
+          <LoaderContainer>
+            <Loader width={50} height={50} />
+          </LoaderContainer>
+        )}
+        {error && (
+          <Alert type="error">{t('query_picker.saved_queries_error')}</Alert>
+        )}
+        {isLoaded && !error && (
+          <>
+            <SearchInput
+              placeholder={t('query_picker.search_query_placeholder')}
+              searchPhrase={searchPhrase}
+              onChangePhrase={(phrase) => setSearchPhrase(phrase)}
+              onClearSearch={() => setSearchPhrase('')}
+            />
+            {isEmptySearch ? (
+              <Message>{t('query_picker.empty_search_results')}</Message>
+            ) : (
+              <>
+                {isEmptyList ? (
+                  <Message>{t('query_picker.empty_project')}</Message>
+                ) : (
+                  <QueriesContainer>
+                    <QueriesList
+                      queries={filteredQueries}
+                      onSelectQuery={(query) =>
+                        dispatch(selectSavedQuery(query))
+                      }
+                    />
+                  </QueriesContainer>
+                )}
+              </>
+            )}
+          </>
+        )}
+      </SavedQueries>
     </div>
   );
 };

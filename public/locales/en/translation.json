@@ -1,4 +1,7 @@
 {
+  "notifications": {
+    "update_save_query_error": "We were not able to update this save query. Try again later."
+  },
   "dashboard_tile": {
     "preview_dashboard": "View Dashboard",
     "add_widgets": "Add widgets",
@@ -42,6 +45,8 @@
   "query_picker": {
     "close": "Close",
     "title": "What do you want to visualize?",
+    "new_query_button": "New query",
+    "new_query_description": "Create the query from scratch or select the saved query from the list",
     "search_query_placeholder": "Search saved query",
     "saved_queries_error": "We could not load your saved queries at the moment. Please close this window and try adding a chart again or create a New Query.",
     "empty_search_results": "No queries found with this name.",
@@ -65,5 +70,170 @@
     "finish_edition": "Finish Edition",
     "saved": "Saved",
     "is_saving": "Is saving..."
+  },
+  "chart_widget_editor": {
+    "add_to_dashboard": "Add to Dashboard",
+    "save": "Update widget",
+    "cancel": "Cancel",
+    "run_query_placeholder": "Run Query to visualize your data",
+    "run_query": "Run Query",
+    "run_query_loading": "Loading",
+    "widget_error": "The selected visualization cannot be used with current query settings. Run query and select visualization."
+  },
+  "query_creator_analysis": {
+    "placeholder": "Select analysis type",
+    "label": "Analysis"
+  },
+  "query_creator_event_collection": {
+    "label": "Event Stream",
+    "placeholder": "Select event stream",
+    "search_placeholder": "Search",
+    "empty_search_results": "No stream found with this name"
+  },
+  "query_creator_target_property": {
+    "label": "Target property",
+    "placeholder": "Select event property",
+    "search_placeholder": "Search",
+    "empty_search_results": "No property found with this name",
+    "select": "Select",
+    "event_stream": "Event Stream",
+    "first": "first",
+    "subtitle": "Numbers required",
+    "tooltip_start": "{{analysis}} analysis applies only to numeric values (",
+    "tooltip_bold": "num",
+    "tooltip_end": " data type)"
+  },
+  "query_creator_timeframe": {
+    "label": "Timeframe",
+    "relative": "Relative",
+    "absolute": "Absolute"
+  },
+  "query_creator_filters": {
+    "filters": "Filters",
+    "select": "Select",
+    "event_stream": "Event Stream",
+    "tooltip": "so we know what properties are available"
+  },
+  "query_creator_filter_boolean": {
+    "placeholder": "value"
+  },
+  "query_creator_filter_list_value": {
+    "placeholder": "list items",
+    "input_placeholder": "Insert item and confirm by Enter"
+  },
+  "query_creator_filter_operator": {
+    "placeholder": "operator"
+  },
+  "query_creator_filter_property": {
+    "placeholder": "property",
+    "search_placeholder": "Search property",
+    "empty_search_results": "No property found with this name"
+  },
+  "query_creator_filter_value": {
+    "placeholder": "value"
+  },
+  "query_creator_geo_coordinates": {
+    "lat_label": "Lat:",
+    "long_label": "Long:",
+    "radius_label": "R:",
+    "radius_unit": "mi"
+  },
+  "query_creator_property_type_cast": {
+    "cast_message": "You will map property to the different type, some values may not match.",
+    "default_label": "Default"
+  },
+  "query_creator_funnel_step": {
+    "title": "STEP",
+    "clone": "Clone",
+    "optional_label": "Optional Step",
+    "optional_tooltip": "Following steps will ignore the result of this step and will use the effect of last non-optional step as an input.",
+    "inverted_label": "Inverted Step",
+    "inverted_tooltip": "Excludes events matching this step configuration",
+    "step_label": "Step Name",
+    "first_step_optional_tooltip": "The first step cannot be optional",
+    "first_step_inverted_tooltip": "The first step cannot be inverted"
+  },
+  "query_creator_funnel_steps": {
+    "add_step": "Add step"
+  },
+  "query_creator_group_by": {
+    "title": "Group by",
+    "select": "Select",
+    "event_stream": "Event Stream",
+    "tooltip": "so we know what properties are available"
+  },
+  "query_creator_interval": {
+    "label": "Interval",
+    "standard": "Standard",
+    "custom": "Custom",
+    "tooltip": "Select the frequency to view data across the specified timeframe"
+  },
+  "query_creator_limit": {
+    "label": "Limit results to",
+    "placeholder": "Limit to",
+    "select": "Select",
+    "event_stream": "Event Stream",
+    "tooltip": "so we know what properties are available",
+    "order": "Order",
+    "limit_result": "your data first to limit the result"
+  },
+  "query_creator_order_by": {
+    "title": "Order by",
+    "select": "Select",
+    "event_stream": "Event Stream",
+    "tooltip": "so we know what properties are available",
+    "define": "Define",
+    "group_by": "group by",
+    "order_result": "first to order the result",
+    "order_options_label": "result"
+  },
+  "query_creator_order_by_property": {
+    "placeholder": "property",
+    "search_placeholder": "Search property",
+    "empty_search_results": "No property found with this name"
+  },
+  "query_creator_percentile": {
+    "label": "Percentile",
+    "placeholder": "Eg. 75",
+    "message": "Percentile value has to be from range 0-100"
+  },
+  "query_creator_relative_time": {
+    "relativity_title": "Include current",
+    "relativity_title_for_today": "Include Today",
+    "time_label": "Last",
+    "units_placeholder": "Select"
+  },
+  "query_creator_relative_time_label": {
+    "label": "Last",
+    "today_includes": "(Includes today)",
+    "relativity_title": "Includes current"
+  },
+  "query_creator_searchable_property": {
+    "placeholder": "property",
+    "search_placeholder": "Search property",
+    "empty_search_results": "No property found with this name"
+  },
+  "query_creator_timezone": {
+    "placeholder": "Select timezone",
+    "label": "Timezone"
+  },
+  "query_creator_extraction_properties": {
+    "select": "Select",
+    "event_stream": "Event Stream",
+    "tooltip": "so we know what properties are available"
+  },
+  "query_creator_analysis_groups": {
+    "average": "Average value for a numeric target property.<br/><br/>Non-numeric values will be ignored.",
+    "count": "Total number of events in a given stream.",
+    "count_unique": "Number of events with unique values for the target property in a given stream.",
+    "extraction": "Return events in the given stream with values for selected properties.<br/><br/>Results can be shown in a table or sent to an email.",
+    "funnel": "Return the number of unique actors that meet the criteria defined in each step.<br/><br/>\"Actors\" could mean users, devices, or any other identifiers.",
+    "maximum": "Maximum of all numeric values for a target property.<br/><br/>Non-numeric values will be ignored.",
+    "median": "Median of all numeric values for a target property.<br/><br/>Non-numeric values will be ignored.",
+    "minimum": "Minimum of all numeric values for a target property.<br/><br/>Non-numeric values will be ignored.",
+    "percentile": "Numeric value of a target property for a specified percentile.<br/><br/>Non-numeric values will be ignored.",
+    "select_unique": "List of unique values found for a target property.",
+    "standard_deviation": "Standard deviation of all numeric values for a target property.<br/><br/>Non-numeric values will be ignored.",
+    "sum": "Sum of all numeric values for a given property.<br/><br/>Non-numeric values will be ignored."
   }
 }
