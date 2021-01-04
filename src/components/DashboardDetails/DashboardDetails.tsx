@@ -21,7 +21,7 @@ type Props = {
   /** Dashboard tags */
   tags: string[];
   /** Back event handler */
-  onBack: () => void;
+  onBack?: () => void;
 };
 
 const DashboardDetails: FC<Props> = ({ title, tags, onBack }) => {
@@ -39,17 +39,19 @@ const DashboardDetails: FC<Props> = ({ title, tags, onBack }) => {
           </Tag>
         ))}
       </Header>
-      <BackButton
-        onClick={onBack}
-        whileHover="hover"
-        initial="initial"
-        animate="initial"
-      >
-        <motion.div variants={backMotion}>
-          <Icon type="button-arrow-left" fill={colors.blue[300]} />
-        </motion.div>
-        <BackText>{t('dashboard_details.back')}</BackText>
-      </BackButton>
+      {onBack && (
+        <BackButton
+          onClick={onBack}
+          whileHover="hover"
+          initial="initial"
+          animate="initial"
+        >
+          <motion.div variants={backMotion}>
+            <Icon type="button-arrow-left" fill={colors.blue[300]} />
+          </motion.div>
+          <BackText>{t('dashboard_details.back')}</BackText>
+        </BackButton>
+      )}
     </div>
   );
 };
