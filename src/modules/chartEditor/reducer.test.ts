@@ -15,7 +15,29 @@ import {
   setQueryResult,
   setQuerySettings,
   setVisualizationSettings,
+  showQueryUpdateConfirmation,
+  hideQueryUpdateConfirmation,
 } from './actions';
+
+test('shows query update confirmation', () => {
+  const action = showQueryUpdateConfirmation();
+  const { changeQueryConfirmation } = chartEditorReducer(
+    { ...initialState, changeQueryConfirmation: false },
+    action
+  );
+
+  expect(changeQueryConfirmation).toEqual(true);
+});
+
+test('hides query update confirmation', () => {
+  const action = hideQueryUpdateConfirmation();
+  const { changeQueryConfirmation } = chartEditorReducer(
+    { ...initialState, changeQueryConfirmation: true },
+    action
+  );
+
+  expect(changeQueryConfirmation).toEqual(false);
+});
 
 test('set query type', () => {
   const action = setQueryType(false);

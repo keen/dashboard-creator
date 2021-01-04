@@ -113,6 +113,7 @@ describe('editChartSavedQuery()', () => {
           setWidgetState(widgetId, {
             isInitialized: false,
             isConfigured: false,
+            error: null,
             data: null,
           })
         )
@@ -313,6 +314,7 @@ describe('editChartWidget()', () => {
           setWidgetState(widgetId, {
             isInitialized: false,
             isConfigured: false,
+            error: null,
             data: null,
           })
         )

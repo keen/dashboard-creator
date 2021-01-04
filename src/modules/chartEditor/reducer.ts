@@ -43,12 +43,12 @@ const chartEditorReducer = (
     case SHOW_QUERY_UPDATE_CONFIRMATION:
       return {
         ...state,
-        changeQueryConfirmation: false,
+        changeQueryConfirmation: true,
       };
     case HIDE_QUERY_UPDATE_CONFIRMATION:
       return {
         ...state,
-        changeQueryConfirmation: true,
+        changeQueryConfirmation: false,
       };
     case SET_QUERY_TYPE:
       return {

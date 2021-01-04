@@ -215,6 +215,7 @@ export function* editChartSavedQuery(widgetId: string) {
   const widgetState = {
     isInitialized: false,
     isConfigured: false,
+    error: null,
     data: null,
   };
 
@@ -247,7 +248,10 @@ export function* editChartSavedQuery(widgetId: string) {
     } else if (action.type === CONFIRM_SAVE_QUERY_UPDATE) {
       try {
         const { query: queryName } = yield select(getWidgetSettings, widgetId);
-        yield* updateSaveQuery(queryName, querySettings);
+        const metadata = {
+          visualization: { type: widgetType, chartSettings, widgetSettings },
+        };
+        yield* updateSaveQuery(queryName, querySettings, metadata);
 
         yield put(setWidgetState(widgetId, widgetState));
         yield put(
@@ -357,6 +361,7 @@ export function* editChartWidget({
       const widgetState = {
         isInitialized: false,
         isConfigured: false,
+        error: null,
         data: null,
       };
 

@@ -5,7 +5,11 @@ import { KEEN_ANALYSIS } from '../../constants';
 
 import { SavedQueryAPIResponse } from './types';
 
-export function* updateSaveQuery(queryId: string, querySettings: Query) {
+export function* updateSaveQuery(
+  queryId: string,
+  querySettings: Query,
+  updatedMetadata: Record<string, any> = {}
+) {
   const client = yield getContext(KEEN_ANALYSIS);
 
   const savedQueries: SavedQueryAPIResponse[] = yield client
@@ -25,7 +29,10 @@ export function* updateSaveQuery(queryId: string, querySettings: Query) {
     params: {
       refreshRate,
       query: querySettings,
-      metadata,
+      metadata: {
+        ...metadata,
+        ...updatedMetadata,
+      },
     },
   });
 }
