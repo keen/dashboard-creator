@@ -2,6 +2,10 @@
   "notifications": {
     "update_save_query_error": "We were not able to update this save query. Try again later."
   },
+  "dashboard_details": {
+    "untitled_dashboard": "Untitled dashboard",
+    "back": "All Dashboards"
+  },
   "dashboard_tile": {
     "preview_dashboard": "View Dashboard",
     "add_widgets": "Add widgets",
@@ -39,8 +43,7 @@
   },
   "dashboard_editor": {
     "save": "Save",
-    "loading": "Loading",
-    "back": "Back"
+    "loading": "Loading"
   },
   "query_picker": {
     "close": "Close",

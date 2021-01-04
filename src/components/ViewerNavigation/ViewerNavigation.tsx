@@ -5,16 +5,27 @@ import { Icon } from '@keen.io/icons';
 
 import { Aside, ButtonWrapper, Container } from './ViewerNavigation.styles';
 
+import DashboardDetails from '../DashboardDetails';
+
 type Props = {
+  /** Dashboard tags */
+  tags: string[];
+  /** Dashboard title */
+  title?: string;
   /** User privilages */
   editPrivileges?: boolean;
   /** Edit dashboard event handler */
   onEditDashboard: () => void;
   /** Show dashboard settings */
   onShowSettings: () => void;
+  /** Back event handler */
+  onBack: () => void;
 };
 
 const ViewerNavigation: FC<Props> = ({
+  title,
+  tags,
+  onBack,
   editPrivileges,
   onShowSettings,
   onEditDashboard,
@@ -23,6 +34,7 @@ const ViewerNavigation: FC<Props> = ({
 
   return (
     <Container>
+      <DashboardDetails title={title} tags={tags} onBack={onBack} />
       <Aside>
         {editPrivileges && (
           <ButtonWrapper data-testid="dashboard-settings">

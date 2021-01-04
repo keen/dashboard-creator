@@ -92,9 +92,11 @@ const Editor: FC<Props> = ({ dashboardId }) => {
     [droppableWidget]
   );
 
-  const { lastModificationDate } = useSelector((state: RootState) =>
-    getDashboardMeta(state, dashboardId)
-  );
+  const {
+    lastModificationDate,
+    title,
+    tags,
+  } = useSelector((state: RootState) => getDashboardMeta(state, dashboardId));
 
   return (
     <EditorContext.Provider
@@ -106,6 +108,8 @@ const Editor: FC<Props> = ({ dashboardId }) => {
       }}
     >
       <EditorNavigation
+        title={title}
+        tags={tags}
         onShowSettings={() => console.log('show settings')}
         onBack={() => {
           dispatch(setActiveDashboard(null));
