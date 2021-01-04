@@ -59,6 +59,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
     isConfigured,
     isInitialized,
     isLoading,
+    error,
     data,
     widget,
   } = useSelector((state: RootState) => getWidget(state, id));
@@ -75,9 +76,14 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
         theme,
         containerRef.current
       );
-      datavizRef.current.render(getChartInput(data));
+
+      if (error) {
+        datavizRef.current.error(error);
+      } else {
+        datavizRef.current.render(getChartInput(data));
+      }
     }
-  }, [showVisualization]);
+  }, [showVisualization, error]);
 
   useEffect(() => {
     if (!editorPubSub) return;
