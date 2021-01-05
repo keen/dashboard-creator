@@ -9,6 +9,7 @@ import {
   getContext,
 } from 'redux-saga/effects';
 import { SET_QUERY_EVENT } from '@keen.io/query-creator';
+import { getAvailableWidgets } from '@keen.io/widget-picker';
 
 import {
   createWidget as createWidgetAction,
@@ -62,15 +63,23 @@ import {
   INITIALIZE_WIDGET,
   INITIALIZE_CHART_WIDGET,
 } from './constants';
-import { PUBSUB, KEEN_ANALYSIS, NOTIFICATION_MANAGER } from '../../constants';
+import {
+  PUBSUB,
+  KEEN_ANALYSIS,
+  NOTIFICATION_MANAGER,
+  I18N,
+} from '../../constants';
 
-import { ChartWidget } from './types';
+import { ChartWidget, WidgetItem } from './types';
 
-function* initializeChartWidget({
+export function* initializeChartWidget({
   payload,
 }: ReturnType<typeof initializeChartWidgetAction>) {
   const { id } = payload;
-  const { query } = yield select(getWidgetSettings, id);
+  const {
+    query,
+    settings: { visualizationType },
+  } = yield select(getWidgetSettings, id);
 
   try {
     const requestBody =
@@ -80,10 +89,30 @@ function* initializeChartWidget({
     yield put(setWidgetLoading(id, true));
 
     const analysisResult = yield keenAnalysis.query(requestBody);
-    const widgetState = {
+    const { query: querySettings } = analysisResult;
+
+    const isDetachedQuery = !getAvailableWidgets(querySettings).includes(
+      visualizationType
+    );
+    let widgetState: Partial<WidgetItem> = {
       isInitialized: true,
       data: analysisResult,
     };
+
+    if (isDetachedQuery) {
+      const i18n = yield getContext(I18N);
+      const error = {
+        title: i18n.t('widget_errors.detached_query_title', {
+          chart: visualizationType,
+        }),
+        message: i18n.t('widget_errors.detached_query_message'),
+      };
+
+      widgetState = {
+        ...widgetState,
+        error,
+      };
+    }
 
     yield put(setWidgetState(id, widgetState));
   } catch (err) {
@@ -91,7 +120,9 @@ function* initializeChartWidget({
     yield put(
       setWidgetState(id, {
         isInitialized: true,
-        error: body,
+        error: {
+          message: body,
+        },
       })
     );
   } finally {

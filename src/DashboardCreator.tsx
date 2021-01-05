@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import i18n from 'i18next';
 import { Provider } from 'react-redux';
 import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
 import KeenAnalysis from 'keen-analysis';
@@ -24,6 +25,7 @@ import rootSaga from './rootSaga';
 import {
   PUBSUB,
   BLOB_API,
+  I18N,
   KEEN_ANALYSIS,
   NOTIFICATION_MANAGER,
   SHOW_TOAST_NOTIFICATION_EVENT,
@@ -99,6 +101,7 @@ export class DashboardCreator {
       context: {
         [BLOB_API]: blobApi,
         [KEEN_ANALYSIS]: keenAnalysis,
+        [I18N]: i18n,
         [PUBSUB]: getPubSub(),
         [NOTIFICATION_MANAGER]: new NotificationManager({
           pubsub: notificationPubSub,

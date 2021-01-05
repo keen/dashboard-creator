@@ -1,5 +1,4 @@
 import React, { FC, useRef, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
   PickerWidgets,
   ChartSettings,
@@ -9,8 +8,6 @@ import { KeenDataviz } from '@keen.io/dataviz';
 import { Theme } from '@keen.io/charts';
 
 import { Container } from './DataViz.styles';
-
-import { isEmptyAnalysisResult } from './utils';
 
 import { CONTAINER_ID } from './constants';
 
@@ -34,7 +31,6 @@ const Dataviz: FC<Props> = ({
   widgetSettings,
   visualizationTheme,
 }) => {
-  const { t } = useTranslation();
   const datavizRef = useRef(null);
   const containerRef = useRef(null);
 
@@ -55,11 +51,7 @@ const Dataviz: FC<Props> = ({
       widget: widgetSettings,
     });
 
-    if (isEmptyAnalysisResult(analysisResults)) {
-      datavizRef.current.error(t('dataviz.no_results'));
-    } else {
-      datavizRef.current.render(analysisResults);
-    }
+    datavizRef.current.render(analysisResults);
   }, [visualization, chartSettings, widgetSettings, analysisResults]);
 
   return <Container id={CONTAINER_ID} ref={containerRef} />;
