@@ -78,7 +78,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
       );
 
       if (error) {
-        datavizRef.current.error(error);
+        datavizRef.current.error(error.message, error.title);
       } else {
         datavizRef.current.render(getChartInput(data));
       }
@@ -91,7 +91,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
       switch (eventName) {
         case RESIZE_WIDGET_EVENT:
           const { id: widgetId } = meta;
-          if (datavizRef.current && widgetId === id) {
+          if (datavizRef.current && widgetId === id && !error) {
             datavizRef.current.destroy();
             datavizRef.current.render(getChartInput(data));
           }
@@ -100,7 +100,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
     });
 
     return () => dispose();
-  }, [data, editorPubSub]);
+  }, [error, data, editorPubSub]);
 
   useEffect(() => {
     if (loaderRef.current) {
@@ -116,7 +116,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
           ref={containerRef}
           data-testid="chart-widget-container"
           disableInteractions={disableInteractions}
-        ></Container>
+        />
       ) : (
         <LoaderWrapper ref={loaderRef}>
           {!isConfigured && (

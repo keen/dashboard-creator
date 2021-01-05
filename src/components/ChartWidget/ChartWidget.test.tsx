@@ -133,7 +133,7 @@ test('renders visualization', () => {
 });
 
 test('renders error', () => {
-  const error = 'Invalid access key';
+  const errorMessage = 'Invalid access key';
   const storeState = {
     widgets: {
       items: {
@@ -158,14 +158,16 @@ test('renders error', () => {
           isConfigured: true,
           isInitialized: true,
           isLoading: false,
-          error: error,
+          error: {
+            message: errorMessage,
+          },
         },
       },
     },
   };
   render(storeState);
 
-  expect(errorMock).toHaveBeenCalledWith(error);
+  expect(errorMock).toHaveBeenCalledWith(errorMessage, undefined);
 });
 
 test('renders chart placeholder', () => {

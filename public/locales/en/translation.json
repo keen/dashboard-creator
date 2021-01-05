@@ -2,6 +2,10 @@
   "notifications": {
     "update_save_query_error": "We were not able to update this save query. Try again later."
   },
+  "widget_errors": {
+    "detached_query_title": "Unable to present result in {{chart}} chart",
+    "detached_query_message": "Please check if query structure has changed or select other visualization"
+  },
   "dashboard_details": {
     "untitled_dashboard": "Untitled dashboard",
     "back": "All Dashboards"
