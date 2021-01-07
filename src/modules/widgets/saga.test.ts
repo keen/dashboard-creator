@@ -95,7 +95,7 @@ describe('reinitializeWidgets()', () => {
       return dashboardSettings;
     });
 
-    test('get settings for all widget used on dashboard', (result) => {
+    test('get settings for all widgets used on dashboard', (result) => {
       expect(result).toEqual(
         all([
           select(getWidgetSettings, widgetId),
