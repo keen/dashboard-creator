@@ -17,7 +17,11 @@ const ChartWidgetEditor: FC<Props> = ({ isOpen }) => {
   const dispatch = useDispatch();
 
   return (
-    <Modal isOpen={isOpen} onClose={() => dispatch(closeEditor())}>
+    <Modal
+      isOpen={isOpen}
+      adjustPositionToScroll={false}
+      onClose={() => dispatch(closeEditor())}
+    >
       {(_, closeHandler) => (
         <Container>
           <ChartEditor onClose={closeHandler} />

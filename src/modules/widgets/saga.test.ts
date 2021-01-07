@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import sagaHelper from 'redux-saga-testing';
-import { put, take, call, getContext, select } from 'redux-saga/effects';
+import { all, put, take, call, getContext, select } from 'redux-saga/effects';
 import { Query } from '@keen.io/query';
 import { PickerWidgets, ChartSettings } from '@keen.io/widget-picker';
 import { SET_QUERY_EVENT } from '@keen.io/query-creator';
 
 import {
+  savedQueryUpdated,
   setWidgetState,
   finishChartWidgetConfiguration,
   initializeChartWidget as initializeChartWidgetAction,
@@ -18,14 +19,24 @@ import {
   createQueryForWidget,
   editChartWidget,
   editChartSavedQuery,
+  reinitializeWidgets,
   initializeChartWidget,
   initializeWidget,
 } from './saga';
 
 import { getWidgetSettings } from './selectors';
 
-import { showQueryPicker, hideQueryPicker, HIDE_QUERY_PICKER } from '../app';
-import { saveDashboard, removeWidgetFromDashboard } from '../dashboards';
+import {
+  getActiveDashboard,
+  showQueryPicker,
+  hideQueryPicker,
+  HIDE_QUERY_PICKER,
+} from '../app';
+import {
+  getDashboardSettings,
+  saveDashboard,
+  removeWidgetFromDashboard,
+} from '../dashboards';
 import {
   selectSavedQuery,
   createQuery,
@@ -60,6 +71,65 @@ import { widget as widgetItem } from './fixtures';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
+
+describe('reinitializeWidgets()', () => {
+  const queryName = 'purchases';
+  const action = savedQueryUpdated(widgetId, queryName);
+
+  const dashboardSettings = {
+    widgets: [widgetId, '@widget/02'],
+  };
+
+  describe('Scenario 1: Reinitializes affected widgets', () => {
+    const test = sagaHelper(reinitializeWidgets(action));
+
+    test('get active dashboard idenfitier', (result) => {
+      expect(result).toEqual(select(getActiveDashboard));
+
+      return dashboardId;
+    });
+
+    test('get dashboard settings', (result) => {
+      expect(result).toEqual(select(getDashboardSettings, dashboardId));
+
+      return dashboardSettings;
+    });
+
+    test('get settings for all widget used on dashboard', (result) => {
+      expect(result).toEqual(
+        all([
+          select(getWidgetSettings, widgetId),
+          select(getWidgetSettings, '@widget/02'),
+        ])
+      );
+
+      return [
+        { type: 'visualization', id: widgetId, query: queryName },
+        { type: 'visualization', id: '@widget/02', query: queryName },
+      ];
+    });
+
+    test('set widget state for affected widgets', (result) => {
+      expect(result).toEqual(
+        all([
+          put(
+            setWidgetState('@widget/02', {
+              isInitialized: false,
+              error: null,
+              data: null,
+            })
+          ),
+        ])
+      );
+    });
+
+    test('reinitializes affected chart widgets', (result) => {
+      expect(result).toEqual(
+        all([put(initializeChartWidgetAction('@widget/02'))])
+      );
+    });
+  });
+});
 
 describe('initializeChartWidget()', () => {
   const action = initializeChartWidgetAction(widgetId);

@@ -1,11 +1,4 @@
-import React, {
-  FC,
-  useRef,
-  useEffect,
-  useState,
-  useContext,
-  useCallback,
-} from 'react';
+import React, { FC, useRef, useEffect, useState, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { Loader } from '@keen.io/ui-core';
 import { colors } from '@keen.io/colors';
@@ -19,6 +12,8 @@ import { getActiveDashboardTheme } from '../../modules/theme';
 import { RootState } from '../../rootReducer';
 
 import { RESIZE_WIDGET_EVENT } from '../../constants';
+
+import getChartInput from '../../utils/getChartInput';
 import createDataviz from './utils/createDataviz';
 
 type Props = {
@@ -35,25 +30,6 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
 
   const { editorPubSub } = useContext(EditorContext);
   const [placeholder, setPlaceholder] = useState({ width: 0, height: 0 });
-
-  const getChartInput = useCallback((data: Record<string, any>) => {
-    const isSavedQuery = 'query_name' in data;
-    const { result } = data;
-
-    if (isSavedQuery && typeof result === 'object' && 'steps' in result) {
-      const {
-        query,
-        result: { steps, result: analysisResult },
-      } = data;
-      return {
-        query,
-        steps,
-        result: analysisResult,
-      };
-    }
-
-    return data;
-  }, []);
 
   const {
     isConfigured,

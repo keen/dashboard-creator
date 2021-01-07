@@ -21,6 +21,7 @@ import {
   getDashboardsList,
   getDashboardsLoadState,
   getDeleteConfirmation,
+  getDashboardSettings,
   getDashboard,
   getDashboardMeta,
 } from './selectors';
@@ -44,6 +45,7 @@ export {
   saveDashboardMeta,
   fetchDashboardList,
   getDashboardMeta,
+  getDashboardSettings,
   getDeleteConfirmation,
   getDashboardsLoadState,
   getDashboardsList,

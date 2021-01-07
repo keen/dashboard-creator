@@ -9,6 +9,8 @@ import { Theme } from '@keen.io/charts';
 
 import { Container } from './DataViz.styles';
 
+import getChartInput from '../../../../utils/getChartInput';
+
 import { CONTAINER_ID } from './constants';
 
 type Props = {
@@ -51,7 +53,7 @@ const Dataviz: FC<Props> = ({
       widget: widgetSettings,
     });
 
-    datavizRef.current.render(analysisResults);
+    datavizRef.current.render(getChartInput(analysisResults));
   }, [visualization, chartSettings, widgetSettings, analysisResults]);
 
   return <Container id={CONTAINER_ID} ref={containerRef} />;
