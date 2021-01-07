@@ -15,6 +15,7 @@ import {
   CLOSE_EDITOR,
   SHOW_QUERY_UPDATE_CONFIRMATION,
   HIDE_QUERY_UPDATE_CONFIRMATION,
+  UPDATE_CHART_SETTINGS,
 } from './constants';
 
 import { ReducerState } from './types';
@@ -64,6 +65,17 @@ const chartEditorReducer = (
       return {
         ...state,
         isEditMode: action.payload.isEditMode,
+      };
+    case UPDATE_CHART_SETTINGS:
+      return {
+        ...state,
+        visualization: {
+          ...state.visualization,
+          chartSettings: {
+            ...state.visualization.chartSettings,
+            ...action.payload.chartSettings,
+          },
+        },
       };
     case SET_VISUALIZATION_SETTINGS:
       return {

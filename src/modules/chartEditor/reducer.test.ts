@@ -15,6 +15,7 @@ import {
   setQueryResult,
   setQuerySettings,
   setVisualizationSettings,
+  updateChartSettings,
   showQueryUpdateConfirmation,
   hideQueryUpdateConfirmation,
 } from './actions';
@@ -115,6 +116,32 @@ test('set visualization settings', () => {
   expect(visualization).toMatchObject({
     type: 'bar',
     chartSettings,
+    widgetSettings: {},
+  });
+});
+
+test('updates chart settings', () => {
+  const action = updateChartSettings({ steps: ['purchases'] });
+  const { visualization } = chartEditorReducer(
+    {
+      ...initialState,
+      visualization: {
+        type: 'funnel',
+        chartSettings: {
+          layout: 'vertical',
+        },
+        widgetSettings: {},
+      },
+    },
+    action
+  );
+
+  expect(visualization).toMatchObject({
+    type: 'funnel',
+    chartSettings: {
+      layout: 'vertical',
+      steps: ['purchases'],
+    },
     widgetSettings: {},
   });
 });

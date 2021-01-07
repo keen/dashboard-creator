@@ -25,6 +25,7 @@ import {
   HIDE_QUERY_UPDATE_CONFIRMATION,
   CONFIRM_SAVE_QUERY_UPDATE,
   USE_QUERY_FOR_WIDGET,
+  UPDATE_CHART_SETTINGS,
 } from './constants';
 
 export const setQuerySettings = createAction(
@@ -122,6 +123,15 @@ export const confirmSaveQueryUpdate = createAction(CONFIRM_SAVE_QUERY_UPDATE);
 
 export const useQueryForWidget = createAction(USE_QUERY_FOR_WIDGET);
 
+export const updateChartSettings = createAction(
+  UPDATE_CHART_SETTINGS,
+  (chartSettings: Record<string, any>) => ({
+    payload: {
+      chartSettings,
+    },
+  })
+);
+
 export type ChartEditorActions =
   | ReturnType<typeof openEditor>
   | ReturnType<typeof closeEditor>
@@ -140,4 +150,5 @@ export type ChartEditorActions =
   | ReturnType<typeof showQueryUpdateConfirmation>
   | ReturnType<typeof hideQueryUpdateConfirmation>
   | ReturnType<typeof confirmSaveQueryUpdate>
-  | ReturnType<typeof useQueryForWidget>;
+  | ReturnType<typeof useQueryForWidget>
+  | ReturnType<typeof updateChartSettings>;

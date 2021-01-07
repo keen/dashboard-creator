@@ -16,6 +16,7 @@ import {
   hideQueryUpdateConfirmation,
   confirmSaveQueryUpdate,
   useQueryForWidget,
+  updateChartSettings,
 } from './actions';
 import { getChartEditor } from './selectors';
 import { chartEditorSaga } from './saga';
@@ -44,6 +45,7 @@ export {
   closeEditor,
   resetEditor,
   editorMounted,
+  updateChartSettings,
   getChartEditor,
   applyConfiguration,
   chartEditorSaga,

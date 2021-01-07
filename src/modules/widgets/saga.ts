@@ -6,9 +6,10 @@ import {
   take,
   fork,
   call,
+  all,
   getContext,
 } from 'redux-saga/effects';
-import { SET_QUERY_EVENT } from '@keen.io/query-creator';
+import { SET_QUERY_EVENT, SET_CHART_SETTINGS } from '@keen.io/query-creator';
 import { getAvailableWidgets } from '@keen.io/widget-picker';
 
 import {
@@ -19,11 +20,16 @@ import {
   setWidgetLoading,
   setWidgetState,
   finishChartWidgetConfiguration,
+  savedQueryUpdated,
 } from './actions';
 
 import { getWidgetSettings, getWidget } from './selectors';
 
-import { removeWidgetFromDashboard, saveDashboard } from '../dashboards';
+import {
+  removeWidgetFromDashboard,
+  saveDashboard,
+  getDashboardSettings,
+} from '../dashboards';
 import {
   openEditor,
   closeEditor,
@@ -62,6 +68,7 @@ import {
   EDIT_CHART_WIDGET,
   INITIALIZE_WIDGET,
   INITIALIZE_CHART_WIDGET,
+  SAVED_QUERY_UPDATED,
 } from './constants';
 import {
   PUBSUB,
@@ -128,6 +135,43 @@ export function* initializeChartWidget({
   } finally {
     yield put(setWidgetLoading(id, false));
   }
+}
+
+/**
+ * Flow responsible for re-initializing widgets after updating saved query.
+ *
+ * @param queryId - Saved query identifer
+ * @return void
+ *
+ */
+export function* reinitializeWidgets({
+  payload,
+}: ReturnType<typeof savedQueryUpdated>) {
+  const { widgetId, queryId } = payload;
+  const dashboardId = yield select(getActiveDashboard);
+
+  const { widgets } = yield select(getDashboardSettings, dashboardId);
+  const widgetState: Partial<WidgetItem> = {
+    isInitialized: false,
+    error: null,
+    data: null,
+  };
+
+  const widgetsSettings = yield all(
+    widgets.map((id: string) => select(getWidgetSettings, id))
+  );
+
+  const widgetsToUpdate = widgetsSettings.filter(
+    ({ id, type, query }) =>
+      id !== widgetId && type === 'visualization' && query === queryId
+  );
+
+  yield all(
+    widgetsToUpdate.map(({ id }) => put(setWidgetState(id, widgetState)))
+  );
+  yield all(
+    widgetsToUpdate.map(({ id }) => put(initializeChartWidgetAction(id)))
+  );
 }
 
 export function* initializeWidget({
@@ -299,6 +343,7 @@ export function* editChartSavedQuery(widgetId: string) {
 
         const dashboardId = yield select(getActiveDashboard);
         yield put(saveDashboard(dashboardId));
+        yield put(savedQueryUpdated(widgetId, queryName));
       } catch (err) {
         const notificationManager = yield getContext(NOTIFICATION_MANAGER);
         yield notificationManager.showNotification({
@@ -375,6 +420,11 @@ export function* editChartWidget({
   const pubsub = yield getContext(PUBSUB);
   yield pubsub.publish(SET_QUERY_EVENT, { query });
 
+  if (chartSettings?.stepLabels && chartSettings.stepLabels.length) {
+    const { stepLabels } = chartSettings;
+    yield pubsub.publish(SET_CHART_SETTINGS, { chartSettings: { stepLabels } });
+  }
+
   const action = yield take([CLOSE_EDITOR, APPLY_CONFIGURATION]);
 
   if (action.type === CLOSE_EDITOR) {
@@ -427,6 +477,7 @@ export function* createWidget({
 }
 
 export function* widgetsSaga() {
+  yield takeLatest(SAVED_QUERY_UPDATED, reinitializeWidgets);
   yield takeLatest(CREATE_WIDGET, createWidget);
   yield takeLatest(EDIT_CHART_WIDGET, editChartWidget);
   yield takeEvery(INITIALIZE_WIDGET, initializeWidget);
