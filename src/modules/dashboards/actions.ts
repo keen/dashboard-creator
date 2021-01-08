@@ -21,12 +21,17 @@ import {
   SAVE_DASHBOARD_SUCCESS,
   SAVE_DASHBOARD_ERROR,
   SAVE_DASHBOARD_METADATA,
+  SAVE_DASHBOARD_METADATA_SUCCESS,
+  SAVE_DASHBOARD_METADATA_ERROR,
   UPDATE_DASHBOARD_METADATA,
   VIEW_DASHBOARD,
   INITIALIZE_DASHBOARD_WIDGETS,
   SHOW_DELETE_CONFIRMATION,
   HIDE_DELETE_CONFIRMATION,
   CONFIRM_DASHBOARD_DELETE,
+  SHOW_DASHBOARD_SETTINGS_MODAL,
+  HIDE_DASHBOARD_SETTINGS_MODAL,
+  SET_TAGS_POOL,
 } from './constants';
 
 export const fetchDashboardList = createAction(FETCH_DASHBOARDS_LIST);
@@ -192,6 +197,14 @@ export const saveDashboardMeta = createAction(
   })
 );
 
+export const saveDashboardMetaSuccess = createAction(
+  SAVE_DASHBOARD_METADATA_SUCCESS
+);
+
+export const saveDashboardMetaError = createAction(
+  SAVE_DASHBOARD_METADATA_ERROR
+);
+
 export const updateDashboardMeta = createAction(
   UPDATE_DASHBOARD_METADATA,
   (dashboardId: string, metadata: Partial<DashboardMetaData>) => ({
@@ -223,6 +236,24 @@ export const hideDeleteConfirmation = createAction(HIDE_DELETE_CONFIRMATION);
 
 export const confirmDashboardDelete = createAction(CONFIRM_DASHBOARD_DELETE);
 
+export const showDashboardSettingsModal = createAction(
+  SHOW_DASHBOARD_SETTINGS_MODAL,
+  (dashboardId: string) => ({
+    payload: { dashboardId },
+  })
+);
+
+export const hideDashboardSettingsModal = createAction(
+  HIDE_DASHBOARD_SETTINGS_MODAL
+);
+
+export const setTagsPool = createAction(
+  SET_TAGS_POOL,
+  (tagsPool: string[]) => ({
+    payload: { tagsPool },
+  })
+);
+
 export type DashboardsActions =
   | ReturnType<typeof fetchDashboardList>
   | ReturnType<typeof fetchDashboardListSuccess>
@@ -246,4 +277,10 @@ export type DashboardsActions =
   | ReturnType<typeof initializeDashboardWidgets>
   | ReturnType<typeof showDeleteConfirmation>
   | ReturnType<typeof hideDeleteConfirmation>
-  | ReturnType<typeof confirmDashboardDelete>;
+  | ReturnType<typeof confirmDashboardDelete>
+  | ReturnType<typeof showDashboardSettingsModal>
+  | ReturnType<typeof hideDashboardSettingsModal>
+  | ReturnType<typeof setTagsPool>
+  | ReturnType<typeof saveDashboardMeta>
+  | ReturnType<typeof saveDashboardMetaSuccess>
+  | ReturnType<typeof saveDashboardMetaError>;

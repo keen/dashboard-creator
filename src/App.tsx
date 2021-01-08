@@ -1,14 +1,16 @@
 import React, { FC } from 'react';
 import Loadable from 'react-loadable';
 import { Route, Switch } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Container, Content } from './App.styles';
 
 import { getActiveDashboard } from './modules/app';
+import { DashboardMetaData, saveDashboardMeta } from './modules/dashboards';
 
 import PageLoader from './components/PageLoader';
 import ToastNotifications from './components/ToastNotifications';
+import DashboardSettingsModal from './components/DashboardSettingsModal';
 
 import { ROUTES } from './constants';
 
@@ -32,6 +34,7 @@ const Management = Loadable({
 
 const App: FC<Props> = () => {
   const activeDashboard = useSelector(getActiveDashboard);
+  const dispatch = useDispatch();
 
   return (
     <Container>
@@ -51,6 +54,11 @@ const App: FC<Props> = () => {
         </Switch>
       </Content>
       <ToastNotifications />
+      <DashboardSettingsModal
+        onSaveDashboard={(dashboardId: string, metadata: DashboardMetaData) =>
+          dispatch(saveDashboardMeta(dashboardId, metadata))
+        }
+      />
     </Container>
   );
 };

@@ -8,6 +8,7 @@ import {
   getDashboard,
   getDashboardMeta,
   editDashboard,
+  showDashboardSettingsModal,
 } from '../../modules/dashboards';
 import { setActiveDashboard } from '../../modules/app';
 
@@ -56,7 +57,7 @@ const Viewer: FC<Props> = ({ dashboardId }) => {
             dispatch(push(ROUTES.MANAGEMENT));
           }}
           onShowSettings={() => {
-            console.log('onShowDashboardSettings');
+            dispatch(showDashboardSettingsModal(dashboardId));
           }}
           editPrivileges
         />

@@ -2,6 +2,10 @@
 
 exports[`add widget to dashboard 1`] = `
 Object {
+  "dashboardSettingsModal": Object {
+    "dashboardId": null,
+    "isVisible": false,
+  },
   "deleteConfirmation": Object {
     "dashboardId": null,
     "isVisible": false,
@@ -33,12 +37,18 @@ Object {
     "error": null,
     "isInitiallyLoaded": false,
     "isLoaded": true,
+    "isSavingMetadata": false,
   },
+  "tagsPool": Array [],
 }
 `;
 
 exports[`removes widget from dashboard 1`] = `
 Object {
+  "dashboardSettingsModal": Object {
+    "dashboardId": null,
+    "isVisible": false,
+  },
   "deleteConfirmation": Object {
     "dashboardId": null,
     "isVisible": false,
@@ -68,6 +78,8 @@ Object {
     "error": null,
     "isInitiallyLoaded": false,
     "isLoaded": true,
+    "isSavingMetadata": false,
   },
+  "tagsPool": Array [],
 }
 `;
