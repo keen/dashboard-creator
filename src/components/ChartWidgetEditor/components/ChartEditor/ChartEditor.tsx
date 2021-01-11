@@ -7,29 +7,31 @@ import React, {
   useRef,
   useContext,
 } from 'react';
+import { AnimatePresence } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import deepEqual from 'deep-equal';
 import QueryCreator from '@keen.io/query-creator';
 import { getAvailableWidgets } from '@keen.io/widget-picker';
-import { Button, Alert, Anchor, FadeLoader } from '@keen.io/ui-core';
+import { Button, Alert, Anchor } from '@keen.io/ui-core';
 import { Query } from '@keen.io/query';
 
 import {
   Container,
   QueryCreatorContainer,
   VisualizationContainer,
+  NotificationBar,
   Cancel,
   Footer,
-  FooterAside,
-  WidgetError,
 } from './ChartEditor.styles';
 
 import {
   applyConfiguration,
   editorMounted,
+  resetEditor,
   runQuery,
   setQuerySettings,
+  setQueryDirty,
   setQueryChange,
   setVisualizationSettings,
   updateChartSettings,
@@ -37,6 +39,7 @@ import {
 } from '../../../../modules/chartEditor';
 import { getActiveDashboardTheme } from '../../../../modules/theme';
 
+import { notificationBarMotion } from './motion';
 import WidgetVisualization from '../WidgetVisualization';
 import { AppContext } from '../../../../contexts';
 
@@ -61,13 +64,17 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
     querySettings,
     visualization,
     isEditMode,
+    isDirtyQuery,
     isQueryPerforming,
   } = useSelector(getChartEditor);
   const baseTheme = useSelector(getActiveDashboardTheme);
 
-  const queryRef = useRef(null);
+  const initialQueryRef = useRef(null);
+
+  const [localQuery, setLocalQuery] = useState(null);
   const [initialQuery, setInitialQuery] = useState(null);
-  queryRef.current = initialQuery;
+
+  initialQueryRef.current = initialQuery;
 
   const { type: widgetType } = visualization;
 
@@ -89,10 +96,6 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
   );
 
   useEffect(() => {
-    dispatch(editorMounted());
-  }, []);
-
-  useEffect(() => {
     if (initialQuery) {
       const hasQueryChanged = !deepEqual(initialQuery, querySettings, {
         strict: true,
@@ -101,19 +104,47 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
     }
   }, [querySettings, initialQuery]);
 
+  useEffect(() => {
+    if (initialQuery && localQuery) {
+      const isDirty = !deepEqual(localQuery, querySettings, {
+        strict: true,
+      });
+
+      dispatch(setQueryDirty(isDirty));
+    } else if (initialQuery && !localQuery) {
+      setLocalQuery(querySettings);
+    }
+  }, [initialQuery, querySettings]);
+
+  useEffect(() => {
+    dispatch(editorMounted());
+
+    return () => dispatch(resetEditor());
+  }, []);
+
+  const outdatedAnalysisResults = !!(analysisResult !== null && isDirtyQuery);
+
   return (
-    <Container>
-      {widgetError && (
-        <WidgetError>
-          <Alert type="error">{t('chart_widget_editor.widget_error')}</Alert>
-        </WidgetError>
-      )}
+    <Container id="chart-editor">
+      <AnimatePresence>
+        {widgetError && (
+          <NotificationBar {...notificationBarMotion}>
+            <Alert type="error">{t('chart_widget_editor.widget_error')}</Alert>
+          </NotificationBar>
+        )}
+      </AnimatePresence>
       <VisualizationContainer>
         <WidgetVisualization
           visualization={visualization}
           baseTheme={baseTheme}
+          isQueryPerforming={isQueryPerforming}
+          outdatedAnalysisResults={outdatedAnalysisResults}
           analysisResult={analysisResult}
           querySettings={querySettings}
+          onRunQuery={() => {
+            setWidgetError(null);
+            dispatch(runQuery());
+          }}
           onChangeVisualization={({ type, chartSettings, widgetSettings }) =>
             dispatch(
               setVisualizationSettings(type, chartSettings, widgetSettings)
@@ -128,10 +159,19 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
           masterKey={masterKey}
           modalContainer={modalContainer}
           onUpdateChartSettings={handleChartSettingsUpdate}
-          onUpdateQuery={(query: Query) => {
-            dispatch(setQuerySettings(query));
-            if (!queryRef.current) {
-              setInitialQuery(query);
+          onUpdateQuery={(query: Query, isQueryReady: boolean) => {
+            if (isEditMode) {
+              if (isQueryReady) {
+                dispatch(setQuerySettings(query));
+                if (!initialQueryRef.current) {
+                  setInitialQuery(query);
+                }
+              }
+            } else {
+              dispatch(setQuerySettings(query));
+              if (!initialQueryRef.current) {
+                setInitialQuery(query);
+              }
             }
           }}
           host="staging-api.keen.io"
@@ -139,32 +179,17 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
       </QueryCreatorContainer>
       <Footer>
         <Button
-          variant="success"
+          variant="secondary"
           isDisabled={isQueryPerforming}
-          icon={isQueryPerforming && <FadeLoader />}
-          onClick={() => {
-            setWidgetError(null);
-            dispatch(runQuery());
-          }}
+          onClick={handleConfigurationApply}
         >
-          {isQueryPerforming
-            ? t('chart_widget_editor.run_query_loading')
-            : t('chart_widget_editor.run_query')}
+          {isEditMode
+            ? t('chart_widget_editor.save')
+            : t('chart_widget_editor.add_to_dashboard')}
         </Button>
-        <FooterAside>
-          <Cancel>
-            <Anchor onClick={onClose}>{t('chart_widget_editor.cancel')}</Anchor>
-          </Cancel>
-          <Button
-            variant="secondary"
-            isDisabled={isQueryPerforming}
-            onClick={handleConfigurationApply}
-          >
-            {isEditMode
-              ? t('chart_widget_editor.save')
-              : t('chart_widget_editor.add_to_dashboard')}
-          </Button>
-        </FooterAside>
+        <Cancel>
+          <Anchor onClick={onClose}>{t('chart_widget_editor.cancel')}</Anchor>
+        </Cancel>
       </Footer>
     </Container>
   );

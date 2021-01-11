@@ -23,6 +23,7 @@ const ConfirmQueryChange: FC<Props> = ({ isOpen }) => {
   return (
     <Modal
       isOpen={isOpen}
+      adjustPositionToScroll={false}
       onClose={() => dispatch(hideQueryUpdateConfirmation())}
     >
       {(_, closeHandler) => (

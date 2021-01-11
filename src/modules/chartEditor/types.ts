@@ -9,6 +9,7 @@ export type ReducerState = {
   isOpen: boolean;
   isEditMode: boolean;
   isSavedQuery: boolean;
+  isDirtyQuery: boolean;
   hasQueryChanged: boolean;
   changeQueryConfirmation: boolean;
   isQueryPerforming: boolean;

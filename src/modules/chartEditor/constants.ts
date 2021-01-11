@@ -4,6 +4,7 @@ export const RESET_EDITOR = '@chart-editor/RESET_EDITOR';
 export const SET_QUERY_RESULT = '@chart-editor/SET_QUERY_RESULT';
 export const SET_EDIT_MODE = '@chart-editor/SET_EDIT_MODE';
 export const SET_QUERY_CHANGE = '@chart-editor/SET_QUERY_CHANGE';
+export const SET_QUERY_DIRTY = '@chart-editor/SET_QUERY_DIRTY';
 export const SET_QUERY_TYPE = '@chart-editor/SET_QUERY_TYPE';
 export const RUN_QUERY = '@chart-editor/RUN_QUERY';
 export const RUN_QUERY_SUCCESS = '@chart-editor/RUN_QUERY_SUCCESS';

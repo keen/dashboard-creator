@@ -1,23 +1,39 @@
 import React, { FC, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { AnimatePresence } from 'framer-motion';
 import { getAvailableWidgets, WidgetPicker } from '@keen.io/widget-picker';
+import { Button, FadeLoader } from '@keen.io/ui-core';
 import { Theme } from '@keen.io/charts';
 
-import { Placeholder, Container } from './WidgetVisualization.styles';
+import {
+  Placeholder,
+  DatavizContainer,
+  FadeMask,
+  Container,
+  RunQuery,
+} from './WidgetVisualization.styles';
 
 import Dataviz from '../DataViz';
 import { getDefaultSettings } from '../../utils';
 
+import { fadeMaskMotion } from './motion';
 import { DISABLE_WIDGETS } from './constants';
 
 import { VisualizationSettings } from './types';
 
 type Props = {
+  /** Query run indocator */
+  isQueryPerforming: boolean;
+  /** Visualization do not represents current query state */
+  outdatedAnalysisResults: boolean;
+  /** Visualization settings */
   visualization: VisualizationSettings;
   /** Query settings */
   querySettings: Record<string, any>;
   /** Change visualization settings event handler */
   onChangeVisualization: (settings: VisualizationSettings) => void;
+  /** Run query event handler */
+  onRunQuery: () => void;
   /** Base theme */
   baseTheme: Partial<Theme>;
   /** Query results */
@@ -26,9 +42,12 @@ type Props = {
 
 const WidgetVisualization: FC<Props> = ({
   visualization,
+  outdatedAnalysisResults,
+  isQueryPerforming,
   baseTheme,
   querySettings,
   analysisResult,
+  onRunQuery,
   onChangeVisualization,
 }) => {
   const { t } = useTranslation();
@@ -77,18 +96,48 @@ const WidgetVisualization: FC<Props> = ({
             />
           </div>
           {widgets.includes(type) && type !== 'json' && (
-            <Dataviz
-              visualization={type}
-              visualizationTheme={baseTheme}
-              chartSettings={chartSettings}
-              widgetSettings={widgetSettings}
-              analysisResults={analysisResult}
-            />
+            <DatavizContainer>
+              <Dataviz
+                visualization={type}
+                visualizationTheme={baseTheme}
+                chartSettings={chartSettings}
+                widgetSettings={widgetSettings}
+                analysisResults={analysisResult}
+              />
+              <AnimatePresence>
+                {outdatedAnalysisResults && (
+                  <FadeMask {...fadeMaskMotion}>
+                    <Button
+                      variant="success"
+                      isDisabled={isQueryPerforming}
+                      icon={isQueryPerforming && <FadeLoader />}
+                      onClick={onRunQuery}
+                    >
+                      {isQueryPerforming
+                        ? t('chart_widget_editor.run_query_loading')
+                        : t('chart_widget_editor.run_query')}
+                    </Button>
+                  </FadeMask>
+                )}
+              </AnimatePresence>
+            </DatavizContainer>
           )}
         </>
       ) : (
         <Placeholder>
           {t('chart_widget_editor.run_query_placeholder')}
+          <RunQuery>
+            <Button
+              variant="success"
+              isDisabled={isQueryPerforming}
+              icon={isQueryPerforming && <FadeLoader />}
+              onClick={onRunQuery}
+            >
+              {isQueryPerforming
+                ? t('chart_widget_editor.run_query_loading')
+                : t('chart_widget_editor.run_query')}
+            </Button>
+          </RunQuery>
         </Placeholder>
       )}
     </Container>

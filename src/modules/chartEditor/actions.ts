@@ -13,6 +13,7 @@ import {
   EDITOR_MOUNTED,
   SET_EDIT_MODE,
   SET_QUERY_TYPE,
+  SET_QUERY_DIRTY,
   SET_QUERY_CHANGE,
   SET_VISUALIZATION_SETTINGS,
   SET_QUERY_SETTINGS,
@@ -51,6 +52,15 @@ export const setQueryChange = createAction(
   (hasQueryChanged: boolean) => ({
     payload: {
       hasQueryChanged,
+    },
+  })
+);
+
+export const setQueryDirty = createAction(
+  SET_QUERY_DIRTY,
+  (isDirtyQuery: boolean) => ({
+    payload: {
+      isDirtyQuery,
     },
   })
 );
@@ -136,6 +146,7 @@ export type ChartEditorActions =
   | ReturnType<typeof openEditor>
   | ReturnType<typeof closeEditor>
   | ReturnType<typeof resetEditor>
+  | ReturnType<typeof setQueryDirty>
   | ReturnType<typeof setQueryType>
   | ReturnType<typeof setQueryResult>
   | ReturnType<typeof setQueryChange>

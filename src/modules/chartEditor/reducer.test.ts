@@ -181,5 +181,8 @@ test('restore initial state', () => {
   const action = resetEditor();
   const state = chartEditorReducer({ ...initialState, isOpen: true }, action);
 
-  expect(state).toEqual(initialState);
+  expect(state).toEqual({
+    ...initialState,
+    isOpen: true,
+  });
 });

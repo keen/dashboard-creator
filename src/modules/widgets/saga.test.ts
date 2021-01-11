@@ -48,7 +48,6 @@ import {
 import {
   openEditor,
   closeEditor,
-  resetEditor,
   applyConfiguration,
   setVisualizationSettings,
   setQueryType,
@@ -367,10 +366,6 @@ describe('editChartSavedQuery()', () => {
     test('triggers save dashboard action', (result) => {
       expect(result).toEqual(put(saveDashboard(dashboardId)));
     });
-
-    test('reset chart editor', (result) => {
-      expect(result).toEqual(put(resetEditor()));
-    });
   });
 
   describe('Scenario 2: User edits query and widget settings ', () => {
@@ -565,10 +560,6 @@ describe('editChartWidget()', () => {
     test('triggers save dashboard action', (result) => {
       expect(result).toEqual(put(saveDashboard(dashboardId)));
     });
-
-    test('reset chart editor', (result) => {
-      expect(result).toEqual(put(resetEditor()));
-    });
   });
 
   describe('Scenario 2: User edits widget with saved query', () => {
@@ -678,10 +669,6 @@ describe('createQueryForWidget()', () => {
 
     test('initializes chart widget', (result) => {
       expect(result).toEqual(put(initializeChartWidgetAction(widgetId)));
-    });
-
-    test('resets chart editor', (result) => {
-      expect(result).toEqual(put(resetEditor()));
     });
   });
 });

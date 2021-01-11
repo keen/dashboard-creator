@@ -1,5 +1,6 @@
-import { takeLatest, put, select, getContext } from 'redux-saga/effects';
+import { takeLatest, put, take, select, getContext } from 'redux-saga/effects';
 import { UPDATE_VISUALIZATION_TYPE } from '@keen.io/query-creator';
+import { isElementInViewport } from '@keen.io/ui-core';
 
 import {
   setVisualizationSettings,
@@ -9,8 +10,28 @@ import {
 
 import { getChartEditor } from './selectors';
 
-import { RUN_QUERY, SET_VISUALIZATION_SETTINGS } from './constants';
+import {
+  RUN_QUERY,
+  SET_VISUALIZATION_SETTINGS,
+  OPEN_EDITOR,
+  EDITOR_MOUNTED,
+} from './constants';
 import { KEEN_ANALYSIS, NOTIFICATION_MANAGER, PUBSUB } from '../../constants';
+
+function* scrollToElement(element: HTMLElement) {
+  if (element && !isElementInViewport(element)) {
+    yield element.scrollIntoView({ block: 'start', behavior: 'smooth' });
+  }
+}
+
+export function* openEditor() {
+  yield take(EDITOR_MOUNTED);
+  const element = document.getElementById('chart-editor');
+
+  if (element) {
+    yield scrollToElement(element);
+  }
+}
 
 export function* updateVisualizationType({
   payload,
@@ -41,5 +62,6 @@ export function* runQuery() {
 
 export function* chartEditorSaga() {
   yield takeLatest(RUN_QUERY, runQuery);
+  yield takeLatest(OPEN_EDITOR, openEditor);
   yield takeLatest(SET_VISUALIZATION_SETTINGS, updateVisualizationType);
 }
