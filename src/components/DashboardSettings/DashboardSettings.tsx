@@ -21,8 +21,6 @@ import {
   FooterContent,
 } from './DashboardSettings.styles';
 
-// import TagManagement from '../TagManagement';
-
 import {
   DashboardMetaData,
   getDashboardMeta,

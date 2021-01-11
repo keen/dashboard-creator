@@ -49,7 +49,7 @@ import {
   getWidgetSettings,
 } from '../widgets';
 import { removeDashboardTheme, setDashboardTheme } from '../theme';
-import { getTagsPool } from './utils';
+import { createTagsPool } from './utils';
 
 import { BLOB_API, NOTIFICATION_MANAGER, ROUTES } from '../../constants';
 import {
@@ -308,7 +308,7 @@ export function* initializeDashboardWidgets({
 
 export function* showDashboardSettings() {
   const dashboards = yield select(getDashboardsMetadata);
-  const tagsPool = getTagsPool(dashboards);
+  const tagsPool = createTagsPool(dashboards);
   yield put(setTagsPool(tagsPool));
 }
 

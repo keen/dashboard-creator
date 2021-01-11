@@ -1,5 +1,5 @@
 import createDashboardMeta from './createDashboardMeta';
 import reduceWidgetsCount from './reduceWidgetsCount';
-import getTagsPool from './getTagsPool';
+import createTagsPool from './createTagsPool';
 
-export { createDashboardMeta, reduceWidgetsCount, getTagsPool };
+export { createDashboardMeta, reduceWidgetsCount, createTagsPool };

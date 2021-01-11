@@ -1,6 +1,6 @@
-import { DashboardMetaData } from '../../../modules/dashboards';
+import { DashboardMetaData } from '..';
 
-const getTagsPool = (dashboards: DashboardMetaData[]) => {
+const createTagsPool = (dashboards: DashboardMetaData[]) => {
   let tagsPool = [];
   dashboards.forEach(
     (dashboard) => (tagsPool = [...tagsPool, ...dashboard.tags])
@@ -8,4 +8,4 @@ const getTagsPool = (dashboards: DashboardMetaData[]) => {
   return Array.from(new Set(tagsPool));
 };
 
-export default getTagsPool;
+export default createTagsPool;
