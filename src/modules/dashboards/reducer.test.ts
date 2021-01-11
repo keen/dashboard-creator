@@ -8,6 +8,12 @@ import {
   addWidgetToDashboard,
   removeWidgetFromDashboard,
   fetchDashboardListSuccess,
+  showDashboardSettingsModal,
+  hideDashboardSettingsModal,
+  setTagsPool,
+  saveDashboardMeta,
+  saveDashboardMetaSuccess,
+  saveDashboardMetaError,
 } from './actions';
 
 import { dashboardsMeta } from './fixtures';
@@ -80,6 +86,7 @@ test('updates dashboard metadata', () => {
       "error": null,
       "isInitiallyLoaded": false,
       "isLoaded": true,
+      "isSavingMetadata": false,
     }
   `);
 });
@@ -243,6 +250,103 @@ test('serializes dashboards metadata', () => {
       ],
       "error": null,
       "isInitiallyLoaded": true,
+      "isSavingMetadata": false,
+    }
+  `);
+});
+
+test('opens dashboard settings', () => {
+  const state = {
+    ...initialState,
+    metadata: {
+      ...initialState.metadata,
+      data: dashboardsMeta,
+    },
+  };
+  const action = showDashboardSettingsModal('@dashboard/01');
+  const { dashboardSettingsModal } = dashboardsReducer(state, action);
+
+  expect(dashboardSettingsModal).toMatchInlineSnapshot(`
+    Object {
+      "dashboardId": "@dashboard/01",
+      "isVisible": true,
+    }
+  `);
+});
+
+test('closes dashboard settings', () => {
+  const state = {
+    ...initialState,
+    metadata: {
+      ...initialState.metadata,
+      data: dashboardsMeta,
+    },
+  };
+  const action = hideDashboardSettingsModal();
+  const { dashboardSettingsModal } = dashboardsReducer(state, action);
+
+  expect(dashboardSettingsModal).toMatchInlineSnapshot(`
+    Object {
+      "dashboardId": null,
+      "isVisible": false,
+    }
+  `);
+});
+
+test('sets tags pool for dashboard', () => {
+  const tags = ['tag1', 'tag2', 'tag3'];
+  const action = setTagsPool(tags);
+  const { tagsPool } = dashboardsReducer(initialState, action);
+
+  expect(tagsPool).toMatchInlineSnapshot(`
+    Array [
+      "tag1",
+      "tag2",
+      "tag3",
+    ]
+  `);
+});
+
+test('return state for saving dashboard metadata', () => {
+  const action = saveDashboardMeta('@dashboardId', dashboardsMeta[0]);
+  const { metadata } = dashboardsReducer(initialState, action);
+  expect(metadata).toMatchInlineSnapshot(`
+    Object {
+      "data": Array [],
+      "error": null,
+      "isInitiallyLoaded": false,
+      "isSavingMetaData": true,
+      "isSavingMetadata": false,
+    }
+  `);
+
+  const actionSuccess = saveDashboardMetaSuccess();
+  const { metadata: metadataSuccess } = dashboardsReducer(
+    initialState,
+    actionSuccess
+  );
+  expect(metadataSuccess).toMatchInlineSnapshot(`
+    Object {
+      "data": Array [],
+      "error": null,
+      "isInitiallyLoaded": false,
+      "isSavingMetaData": false,
+      "isSavingMetadata": false,
+    }
+  `);
+
+  const actionError = saveDashboardMetaError();
+  const { metadata: metadataError } = dashboardsReducer(
+    initialState,
+    actionError
+  );
+  expect(metadataError).toMatchInlineSnapshot(`
+    Object {
+      "data": Array [],
+      "error": null,
+      "isInitiallyLoaded": false,
+      "isSavingMetaData": false,
+      "isSavingMetadata": false,
     }
   `);
 });

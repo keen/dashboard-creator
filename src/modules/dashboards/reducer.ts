@@ -8,6 +8,9 @@ import {
   SAVE_DASHBOARD_SUCCESS,
   SAVE_DASHBOARD_ERROR,
   UPDATE_DASHBOARD_METADATA,
+  SAVE_DASHBOARD_METADATA,
+  SAVE_DASHBOARD_METADATA_SUCCESS,
+  SAVE_DASHBOARD_METADATA_ERROR,
   REGISTER_DASHBOARD,
   DELETE_DASHBOARD_SUCCESS,
   UPDATE_DASHBOARD,
@@ -16,6 +19,9 @@ import {
   REMOVE_WIDGET_FROM_DASHBOARD,
   SHOW_DELETE_CONFIRMATION,
   HIDE_DELETE_CONFIRMATION,
+  SHOW_DASHBOARD_SETTINGS_MODAL,
+  HIDE_DASHBOARD_SETTINGS_MODAL,
+  SET_TAGS_POOL,
 } from './constants';
 
 import { ReducerState } from './types';
@@ -25,11 +31,17 @@ export const initialState: ReducerState = {
     isInitiallyLoaded: false,
     error: null,
     data: [],
+    isSavingMetadata: false,
   },
   deleteConfirmation: {
     isVisible: false,
     dashboardId: null,
   },
+  dashboardSettingsModal: {
+    isVisible: false,
+    dashboardId: null,
+  },
+  tagsPool: [],
   items: {},
 };
 
@@ -69,6 +81,24 @@ const dashboardsReducer = (
         ...state,
         deleteConfirmation: {
           ...state.deleteConfirmation,
+          dashboardId: null,
+          isVisible: false,
+        },
+      };
+    case SHOW_DASHBOARD_SETTINGS_MODAL:
+      return {
+        ...state,
+        dashboardSettingsModal: {
+          ...state.dashboardSettingsModal,
+          dashboardId: action.payload.dashboardId,
+          isVisible: true,
+        },
+      };
+    case HIDE_DASHBOARD_SETTINGS_MODAL:
+      return {
+        ...state,
+        dashboardSettingsModal: {
+          ...state.dashboardSettingsModal,
           dashboardId: null,
           isVisible: false,
         },
@@ -218,6 +248,28 @@ const dashboardsReducer = (
           isInitiallyLoaded: true,
           error: null,
           data: action.payload.dashboards,
+        },
+      };
+    case SET_TAGS_POOL:
+      return {
+        ...state,
+        tagsPool: action.payload.tagsPool,
+      };
+    case SAVE_DASHBOARD_METADATA:
+      return {
+        ...state,
+        metadata: {
+          ...state.metadata,
+          isSavingMetaData: true,
+        },
+      };
+    case SAVE_DASHBOARD_METADATA_SUCCESS:
+    case SAVE_DASHBOARD_METADATA_ERROR:
+      return {
+        ...state,
+        metadata: {
+          ...state.metadata,
+          isSavingMetaData: false,
         },
       };
     default:

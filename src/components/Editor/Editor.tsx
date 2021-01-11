@@ -14,6 +14,7 @@ import {
   getDashboard,
   saveDashboard,
   getDashboardMeta,
+  showDashboardSettingsModal,
 } from '../../modules/dashboards';
 import {
   createWidget,
@@ -110,7 +111,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
       <EditorNavigation
         title={title}
         tags={tags}
-        onShowSettings={() => console.log('show settings')}
+        onShowSettings={() => dispatch(showDashboardSettingsModal(dashboardId))}
         onBack={() => {
           dispatch(setActiveDashboard(null));
           dispatch(push(ROUTES.MANAGEMENT));
