@@ -212,3 +212,19 @@ test('allows user to restore saved query settings', async () => {
 
   jest.clearAllTimers();
 });
+
+test('shows placeholder with run query button', () => {
+  const storeState = {
+    chartEditor: {
+      ...chartEditorState,
+      analysisResult: null,
+    },
+  };
+  const {
+    wrapper: { getByText },
+  } = render(storeState);
+
+  expect(getByText('chart_widget_editor.run_query')).toBeInTheDocument();
+
+  jest.clearAllTimers();
+});

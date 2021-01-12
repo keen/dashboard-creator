@@ -606,6 +606,101 @@ describe('editChartWidget()', () => {
       expect(result).toEqual(put(setQueryType(true)));
     });
   });
+
+  describe('Scenario 3: User cancel chart widget edition', () => {
+    const test = sagaHelper(editChartWidget(action));
+    const query: Query = {
+      analysis_type: 'count',
+      event_collection: 'logins',
+      order_by: null,
+    };
+
+    const pubsub = {
+      publish: jest.fn(),
+    };
+
+    test('get widget from state', () => {
+      return {
+        widgets: {
+          items: {
+            [widgetId]: {
+              ...widgetItem,
+              data: { query, result: 500 },
+              widget: {
+                ...widgetItem.widget,
+                settings: visualizationSettings,
+                query,
+              },
+            },
+          },
+        },
+      };
+    });
+
+    test('set chart editor query type', (result) => {
+      expect(result).toEqual(put(setQueryType(false)));
+    });
+
+    test('set visualization settings in chart editor', (result) => {
+      const {
+        visualizationType,
+        chartSettings,
+        widgetSettings,
+      } = visualizationSettings;
+
+      expect(result).toEqual(
+        put(
+          setVisualizationSettings(
+            visualizationType,
+            chartSettings,
+            widgetSettings
+          )
+        )
+      );
+    });
+
+    test('set edit mode in chart editor', (result) => {
+      expect(result).toEqual(put(setEditMode(true)));
+    });
+
+    test('set query settings in chart editor', (result) => {
+      expect(result).toEqual(put(setQuerySettings(query)));
+    });
+
+    test('set query results in chart editor', (result) => {
+      expect(result).toEqual(put(setQueryResult({ query, result: 500 })));
+    });
+
+    test('opens chart editor', (result) => {
+      expect(result).toEqual(put(openEditor()));
+    });
+
+    test('waits until chart editor is mounted', (result) => {
+      expect(result).toEqual(take(EDITOR_MOUNTED));
+    });
+
+    test('get pubsub from context', () => {
+      return pubsub;
+    });
+
+    test('updates query creator settings', () => {
+      expect(pubsub.publish).toHaveBeenCalledWith(SET_QUERY_EVENT, { query });
+    });
+
+    test('waits until user applies chart editor settigs', (result) => {
+      expect(result).toEqual(take([CLOSE_EDITOR, APPLY_CONFIGURATION]));
+
+      return closeEditor();
+    });
+
+    test('waits until chart editor is unmounted', (result) => {
+      expect(result).toEqual(take(EDITOR_UNMOUNTED));
+    });
+
+    test('resets chart editor', (result) => {
+      expect(result).toEqual(put(resetEditor()));
+    });
+  });
 });
 
 describe('createQueryForWidget()', () => {

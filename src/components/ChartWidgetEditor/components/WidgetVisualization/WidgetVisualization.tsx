@@ -106,7 +106,7 @@ const WidgetVisualization: FC<Props> = ({
               />
               <AnimatePresence>
                 {outdatedAnalysisResults && (
-                  <FadeMask {...fadeMaskMotion}>
+                  <FadeMask {...fadeMaskMotion} data-testid="chart-fade-mask">
                     <Button
                       variant="success"
                       isDisabled={isQueryPerforming}
