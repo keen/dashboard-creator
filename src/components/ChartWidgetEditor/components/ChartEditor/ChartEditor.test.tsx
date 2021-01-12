@@ -202,9 +202,7 @@ test('allows user to restore saved query settings', async () => {
   expect(store.getActions()).toMatchInlineSnapshot(`
     Array [
       Object {
-        "payload": Object {
-          "query": null,
-        },
+        "payload": undefined,
         "type": "@chart-editor/RESTORE_SAVED_QUERY",
       },
     ]

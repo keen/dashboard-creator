@@ -14,6 +14,7 @@ export type ReducerState = {
   changeQueryConfirmation: boolean;
   isQueryPerforming: boolean;
   querySettings: Partial<Query>;
+  initialQuerySettings: Partial<Query>;
   analysisResult: Record<string, any> | null;
   visualization: {
     type: Exclude<PickerWidgets, 'json'>;

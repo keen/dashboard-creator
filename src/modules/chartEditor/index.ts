@@ -1,6 +1,7 @@
 import chartEditorReducer, { initialState } from './reducer';
 import {
   setQuerySettings,
+  setInitialQuerySettings,
   setVisualizationSettings,
   setQueryResult,
   setQueryChange,
@@ -42,6 +43,7 @@ export {
   chartEditorReducer,
   initialState,
   setQuerySettings,
+  setInitialQuerySettings,
   setQueryChange,
   setVisualizationSettings,
   setQueryResult,

@@ -7,6 +7,7 @@ import {
   SET_QUERY_TYPE,
   SET_VISUALIZATION_SETTINGS,
   SET_QUERY_SETTINGS,
+  SET_INITIAL_QUERY_SETTINGS,
   SET_QUERY_RESULT,
   SET_QUERY_CHANGE,
   SET_QUERY_DIRTY,
@@ -28,6 +29,7 @@ export const initialState: ReducerState = {
   isDirtyQuery: false,
   isQueryPerforming: false,
   hasQueryChanged: false,
+  initialQuerySettings: null,
   querySettings: {},
   visualization: {
     type: null,
@@ -121,6 +123,11 @@ const chartEditorReducer = (
       return {
         ...state,
         isQueryPerforming: true,
+      };
+    case SET_INITIAL_QUERY_SETTINGS:
+      return {
+        ...state,
+        initialQuerySettings: action.payload.query,
       };
     case SET_QUERY_SETTINGS:
       return {

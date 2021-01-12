@@ -19,6 +19,7 @@ import {
   SET_QUERY_CHANGE,
   SET_VISUALIZATION_SETTINGS,
   SET_QUERY_SETTINGS,
+  SET_INITIAL_QUERY_SETTINGS,
   APPLY_CONFIGURATION,
   RESET_EDITOR,
   OPEN_EDITOR,
@@ -35,6 +36,15 @@ import {
 
 export const setQuerySettings = createAction(
   SET_QUERY_SETTINGS,
+  (query: Partial<Query>) => ({
+    payload: {
+      query,
+    },
+  })
+);
+
+export const setInitialQuerySettings = createAction(
+  SET_INITIAL_QUERY_SETTINGS,
   (query: Partial<Query>) => ({
     payload: {
       query,
@@ -154,14 +164,7 @@ export const updateChartSettings = createAction(
   })
 );
 
-export const restoreSavedQuery = createAction(
-  RESTORE_SAVED_QUERY,
-  (query: Query) => ({
-    payload: {
-      query,
-    },
-  })
-);
+export const restoreSavedQuery = createAction(RESTORE_SAVED_QUERY);
 
 export type ChartEditorActions =
   | ReturnType<typeof openEditor>
@@ -172,6 +175,7 @@ export type ChartEditorActions =
   | ReturnType<typeof setQueryResult>
   | ReturnType<typeof setQueryChange>
   | ReturnType<typeof setQuerySettings>
+  | ReturnType<typeof setInitialQuerySettings>
   | ReturnType<typeof restoreSavedQuery>
   | ReturnType<typeof setEditMode>
   | ReturnType<typeof setVisualizationSettings>

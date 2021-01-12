@@ -1,4 +1,5 @@
 import { takeLatest, put, take, select, getContext } from 'redux-saga/effects';
+import deepEqual from 'deep-equal';
 import {
   UPDATE_VISUALIZATION_TYPE,
   SET_CHART_SETTINGS,
@@ -7,8 +8,8 @@ import {
 import { isElementInViewport } from '@keen.io/ui-core';
 
 import {
-  restoreSavedQuery as restoreSavedQueryAction,
   setVisualizationSettings,
+  setQueryChange,
   setQueryResult,
   setQuerySettings,
   runQuerySuccess,
@@ -21,6 +22,7 @@ import {
   RUN_QUERY,
   RESTORE_SAVED_QUERY,
   SET_VISUALIZATION_SETTINGS,
+  SET_QUERY_SETTINGS,
   OPEN_EDITOR,
   EDITOR_MOUNTED,
   QUERY_UPDATE_CONFIRMATION_MOUNTED,
@@ -59,12 +61,16 @@ export function* showUpdateConfirmation() {
   }
 }
 
-export function* restoreSavedQuery({
-  payload,
-}: ReturnType<typeof restoreSavedQueryAction>) {
-  const { query } = payload;
+/**
+ * Flow responsible for restoring initial query settings in chart editor
+ *
+ * @return void
+ *
+ */
+export function* restoreSavedQuery() {
   const pubsub = yield getContext(PUBSUB);
   const {
+    initialQuerySettings,
     visualization: { chartSettings },
   } = yield select(getChartEditor);
 
@@ -75,12 +81,39 @@ export function* restoreSavedQuery({
     });
   }
 
-  yield put(setQuerySettings(query));
-  yield pubsub.publish(SET_QUERY_EVENT, { query });
+  yield put(setQuerySettings(initialQuerySettings));
+  yield pubsub.publish(SET_QUERY_EVENT, { query: initialQuerySettings });
 
   yield put(setQueryResult(null));
 }
 
+/**
+ * Flow responsible for comparing root query with updated settings.
+ *
+ * @param query - Updated query structure
+ * @return void
+ *
+ */
+export function* updateQuerySettings({
+  payload,
+}: ReturnType<typeof setQuerySettings>) {
+  const { query } = payload;
+  const { initialQuerySettings } = yield select(getChartEditor);
+
+  if (initialQuerySettings) {
+    const hasQueryChanged = !deepEqual(initialQuerySettings, query, {
+      strict: true,
+    });
+    yield put(setQueryChange(hasQueryChanged));
+  }
+}
+
+/**
+ * Flow responsible for executing query in chart editor
+ *
+ * @return void
+ *
+ */
 export function* runQuery() {
   const { querySettings } = yield select(getChartEditor);
   const keenAnalysis = yield getContext(KEEN_ANALYSIS);
@@ -102,6 +135,7 @@ export function* runQuery() {
 
 export function* chartEditorSaga() {
   yield takeLatest(RESTORE_SAVED_QUERY, restoreSavedQuery);
+  yield takeLatest(SET_QUERY_SETTINGS, updateQuerySettings);
   yield takeLatest(RUN_QUERY, runQuery);
   yield takeLatest(OPEN_EDITOR, openEditor);
   yield takeLatest(SHOW_QUERY_UPDATE_CONFIRMATION, showUpdateConfirmation);

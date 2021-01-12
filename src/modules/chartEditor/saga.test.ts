@@ -8,18 +8,97 @@ import {
 } from '@keen.io/query-creator';
 import { Query } from '@keen.io/query';
 
-import { runQuery, restoreSavedQuery, updateVisualizationType } from './saga';
+import {
+  runQuery,
+  restoreSavedQuery,
+  updateVisualizationType,
+  updateQuerySettings,
+} from './saga';
 import {
   setVisualizationSettings,
   runQuerySuccess,
   runQueryError,
   setQuerySettings,
   setQueryResult,
-  restoreSavedQuery as restoreSavedQueryAction,
+  setQueryChange,
 } from './actions';
 import { getChartEditor } from './selectors';
 
 import { PUBSUB } from '../../constants';
+
+describe('updateQuerySettings()', () => {
+  describe('Scenario 1: Query settings are equal initial settings', () => {
+    const query: Query = {
+      analysis_type: 'count',
+      event_collection: 'logins',
+      order_by: null,
+    };
+
+    const action = setQuerySettings(query);
+    const test = sagaHelper(updateQuerySettings(action));
+
+    test('get chart editor state', (result) => {
+      expect(result).toEqual(select(getChartEditor));
+
+      return {
+        initialQuerySettings: query,
+      };
+    });
+
+    test('set query change state', (result) => {
+      expect(result).toEqual(put(setQueryChange(false)));
+    });
+  });
+
+  describe('Scenario 2: Query settings are different than initial settings', () => {
+    const query: Query = {
+      analysis_type: 'count',
+      event_collection: 'logins',
+      order_by: null,
+    };
+
+    const action = setQuerySettings(query);
+    const test = sagaHelper(updateQuerySettings(action));
+
+    test('get chart editor state', (result) => {
+      expect(result).toEqual(select(getChartEditor));
+
+      return {
+        initialQuerySettings: {
+          ...query,
+          event_collection: 'purchases',
+        },
+      };
+    });
+
+    test('set query change state', (result) => {
+      expect(result).toEqual(put(setQueryChange(true)));
+    });
+  });
+
+  describe('Scenario 3: Initial query settings was not defined', () => {
+    const query: Query = {
+      analysis_type: 'count',
+      event_collection: 'logins',
+      order_by: null,
+    };
+
+    const action = setQuerySettings(query);
+    const test = sagaHelper(updateQuerySettings(action));
+
+    test('get chart editor state', (result) => {
+      expect(result).toEqual(select(getChartEditor));
+
+      return {
+        initialQuerySettings: null,
+      };
+    });
+
+    test('terminates flow', (result) => {
+      expect(result).toBeUndefined();
+    });
+  });
+});
 
 describe('restoreSavedQuery()', () => {
   describe('Scenario 1: Restores saved query settings', () => {
@@ -31,10 +110,10 @@ describe('restoreSavedQuery()', () => {
 
     const chartEditor = {
       visualization: { chartSettings: { layout: 'vertical' } },
+      initialQuerySettings: query,
     };
 
-    const action = restoreSavedQueryAction(query);
-    const test = sagaHelper(restoreSavedQuery(action));
+    const test = sagaHelper(restoreSavedQuery());
 
     const pubsub = {
       publish: jest.fn(),
@@ -73,13 +152,13 @@ describe('restoreSavedQuery()', () => {
     };
 
     const chartEditor = {
+      initialQuerySettings: query,
       visualization: {
         chartSettings: { layout: 'vertical', stepLabels: ['Logins'] },
       },
     };
 
-    const action = restoreSavedQueryAction(query);
-    const test = sagaHelper(restoreSavedQuery(action));
+    const test = sagaHelper(restoreSavedQuery());
 
     const pubsub = {
       publish: jest.fn(),

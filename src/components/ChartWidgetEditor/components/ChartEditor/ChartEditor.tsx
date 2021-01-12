@@ -39,8 +39,8 @@ import {
   editorUnmounted,
   runQuery,
   setQuerySettings,
+  setInitialQuerySettings,
   setQueryDirty,
-  setQueryChange,
   setVisualizationSettings,
   updateChartSettings,
   restoreSavedQuery,
@@ -70,6 +70,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
 
   const {
     analysisResult,
+    initialQuerySettings,
     querySettings,
     visualization,
     isEditMode,
@@ -84,9 +85,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
   const [editTooltip, setEditTooltip] = useState(false);
 
   const [localQuery, setLocalQuery] = useState(null);
-  const [initialQuery, setInitialQuery] = useState(null);
-
-  initialQueryRef.current = initialQuery;
+  initialQueryRef.current = initialQuerySettings;
 
   const { type: widgetType } = visualization;
 
@@ -107,31 +106,17 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
     []
   );
 
-  const handleRestoreSavedQuery = useCallback(() => {
-    dispatch(restoreSavedQuery(initialQuery));
-    setInitialQuery(null);
-  }, [initialQuery]);
-
   useEffect(() => {
-    if (initialQuery) {
-      const hasQueryChanged = !deepEqual(initialQuery, querySettings, {
-        strict: true,
-      });
-      dispatch(setQueryChange(hasQueryChanged));
-    }
-  }, [querySettings, initialQuery]);
-
-  useEffect(() => {
-    if (initialQuery && localQuery) {
+    if (initialQuerySettings && localQuery) {
       const isDirty = !deepEqual(localQuery, querySettings, {
         strict: true,
       });
 
       dispatch(setQueryDirty(isDirty));
-    } else if (initialQuery && !localQuery) {
+    } else if (initialQuerySettings && !localQuery) {
       setLocalQuery(querySettings);
     }
-  }, [initialQuery, querySettings]);
+  }, [initialQuerySettings, querySettings]);
 
   useEffect(() => {
     dispatch(editorMounted());
@@ -180,13 +165,13 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
               if (isQueryReady) {
                 dispatch(setQuerySettings(query));
                 if (!initialQueryRef.current) {
-                  setInitialQuery(query);
+                  dispatch(setInitialQuerySettings(query));
                 }
               }
             } else {
               dispatch(setQuerySettings(query));
               if (!initialQueryRef.current) {
-                setInitialQuery(query);
+                dispatch(setInitialQuerySettings(query));
               }
             }
           }}
@@ -228,7 +213,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
                         {t('chart_widget_editor.save_query_edit_tooltip')}
                         <RestoreSavedQuery>
                           {t('chart_widget_editor.save_query_restore_hint')}{' '}
-                          <Anchor onClick={handleRestoreSavedQuery}>
+                          <Anchor onClick={() => dispatch(restoreSavedQuery())}>
                             {t('chart_widget_editor.save_query_restore')}
                           </Anchor>
                         </RestoreSavedQuery>
