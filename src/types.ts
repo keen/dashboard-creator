@@ -9,6 +9,7 @@ export type Options = {
     userKey: string;
     id: string;
   };
+  keenApiUrl?: string;
   translations?: TranslationsSettings;
   theme?: Partial<Theme>;
 };

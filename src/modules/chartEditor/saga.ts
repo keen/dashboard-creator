@@ -76,7 +76,7 @@ export function* restoreSavedQuery({
   }
 
   yield put(setQuerySettings(query));
-  pubsub.publish(SET_QUERY_EVENT, { query });
+  yield pubsub.publish(SET_QUERY_EVENT, { query });
 
   yield put(setQueryResult(null));
 }

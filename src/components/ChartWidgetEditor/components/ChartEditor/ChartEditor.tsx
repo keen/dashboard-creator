@@ -53,16 +53,16 @@ import WidgetVisualization from '../WidgetVisualization';
 import { AppContext } from '../../../../contexts';
 
 type Props = {
+  /** Close editor event handler */
   onClose: () => void;
 };
-
-// @TODO: Support host as context argument
 
 const ChartEditor: FC<Props> = ({ onClose }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const {
     modalContainer,
+    keenApiUrl,
     project: { id, userKey, masterKey },
   } = useContext(AppContext);
 
@@ -190,7 +190,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
               }
             }
           }}
-          host="staging-api.keen.io"
+          host={keenApiUrl}
         />
       </QueryCreatorContainer>
       <Footer>
@@ -210,6 +210,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
           <EditInfo>
             {t('chart_widget_editor.save_query_edit')}
             <EditTooltip
+              data-testid="edit-tooltip-icon"
               onMouseEnter={() => setEditTooltip(true)}
               onMouseLeave={() => setEditTooltip(false)}
             >
