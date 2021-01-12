@@ -133,7 +133,6 @@ export function* initializeChartWidget({
 
     yield put(setWidgetState(id, widgetState));
   } catch (err) {
-    console.log(err, 'errorek!!');
     const { body } = err;
     yield put(
       setWidgetState(id, {
@@ -267,8 +266,6 @@ export function* selectQueryForWidget(widgetId: string) {
         visualization: { type: widgetType, chartSettings, widgetSettings },
       },
     } = action.payload as { query: SavedQuery };
-
-    console.log('waaaaaghhggh!!!', chartSettings);
 
     yield put(hideQueryPicker());
     yield put(
