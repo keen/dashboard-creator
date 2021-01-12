@@ -44,6 +44,7 @@ import {
   hideQueryUpdateConfirmation,
   CLOSE_EDITOR,
   EDITOR_MOUNTED,
+  EDITOR_UNMOUNTED,
   APPLY_CONFIGURATION,
   CONFIRM_SAVE_QUERY_UPDATE,
   HIDE_QUERY_UPDATE_CONFIRMATION,
@@ -229,6 +230,9 @@ export function* createQueryForWidget(widgetId: string) {
     );
 
     yield put(closeEditor());
+    yield take(EDITOR_UNMOUNTED);
+    yield put(resetEditor());
+
     yield put(initializeChartWidgetAction(widgetId));
 
     const dashboardId = yield select(getActiveDashboard);
@@ -263,6 +267,8 @@ export function* selectQueryForWidget(widgetId: string) {
         visualization: { type: widgetType, chartSettings, widgetSettings },
       },
     } = action.payload as { query: SavedQuery };
+
+    console.log('waaaaaghhggh!!!', chartSettings);
 
     yield put(hideQueryPicker());
     yield put(
@@ -329,6 +335,7 @@ export function* editChartSavedQuery(widgetId: string) {
 
       const dashboardId = yield select(getActiveDashboard);
       yield put(saveDashboard(dashboardId));
+      yield put(resetEditor());
     } else if (action.type === CONFIRM_SAVE_QUERY_UPDATE) {
       try {
         const { query: queryName } = yield select(getWidgetSettings, widgetId);
@@ -364,8 +371,12 @@ export function* editChartSavedQuery(widgetId: string) {
     }
 
     yield put(hideQueryUpdateConfirmation());
+    yield put(resetEditor());
   } else {
     yield put(closeEditor());
+    yield take(EDITOR_UNMOUNTED);
+    yield put(resetEditor());
+
     yield put(setWidgetState(widgetId, widgetState));
     const { query: queryName } = yield select(getWidgetSettings, widgetId);
 
@@ -429,12 +440,15 @@ export function* editChartWidget({
 
   if (chartSettings?.stepLabels && chartSettings.stepLabels.length) {
     const { stepLabels } = chartSettings;
-    yield pubsub.publish(SET_CHART_SETTINGS, { chartSettings: { stepLabels } });
+    yield pubsub.publish(SET_CHART_SETTINGS, {
+      chartSettings: { stepLabels },
+    });
   }
 
   const action = yield take([CLOSE_EDITOR, APPLY_CONFIGURATION]);
 
   if (action.type === CLOSE_EDITOR) {
+    yield take(EDITOR_UNMOUNTED);
     yield put(resetEditor());
   } else {
     const {
@@ -465,7 +479,10 @@ export function* editChartWidget({
       );
 
       yield put(initializeChartWidgetAction(id));
+
       yield put(closeEditor());
+      yield take(EDITOR_UNMOUNTED);
+      yield put(resetEditor());
 
       const dashboardId = yield select(getActiveDashboard);
       yield put(saveDashboard(dashboardId));

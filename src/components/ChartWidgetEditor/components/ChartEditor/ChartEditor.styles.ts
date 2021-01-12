@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { transparentize } from 'polished';
 import { motion } from 'framer-motion';
 import { UI_LAYERS } from '@keen.io/ui-core';
 import { colors } from '@keen.io/colors';
@@ -23,6 +24,44 @@ export const NotificationBar = styled(motion.div)`
   box-sizing: border-box;
   background-color: ${colors.white[500]};
   box-shadow: 0 2px 4px 0 rgba(29, 39, 41, 0.15);
+`;
+
+export const EditInfo = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: 15px;
+
+  font-size: 14px;
+  font-family: 'Lato Regular', sans-serif;
+  color: ${transparentize(0.5, colors.black[100])};
+`;
+
+export const EditTooltip = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-left: 5px;
+`;
+
+export const TooltipContainer = styled(motion.div)`
+  position: absolute;
+  bottom: 100%;
+  left: 10px;
+`;
+
+export const TooltipContent = styled.div`
+  width: 250px;
+  font-size: 14px;
+  font-family: 'Lato Regular', sans-serif;
+  color: ${colors.black[500]};
+`;
+
+export const RestoreSavedQuery = styled.div`
+  margin-top: 15px;
+
+  a {
+    cursor: pointer;
+  }
 `;
 
 export const VisualizationContainer = styled.div`

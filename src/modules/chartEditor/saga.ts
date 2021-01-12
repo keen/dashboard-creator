@@ -1,9 +1,16 @@
 import { takeLatest, put, take, select, getContext } from 'redux-saga/effects';
-import { UPDATE_VISUALIZATION_TYPE } from '@keen.io/query-creator';
+import {
+  UPDATE_VISUALIZATION_TYPE,
+  SET_CHART_SETTINGS,
+  SET_QUERY_EVENT,
+} from '@keen.io/query-creator';
 import { isElementInViewport } from '@keen.io/ui-core';
 
 import {
+  restoreSavedQuery as restoreSavedQueryAction,
   setVisualizationSettings,
+  setQueryResult,
+  setQuerySettings,
   runQuerySuccess,
   runQueryError,
 } from './actions';
@@ -12,9 +19,12 @@ import { getChartEditor } from './selectors';
 
 import {
   RUN_QUERY,
+  RESTORE_SAVED_QUERY,
   SET_VISUALIZATION_SETTINGS,
   OPEN_EDITOR,
   EDITOR_MOUNTED,
+  QUERY_UPDATE_CONFIRMATION_MOUNTED,
+  SHOW_QUERY_UPDATE_CONFIRMATION,
 } from './constants';
 import { KEEN_ANALYSIS, NOTIFICATION_MANAGER, PUBSUB } from '../../constants';
 
@@ -41,6 +51,36 @@ export function* updateVisualizationType({
   yield pubsub.publish(UPDATE_VISUALIZATION_TYPE, { type });
 }
 
+export function* showUpdateConfirmation() {
+  yield take(QUERY_UPDATE_CONFIRMATION_MOUNTED);
+  const element = document.getElementById('confirm-query-update');
+  if (element) {
+    yield scrollToElement(element);
+  }
+}
+
+export function* restoreSavedQuery({
+  payload,
+}: ReturnType<typeof restoreSavedQueryAction>) {
+  const { query } = payload;
+  const pubsub = yield getContext(PUBSUB);
+  const {
+    visualization: { chartSettings },
+  } = yield select(getChartEditor);
+
+  if (chartSettings?.stepLabels && chartSettings.stepLabels.length) {
+    const { stepLabels } = chartSettings;
+    yield pubsub.publish(SET_CHART_SETTINGS, {
+      chartSettings: { stepLabels },
+    });
+  }
+
+  yield put(setQuerySettings(query));
+  pubsub.publish(SET_QUERY_EVENT, { query });
+
+  yield put(setQueryResult(null));
+}
+
 export function* runQuery() {
   const { querySettings } = yield select(getChartEditor);
   const keenAnalysis = yield getContext(KEEN_ANALYSIS);
@@ -61,7 +101,9 @@ export function* runQuery() {
 }
 
 export function* chartEditorSaga() {
+  yield takeLatest(RESTORE_SAVED_QUERY, restoreSavedQuery);
   yield takeLatest(RUN_QUERY, runQuery);
   yield takeLatest(OPEN_EDITOR, openEditor);
+  yield takeLatest(SHOW_QUERY_UPDATE_CONFIRMATION, showUpdateConfirmation);
   yield takeLatest(SET_VISUALIZATION_SETTINGS, updateVisualizationType);
 }

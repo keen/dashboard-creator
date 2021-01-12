@@ -10,7 +10,9 @@ import {
   RUN_QUERY,
   RUN_QUERY_ERROR,
   RUN_QUERY_SUCCESS,
+  RESTORE_SAVED_QUERY,
   EDITOR_MOUNTED,
+  EDITOR_UNMOUNTED,
   SET_EDIT_MODE,
   SET_QUERY_TYPE,
   SET_QUERY_DIRTY,
@@ -22,10 +24,12 @@ import {
   OPEN_EDITOR,
   CLOSE_EDITOR,
   SET_QUERY_RESULT,
+  QUERY_UPDATE_CONFIRMATION_MOUNTED,
   SHOW_QUERY_UPDATE_CONFIRMATION,
   HIDE_QUERY_UPDATE_CONFIRMATION,
   CONFIRM_SAVE_QUERY_UPDATE,
   USE_QUERY_FOR_WIDGET,
+  BACK_TO_CHART_EDITOR,
   UPDATE_CHART_SETTINGS,
 } from './constants';
 
@@ -106,6 +110,8 @@ export const closeEditor = createAction(CLOSE_EDITOR);
 
 export const editorMounted = createAction(EDITOR_MOUNTED);
 
+export const editorUnmounted = createAction(EDITOR_UNMOUNTED);
+
 export const runQuery = createAction(RUN_QUERY);
 
 export const runQuerySuccess = createAction(
@@ -129,15 +135,30 @@ export const hideQueryUpdateConfirmation = createAction(
   HIDE_QUERY_UPDATE_CONFIRMATION
 );
 
+export const backToChartEditor = createAction(BACK_TO_CHART_EDITOR);
+
 export const confirmSaveQueryUpdate = createAction(CONFIRM_SAVE_QUERY_UPDATE);
 
 export const useQueryForWidget = createAction(USE_QUERY_FOR_WIDGET);
+
+export const queryUpdateConfirmationMounted = createAction(
+  QUERY_UPDATE_CONFIRMATION_MOUNTED
+);
 
 export const updateChartSettings = createAction(
   UPDATE_CHART_SETTINGS,
   (chartSettings: Record<string, any>) => ({
     payload: {
       chartSettings,
+    },
+  })
+);
+
+export const restoreSavedQuery = createAction(
+  RESTORE_SAVED_QUERY,
+  (query: Query) => ({
+    payload: {
+      query,
     },
   })
 );
@@ -151,15 +172,19 @@ export type ChartEditorActions =
   | ReturnType<typeof setQueryResult>
   | ReturnType<typeof setQueryChange>
   | ReturnType<typeof setQuerySettings>
+  | ReturnType<typeof restoreSavedQuery>
   | ReturnType<typeof setEditMode>
   | ReturnType<typeof setVisualizationSettings>
   | ReturnType<typeof editorMounted>
+  | ReturnType<typeof editorUnmounted>
   | ReturnType<typeof runQuery>
   | ReturnType<typeof runQuerySuccess>
   | ReturnType<typeof runQueryError>
   | ReturnType<typeof applyConfiguration>
   | ReturnType<typeof showQueryUpdateConfirmation>
   | ReturnType<typeof hideQueryUpdateConfirmation>
-  | ReturnType<typeof confirmSaveQueryUpdate>
+  | ReturnType<typeof updateChartSettings>
+  | ReturnType<typeof queryUpdateConfirmationMounted>
   | ReturnType<typeof useQueryForWidget>
+  | ReturnType<typeof backToChartEditor>
   | ReturnType<typeof updateChartSettings>;

@@ -10,17 +10,25 @@ import React, {
 import { AnimatePresence } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { transparentize } from 'polished';
 import deepEqual from 'deep-equal';
 import QueryCreator from '@keen.io/query-creator';
 import { getAvailableWidgets } from '@keen.io/widget-picker';
-import { Button, Alert, Anchor } from '@keen.io/ui-core';
+import { colors } from '@keen.io/colors';
+import { Button, Alert, Anchor, Tooltip } from '@keen.io/ui-core';
+import { Icon } from '@keen.io/icons';
 import { Query } from '@keen.io/query';
 
 import {
   Container,
   QueryCreatorContainer,
   VisualizationContainer,
+  RestoreSavedQuery,
+  TooltipContainer,
+  TooltipContent,
   NotificationBar,
+  EditTooltip,
+  EditInfo,
   Cancel,
   Footer,
 } from './ChartEditor.styles';
@@ -28,18 +36,19 @@ import {
 import {
   applyConfiguration,
   editorMounted,
-  resetEditor,
+  editorUnmounted,
   runQuery,
   setQuerySettings,
   setQueryDirty,
   setQueryChange,
   setVisualizationSettings,
   updateChartSettings,
+  restoreSavedQuery,
   getChartEditor,
 } from '../../../../modules/chartEditor';
 import { getActiveDashboardTheme } from '../../../../modules/theme';
 
-import { notificationBarMotion } from './motion';
+import { notificationBarMotion, editTooltipMotion } from './motion';
 import WidgetVisualization from '../WidgetVisualization';
 import { AppContext } from '../../../../contexts';
 
@@ -65,11 +74,14 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
     visualization,
     isEditMode,
     isDirtyQuery,
+    isSavedQuery,
     isQueryPerforming,
+    hasQueryChanged,
   } = useSelector(getChartEditor);
   const baseTheme = useSelector(getActiveDashboardTheme);
 
   const initialQueryRef = useRef(null);
+  const [editTooltip, setEditTooltip] = useState(false);
 
   const [localQuery, setLocalQuery] = useState(null);
   const [initialQuery, setInitialQuery] = useState(null);
@@ -95,6 +107,11 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
     []
   );
 
+  const handleRestoreSavedQuery = useCallback(() => {
+    dispatch(restoreSavedQuery(initialQuery));
+    setInitialQuery(null);
+  }, [initialQuery]);
+
   useEffect(() => {
     if (initialQuery) {
       const hasQueryChanged = !deepEqual(initialQuery, querySettings, {
@@ -118,8 +135,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
 
   useEffect(() => {
     dispatch(editorMounted());
-
-    return () => dispatch(resetEditor());
+    return () => dispatch(editorUnmounted());
   }, []);
 
   const outdatedAnalysisResults = !!(analysisResult !== null && isDirtyQuery);
@@ -190,6 +206,39 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
         <Cancel>
           <Anchor onClick={onClose}>{t('chart_widget_editor.cancel')}</Anchor>
         </Cancel>
+        {isSavedQuery && hasQueryChanged && (
+          <EditInfo>
+            {t('chart_widget_editor.save_query_edit')}
+            <EditTooltip
+              onMouseEnter={() => setEditTooltip(true)}
+              onMouseLeave={() => setEditTooltip(false)}
+            >
+              <Icon
+                type="info"
+                width={15}
+                height={15}
+                fill={transparentize(0.5, colors.black[100])}
+              />
+              <AnimatePresence>
+                {editTooltip && (
+                  <TooltipContainer {...editTooltipMotion}>
+                    <Tooltip mode="light" hasArrow={false}>
+                      <TooltipContent>
+                        {t('chart_widget_editor.save_query_edit_tooltip')}
+                        <RestoreSavedQuery>
+                          {t('chart_widget_editor.save_query_restore_hint')}{' '}
+                          <Anchor onClick={handleRestoreSavedQuery}>
+                            {t('chart_widget_editor.save_query_restore')}
+                          </Anchor>
+                        </RestoreSavedQuery>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipContainer>
+                )}
+              </AnimatePresence>
+            </EditTooltip>
+          </EditInfo>
+        )}
       </Footer>
     </Container>
   );

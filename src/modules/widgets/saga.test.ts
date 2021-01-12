@@ -48,6 +48,7 @@ import {
 import {
   openEditor,
   closeEditor,
+  resetEditor,
   applyConfiguration,
   setVisualizationSettings,
   setQueryType,
@@ -57,6 +58,7 @@ import {
   getChartEditor,
   showQueryUpdateConfirmation,
   EDITOR_MOUNTED,
+  EDITOR_UNMOUNTED,
   CLOSE_EDITOR,
   APPLY_CONFIGURATION,
   HIDE_QUERY_UPDATE_CONFIRMATION,
@@ -318,6 +320,14 @@ describe('editChartSavedQuery()', () => {
       expect(result).toEqual(put(closeEditor()));
     });
 
+    test('waits until editor is closed', (result) => {
+      expect(result).toEqual(take(EDITOR_UNMOUNTED));
+    });
+
+    test('reset chart editor', (result) => {
+      expect(result).toEqual(put(resetEditor()));
+    });
+
     test('updates widget state', (result) => {
       expect(result).toEqual(
         put(
@@ -553,6 +563,14 @@ describe('editChartWidget()', () => {
       expect(result).toEqual(put(closeEditor()));
     });
 
+    test('waits until editor is closed', (result) => {
+      expect(result).toEqual(take(EDITOR_UNMOUNTED));
+    });
+
+    test('reset chart editor', (result) => {
+      expect(result).toEqual(put(resetEditor()));
+    });
+
     test('gets active dashboard identifier', () => {
       return dashboardId;
     });
@@ -665,6 +683,14 @@ describe('createQueryForWidget()', () => {
 
     test('closes chart editor', (result) => {
       expect(result).toEqual(put(closeEditor()));
+    });
+
+    test('waits until editor is closed', (result) => {
+      expect(result).toEqual(take(EDITOR_UNMOUNTED));
+    });
+
+    test('reset chart editor', (result) => {
+      expect(result).toEqual(put(resetEditor()));
     });
 
     test('initializes chart widget', (result) => {

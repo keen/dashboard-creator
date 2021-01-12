@@ -51,6 +51,7 @@
     "@keen.io/ui-core": "^2.5.20",
     "@keen.io/widget-picker": "^1.2.42",
     "@reduxjs/toolkit": "^1.4.0",
+    "camelcase-keys": "^6.2.2",
     "connected-react-router": "^6.8.0",
     "deep-equal": "^2.0.5",
     "dom-to-image": "^2.6.0",
