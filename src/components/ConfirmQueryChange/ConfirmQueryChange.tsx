@@ -24,20 +24,14 @@ import {
 import {
   queryUpdateConfirmationMounted,
   hideQueryUpdateConfirmation,
-  confirmSaveQueryUpdate,
-  useQueryForWidget,
 } from '../../modules/chartEditor';
 
+import { CONFIRM_OPTIONS, RADIO_GROUP } from './constants';
 import { EditAction } from './types';
 
 type Props = {
   /** Chart editor open indicator */
   isOpen: boolean;
-};
-
-const CONFIRM_ACTIONS: Record<EditAction, any> = {
-  [EditAction.UPDATE_SAVED_QUERY]: confirmSaveQueryUpdate,
-  [EditAction.CREATE_AD_HOC_QUERY]: useQueryForWidget,
 };
 
 const ConfirmQueryChange: FC<Props> = ({ isOpen }) => {
@@ -54,6 +48,8 @@ const ConfirmQueryChange: FC<Props> = ({ isOpen }) => {
     }
   }, [isOpen]);
 
+  const { editAction, hintMessage } = CONFIRM_OPTIONS[editOption];
+
   return (
     <Modal
       isOpen={isOpen}
@@ -68,41 +64,20 @@ const ConfirmQueryChange: FC<Props> = ({ isOpen }) => {
           <Content>
             <Message>{t('confirm_query_change.message')}</Message>
             <div>
-              <RadioItem
-                onClick={() => setEditOption(EditAction.UPDATE_SAVED_QUERY)}
-              >
-                <Radio
-                  isActive={editOption === EditAction.UPDATE_SAVED_QUERY}
-                />
-                <RadioLabel>
-                  {t('confirm_query_change.connect_saved_query')}
-                </RadioLabel>
-              </RadioItem>
-
-              <RadioItem
-                onClick={() => setEditOption(EditAction.CREATE_AD_HOC_QUERY)}
-              >
-                <Radio
-                  isActive={editOption === EditAction.CREATE_AD_HOC_QUERY}
-                />
-
-                <RadioLabel>
-                  {t('confirm_query_change.create_ad_hoc_query')}
-                </RadioLabel>
-              </RadioItem>
+              {RADIO_GROUP.map(({ label, value, isActive }) => (
+                <RadioItem key={value} onClick={() => setEditOption(value)}>
+                  <Radio isActive={isActive(editOption)} />
+                  <RadioLabel>{t(label)}</RadioLabel>
+                </RadioItem>
+              ))}
             </div>
           </Content>
-          <Hint>
-            {editOption === EditAction.UPDATE_SAVED_QUERY &&
-              t('confirm_query_change.connect_saved_query_message')}
-            {editOption === EditAction.CREATE_AD_HOC_QUERY &&
-              t('confirm_query_change.create_ad_hoc_query_message')}
-          </Hint>
+          <Hint>{t(hintMessage)}</Hint>
           <ModalFooter>
             <Footer>
               <Button
                 variant="secondary"
-                onClick={() => dispatch(CONFIRM_ACTIONS[editOption]())}
+                onClick={() => dispatch(editAction())}
               >
                 {t('confirm_query_change.save')}
               </Button>

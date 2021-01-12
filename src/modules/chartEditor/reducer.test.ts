@@ -12,6 +12,7 @@ import {
   runQuery,
   setQueryType,
   setQueryChange,
+  setQueryDirty,
   setQueryResult,
   setQuerySettings,
   setVisualizationSettings,
@@ -19,6 +20,16 @@ import {
   showQueryUpdateConfirmation,
   hideQueryUpdateConfirmation,
 } from './actions';
+
+test('set query dirty state', () => {
+  const action = setQueryDirty(true);
+  const { isDirtyQuery } = chartEditorReducer(
+    { ...initialState, isDirtyQuery: false },
+    action
+  );
+
+  expect(isDirtyQuery).toEqual(true);
+});
 
 test('shows query update confirmation', () => {
   const action = showQueryUpdateConfirmation();
