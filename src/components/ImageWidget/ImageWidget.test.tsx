@@ -3,27 +3,16 @@ import { render as rtlRender } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { PubSub } from '@keen.io/pubsub';
-import { KeenDataviz } from '@keen.io/dataviz';
 
 import { EditorContext } from '../../contexts';
 
-import { RESIZE_WIDGET_EVENT } from '../../constants';
-
-import ChartWidget from './ChartWidget';
+import ImageWidget from './ImageWidget';
 import { WidgetType } from '../../types';
 
 const renderMock = jest.fn();
 const destroyMock = jest.fn();
 
-jest.mock('@keen.io/dataviz', () => {
-  return {
-    KeenDataviz: jest.fn().mockImplementation(() => {
-      return { render: renderMock, destroy: destroyMock };
-    }),
-  };
-});
-
-const id = 'widget-1';
+const id = 'widget-2';
 
 const render = (storeState: any = {}, overProps: any = {}) => {
   const props = {
@@ -45,8 +34,7 @@ const render = (storeState: any = {}, overProps: any = {}) => {
         [id]: {
           widget: {
             id,
-            type: 'visualization',
-            query: 'test',
+            type: 'image',
             position: {
               x: 0,
               y: 0,
@@ -54,17 +42,11 @@ const render = (storeState: any = {}, overProps: any = {}) => {
               h: 7,
             },
             settings: {
-              visualizationType: 'bar',
-              chartSettings: {
-                layout: 'vertical',
-              },
-              widgetSettings: {},
+              link: 'http://www.example.com/image.png',
             },
           },
           data: {},
           isConfigured: true,
-          isInitialized: true,
-          isLoading: false,
           error: null,
         },
       },
@@ -79,7 +61,7 @@ const render = (storeState: any = {}, overProps: any = {}) => {
 
   const initialContext = {
     editorPubSub,
-    droppableWidget: 'text' as WidgetType,
+    droppableWidget: 'image' as WidgetType,
     containerWidth: 1200,
     setContainerWidth: jest.fn(),
   };
@@ -87,7 +69,7 @@ const render = (storeState: any = {}, overProps: any = {}) => {
   const wrapper = rtlRender(
     <Provider store={store}>
       <EditorContext.Provider value={initialContext}>
-        <ChartWidget {...props} />
+        <ImageWidget {...props} />
       </EditorContext.Provider>
     </Provider>
   );
@@ -101,60 +83,28 @@ const render = (storeState: any = {}, overProps: any = {}) => {
 };
 
 beforeEach(() => {
-  (KeenDataviz as any).mockClear();
   destroyMock.mockClear();
   renderMock.mockClear();
 });
 
-test('remount visualization after user resize widget', () => {
-  const { editorPubSub } = render();
-
-  editorPubSub.publish(RESIZE_WIDGET_EVENT, { id });
-
-  expect(destroyMock).toHaveBeenCalled();
-  expect(renderMock).toHaveBeenCalledTimes(2);
-});
-
-test('renders visualization', () => {
-  render();
-
-  expect(KeenDataviz).toHaveBeenCalledWith(
-    expect.objectContaining({
-      type: 'bar',
-      settings: {
-        layout: 'vertical',
-        theme: {},
-      },
-      widget: {},
-    })
-  );
-});
-
-test('renders chart placeholder', () => {
+test('renders image placeholder', () => {
   const storeState = {
     widgets: {
       items: {
         [id]: {
           widget: {
             id,
-            type: 'visualization',
-            query: 'test',
+            type: 'image',
             position: {
               x: 0,
               y: 0,
               w: 3,
               h: 7,
             },
-            settings: {
-              visualizationType: 'visualization',
-              chartSettings: {},
-              widgetSettings: {},
-            },
+            settings: { link: 'http://www.example.com/image.png' },
           },
           data: {},
           isConfigured: false,
-          isInitialized: true,
-          isLoading: false,
           error: null,
         },
       },
@@ -168,7 +118,7 @@ test('renders chart placeholder', () => {
   expect(placeholder).toBeInTheDocument();
 });
 
-test('renders loader', () => {
+test('renders image', () => {
   const storeState = {
     widgets: {
       items: {
@@ -184,15 +134,11 @@ test('renders loader', () => {
               h: 7,
             },
             settings: {
-              visualizationType: 'visualization',
-              chartSettings: {},
-              widgetSettings: {},
+              settings: { link: 'http://www.example.com/image.png' },
             },
           },
           data: {},
           isConfigured: true,
-          isInitialized: false,
-          isLoading: true,
           error: null,
         },
       },
@@ -201,7 +147,7 @@ test('renders loader', () => {
   const {
     wrapper: { getByTestId },
   } = render(storeState);
-  const loader = getByTestId('chart-widget-loader');
+  const loader = getByTestId('image-widget');
 
   expect(loader).toBeInTheDocument();
 });

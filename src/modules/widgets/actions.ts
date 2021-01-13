@@ -13,6 +13,8 @@ import {
   INITIALIZE_WIDGET,
   INITIALIZE_CHART_WIDGET,
   EDIT_CHART_WIDGET,
+  EDIT_IMAGE_WIDGET,
+  IMAGE_WIDGET_CONFIGURE,
   SET_WIDGET_LOADING,
   SET_WIDGET_INITIALIZATION,
   SET_WIDGET_STATE,
@@ -79,6 +81,23 @@ export const editChartWidget = createAction(
   })
 );
 
+export const editImageWidget = createAction(
+  EDIT_IMAGE_WIDGET,
+  (id: string) => ({
+    payload: { id },
+  })
+);
+
+export const configureImageWidget = createAction(
+  IMAGE_WIDGET_CONFIGURE,
+  (id: string, link: string) => ({
+    payload: {
+      id,
+      link,
+    },
+  })
+);
+
 export const initializeChartWidget = createAction(
   INITIALIZE_CHART_WIDGET,
   (id: string) => ({
@@ -134,4 +153,5 @@ export type WidgetsActions =
   | ReturnType<typeof setWidgetLoading>
   | ReturnType<typeof setWidgetState>
   | ReturnType<typeof setWidgetInitialization>
+  | ReturnType<typeof configureImageWidget>
   | ReturnType<typeof finishChartWidgetConfiguration>;

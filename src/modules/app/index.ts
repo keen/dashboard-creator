@@ -4,11 +4,17 @@ import {
   setActiveDashboard,
   showQueryPicker,
   hideQueryPicker,
+  showImagePicker,
+  hideImagePicker,
 } from './actions';
 import { appSaga } from './saga';
 
-import { HIDE_QUERY_PICKER } from './constants';
-import { getQueryPicker, getActiveDashboard } from './selectors';
+import { HIDE_QUERY_PICKER, HIDE_IMAGE_PICKER } from './constants';
+import {
+  getQueryPicker,
+  getActiveDashboard,
+  getImagePicker,
+} from './selectors';
 
 export {
   appReducer,
@@ -19,5 +25,9 @@ export {
   hideQueryPicker,
   getQueryPicker,
   getActiveDashboard,
+  getImagePicker,
+  showImagePicker,
+  hideImagePicker,
   HIDE_QUERY_PICKER,
+  HIDE_IMAGE_PICKER,
 };

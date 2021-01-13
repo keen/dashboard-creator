@@ -10,6 +10,7 @@ import {
   REMOVE_WIDGET,
   UPDATE_WIDGETS_POSITION,
   FINISH_CHART_WIDGET_CONFIGURATION,
+  IMAGE_WIDGET_CONFIGURE,
   SET_WIDGET_LOADING,
   SET_WIDGET_STATE,
   CREATE_WIDGET,
@@ -106,6 +107,23 @@ const widgetsReducer = (
             }),
             {}
           ),
+        },
+      };
+    case IMAGE_WIDGET_CONFIGURE:
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          [action.payload.id]: {
+            ...state.items[action.payload.id],
+            isConfigured: true,
+            widget: {
+              ...state.items[action.payload.id].widget,
+              settings: {
+                link: action.payload.link,
+              },
+            },
+          },
         },
       };
     default:

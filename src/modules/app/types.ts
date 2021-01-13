@@ -6,6 +6,9 @@ export type ReducerState = {
   queryPicker: {
     isVisible: false;
   };
+  imagePicker: {
+    isVisible: false;
+  };
   visualizationEditor: {
     isVisible: false;
   };

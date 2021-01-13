@@ -10,12 +10,12 @@ import {
   Cover,
   RemoveMotion,
   ButtonsContainer,
-} from './ChartManagement.styles';
+} from './ImageManagement.styles';
 
 import RemoveWidget from '../../../RemoveWidget';
 import PreventDragPropagation from '../../../PreventDragPropagation';
 
-import { editChartWidget } from '../../../../modules/widgets';
+import { editImageWidget } from '../../../../modules/widgets';
 
 import { settingsMotion, removeMotion } from '../motions';
 import { DRAG_HANDLE_ELEMENT } from '../../constants';
@@ -29,7 +29,7 @@ type Props = {
   onRemoveWidget: () => void;
 };
 
-const ChartManagement: FC<Props> = ({
+const ImageManagement: FC<Props> = ({
   widgetId,
   isHoverActive,
   onRemoveWidget,
@@ -69,9 +69,9 @@ const ChartManagement: FC<Props> = ({
                 <div data-testid="edit-chart">
                   <Button
                     variant="blank"
-                    onClick={() => dispatch(editChartWidget(widgetId))}
+                    onClick={() => dispatch(editImageWidget(widgetId))}
                   >
-                    {t('widget.edit_chart')}
+                    {t('widget.edit_image')}
                   </Button>
                 </div>
               </PreventDragPropagation>
@@ -101,4 +101,4 @@ const ChartManagement: FC<Props> = ({
   );
 };
 
-export default ChartManagement;
+export default ImageManagement;

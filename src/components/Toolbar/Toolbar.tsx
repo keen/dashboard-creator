@@ -1,12 +1,13 @@
 import React, { FC, useCallback, useRef, useContext } from 'react';
 import ReactDOM from 'react-dom';
 import { useTranslation } from 'react-i18next';
+import { IconType } from '@keen.io/icons';
 
 import { EditorContext } from '../../contexts';
 
 import { Container } from './Toolbar.styles';
 
-import ChartPlaceholder from '../ChartPlaceholder';
+import WidgetPlaceholder from '../WidgetPlaceholder';
 import DraggableItem from '../DraggableItem';
 
 import { calculateGhostSize } from './utils';
@@ -49,8 +50,11 @@ const Toolbar: FC<Props> = ({ onWidgetDrag }) => {
       Object.assign(element.style, styles);
 
       dragGhostElement.current = element;
+      const iconType = e.currentTarget.getAttribute(
+        'data-icon-type'
+      ) as IconType;
       ReactDOM.render(
-        <ChartPlaceholder width={width} height={height} />,
+        <WidgetPlaceholder width={width} height={height} iconType={iconType} />,
         element
       );
 
@@ -81,7 +85,7 @@ const Toolbar: FC<Props> = ({ onWidgetDrag }) => {
         key="text"
       />
       <DraggableItem
-        type="visualization"
+        type="image"
         icon="image"
         text={t('widget_item.image')}
         dragStartHandler={dragStartHandler}
