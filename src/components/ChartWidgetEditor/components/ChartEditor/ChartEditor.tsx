@@ -32,6 +32,7 @@ import {
   setQuerySettings,
   setQueryChange,
   setVisualizationSettings,
+  updateChartSettings,
   getChartEditor,
 } from '../../../../modules/chartEditor';
 import { getActiveDashboardTheme } from '../../../../modules/theme';
@@ -80,6 +81,13 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
     }
   }, [widgetType, querySettings]);
 
+  const handleChartSettingsUpdate = useCallback(
+    (chartSettings: Record<string, any>) => {
+      dispatch(updateChartSettings(chartSettings));
+    },
+    []
+  );
+
   useEffect(() => {
     dispatch(editorMounted());
   }, []);
@@ -119,7 +127,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
           readKey={userKey}
           masterKey={masterKey}
           modalContainer={modalContainer}
-          onUpdateChartSettings={() => {}}
+          onUpdateChartSettings={handleChartSettingsUpdate}
           onUpdateQuery={(query: Query) => {
             dispatch(setQuerySettings(query));
             if (!queryRef.current) {

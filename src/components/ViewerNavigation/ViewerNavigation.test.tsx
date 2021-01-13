@@ -8,6 +8,8 @@ const render = (overProps: any = {}) => {
     editPrivileges: false,
     onShowSettings: jest.fn(),
     onEditDashboard: jest.fn(),
+    tags: [],
+    title: null,
     ...overProps,
   };
 

@@ -1,35 +1,56 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import sagaHelper from 'redux-saga-testing';
-import { put, take, call, select } from 'redux-saga/effects';
+import { all, put, take, call, getContext, select } from 'redux-saga/effects';
 import { Query } from '@keen.io/query';
 import { PickerWidgets, ChartSettings } from '@keen.io/widget-picker';
 import { SET_QUERY_EVENT } from '@keen.io/query-creator';
 
 import {
+  savedQueryUpdated,
   setWidgetState,
   finishChartWidgetConfiguration,
-  initializeChartWidget,
+  initializeChartWidget as initializeChartWidgetAction,
   initializeWidget as initializeWidgetAction,
   editChartWidget as editChartWidgetAction,
+  configureImageWidget as configureImageWidgetAction,
+  setWidgetLoading,
 } from './actions';
 import {
   selectQueryForWidget,
   createQueryForWidget,
   editChartWidget,
   editChartSavedQuery,
+  reinitializeWidgets,
+  initializeChartWidget,
   initializeWidget,
+  selectImageWidget,
 } from './saga';
 
 import { getWidgetSettings } from './selectors';
 
-import { showQueryPicker, hideQueryPicker, HIDE_QUERY_PICKER } from '../app';
-import { saveDashboard, removeWidgetFromDashboard } from '../dashboards';
+import {
+  getActiveDashboard,
+  showQueryPicker,
+  hideQueryPicker,
+  HIDE_QUERY_PICKER,
+  showImagePicker,
+  HIDE_IMAGE_PICKER,
+  hideImagePicker,
+} from '../app';
+import {
+  getDashboardSettings,
+  saveDashboard,
+  removeWidgetFromDashboard,
+} from '../dashboards';
+
 import {
   selectSavedQuery,
   createQuery,
   SELECT_SAVED_QUERY,
   CREATE_QUERY,
   SavedQuery,
+  SAVE_IMAGE,
+  saveImage,
 } from '../queries';
 
 import {
@@ -52,10 +73,209 @@ import {
   USE_QUERY_FOR_WIDGET,
 } from '../chartEditor';
 
+import { KEEN_ANALYSIS, I18N } from '../../constants';
+
 import { widget as widgetItem } from './fixtures';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
+
+describe('reinitializeWidgets()', () => {
+  const queryName = 'purchases';
+  const action = savedQueryUpdated(widgetId, queryName);
+
+  const dashboardSettings = {
+    widgets: [widgetId, '@widget/02'],
+  };
+
+  describe('Scenario 1: Reinitializes affected widgets', () => {
+    const test = sagaHelper(reinitializeWidgets(action));
+
+    test('get active dashboard idenfitier', (result) => {
+      expect(result).toEqual(select(getActiveDashboard));
+
+      return dashboardId;
+    });
+
+    test('get dashboard settings', (result) => {
+      expect(result).toEqual(select(getDashboardSettings, dashboardId));
+
+      return dashboardSettings;
+    });
+
+    test('get settings for all widgets used on dashboard', (result) => {
+      expect(result).toEqual(
+        all([
+          select(getWidgetSettings, widgetId),
+          select(getWidgetSettings, '@widget/02'),
+        ])
+      );
+
+      return [
+        { type: 'visualization', id: widgetId, query: queryName },
+        { type: 'visualization', id: '@widget/02', query: queryName },
+      ];
+    });
+
+    test('set widget state for affected widgets', (result) => {
+      expect(result).toEqual(
+        all([
+          put(
+            setWidgetState('@widget/02', {
+              isInitialized: false,
+              error: null,
+              data: null,
+            })
+          ),
+        ])
+      );
+    });
+
+    test('reinitializes affected chart widgets', (result) => {
+      expect(result).toEqual(
+        all([put(initializeChartWidgetAction('@widget/02'))])
+      );
+    });
+  });
+});
+
+describe('initializeChartWidget()', () => {
+  const action = initializeChartWidgetAction(widgetId);
+
+  describe('Scenario 1: Query detached from visualization', () => {
+    const test = sagaHelper(initializeChartWidget(action));
+    const i18n = {
+      t: jest.fn().mockImplementation((key) => key),
+    };
+
+    const keenAnalysis = {
+      query: jest.fn(),
+    };
+
+    const analysisResult = {
+      result: 10,
+      query: {
+        analysis_type: 'count',
+        event_collection: 'purchases',
+        order_by: null,
+      } as Query,
+    };
+
+    test('get widget settings', (result) => {
+      expect(result).toEqual(select(getWidgetSettings, widgetId));
+
+      return {
+        query: 'purchases',
+        settings: {
+          visualizationType: 'line',
+        },
+      };
+    });
+
+    test('get Keen client from context', (result) => {
+      expect(result).toEqual(getContext(KEEN_ANALYSIS));
+
+      return keenAnalysis;
+    });
+
+    test('set widget in loading state', (result) => {
+      expect(result).toEqual(put(setWidgetLoading(widgetId, true)));
+    });
+
+    test('performs query', () => {
+      expect(keenAnalysis.query).toHaveBeenCalledWith({
+        savedQueryName: 'purchases',
+      });
+
+      return analysisResult;
+    });
+
+    test('get i18n from context', (result) => {
+      expect(result).toEqual(getContext(I18N));
+
+      return i18n;
+    });
+
+    test('updates widget state', (result) => {
+      expect(result).toEqual(
+        put(
+          setWidgetState(widgetId, {
+            isInitialized: true,
+            error: {
+              title: 'widget_errors.detached_query_title',
+              message: 'widget_errors.detached_query_message',
+            },
+            data: analysisResult,
+          })
+        )
+      );
+    });
+
+    test('set widget in loading state', (result) => {
+      expect(result).toEqual(put(setWidgetLoading(widgetId, false)));
+    });
+  });
+
+  describe('Scenario 2: Successful initializes chart widget', () => {
+    const test = sagaHelper(initializeChartWidget(action));
+    const keenAnalysis = {
+      query: jest.fn(),
+    };
+
+    const query: Query = {
+      analysis_type: 'count',
+      event_collection: 'purchases',
+      order_by: null,
+    };
+
+    const analysisResult = {
+      result: 10,
+      query,
+    };
+
+    test('get widget settings', (result) => {
+      expect(result).toEqual(select(getWidgetSettings, widgetId));
+
+      return {
+        query,
+        settings: {
+          visualizationType: 'metric',
+        },
+      };
+    });
+
+    test('get Keen client from context', (result) => {
+      expect(result).toEqual(getContext(KEEN_ANALYSIS));
+
+      return keenAnalysis;
+    });
+
+    test('set widget in loading state', (result) => {
+      expect(result).toEqual(put(setWidgetLoading(widgetId, true)));
+    });
+
+    test('performs query', () => {
+      expect(keenAnalysis.query).toHaveBeenCalledWith(query);
+
+      return analysisResult;
+    });
+
+    test('updates widget state', (result) => {
+      expect(result).toEqual(
+        put(
+          setWidgetState(widgetId, {
+            isInitialized: true,
+            data: analysisResult,
+          })
+        )
+      );
+    });
+
+    test('set widget in loading state', (result) => {
+      expect(result).toEqual(put(setWidgetLoading(widgetId, false)));
+    });
+  });
+});
 
 describe('initializeWidget()', () => {
   const action = initializeWidgetAction(widgetId);
@@ -72,7 +292,7 @@ describe('initializeWidget()', () => {
     });
 
     test('initializes visualization widget', (result) => {
-      expect(result).toEqual(put(initializeChartWidget(widgetId)));
+      expect(result).toEqual(put(initializeChartWidgetAction(widgetId)));
     });
   });
 });
@@ -113,6 +333,7 @@ describe('editChartSavedQuery()', () => {
           setWidgetState(widgetId, {
             isInitialized: false,
             isConfigured: false,
+            error: null,
             data: null,
           })
         )
@@ -144,7 +365,7 @@ describe('editChartSavedQuery()', () => {
     });
 
     test('initializes chart widget', (result) => {
-      expect(result).toEqual(put(initializeChartWidget(widgetId)));
+      expect(result).toEqual(put(initializeChartWidgetAction(widgetId)));
     });
 
     test('gets active dashboard identifier', () => {
@@ -313,6 +534,7 @@ describe('editChartWidget()', () => {
           setWidgetState(widgetId, {
             isInitialized: false,
             isConfigured: false,
+            error: null,
             data: null,
           })
         )
@@ -337,7 +559,7 @@ describe('editChartWidget()', () => {
     });
 
     test('initializes chart widget', (result) => {
-      expect(result).toEqual(put(initializeChartWidget(widgetId)));
+      expect(result).toEqual(put(initializeChartWidgetAction(widgetId)));
     });
 
     test('close chart editor', (result) => {
@@ -463,7 +685,7 @@ describe('createQueryForWidget()', () => {
     });
 
     test('initializes chart widget', (result) => {
-      expect(result).toEqual(put(initializeChartWidget(widgetId)));
+      expect(result).toEqual(put(initializeChartWidgetAction(widgetId)));
     });
 
     test('resets chart editor', (result) => {
@@ -527,7 +749,7 @@ describe('selectQueryForWidget()', () => {
     });
 
     test('initializes chart widget', (result) => {
-      expect(result).toEqual(put(initializeChartWidget(widgetId)));
+      expect(result).toEqual(put(initializeChartWidgetAction(widgetId)));
     });
 
     test('gets active dashboard identifier', () => {
@@ -586,6 +808,71 @@ describe('selectQueryForWidget()', () => {
 
     test('runs create query flow', (result) => {
       expect(result).toEqual(call(createQueryForWidget, widgetId));
+    });
+  });
+});
+
+describe('selectImageWidget()', () => {
+  describe('Scenario 1: User saves new image', () => {
+    const test = sagaHelper(selectImageWidget(widgetId));
+    const link = 'https://example.com/image-1.jpg';
+
+    test('shows query picker', (result) => {
+      expect(result).toEqual(put(showImagePicker()));
+    });
+
+    test('waits until user save new image', (result) => {
+      expect(result).toEqual(take([SAVE_IMAGE, HIDE_IMAGE_PICKER]));
+
+      return saveImage(link);
+    });
+
+    test('configures image widget', (result) => {
+      const action = configureImageWidgetAction(widgetId, link);
+
+      expect(result).toEqual(put(action));
+    });
+
+    test('sets widget state', (result) => {
+      expect(result).toEqual(
+        put(setWidgetState(widgetId, { isConfigured: true }))
+      );
+    });
+
+    test('hides Image picker', (result) => {
+      expect(result).toEqual(put(hideImagePicker()));
+    });
+
+    test('gets active dashboard identifier', () => {
+      return dashboardId;
+    });
+
+    test('triggers save dashboard action', (result) => {
+      expect(result).toEqual(put(saveDashboard(dashboardId)));
+    });
+  });
+
+  describe('Scenario 2: User cancel creation of chart widget', () => {
+    const test = sagaHelper(selectImageWidget(widgetId));
+
+    test('shows image picker', (result) => {
+      expect(result).toEqual(put(showImagePicker()));
+    });
+
+    test('waits until user close image picker', (result) => {
+      expect(result).toEqual(take([SAVE_IMAGE, HIDE_IMAGE_PICKER]));
+
+      return hideImagePicker();
+    });
+
+    test('gets active dashboard identifier', () => {
+      return dashboardId;
+    });
+
+    test('removes widget from dashboard', (result) => {
+      expect(result).toEqual(
+        put(removeWidgetFromDashboard(dashboardId, widgetId))
+      );
     });
   });
 });

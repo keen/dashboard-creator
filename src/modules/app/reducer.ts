@@ -1,9 +1,11 @@
 import { AppActions } from './actions';
 
 import {
-  SET_ACTIVE_DASHBOARD,
-  SHOW_QUERY_PICKER,
   HIDE_QUERY_PICKER,
+  SET_ACTIVE_DASHBOARD,
+  SHOW_IMAGE_PICKER,
+  HIDE_IMAGE_PICKER,
+  SHOW_QUERY_PICKER,
 } from './constants';
 
 import { ReducerState } from './types';
@@ -12,6 +14,9 @@ const initialState: ReducerState = {
   view: 'management',
   activeDashboardId: null,
   queryPicker: {
+    isVisible: false,
+  },
+  imagePicker: {
     isVisible: false,
   },
   visualizationEditor: {
@@ -35,6 +40,22 @@ const appReducer = (state: ReducerState = initialState, action: AppActions) => {
         queryPicker: {
           ...state.queryPicker,
           isVisible: true,
+        },
+      };
+    case SHOW_IMAGE_PICKER:
+      return {
+        ...state,
+        imagePicker: {
+          ...state.imagePicker,
+          isVisible: true,
+        },
+      };
+    case HIDE_IMAGE_PICKER:
+      return {
+        ...state,
+        imagePicker: {
+          ...state.imagePicker,
+          isVisible: false,
         },
       };
     case SET_ACTIVE_DASHBOARD:

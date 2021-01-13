@@ -13,9 +13,12 @@ import {
   INITIALIZE_WIDGET,
   INITIALIZE_CHART_WIDGET,
   EDIT_CHART_WIDGET,
+  EDIT_IMAGE_WIDGET,
+  IMAGE_WIDGET_CONFIGURE,
   SET_WIDGET_LOADING,
   SET_WIDGET_INITIALIZATION,
   SET_WIDGET_STATE,
+  SAVED_QUERY_UPDATED,
 } from './constants';
 
 export const registerWidgets = createAction(
@@ -79,6 +82,23 @@ export const editChartWidget = createAction(
   })
 );
 
+export const editImageWidget = createAction(
+  EDIT_IMAGE_WIDGET,
+  (id: string) => ({
+    payload: { id },
+  })
+);
+
+export const configureImageWidget = createAction(
+  IMAGE_WIDGET_CONFIGURE,
+  (id: string, link: string) => ({
+    payload: {
+      id,
+      link,
+    },
+  })
+);
+
 export const initializeChartWidget = createAction(
   INITIALIZE_CHART_WIDGET,
   (id: string) => ({
@@ -123,6 +143,16 @@ export const setWidgetState = createAction(
   })
 );
 
+export const savedQueryUpdated = createAction(
+  SAVED_QUERY_UPDATED,
+  (widgetId: string, queryId: string) => ({
+    payload: {
+      widgetId,
+      queryId,
+    },
+  })
+);
+
 export type WidgetsActions =
   | ReturnType<typeof createWidget>
   | ReturnType<typeof removeWidget>
@@ -134,4 +164,6 @@ export type WidgetsActions =
   | ReturnType<typeof setWidgetLoading>
   | ReturnType<typeof setWidgetState>
   | ReturnType<typeof setWidgetInitialization>
-  | ReturnType<typeof finishChartWidgetConfiguration>;
+  | ReturnType<typeof configureImageWidget>
+  | ReturnType<typeof finishChartWidgetConfiguration>
+  | ReturnType<typeof savedQueryUpdated>;

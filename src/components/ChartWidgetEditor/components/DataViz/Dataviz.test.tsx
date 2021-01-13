@@ -57,16 +57,3 @@ test('calls KeenDataviz render method with analysis results', () => {
 
   expect(renderMock).toHaveBeenCalledWith(initialProps.analysisResults);
 });
-
-test('calls KeenDataviz error method', () => {
-  const props = {
-    ...initialProps,
-    analysisResults: {
-      query: {},
-      result: [],
-    },
-  };
-  render(<DataViz {...props} />);
-
-  expect(errorMock).toHaveBeenCalledWith('dataviz.no_results');
-});

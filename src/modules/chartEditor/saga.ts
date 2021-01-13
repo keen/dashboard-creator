@@ -1,11 +1,24 @@
 import { takeLatest, put, select, getContext } from 'redux-saga/effects';
+import { UPDATE_VISUALIZATION_TYPE } from '@keen.io/query-creator';
 
-import { runQuerySuccess, runQueryError } from './actions';
+import {
+  setVisualizationSettings,
+  runQuerySuccess,
+  runQueryError,
+} from './actions';
 
 import { getChartEditor } from './selectors';
 
-import { RUN_QUERY } from './constants';
-import { KEEN_ANALYSIS, NOTIFICATION_MANAGER } from '../../constants';
+import { RUN_QUERY, SET_VISUALIZATION_SETTINGS } from './constants';
+import { KEEN_ANALYSIS, NOTIFICATION_MANAGER, PUBSUB } from '../../constants';
+
+export function* updateVisualizationType({
+  payload,
+}: ReturnType<typeof setVisualizationSettings>) {
+  const { type } = payload;
+  const pubsub = yield getContext(PUBSUB);
+  yield pubsub.publish(UPDATE_VISUALIZATION_TYPE, { type });
+}
 
 export function* runQuery() {
   const { querySettings } = yield select(getChartEditor);
@@ -28,4 +41,5 @@ export function* runQuery() {
 
 export function* chartEditorSaga() {
   yield takeLatest(RUN_QUERY, runQuery);
+  yield takeLatest(SET_VISUALIZATION_SETTINGS, updateVisualizationType);
 }

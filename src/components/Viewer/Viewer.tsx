@@ -1,13 +1,21 @@
 import React, { FC } from 'react';
+import { push } from 'connected-react-router';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Navigation } from './Viewer.styles';
 
-import { getDashboard, editDashboard } from '../../modules/dashboards';
+import {
+  getDashboard,
+  getDashboardMeta,
+  editDashboard,
+  showDashboardSettingsModal,
+} from '../../modules/dashboards';
+import { setActiveDashboard } from '../../modules/app';
 
 import Grid from '../Grid';
 import ViewerNavigation from '../ViewerNavigation';
 
+import { ROUTES } from '../../constants';
 import { RootState } from '../../rootReducer';
 
 type Props = {
@@ -33,13 +41,23 @@ const Viewer: FC<Props> = ({ dashboardId }) => {
     };
   });
 
+  const { title, tags } = useSelector((state: RootState) =>
+    getDashboardMeta(state, dashboardId)
+  );
+
   return (
     <>
       <Navigation>
         <ViewerNavigation
+          title={title}
+          tags={tags}
           onEditDashboard={() => dispatch(editDashboard(dashboardId))}
+          onBack={() => {
+            dispatch(setActiveDashboard(null));
+            dispatch(push(ROUTES.MANAGEMENT));
+          }}
           onShowSettings={() => {
-            console.log('onShowDashboardSettings');
+            dispatch(showDashboardSettingsModal(dashboardId));
           }}
           editPrivileges
         />

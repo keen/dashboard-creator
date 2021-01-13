@@ -3,8 +3,9 @@ import { useSelector } from 'react-redux';
 
 import { Container } from './Widget.styles';
 
-import { ChartManagement } from './components';
+import { ImageManagement, ChartManagement } from './components';
 import ChartWidget from '../ChartWidget';
+import ImageWidget from '../ImageWidget';
 
 import { getWidget } from '../../modules/widgets';
 
@@ -44,6 +45,17 @@ const renderWidget = ({
           />
         </>
       );
+    case 'image':
+      return (
+        <>
+          <ImageWidget id={widgetId} />
+          <ImageManagement
+            widgetId={widgetId}
+            isHoverActive={isHoverActive}
+            onRemoveWidget={onRemoveWidget}
+          />
+        </>
+      );
     default:
       return null;
   }
@@ -56,25 +68,18 @@ const Widget: FC<Props> = ({
   disableInteractions = false,
 }) => {
   const {
-    error,
     widget: { id: widgetId, type: widgetType },
   } = useSelector((rootState: RootState) => getWidget(rootState, id));
 
   return (
     <Container>
-      {error ? (
-        <>{error}</>
-      ) : (
-        <>
-          {renderWidget({
-            widgetType,
-            widgetId,
-            disableInteractions,
-            isHoverActive,
-            onRemoveWidget,
-          })}
-        </>
-      )}
+      {renderWidget({
+        widgetType,
+        widgetId,
+        disableInteractions,
+        isHoverActive,
+        onRemoveWidget,
+      })}
     </Container>
   );
 };

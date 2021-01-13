@@ -14,6 +14,7 @@ import {
   getDashboard,
   saveDashboard,
   getDashboardMeta,
+  showDashboardSettingsModal,
 } from '../../modules/dashboards';
 import {
   createWidget,
@@ -28,6 +29,7 @@ import { EditorContext } from '../../contexts';
 
 import EditorNavigation from '../EditorNavigation';
 import QueryPickerModal from '../QueryPickerModal';
+import ImagePickerModal from '../ImagePickerModal';
 import ChartWidgetEditor from '../ChartWidgetEditor';
 import ConfirmQueryChange from '../ConfirmQueryChange';
 import DashboardDeleteConfirmation from '../DashboardDeleteConfirmation';
@@ -92,9 +94,11 @@ const Editor: FC<Props> = ({ dashboardId }) => {
     [droppableWidget]
   );
 
-  const { lastModificationDate } = useSelector((state: RootState) =>
-    getDashboardMeta(state, dashboardId)
-  );
+  const {
+    lastModificationDate,
+    title,
+    tags,
+  } = useSelector((state: RootState) => getDashboardMeta(state, dashboardId));
 
   return (
     <EditorContext.Provider
@@ -106,7 +110,9 @@ const Editor: FC<Props> = ({ dashboardId }) => {
       }}
     >
       <EditorNavigation
-        onShowSettings={() => console.log('show settings')}
+        title={title}
+        tags={tags}
+        onShowSettings={() => dispatch(showDashboardSettingsModal(dashboardId))}
         onBack={() => {
           dispatch(setActiveDashboard(null));
           dispatch(push(ROUTES.MANAGEMENT));
@@ -152,6 +158,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
       <ConfirmQueryChange isOpen={changeQueryConfirmation} />
       <DashboardDeleteConfirmation />
       <QueryPickerModal />
+      <ImagePickerModal />
     </EditorContext.Provider>
   );
 };

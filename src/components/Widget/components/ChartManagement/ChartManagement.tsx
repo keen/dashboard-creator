@@ -17,7 +17,7 @@ import PreventDragPropagation from '../../../PreventDragPropagation';
 
 import { editChartWidget } from '../../../../modules/widgets';
 
-import { settingsMotion, removeMotion } from './motions';
+import { settingsMotion, removeMotion } from '../motions';
 import { DRAG_HANDLE_ELEMENT } from '../../constants';
 
 type Props = {

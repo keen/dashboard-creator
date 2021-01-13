@@ -36,13 +36,25 @@ export interface TextWidget extends BaseWidget {
   settings: {};
 }
 
-export type Widget = ChartWidget | TextWidget;
+export interface ImageWidget extends BaseWidget {
+  type: 'image';
+  settings: {
+    link: string;
+  };
+}
+
+export type Widget = ChartWidget | TextWidget | ImageWidget;
+
+export type WidgetError = {
+  title?: string;
+  message: string;
+};
 
 export type WidgetItem = {
   widget: Widget;
   isConfigured: boolean;
   isInitialized: boolean;
   isLoading: boolean;
-  error: string | null;
+  error: WidgetError | null;
   data: Record<string, any>;
 };
