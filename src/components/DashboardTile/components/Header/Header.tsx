@@ -44,8 +44,8 @@ const Header: FC<Props> = ({ title, excerpt, isPublic, tags, children }) => {
 
   useEffect(() => {
     const { offsetHeight, scrollHeight } = tagsRef.current;
-    if (scrollHeight > offsetHeight) setTagsOverflow(true);
-  }, [tagsRef]);
+    setTagsOverflow(scrollHeight > offsetHeight);
+  }, [tagsRef, tags]);
 
   return (
     <Container>

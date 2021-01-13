@@ -68,25 +68,18 @@ const Widget: FC<Props> = ({
   disableInteractions = false,
 }) => {
   const {
-    error,
     widget: { id: widgetId, type: widgetType },
   } = useSelector((rootState: RootState) => getWidget(rootState, id));
 
   return (
     <Container>
-      {error ? (
-        <>{error}</>
-      ) : (
-        <>
-          {renderWidget({
-            widgetType,
-            widgetId,
-            disableInteractions,
-            isHoverActive,
-            onRemoveWidget,
-          })}
-        </>
-      )}
+      {renderWidget({
+        widgetType,
+        widgetId,
+        disableInteractions,
+        isHoverActive,
+        onRemoveWidget,
+      })}
     </Container>
   );
 };

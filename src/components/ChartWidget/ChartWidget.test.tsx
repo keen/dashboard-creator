@@ -14,11 +14,12 @@ import { WidgetType } from '../../types';
 
 const renderMock = jest.fn();
 const destroyMock = jest.fn();
+const errorMock = jest.fn();
 
 jest.mock('@keen.io/dataviz', () => {
   return {
     KeenDataviz: jest.fn().mockImplementation(() => {
-      return { render: renderMock, destroy: destroyMock };
+      return { render: renderMock, destroy: destroyMock, error: errorMock };
     }),
   };
 });
@@ -103,6 +104,7 @@ const render = (storeState: any = {}, overProps: any = {}) => {
 beforeEach(() => {
   (KeenDataviz as any).mockClear();
   destroyMock.mockClear();
+  errorMock.mockClear();
   renderMock.mockClear();
 });
 
@@ -128,6 +130,44 @@ test('renders visualization', () => {
       widget: {},
     })
   );
+});
+
+test('renders error', () => {
+  const errorMessage = 'Invalid access key';
+  const storeState = {
+    widgets: {
+      items: {
+        [id]: {
+          widget: {
+            id,
+            type: 'visualization',
+            query: 'test',
+            position: {
+              x: 0,
+              y: 0,
+              w: 3,
+              h: 7,
+            },
+            settings: {
+              visualizationType: 'visualization',
+              chartSettings: {},
+              widgetSettings: {},
+            },
+          },
+          data: {},
+          isConfigured: true,
+          isInitialized: true,
+          isLoading: false,
+          error: {
+            message: errorMessage,
+          },
+        },
+      },
+    },
+  };
+  render(storeState);
+
+  expect(errorMock).toHaveBeenCalledWith(errorMessage, undefined);
 });
 
 test('renders chart placeholder', () => {

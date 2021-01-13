@@ -1,11 +1,4 @@
-import React, {
-  FC,
-  useRef,
-  useEffect,
-  useState,
-  useContext,
-  useCallback,
-} from 'react';
+import React, { FC, useRef, useEffect, useState, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { Loader } from '@keen.io/ui-core';
 import { colors } from '@keen.io/colors';
@@ -19,6 +12,8 @@ import { getActiveDashboardTheme } from '../../modules/theme';
 import { RootState } from '../../rootReducer';
 
 import { RESIZE_WIDGET_EVENT } from '../../constants';
+
+import getChartInput from '../../utils/getChartInput';
 import createDataviz from './utils/createDataviz';
 
 type Props = {
@@ -36,29 +31,11 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
   const { editorPubSub } = useContext(EditorContext);
   const [placeholder, setPlaceholder] = useState({ width: 0, height: 0 });
 
-  const getChartInput = useCallback((data: Record<string, any>) => {
-    const isSavedQuery = 'query_name' in data;
-    const { result } = data;
-
-    if (isSavedQuery && typeof result === 'object' && 'steps' in result) {
-      const {
-        query,
-        result: { steps, result: analysisResult },
-      } = data;
-      return {
-        query,
-        steps,
-        result: analysisResult,
-      };
-    }
-
-    return data;
-  }, []);
-
   const {
     isConfigured,
     isInitialized,
     isLoading,
+    error,
     data,
     widget,
   } = useSelector((state: RootState) => getWidget(state, id));
@@ -75,9 +52,14 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
         theme,
         containerRef.current
       );
-      datavizRef.current.render(getChartInput(data));
+
+      if (error) {
+        datavizRef.current.error(error.message, error.title);
+      } else {
+        datavizRef.current.render(getChartInput(data));
+      }
     }
-  }, [showVisualization]);
+  }, [showVisualization, error]);
 
   useEffect(() => {
     if (!editorPubSub) return;
@@ -85,7 +67,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
       switch (eventName) {
         case RESIZE_WIDGET_EVENT:
           const { id: widgetId } = meta;
-          if (datavizRef.current && widgetId === id) {
+          if (datavizRef.current && widgetId === id && !error) {
             datavizRef.current.destroy();
             datavizRef.current.render(getChartInput(data));
           }
@@ -94,7 +76,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
     });
 
     return () => dispose();
-  }, [data, editorPubSub]);
+  }, [error, data, editorPubSub]);
 
   useEffect(() => {
     if (loaderRef.current) {
@@ -110,7 +92,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
           ref={containerRef}
           data-testid="chart-widget-container"
           disableInteractions={disableInteractions}
-        ></Container>
+        />
       ) : (
         <LoaderWrapper ref={loaderRef}>
           {!isConfigured && (

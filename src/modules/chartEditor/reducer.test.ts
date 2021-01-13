@@ -15,7 +15,30 @@ import {
   setQueryResult,
   setQuerySettings,
   setVisualizationSettings,
+  updateChartSettings,
+  showQueryUpdateConfirmation,
+  hideQueryUpdateConfirmation,
 } from './actions';
+
+test('shows query update confirmation', () => {
+  const action = showQueryUpdateConfirmation();
+  const { changeQueryConfirmation } = chartEditorReducer(
+    { ...initialState, changeQueryConfirmation: false },
+    action
+  );
+
+  expect(changeQueryConfirmation).toEqual(true);
+});
+
+test('hides query update confirmation', () => {
+  const action = hideQueryUpdateConfirmation();
+  const { changeQueryConfirmation } = chartEditorReducer(
+    { ...initialState, changeQueryConfirmation: true },
+    action
+  );
+
+  expect(changeQueryConfirmation).toEqual(false);
+});
 
 test('set query type', () => {
   const action = setQueryType(false);
@@ -93,6 +116,32 @@ test('set visualization settings', () => {
   expect(visualization).toMatchObject({
     type: 'bar',
     chartSettings,
+    widgetSettings: {},
+  });
+});
+
+test('updates chart settings', () => {
+  const action = updateChartSettings({ steps: ['purchases'] });
+  const { visualization } = chartEditorReducer(
+    {
+      ...initialState,
+      visualization: {
+        type: 'funnel',
+        chartSettings: {
+          layout: 'vertical',
+        },
+        widgetSettings: {},
+      },
+    },
+    action
+  );
+
+  expect(visualization).toMatchObject({
+    type: 'funnel',
+    chartSettings: {
+      layout: 'vertical',
+      steps: ['purchases'],
+    },
     widgetSettings: {},
   });
 });

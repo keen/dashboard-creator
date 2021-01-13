@@ -21,8 +21,9 @@ import DashboardDeleteConfirmation from '../DashboardDeleteConfirmation';
 import {
   createDashboard,
   viewDashboard,
-  getDashboardsList,
+  getDashboardsMetadata,
   getDashboardsLoadState,
+  showDashboardSettingsModal,
 } from '../../modules/dashboards';
 
 type Props = {};
@@ -30,7 +31,7 @@ type Props = {};
 const Management: FC<Props> = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const dashboards = useSelector(getDashboardsList);
+  const dashboards = useSelector(getDashboardsMetadata);
   const dashboardsLoaded = useSelector(getDashboardsLoadState);
 
   const [searchPhrase, setSearchPhrase] = useState('');
@@ -81,8 +82,8 @@ const Management: FC<Props> = () => {
         ) : (
           <DashboardsList
             onPreviewDashboard={(id) => dispatch(viewDashboard(id))}
-            onShowDashboardSettings={() => {
-              console.log('onShowDashboardSettings');
+            onShowDashboardSettings={(id) => {
+              dispatch(showDashboardSettingsModal(id));
             }}
             dashboards={filteredDashboards}
           />

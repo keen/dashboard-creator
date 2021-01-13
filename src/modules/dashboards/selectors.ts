@@ -1,8 +1,5 @@
 import { RootState } from '../../rootReducer';
 
-export const getDashboardsList = ({ dashboards }: RootState) =>
-  dashboards.metadata.data;
-
 export const getDashboardMeta = (
   { dashboards }: RootState,
   dashboardId: string
@@ -22,3 +19,11 @@ export const getDashboardSettings = ({ dashboards }: RootState, id: string) =>
 
 export const getDeleteConfirmation = ({ dashboards }: RootState) =>
   dashboards.deleteConfirmation;
+
+export const getDashboardSettingsModal = ({ dashboards }: RootState) =>
+  dashboards.dashboardSettingsModal;
+
+export const getTagsPool = ({ dashboards }: RootState) => dashboards.tagsPool;
+
+export const getDashboardMetaSaving = ({ dashboards }: RootState) =>
+  dashboards.metadata.isSavingMetadata;

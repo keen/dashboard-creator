@@ -28,6 +28,9 @@ import {
   deleteDashboard as deleteDashboardAction,
   showDeleteConfirmation,
   hideDeleteConfirmation,
+  saveDashboardMetaSuccess,
+  saveDashboardMetaError,
+  setTagsPool,
 } from './actions';
 
 import { serializeDashboard } from './serializers';
@@ -46,6 +49,7 @@ import {
   getWidgetSettings,
 } from '../widgets';
 import { removeDashboardTheme, setDashboardTheme } from '../theme';
+import { createTagsPool } from './utils';
 
 import { BLOB_API, NOTIFICATION_MANAGER, ROUTES } from '../../constants';
 import {
@@ -60,6 +64,9 @@ import {
   VIEW_DASHBOARD,
   CONFIRM_DASHBOARD_DELETE,
   HIDE_DELETE_CONFIRMATION,
+  SHOW_DASHBOARD_SETTINGS_MODAL,
+  HIDE_DASHBOARD_SETTINGS_MODAL,
+  SAVE_DASHBOARD_METADATA_SUCCESS,
 } from './constants';
 
 import { RootState } from '../../rootReducer';
@@ -81,11 +88,26 @@ export function* saveDashboardMetadata({
   payload,
 }: ReturnType<typeof saveDashboardMetaAction>) {
   const { dashboardId, metadata } = payload;
+  const notificationManager = yield getContext(NOTIFICATION_MANAGER);
+
   try {
     const blobApi = yield getContext(BLOB_API);
     yield blobApi.saveDashboardMeta(dashboardId, metadata);
+
+    yield put(saveDashboardMetaSuccess());
+    yield notificationManager.showNotification({
+      type: 'info',
+      message: 'notifications.dashboard_meta_success',
+      autoDismiss: true,
+    });
   } catch (err) {
-    console.error(err);
+    yield put(saveDashboardMetaError());
+    yield notificationManager.showNotification({
+      type: 'error',
+      message: err,
+      showDismissButton: true,
+      autoDismiss: false,
+    });
   }
 }
 
@@ -284,8 +306,21 @@ export function* initializeDashboardWidgets({
   yield all(widgetsId.map((widgetId) => put(initializeWidget(widgetId))));
 }
 
+export function* showDashboardSettings() {
+  const dashboards = yield select(getDashboardsMetadata);
+  const tagsPool = createTagsPool(dashboards);
+  yield put(setTagsPool(tagsPool));
+}
+
+export function* hideDashboardSettings() {
+  yield put(setTagsPool([]));
+}
+
 export function* dashboardsSaga() {
-  yield takeLatest(FETCH_DASHBOARDS_LIST, fetchDashboardList);
+  yield takeLatest(
+    [FETCH_DASHBOARDS_LIST, SAVE_DASHBOARD_METADATA_SUCCESS],
+    fetchDashboardList
+  );
   yield takeLatest(CREATE_DASHBOARD, createDashboard);
   yield takeLatest(SAVE_DASHBOARD, saveDashboard);
   yield takeLatest(SAVE_DASHBOARD_METADATA, saveDashboardMetadata);
@@ -294,4 +329,6 @@ export function* dashboardsSaga() {
   yield takeLatest(EDIT_DASHBOARD, editDashboard);
   yield takeLatest(REMOVE_WIDGET_FROM_DASHBOARD, removeWidgetFromDashboard);
   yield takeLatest(INITIALIZE_DASHBOARD_WIDGETS, initializeDashboardWidgets);
+  yield takeLatest(SHOW_DASHBOARD_SETTINGS_MODAL, showDashboardSettings);
+  yield takeLatest(HIDE_DASHBOARD_SETTINGS_MODAL, hideDashboardSettings);
 }

@@ -1,6 +1,11 @@
 {
-  "notifications": {
-    "update_save_query_error": "We were not able to update this save query. Try again later."
+  "widget_errors": {
+    "detached_query_title": "Unable to present result in {{chart}} chart",
+    "detached_query_message": "Please check if query structure has changed or select other visualization"
+  },
+  "dashboard_details": {
+    "untitled_dashboard": "Untitled dashboard",
+    "back": "All Dashboards"
   },
   "dashboard_tile": {
     "preview_dashboard": "View Dashboard",
@@ -10,8 +15,10 @@
     "untitled_dashboard": "Untitled dashboard"
   },
   "notifications": {
+    "update_save_query_error": "We were not able to update this save query. Try again later.",
     "dashboard_delete_success": "Dashboard removed",
-    "dashboard_delete_error": "We were not able to delete this dashboard. Try again later."
+    "dashboard_delete_error": "We were not able to delete this dashboard. Try again later.",
+    "dashboard_meta_success": "Dashboard saved"
   },
   "actions_menu": {
     "delete_dashboard": "Delete",
@@ -39,8 +46,7 @@
   },
   "dashboard_editor": {
     "save": "Save",
-    "loading": "Loading",
-    "back": "Back"
+    "loading": "Loading"
   },
   "query_picker": {
     "close": "Close",
@@ -244,5 +250,18 @@
     "select_unique": "List of unique values found for a target property.",
     "standard_deviation": "Standard deviation of all numeric values for a target property.<br/><br/>Non-numeric values will be ignored.",
     "sum": "Sum of all numeric values for a given property.<br/><br/>Non-numeric values will be ignored."
+  },
+  "dashboard_settings": {
+    "modal_title": "Dashboard settings",
+    "dashboard_name_label": "Dashboard Name",
+    "dashboard_name_error": "Dashboard name is required",
+    "dashboard_unique_name_error": "Dashboard with this name already exists",
+    "dashboard_name_input_placeholder": "Give your dashboard a name",
+    "save_dashboard_button": "Save changes",
+    "cancel": "Cancel",
+    "tags": "Tags",
+    "new_tag": "(New tag)",
+    "input_placeholder": "Insert item and confirm by Enter",
+    "saving_dashboard": "Saving dashboard"
   }
 }

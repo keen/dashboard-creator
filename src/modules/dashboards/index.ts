@@ -15,14 +15,21 @@ import {
   showDeleteConfirmation,
   hideDeleteConfirmation,
   confirmDashboardDelete,
+  showDashboardSettingsModal,
+  hideDashboardSettingsModal,
+  updateDashboardMeta,
 } from './actions';
 
 import {
-  getDashboardsList,
+  getDashboardsMetadata,
   getDashboardsLoadState,
   getDeleteConfirmation,
+  getDashboardSettings,
   getDashboard,
   getDashboardMeta,
+  getDashboardSettingsModal,
+  getTagsPool,
+  getDashboardMetaSaving,
 } from './selectors';
 import { DashboardMetaData, DashboardModel } from './types';
 
@@ -43,11 +50,18 @@ export {
   saveDashboard,
   saveDashboardMeta,
   fetchDashboardList,
+  showDashboardSettingsModal,
+  hideDashboardSettingsModal,
+  updateDashboardMeta,
   getDashboardMeta,
+  getDashboardSettings,
   getDeleteConfirmation,
   getDashboardsLoadState,
-  getDashboardsList,
+  getDashboardsMetadata,
   getDashboard,
+  getDashboardSettingsModal,
+  getTagsPool,
+  getDashboardMetaSaving,
   DashboardMetaData,
   DashboardModel,
 };

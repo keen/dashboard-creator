@@ -37,6 +37,12 @@ export type ReducerState = {
     isInitiallyLoaded: boolean;
     error: boolean;
     data: DashboardMetaData[];
+    isSavingMetadata: boolean;
   };
+  dashboardSettingsModal: {
+    isVisible: boolean;
+    dashboardId: string;
+  };
+  tagsPool: string[];
   items: Record<string, DashboardItem>;
 };
