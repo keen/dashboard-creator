@@ -45,20 +45,40 @@ test('should sort dashboards as Recent', () => {
   expect(sorted).toMatchInlineSnapshot(`
     Array [
       Object {
+        "id": "1",
+        "isPublic": false,
         "lastModificationDate": 1610528149408,
+        "queries": 0,
+        "tags": Array [],
         "title": "First",
+        "widgets": 0,
       },
       Object {
+        "id": "2",
+        "isPublic": false,
         "lastModificationDate": 1610466500832,
+        "queries": 0,
+        "tags": Array [],
         "title": "Second",
+        "widgets": 0,
       },
       Object {
+        "id": "4",
+        "isPublic": false,
         "lastModificationDate": 1610465584382,
+        "queries": 0,
+        "tags": Array [],
         "title": null,
+        "widgets": 0,
       },
       Object {
+        "id": "3",
+        "isPublic": false,
         "lastModificationDate": 1610464613510,
+        "queries": 0,
+        "tags": Array [],
         "title": "Third",
+        "widgets": 0,
       },
     ]
   `);
@@ -70,20 +90,40 @@ test('should sort dashboards as Oldest', () => {
   expect(sorted).toMatchInlineSnapshot(`
     Array [
       Object {
+        "id": "3",
+        "isPublic": false,
         "lastModificationDate": 1610464613510,
+        "queries": 0,
+        "tags": Array [],
         "title": "Third",
+        "widgets": 0,
       },
       Object {
+        "id": "4",
+        "isPublic": false,
         "lastModificationDate": 1610465584382,
+        "queries": 0,
+        "tags": Array [],
         "title": null,
+        "widgets": 0,
       },
       Object {
+        "id": "2",
+        "isPublic": false,
         "lastModificationDate": 1610466500832,
+        "queries": 0,
+        "tags": Array [],
         "title": "Second",
+        "widgets": 0,
       },
       Object {
+        "id": "1",
+        "isPublic": false,
         "lastModificationDate": 1610528149408,
+        "queries": 0,
+        "tags": Array [],
         "title": "First",
+        "widgets": 0,
       },
     ]
   `);
@@ -95,20 +135,40 @@ test('should sort dashboards as A - Z', () => {
   expect(sorted).toMatchInlineSnapshot(`
     Array [
       Object {
+        "id": "1",
+        "isPublic": false,
         "lastModificationDate": 1610528149408,
+        "queries": 0,
+        "tags": Array [],
         "title": "First",
+        "widgets": 0,
       },
       Object {
+        "id": "2",
+        "isPublic": false,
         "lastModificationDate": 1610466500832,
+        "queries": 0,
+        "tags": Array [],
         "title": "Second",
+        "widgets": 0,
       },
       Object {
+        "id": "3",
+        "isPublic": false,
         "lastModificationDate": 1610464613510,
+        "queries": 0,
+        "tags": Array [],
         "title": "Third",
+        "widgets": 0,
       },
       Object {
+        "id": "4",
+        "isPublic": false,
         "lastModificationDate": 1610465584382,
+        "queries": 0,
+        "tags": Array [],
         "title": null,
+        "widgets": 0,
       },
     ]
   `);
@@ -120,20 +180,40 @@ test('should sort dashboards as Z - A', () => {
   expect(sorted).toMatchInlineSnapshot(`
     Array [
       Object {
+        "id": "3",
+        "isPublic": false,
         "lastModificationDate": 1610464613510,
+        "queries": 0,
+        "tags": Array [],
         "title": "Third",
+        "widgets": 0,
       },
       Object {
+        "id": "2",
+        "isPublic": false,
         "lastModificationDate": 1610466500832,
+        "queries": 0,
+        "tags": Array [],
         "title": "Second",
+        "widgets": 0,
       },
       Object {
+        "id": "1",
+        "isPublic": false,
         "lastModificationDate": 1610528149408,
+        "queries": 0,
+        "tags": Array [],
         "title": "First",
+        "widgets": 0,
       },
       Object {
+        "id": "4",
+        "isPublic": false,
         "lastModificationDate": 1610465584382,
+        "queries": 0,
+        "tags": Array [],
         "title": null,
+        "widgets": 0,
       },
     ]
   `);
