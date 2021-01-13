@@ -27,3 +27,6 @@ export const getTagsPool = ({ dashboards }: RootState) => dashboards.tagsPool;
 
 export const getDashboardMetaSaving = ({ dashboards }: RootState) =>
   dashboards.metadata.isSavingMetadata;
+
+export const getDashbaordListOrder = ({ dashboards }: RootState) =>
+  dashboards.dashboardListOrder;

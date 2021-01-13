@@ -5,6 +5,7 @@ import {
   take,
   all,
   getContext,
+  spawn,
 } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
 import { Theme } from '@keen.io/charts';
@@ -31,6 +32,7 @@ import {
   saveDashboardMetaSuccess,
   saveDashboardMetaError,
   setTagsPool,
+  setDashboardListOrder,
 } from './actions';
 
 import { serializeDashboard } from './serializers';
@@ -67,6 +69,8 @@ import {
   SHOW_DASHBOARD_SETTINGS_MODAL,
   HIDE_DASHBOARD_SETTINGS_MODAL,
   SAVE_DASHBOARD_METADATA_SUCCESS,
+  SET_DASHBOARD_LIST_ORDER,
+  DASHBOARD_LIST_ORDER_KEY,
 } from './constants';
 
 import { RootState } from '../../rootReducer';
@@ -316,11 +320,36 @@ export function* hideDashboardSettings() {
   yield put(setTagsPool([]));
 }
 
+export function* rehydrateDashboardsOrder() {
+  try {
+    const settings = localStorage.getItem(DASHBOARD_LIST_ORDER_KEY);
+    if (settings) {
+      const { order } = JSON.parse(settings);
+      yield put(setDashboardListOrder(order));
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export function* persistDashboardsOrder({
+  payload,
+}: ReturnType<typeof setDashboardListOrder>) {
+  const { order } = payload;
+  try {
+    localStorage.setItem(DASHBOARD_LIST_ORDER_KEY, JSON.stringify({ order }));
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 export function* dashboardsSaga() {
+  yield spawn(rehydrateDashboardsOrder);
   yield takeLatest(
     [FETCH_DASHBOARDS_LIST, SAVE_DASHBOARD_METADATA_SUCCESS],
     fetchDashboardList
   );
+  yield takeLatest(SET_DASHBOARD_LIST_ORDER, persistDashboardsOrder);
   yield takeLatest(CREATE_DASHBOARD, createDashboard);
   yield takeLatest(SAVE_DASHBOARD, saveDashboard);
   yield takeLatest(SAVE_DASHBOARD_METADATA, saveDashboardMetadata);

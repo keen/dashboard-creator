@@ -22,6 +22,7 @@ import {
   SHOW_DASHBOARD_SETTINGS_MODAL,
   HIDE_DASHBOARD_SETTINGS_MODAL,
   SET_TAGS_POOL,
+  SET_DASHBOARD_LIST_ORDER,
 } from './constants';
 
 import { ReducerState } from './types';
@@ -43,6 +44,7 @@ export const initialState: ReducerState = {
   },
   tagsPool: [],
   items: {},
+  dashboardListOrder: 'recent',
 };
 
 const dashboardsReducer = (
@@ -271,6 +273,11 @@ const dashboardsReducer = (
           ...state.metadata,
           isSavingMetaData: false,
         },
+      };
+    case SET_DASHBOARD_LIST_ORDER:
+      return {
+        ...state,
+        dashboardListOrder: action.payload.order,
       };
     default:
       return state;

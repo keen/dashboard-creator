@@ -17,6 +17,7 @@ import DashboardsPlaceholder from '../DashboardsPlaceholder';
 import ManagementNavigation from '../ManagementNavigation';
 import SearchInput from '../SearchInput';
 import DashboardDeleteConfirmation from '../DashboardDeleteConfirmation';
+import DashboardListOrder from '../DashboardListOrder';
 
 import {
   createDashboard,
@@ -24,7 +25,10 @@ import {
   getDashboardsMetadata,
   getDashboardsLoadState,
   showDashboardSettingsModal,
+  getDashbaordListOrder,
 } from '../../modules/dashboards';
+
+import { sortDashboards } from './utils/';
 
 type Props = {};
 
@@ -33,6 +37,7 @@ const Management: FC<Props> = () => {
   const dispatch = useDispatch();
   const dashboards = useSelector(getDashboardsMetadata);
   const dashboardsLoaded = useSelector(getDashboardsLoadState);
+  const dashboardListOrder = useSelector(getDashbaordListOrder);
 
   const [searchPhrase, setSearchPhrase] = useState('');
 
@@ -41,8 +46,13 @@ const Management: FC<Props> = () => {
     dispatch(createDashboard(dashboardId));
   }, []);
 
+  const sortedDashboards = useMemo(
+    () => sortDashboards(dashboards, dashboardListOrder),
+    [dashboardListOrder, dashboards]
+  );
+
   const filteredDashboards = useMemo(() => {
-    let dashboardsList = dashboards;
+    let dashboardsList = sortedDashboards;
 
     if (searchPhrase) {
       const phrase = searchPhrase.toLowerCase();
@@ -52,7 +62,7 @@ const Management: FC<Props> = () => {
     }
 
     return dashboardsList;
-  }, [searchPhrase, dashboards]);
+  }, [searchPhrase, sortedDashboards]);
 
   const isEmptyProject = dashboardsLoaded && dashboards.length === 0;
   const isEmptySearch = dashboardsLoaded && filteredDashboards.length === 0;
@@ -74,6 +84,7 @@ const Management: FC<Props> = () => {
               onClearSearch={() => setSearchPhrase('')}
             />
           </Search>
+          <DashboardListOrder />
         </Filters>
       </Navigation>
       <Content>
