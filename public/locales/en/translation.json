@@ -1,7 +1,4 @@
 {
-  "notifications": {
-    "update_save_query_error": "We were not able to update this save query. Try again later."
-  },
   "confirm_query_change": {
     "title": "You edited Saved Query",
     "message": "What do you want to update?",
