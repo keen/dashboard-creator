@@ -2,7 +2,7 @@ import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { transparentize } from 'polished';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Dropdown } from '@keen.io/ui-core';
+import { Dropdown, UI_LAYERS } from '@keen.io/ui-core';
 import { colors } from '@keen.io/colors';
 import { Icon } from '@keen.io/icons';
 
@@ -64,25 +64,27 @@ const DashboardListOrder = () => {
           />
         </DropIndicator>
       </Order>
-      <Dropdown isOpen={isOpen}>
-        <List>
-          {Object.keys(SORT_DASHBOARDS).map((order) => (
-            <ListItem
-              isActive={order === selected}
-              key={order}
-              onClick={() => {
-                setOpen(false);
-                dispatch(setDashboardListOrder(order));
-              }}
-              onMouseEnter={() => {
-                setSelected(order);
-              }}
-            >
-              {SORT_DASHBOARDS[order]}
-            </ListItem>
-          ))}
-        </List>
-      </Dropdown>
+      <div style={{ zIndex: UI_LAYERS.dropdown }}>
+        <Dropdown isOpen={isOpen}>
+          <List>
+            {Object.keys(SORT_DASHBOARDS).map((order) => (
+              <ListItem
+                isActive={order === selected}
+                key={order}
+                onClick={() => {
+                  setOpen(false);
+                  dispatch(setDashboardListOrder(order));
+                }}
+                onMouseEnter={() => {
+                  setSelected(order);
+                }}
+              >
+                {SORT_DASHBOARDS[order]}
+              </ListItem>
+            ))}
+          </List>
+        </Dropdown>
+      </div>
     </Container>
   );
 };
