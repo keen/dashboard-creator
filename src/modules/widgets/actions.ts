@@ -75,8 +75,8 @@ export const finishChartWidgetConfiguration = createAction(
 
 export const editChartWidget = createAction(
   EDIT_CHART_WIDGET,
-  (id: string) => ({
-    payload: { id },
+  (id: string, usePersistedChartEditorState = false) => ({
+    payload: { id, usePersistedChartEditorState },
   })
 );
 

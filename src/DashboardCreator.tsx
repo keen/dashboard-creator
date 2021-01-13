@@ -50,6 +50,9 @@ export class DashboardCreator {
   /** Blob API url */
   private readonly blobApiUrl: string;
 
+  /** Keen API url */
+  private keenApiUrl = 'api.keen.io';
+
   /** App localization settings */
   private readonly translationsSettings: TranslationsSettings;
 
@@ -61,12 +64,14 @@ export class DashboardCreator {
       container,
       modalContainer,
       blobApiUrl,
+      keenApiUrl,
       project,
       translations,
       theme,
     } = config;
 
     const { id, masterKey, userKey } = project;
+    if (keenApiUrl) this.keenApiUrl = keenApiUrl;
 
     this.container = container;
     this.modalContainer = modalContainer;
@@ -137,6 +142,7 @@ export class DashboardCreator {
                 value={{
                   notificationPubSub,
                   project: projectSettings,
+                  keenApiUrl: this.keenApiUrl,
                   modalContainer: this.modalContainer,
                 }}
               >

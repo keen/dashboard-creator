@@ -1,15 +1,33 @@
-import React, { FC } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { Anchor, Modal, ModalHeader, ModalFooter } from '@keen.io/ui-core';
-
-import { Container, Cancel } from './ConfirmQueryChange.styles';
+import {
+  Anchor,
+  Radio,
+  Modal,
+  Button,
+  ModalHeader,
+  ModalFooter,
+} from '@keen.io/ui-core';
 
 import {
+  Container,
+  Content,
+  Back,
+  RadioItem,
+  RadioLabel,
+  Message,
+  Footer,
+  Hint,
+} from './ConfirmQueryChange.styles';
+
+import {
+  queryUpdateConfirmationMounted,
   hideQueryUpdateConfirmation,
-  confirmSaveQueryUpdate,
-  useQueryForWidget,
 } from '../../modules/chartEditor';
+
+import { CONFIRM_OPTIONS, RADIO_GROUP } from './constants';
+import { EditAction } from './types';
 
 type Props = {
   /** Chart editor open indicator */
@@ -20,30 +38,55 @@ const ConfirmQueryChange: FC<Props> = ({ isOpen }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
+  const [editOption, setEditOption] = useState<EditAction>(
+    EditAction.UPDATE_SAVED_QUERY
+  );
+
+  useEffect(() => {
+    if (isOpen) {
+      dispatch(queryUpdateConfirmationMounted());
+    }
+  }, [isOpen]);
+
+  const { editAction, hintMessage } = CONFIRM_OPTIONS[editOption];
+
   return (
     <Modal
       isOpen={isOpen}
+      adjustPositionToScroll={false}
       onClose={() => dispatch(hideQueryUpdateConfirmation())}
     >
       {(_, closeHandler) => (
-        <Container>
+        <Container id="confirm-query-update">
           <ModalHeader onClose={closeHandler}>
             {t('confirm_query_change.title')}
           </ModalHeader>
-          <div>
-            <div onClick={() => dispatch(confirmSaveQueryUpdate())}>
-              Update Saved Query and Add to Dashboard
+          <Content>
+            <Message>{t('confirm_query_change.message')}</Message>
+            <div>
+              {RADIO_GROUP.map(({ label, value, isActive }) => (
+                <RadioItem key={value} onClick={() => setEditOption(value)}>
+                  <Radio isActive={isActive(editOption)} />
+                  <RadioLabel>{t(label)}</RadioLabel>
+                </RadioItem>
+              ))}
             </div>
-            <div onClick={() => dispatch(useQueryForWidget())}>
-              Save only for this widget
-            </div>
-          </div>
+          </Content>
+          <Hint>{t(hintMessage)}</Hint>
           <ModalFooter>
-            <Cancel>
-              <Anchor onClick={closeHandler}>
-                {t('confirm_query_change.cancel')}
-              </Anchor>
-            </Cancel>
+            <Footer>
+              <Button
+                variant="secondary"
+                onClick={() => dispatch(editAction())}
+              >
+                {t('confirm_query_change.save')}
+              </Button>
+              <Back>
+                <Anchor onClick={closeHandler}>
+                  {t('confirm_query_change.cancel')}
+                </Anchor>
+              </Back>
+            </Footer>
           </ModalFooter>
         </Container>
       )}

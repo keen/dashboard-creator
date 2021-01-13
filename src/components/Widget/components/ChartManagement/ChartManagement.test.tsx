@@ -58,6 +58,7 @@ test('allows user to edit widget', () => {
       Object {
         "payload": Object {
           "id": "@widget/01",
+          "usePersistedChartEditorState": false,
         },
         "type": "@widgets/EDIT_CHART_WIDGET",
       },
