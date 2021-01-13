@@ -26,6 +26,7 @@ export const Details = styled.div`
 
 export const BadgeContainer = styled.div`
   margin-right: 5px;
+  line-height: 1;
 `;
 
 export const TagsWrapper = styled(motion.div)<{ isOpen: boolean }>`
