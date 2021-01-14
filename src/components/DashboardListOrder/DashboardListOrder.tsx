@@ -19,7 +19,7 @@ import {
   getDashbaordListOrder,
 } from '../../modules/dashboards';
 
-import { SORT_DASHBOARDS } from './constants';
+import { DASHBOARDS_ORDER } from './constants';
 
 const DashboardListOrder = () => {
   const dispatch = useDispatch();
@@ -54,7 +54,7 @@ const DashboardListOrder = () => {
   return (
     <Container ref={containerRef}>
       <Order data-testid="dropable-container" onClick={() => setOpen(true)}>
-        {SORT_DASHBOARDS[dashboardListOrder]}
+        {DASHBOARDS_ORDER[dashboardListOrder]}
         <DropIndicator>
           <Icon
             type="caret-down"
@@ -67,7 +67,7 @@ const DashboardListOrder = () => {
       <div style={{ zIndex: UI_LAYERS.dropdown }}>
         <Dropdown isOpen={isOpen}>
           <List>
-            {Object.keys(SORT_DASHBOARDS).map((order) => (
+            {Object.keys(DASHBOARDS_ORDER).map((order) => (
               <ListItem
                 isActive={order === selected}
                 key={order}
@@ -79,7 +79,7 @@ const DashboardListOrder = () => {
                   setSelected(order);
                 }}
               >
-                {SORT_DASHBOARDS[order]}
+                {DASHBOARDS_ORDER[order]}
               </ListItem>
             ))}
           </List>
