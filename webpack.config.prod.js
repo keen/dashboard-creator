@@ -9,18 +9,18 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const commonConfig = require('./webpack.common');
 
 module.exports = (env) => {
-  const config = merge(commonConfig, {
+  const config = merge(commonConfig(env.APP_NAME), {
     context: __dirname,
     mode: 'production',
     devtool: 'source-map',
 
     entry: {
-      main: `./src/index.ts`,
+      main: `./src/${env.APP_NAME}.ts`,
     },
     target: 'web',
 
     output: {
-      path: path.resolve(__dirname, 'dist'),
+      path: path.resolve(__dirname, 'dist', env.APP_NAME),
       filename: `[name].min.js`,
       libraryTarget: 'umd',
     },

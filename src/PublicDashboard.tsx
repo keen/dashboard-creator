@@ -9,41 +9,35 @@ import { configureStore } from '@reduxjs/toolkit';
 import { PubSub } from '@keen.io/pubsub';
 import { ToastProvider } from '@keen.io/toast-notifications';
 import { screenBreakpoints } from '@keen.io/ui-core';
-import { Theme } from '@keen.io/charts';
 
-import App from './App';
-import { APIContext, AppContext } from './contexts';
+import { APIContext } from './contexts';
 import { BlobAPI } from './api';
-import { appStart } from './modules/app';
 import { NotificationManager } from './modules/notifications';
+import { viewPublicDashboard } from './modules/dashboards';
+
+import PublicDashboardViewer from './components/PublicDashboardViewer';
 
 import createI18n from './i18n';
 import createSagaMiddleware from './createSagaMiddleware';
 import rootReducer, { history } from './rootReducer';
-import { dashboardCreatorRootSaga } from './rootSaga';
+import { publicDashboardRootSaga } from './rootSaga';
 
 import { SHOW_TOAST_NOTIFICATION_EVENT } from './constants';
 
-import { DashboardCreatorOptions, TranslationsSettings } from './types';
+import { PublicDashboardOptions, TranslationsSettings } from './types';
 
-export class DashboardCreator {
+export class PublicDashboard {
   /** Container used to mount application */
   private container: string;
 
-  /** Container used to mount application modals */
-  private modalContainer: string;
+  /** Project identifer */
+  private readonly projectId: string;
 
-  /** User edit privileges */
-  private readonly editPrivileges: boolean;
-
-  /** Master key for Keen project */
-  private readonly masterKey: string;
+  /** Dashboard identifer */
+  private readonly dashboardId: string;
 
   /** User key for Keen project */
   private readonly accessKey: string;
-
-  /** Project identifer */
-  private readonly projectId: string;
 
   /** Dashboards API url */
   private dashboardsApiUrl = 'blob-service.us-west-2.prod.aws.keen.io';
@@ -54,48 +48,32 @@ export class DashboardCreator {
   /** App localization settings */
   private readonly translationsSettings: TranslationsSettings;
 
-  /** Charts theme settings */
-  private readonly themeSettings: Partial<Theme>;
-
-  constructor(config: DashboardCreatorOptions) {
-    const {
-      container,
-      modalContainer,
-      editPrivileges,
-      backend,
-      project,
-      translations,
-      theme,
-    } = config;
-
-    const { id, masterKey, accessKey } = project;
+  constructor(config: PublicDashboardOptions) {
+    const { container, project, dashboardId, backend, translations } = config;
 
     if (backend?.analyticsApiUrl)
       this.analyticsApiUrl = backend.analyticsApiUrl;
     if (backend?.dashboardsApiUrl)
       this.dashboardsApiUrl = backend.dashboardsApiUrl;
-    if (editPrivileges) this.editPrivileges = editPrivileges;
+
+    const { id: projectId, accessKey } = project;
 
     this.container = container;
-    this.modalContainer = modalContainer;
-    this.projectId = id;
-    this.masterKey = masterKey;
+    this.projectId = projectId;
+    this.dashboardId = dashboardId;
     this.accessKey = accessKey;
     this.translationsSettings = translations || {};
-    this.themeSettings = theme || {};
   }
 
   render() {
     const blobApi = new BlobAPI({
       projectId: this.projectId,
       accessKey: this.accessKey,
-      masterKey: this.masterKey,
       url: this.dashboardsApiUrl,
     });
 
     const keenAnalysis = new KeenAnalysis({
       projectId: this.projectId,
-      masterKey: this.masterKey,
       readKey: this.accessKey,
       host: this.analyticsApiUrl,
     });
@@ -119,15 +97,8 @@ export class DashboardCreator {
       middleware: [sagaMiddleware, routerMiddleware(history)],
     });
 
-    sagaMiddleware.run(dashboardCreatorRootSaga);
-
-    store.dispatch(appStart(this.themeSettings, this.editPrivileges));
-
-    const projectSettings = {
-      id: this.projectId,
-      userKey: this.accessKey,
-      masterKey: this.masterKey,
-    };
+    sagaMiddleware.run(publicDashboardRootSaga);
+    store.dispatch(viewPublicDashboard(this.dashboardId));
 
     ReactDOM.render(
       <Provider store={store}>
@@ -138,18 +109,9 @@ export class DashboardCreator {
         >
           <ConnectedRouter history={history}>
             <ToastProvider>
-              <AppContext.Provider
-                value={{
-                  notificationPubSub,
-                  project: projectSettings,
-                  analyticsApiUrl: this.analyticsApiUrl,
-                  modalContainer: this.modalContainer,
-                }}
-              >
-                <APIContext.Provider value={{ blobApi, keenAnalysis }}>
-                  <App />
-                </APIContext.Provider>
-              </AppContext.Provider>
+              <APIContext.Provider value={{ blobApi, keenAnalysis }}>
+                <PublicDashboardViewer dashboardId={this.dashboardId} />
+              </APIContext.Provider>
             </ToastProvider>
           </ConnectedRouter>
         </ThemeProvider>
@@ -159,4 +121,4 @@ export class DashboardCreator {
   }
 }
 
-export default DashboardCreator;
+export default PublicDashboard;

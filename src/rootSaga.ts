@@ -5,6 +5,10 @@ import { widgetsSaga } from './modules/widgets';
 import { dashboardsSaga } from './modules/dashboards';
 import { chartEditorSaga } from './modules/chartEditor';
 
-export default function* rootSaga() {
+export function* dashboardCreatorRootSaga() {
   yield all([appSaga(), dashboardsSaga(), widgetsSaga(), chartEditorSaga()]);
+}
+
+export function* publicDashboardRootSaga() {
+  yield all([appSaga(), dashboardsSaga(), widgetsSaga()]);
 }

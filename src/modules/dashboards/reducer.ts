@@ -15,6 +15,8 @@ import {
   DELETE_DASHBOARD_SUCCESS,
   UPDATE_DASHBOARD,
   CREATE_DASHBOARD,
+  SET_DASHBOARD_LIST,
+  SET_DASHBOARD_ERROR,
   ADD_WIDGET_TO_DASHBOARD,
   REMOVE_WIDGET_FROM_DASHBOARD,
   SHOW_DELETE_CONFIRMATION,
@@ -191,7 +193,19 @@ const dashboardsReducer = (
           [action.payload.dashboardId]: {
             initialized: false,
             isSaving: false,
+            error: null,
             settings: null,
+          },
+        },
+      };
+    case SET_DASHBOARD_ERROR:
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          [action.payload.dashboardId]: {
+            ...state.items[action.payload.dashboardId],
+            error: action.payload.error,
           },
         },
       };
@@ -240,6 +254,7 @@ const dashboardsReducer = (
           },
         },
       };
+    case SET_DASHBOARD_LIST:
     case FETCH_DASHBOARDS_LIST_SUCCESS:
       return {
         ...state,

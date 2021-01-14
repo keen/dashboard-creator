@@ -25,12 +25,15 @@ import {
   saveDashboard as saveDashboardAction,
   saveDashboardMeta as saveDashboardMetaAction,
   viewDashboard as viewDashboardAction,
+  viewPublicDashboard as viewPublicDashboardAction,
   deleteDashboard as deleteDashboardAction,
   showDeleteConfirmation,
   hideDeleteConfirmation,
   saveDashboardMetaSuccess,
   saveDashboardMetaError,
   setTagsPool,
+  setDashboardList,
+  setDashboardError,
 } from './actions';
 
 import { serializeDashboard } from './serializers';
@@ -62,6 +65,7 @@ import {
   REMOVE_WIDGET_FROM_DASHBOARD,
   DELETE_DASHBOARD,
   VIEW_DASHBOARD,
+  VIEW_PUBLIC_DASHBOARD,
   CONFIRM_DASHBOARD_DELETE,
   HIDE_DELETE_CONFIRMATION,
   SHOW_DASHBOARD_SETTINGS_MODAL,
@@ -70,7 +74,12 @@ import {
 } from './constants';
 
 import { RootState } from '../../rootReducer';
-import { DashboardModel, Dashboard, DashboardMetaData } from './types';
+import {
+  DashboardModel,
+  Dashboard,
+  DashboardMetaData,
+  DashboardError,
+} from './types';
 
 export function* fetchDashboardList() {
   const blobApi = yield getContext(BLOB_API);
@@ -299,6 +308,64 @@ export function* viewDashboard({
   }
 }
 
+/**
+ * Flow responsible for initializing public dashboard viewer.
+ *
+ * @param dashboardId - Dashboard identifer
+ * @return void
+ *
+ */
+export function* viewPublicDashboard({
+  payload,
+}: ReturnType<typeof viewPublicDashboardAction>) {
+  const { dashboardId } = payload;
+
+  yield put(registerDashboard(dashboardId));
+  yield put(setActiveDashboard(dashboardId));
+
+  // metadata do stora!!
+
+  try {
+    const blobApi = yield getContext(BLOB_API);
+    const dashboardMeta: DashboardMetaData = yield blobApi.getDashboardMetaById(
+      dashboardId
+    );
+
+    yield put(setDashboardList([dashboardMeta]));
+
+    const { isPublic } = dashboardMeta;
+
+    if (!isPublic) {
+      const responseBody: DashboardModel = yield blobApi.getDashboardById(
+        dashboardId
+      );
+
+      const { baseTheme, ...dashboard } = responseBody;
+      const serializedDashboard = serializeDashboard(dashboard);
+      const { widgets } = responseBody;
+
+      yield put(registerWidgets(widgets));
+      yield put(updateDashboard(dashboardId, serializedDashboard));
+      yield put(setDashboardTheme(dashboardId, baseTheme));
+
+      yield put(
+        initializeDashboardWidgetsAction(
+          dashboardId,
+          serializedDashboard.widgets
+        )
+      );
+    } else {
+      yield put(
+        setDashboardError(dashboardId, DashboardError.ACCESS_NOT_PUBLIC)
+      );
+    }
+  } catch (err) {
+    yield put(
+      setDashboardError(dashboardId, DashboardError.VIEW_PUBLIC_DASHBOARD)
+    );
+  }
+}
+
 export function* initializeDashboardWidgets({
   payload,
 }: ReturnType<typeof initializeDashboardWidgetsAction>) {
@@ -326,6 +393,7 @@ export function* dashboardsSaga() {
   yield takeLatest(SAVE_DASHBOARD_METADATA, saveDashboardMetadata);
   yield takeLatest(DELETE_DASHBOARD, deleteDashboard);
   yield takeLatest(VIEW_DASHBOARD, viewDashboard);
+  yield takeLatest(VIEW_PUBLIC_DASHBOARD, viewPublicDashboard);
   yield takeLatest(EDIT_DASHBOARD, editDashboard);
   yield takeLatest(REMOVE_WIDGET_FROM_DASHBOARD, removeWidgetFromDashboard);
   yield takeLatest(INITIALIZE_DASHBOARD_WIDGETS, initializeDashboardWidgets);

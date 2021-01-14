@@ -62,7 +62,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
   const dispatch = useDispatch();
   const {
     modalContainer,
-    keenApiUrl,
+    analyticsApiUrl,
     project: { id, userKey, masterKey },
   } = useContext(AppContext);
 
@@ -175,7 +175,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
               }
             }
           }}
-          host={keenApiUrl}
+          host={analyticsApiUrl}
         />
       </QueryCreatorContainer>
       <Footer>

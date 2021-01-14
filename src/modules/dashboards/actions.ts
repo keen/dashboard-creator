@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { DashboardMetaData, Dashboard } from './types';
+import { DashboardMetaData, Dashboard, DashboardError } from './types';
 
 import {
   FETCH_DASHBOARDS_LIST,
@@ -17,6 +17,8 @@ import {
   DELETE_DASHBOARD,
   DELETE_DASHBOARD_SUCCESS,
   EDIT_DASHBOARD,
+  SET_DASHBOARD_LIST,
+  SET_DASHBOARD_ERROR,
   SAVE_DASHBOARD,
   SAVE_DASHBOARD_SUCCESS,
   SAVE_DASHBOARD_ERROR,
@@ -25,6 +27,7 @@ import {
   SAVE_DASHBOARD_METADATA_ERROR,
   UPDATE_DASHBOARD_METADATA,
   VIEW_DASHBOARD,
+  VIEW_PUBLIC_DASHBOARD,
   INITIALIZE_DASHBOARD_WIDGETS,
   SHOW_DELETE_CONFIRMATION,
   HIDE_DELETE_CONFIRMATION,
@@ -47,6 +50,15 @@ export const fetchDashboardListSuccess = createAction(
 
 export const fetchDashboardListError = createAction(
   FETCH_DASHBOARDS_LIST_ERROR
+);
+
+export const setDashboardList = createAction(
+  SET_DASHBOARD_LIST,
+  (dashboards: DashboardMetaData[]) => ({
+    payload: {
+      dashboards,
+    },
+  })
 );
 
 export const addWidgetToDashboard = createAction(
@@ -96,6 +108,15 @@ export const viewDashboard = createAction(
   })
 );
 
+export const viewPublicDashboard = createAction(
+  VIEW_PUBLIC_DASHBOARD,
+  (dashboardId: string) => ({
+    payload: {
+      dashboardId,
+    },
+  })
+);
+
 export const deleteDashboardSuccess = createAction(
   DELETE_DASHBOARD_SUCCESS,
   (dashboardId: string) => ({
@@ -128,6 +149,16 @@ export const shareDashboard = createAction(
   (dashboardId: string) => ({
     payload: {
       dashboardId,
+    },
+  })
+);
+
+export const setDashboardError = createAction(
+  SET_DASHBOARD_ERROR,
+  (dashboardId: string, error: null | DashboardError) => ({
+    payload: {
+      dashboardId,
+      error,
     },
   })
 );
@@ -271,6 +302,9 @@ export type DashboardsActions =
   | ReturnType<typeof saveDashboardError>
   | ReturnType<typeof updateDashboard>
   | ReturnType<typeof viewDashboard>
+  | ReturnType<typeof viewPublicDashboard>
+  | ReturnType<typeof setDashboardError>
+  | ReturnType<typeof setDashboardList>
   | ReturnType<typeof editDashboard>
   | ReturnType<typeof addWidgetToDashboard>
   | ReturnType<typeof removeWidgetFromDashboard>

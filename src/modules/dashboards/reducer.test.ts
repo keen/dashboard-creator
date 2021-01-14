@@ -25,6 +25,7 @@ test('updates dashboard save indicator', () => {
       '@dashboard/01': {
         initialized: false,
         isSaving: false,
+        error: null,
         settings: null,
       },
     },
@@ -113,6 +114,7 @@ test('updates settings for dashboard', () => {
       '@dashboard/01': {
         initialized: false,
         isSaving: false,
+        error: null,
         settings: null,
       },
     },
@@ -164,6 +166,7 @@ test('add widget to dashboard', () => {
       '@dashboard/01': {
         initialized: true,
         isSaving: false,
+        error: null,
         settings: {
           version: '0.0.1',
           widgets: [],
@@ -200,6 +203,7 @@ test('removes widget from dashboard', () => {
       '@dashboard/01': {
         initialized: true,
         isSaving: false,
+        error: null,
         settings: {
           version: '0.0.1',
           widgets: ['@widget/01'],

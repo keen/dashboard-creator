@@ -4,7 +4,7 @@ import { PubSub } from '@keen.io/pubsub';
 export const AppContext = React.createContext<{
   notificationPubSub: PubSub;
   modalContainer: string;
-  keenApiUrl: string;
+  analyticsApiUrl: string;
   project: {
     id: string;
     userKey: string;
@@ -13,7 +13,7 @@ export const AppContext = React.createContext<{
 }>({
   notificationPubSub: null,
   modalContainer: null,
-  keenApiUrl: '',
+  analyticsApiUrl: '',
   project: {
     id: null,
     userKey: null,
