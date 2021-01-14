@@ -7,7 +7,9 @@ import { appStart as appStartAction } from './actions';
 import { APP_START } from './constants';
 
 export function* appStart({ payload }: ReturnType<typeof appStartAction>) {
-  const { baseTheme } = payload;
+  const {
+    dashboards: { baseTheme },
+  } = payload;
   yield put(fetchDashboardList());
   yield put(setBaseTheme(baseTheme));
 }

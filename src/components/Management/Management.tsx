@@ -27,6 +27,7 @@ import {
   showDashboardSettingsModal,
   getDashbaordListOrder,
 } from '../../modules/dashboards';
+import { getUser } from '../../modules/app';
 
 type Props = {};
 
@@ -36,6 +37,7 @@ const Management: FC<Props> = () => {
   const dashboards = useSelector(getDashboardsMetadata);
   const dashboardsLoaded = useSelector(getDashboardsLoadState);
   const dashboardListOrder = useSelector(getDashbaordListOrder);
+  const { editPrivileges } = useSelector(getUser);
 
   const [searchPhrase, setSearchPhrase] = useState('');
 
@@ -58,14 +60,16 @@ const Management: FC<Props> = () => {
   }, [searchPhrase, dashboards, dashboardListOrder]);
 
   const isEmptyProject = dashboardsLoaded && dashboards.length === 0;
-  const isEmptySearch = dashboardsLoaded && filteredDashboards.length === 0;
+  const isEmptySearch =
+    searchPhrase && dashboardsLoaded && filteredDashboards.length === 0;
   const showPlaceholders = isEmptyProject || isEmptySearch || !dashboardsLoaded;
 
   return (
     <div>
       <Navigation>
         <ManagementNavigation
-          attractNewDashboardButton={isEmptyProject}
+          attractCreateDashboardButton={isEmptyProject}
+          showCreateDashboardButton={editPrivileges}
           onCreateDashboard={createDashbord}
         />
         <Filters>
@@ -85,6 +89,7 @@ const Management: FC<Props> = () => {
           <DashboardsPlaceholder />
         ) : (
           <DashboardsList
+            editPrivileges={editPrivileges}
             onPreviewDashboard={(id) => dispatch(viewDashboard(id))}
             onShowDashboardSettings={(id) => {
               dispatch(showDashboardSettingsModal(id));
@@ -97,11 +102,15 @@ const Management: FC<Props> = () => {
             {t('dashboard_management.empty_search_results')}
           </EmptySearch>
         )}
-        <DashboardDeleteConfirmation />
-        <CreateFirstDashboard
-          onClick={createDashbord}
-          isVisible={isEmptyProject}
-        />
+        {editPrivileges && (
+          <>
+            <DashboardDeleteConfirmation />
+            <CreateFirstDashboard
+              onClick={createDashbord}
+              isVisible={isEmptyProject}
+            />
+          </>
+        )}
       </Content>
     </div>
   );

@@ -12,6 +12,7 @@ const render = (overProps: any = {}) => {
     useDefaultThumbnail: true,
     onPreview: jest.fn(),
     onShowSettings: jest.fn(),
+    editPrivileges: true,
     ...overProps,
   };
 
@@ -67,13 +68,24 @@ test('renders queries count', () => {
   ).toBeInTheDocument();
 });
 
-test('renders actions buttons', () => {
+test('renders actions buttons for user with edit privileges', () => {
   const {
     wrapper: { getByTestId, container },
   } = render();
   fireEvent.mouseEnter(container.querySelector('article'));
 
   expect(getByTestId('dashboard-actions')).toBeInTheDocument();
+});
+
+test('do not renders actions buttons for user without edit privileges', () => {
+  const {
+    wrapper: { queryByTestId, container },
+  } = render({
+    editPrivileges: false,
+  });
+  fireEvent.mouseEnter(container.querySelector('article'));
+
+  expect(queryByTestId('dashboard-actions')).not.toBeInTheDocument();
 });
 
 test('should call onShowSettings when settings button is clicked', () => {

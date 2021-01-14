@@ -37,19 +37,18 @@ const ViewerNavigation: FC<Props> = ({
       <DashboardDetails title={title} tags={tags} onBack={onBack} />
       <Aside>
         {editPrivileges && (
-          <ButtonWrapper data-testid="dashboard-settings">
-            <CircleButton
-              variant="secondary"
-              icon={<Icon type="settings" />}
-              onClick={onShowSettings}
-            />
-          </ButtonWrapper>
-        )}
-
-        {editPrivileges && (
-          <Button variant="secondary" onClick={onEditDashboard}>
-            {t('viewer.edit_dashboard_button')}
-          </Button>
+          <>
+            <ButtonWrapper data-testid="dashboard-settings">
+              <CircleButton
+                variant="secondary"
+                icon={<Icon type="settings" />}
+                onClick={onShowSettings}
+              />
+            </ButtonWrapper>
+            <Button variant="secondary" onClick={onEditDashboard}>
+              {t('viewer.edit_dashboard_button')}
+            </Button>
+          </>
         )}
       </Aside>
     </Container>

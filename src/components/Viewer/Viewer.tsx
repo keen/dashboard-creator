@@ -10,7 +10,7 @@ import {
   editDashboard,
   showDashboardSettingsModal,
 } from '../../modules/dashboards';
-import { setActiveDashboard } from '../../modules/app';
+import { setActiveDashboard, getUser } from '../../modules/app';
 
 import Grid from '../Grid';
 import ViewerNavigation from '../ViewerNavigation';
@@ -26,6 +26,7 @@ type Props = {
 const Viewer: FC<Props> = ({ dashboardId }) => {
   const dispatch = useDispatch();
 
+  const { editPrivileges } = useSelector(getUser);
   const { widgetsId, isInitialized } = useSelector((state: RootState) => {
     const dashboard = getDashboard(state, dashboardId);
     if (dashboard?.initialized) {
@@ -59,7 +60,7 @@ const Viewer: FC<Props> = ({ dashboardId }) => {
           onShowSettings={() => {
             dispatch(showDashboardSettingsModal(dashboardId));
           }}
-          editPrivileges
+          editPrivileges={editPrivileges}
         />
       </Navigation>
       {isInitialized ? (
