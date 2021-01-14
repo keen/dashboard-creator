@@ -38,6 +38,9 @@ export class DashboardCreator {
 
   private modalContainer: string;
 
+  /** User edit privileges */
+  private readonly editPrivileges: boolean;
+
   /** Master key for Keen project */
   private readonly masterKey: string;
 
@@ -63,6 +66,7 @@ export class DashboardCreator {
     const {
       container,
       modalContainer,
+      editPrivileges,
       blobApiUrl,
       keenApiUrl,
       project,
@@ -72,6 +76,8 @@ export class DashboardCreator {
 
     const { id, masterKey, userKey } = project;
     if (keenApiUrl) this.keenApiUrl = keenApiUrl;
+
+    if (editPrivileges) this.editPrivileges = editPrivileges;
 
     this.container = container;
     this.modalContainer = modalContainer;
@@ -121,7 +127,8 @@ export class DashboardCreator {
     });
 
     sagaMiddleware.run(rootSaga);
-    store.dispatch(appStart(this.themeSettings));
+
+    store.dispatch(appStart(this.themeSettings, this.editPrivileges));
 
     const projectSettings = {
       id: this.projectId,

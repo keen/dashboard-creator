@@ -3,10 +3,10 @@ export type ViewMode = 'editor' | 'viewer' | 'management';
 export type ReducerState = {
   view: ViewMode;
   activeDashboardId: string | null;
-  queryPicker: {
-    isVisible: false;
+  user: {
+    editPrivileges: boolean;
   };
-  visualizationEditor: {
-    isVisible: false;
+  queryPicker: {
+    isVisible: boolean;
   };
 };

@@ -36,6 +36,11 @@ const render = (storeState: any = {}, overProps: any = {}) => {
   };
 
   const state = {
+    app: {
+      user: {
+        editPrivileges: false,
+      },
+    },
     dashboards: {
       deleteConfirmation: {
         isVisible: false,
@@ -67,6 +72,11 @@ const render = (storeState: any = {}, overProps: any = {}) => {
 
 test('renders notification about creating first dashboard in project', async () => {
   const storeState = {
+    app: {
+      user: {
+        editPrivileges: true,
+      },
+    },
     dashboards: {
       deleteConfirmation: {
         isVisible: false,
