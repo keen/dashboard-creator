@@ -10,7 +10,7 @@ import {
   REMOVE_WIDGET,
   UPDATE_WIDGETS_POSITION,
   FINISH_CHART_WIDGET_CONFIGURATION,
-  IMAGE_WIDGET_CONFIGURE,
+  SET_IMAGE_WIDGET,
   SET_WIDGET_LOADING,
   SET_WIDGET_STATE,
   CREATE_WIDGET,
@@ -109,7 +109,7 @@ const widgetsReducer = (
           ),
         },
       };
-    case IMAGE_WIDGET_CONFIGURE:
+    case SET_IMAGE_WIDGET:
       return {
         ...state,
         items: {

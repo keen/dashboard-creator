@@ -12,7 +12,7 @@ import {
   initializeChartWidget as initializeChartWidgetAction,
   initializeWidget as initializeWidgetAction,
   editChartWidget as editChartWidgetAction,
-  configureImageWidget as configureImageWidgetAction,
+  setImageWidget as setImageWidgetAction,
   setWidgetLoading,
 } from './actions';
 import {
@@ -829,7 +829,7 @@ describe('selectImageWidget()', () => {
     });
 
     test('configures image widget', (result) => {
-      const action = configureImageWidgetAction(widgetId, link);
+      const action = setImageWidgetAction(widgetId, link);
 
       expect(result).toEqual(put(action));
     });

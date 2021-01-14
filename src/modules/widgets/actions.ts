@@ -14,7 +14,7 @@ import {
   INITIALIZE_CHART_WIDGET,
   EDIT_CHART_WIDGET,
   EDIT_IMAGE_WIDGET,
-  IMAGE_WIDGET_CONFIGURE,
+  SET_IMAGE_WIDGET,
   SET_WIDGET_LOADING,
   SET_WIDGET_INITIALIZATION,
   SET_WIDGET_STATE,
@@ -89,8 +89,8 @@ export const editImageWidget = createAction(
   })
 );
 
-export const configureImageWidget = createAction(
-  IMAGE_WIDGET_CONFIGURE,
+export const setImageWidget = createAction(
+  SET_IMAGE_WIDGET,
   (id: string, link: string) => ({
     payload: {
       id,
@@ -164,6 +164,6 @@ export type WidgetsActions =
   | ReturnType<typeof setWidgetLoading>
   | ReturnType<typeof setWidgetState>
   | ReturnType<typeof setWidgetInitialization>
-  | ReturnType<typeof configureImageWidget>
+  | ReturnType<typeof setImageWidget>
   | ReturnType<typeof finishChartWidgetConfiguration>
   | ReturnType<typeof savedQueryUpdated>;

@@ -2,6 +2,7 @@ import React, { FC, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Alert, Input, Button } from '@keen.io/ui-core';
+import { isLink } from '../../utils';
 
 import {
   InsertImage,
@@ -21,10 +22,6 @@ const ImagePicker: FC<{}> = () => {
 
   const [error, setError] = useState(null);
   const [link, setLink] = useState('');
-
-  const isLink = (url: string) => {
-    return /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/.test(url);
-  };
 
   const onImageUpload = (url: string) => {
     if (!isLink(url)) {

@@ -23,7 +23,7 @@ const ImageWidget: FC<Props> = ({ id }) => {
       const { offsetWidth: width, offsetHeight: height } = widgetRef.current;
       setPlaceholder({ width, height });
     }
-  }, [widgetRef]);
+  }, [widgetRef.current]);
 
   return (
     <>

@@ -21,7 +21,7 @@ import {
   setWidgetLoading,
   setWidgetState,
   finishChartWidgetConfiguration,
-  configureImageWidget,
+  setImageWidget,
   savedQueryUpdated,
 } from './actions';
 
@@ -241,7 +241,7 @@ export function* selectImageWidget(widgetId: string) {
   if (action.type === HIDE_IMAGE_PICKER) {
     yield* cancelWidgetConfiguration(widgetId);
   } else {
-    yield put(configureImageWidget(widgetId, action.payload.link));
+    yield put(setImageWidget(widgetId, action.payload.link));
     yield put(
       setWidgetState(widgetId, {
         isConfigured: true,
@@ -506,7 +506,7 @@ export function* editImageWidget({
   const action = yield take([SAVE_IMAGE]);
 
   if (action.type === SAVE_IMAGE) {
-    yield put(configureImageWidget(widgetId, action.payload.link));
+    yield put(setImageWidget(widgetId, action.payload.link));
     yield put(hideImagePicker());
 
     const dashboardId = yield select(getActiveDashboard);
