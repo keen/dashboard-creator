@@ -8,9 +8,10 @@ import {
 import { appSaga } from './saga';
 
 import { HIDE_QUERY_PICKER } from './constants';
-import { getQueryPicker, getActiveDashboard } from './selectors';
+import { getUser, getQueryPicker, getActiveDashboard } from './selectors';
 
 export {
+  getUser,
   appReducer,
   appSaga,
   appStart,

@@ -38,9 +38,9 @@ type Props = {
   onRemove?: () => void;
   /** Clone dashboard handler */
   onClone?: () => void;
+  /** User edit privilages */
+  editPrivileges?: boolean;
 };
-
-/** <span onClick={() => onEdit()}>edit</span> */
 
 const DashboardTile: FC<Props> = ({
   id,
@@ -49,6 +49,7 @@ const DashboardTile: FC<Props> = ({
   lastModificationDate,
   useDefaultThumbnail,
   isPublic,
+  editPrivileges,
   tags,
   onPreview,
   onShowSettings,
@@ -95,7 +96,7 @@ const DashboardTile: FC<Props> = ({
     >
       <Header title={title} excerpt={excerpt} isPublic={isPublic} tags={tags}>
         <AnimatePresence>
-          {isActive && (
+          {isActive && editPrivileges && (
             <ActionsMotion data-testid="dashboard-actions" {...actionsMotion}>
               <CircleButton
                 variant="success"

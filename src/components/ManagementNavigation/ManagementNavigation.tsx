@@ -16,16 +16,19 @@ type Props = {
   /** Create dashboard event handler */
   onCreateDashboard: () => void;
   /** Pulse button to attract user attention */
-  attractNewDashboardButton?: boolean;
+  attractCreateDashboardButton?: boolean;
+  /** Shows create dashboard button */
+  showCreateDashboardButton: boolean;
 };
 
 const ManagementNavigation: FC<Props> = ({
   onCreateDashboard,
-  attractNewDashboardButton = false,
+  showCreateDashboardButton = false,
+  attractCreateDashboardButton = false,
 }) => {
   const { t } = useTranslation();
 
-  const buttonMotion = attractNewDashboardButton ? pulseMotion : {};
+  const buttonMotion = attractCreateDashboardButton ? pulseMotion : {};
 
   return (
     <Container flexDirection={{ xs: 'column', md: 'row' }}>
@@ -33,11 +36,13 @@ const ManagementNavigation: FC<Props> = ({
         <Title>{t('dashboard_management.title')}</Title>
         <Message>{t('dashboard_management.description')}</Message>
       </Heading>
-      <ButtonMotion {...buttonMotion}>
-        <Button variant="success" onClick={onCreateDashboard}>
-          {t('dashboard_management.create_dashboard')}
-        </Button>
-      </ButtonMotion>
+      {showCreateDashboardButton && (
+        <ButtonMotion {...buttonMotion}>
+          <Button variant="success" onClick={onCreateDashboard}>
+            {t('dashboard_management.create_dashboard')}
+          </Button>
+        </ButtonMotion>
+      )}
     </Container>
   );
 };
