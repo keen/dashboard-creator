@@ -25,7 +25,7 @@ const render = () => {
   };
 };
 
-test('allows user sort dashboards as A - Z', async () => {
+test('allows user sort dashboards as A - Z', () => {
   const {
     store,
     wrapper: { getByText, getByTestId },
