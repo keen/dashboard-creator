@@ -32,6 +32,7 @@ import {
   SHOW_DASHBOARD_SETTINGS_MODAL,
   HIDE_DASHBOARD_SETTINGS_MODAL,
   SET_TAGS_POOL,
+  SET_DASHBOARD_LIST_ORDER,
 } from './constants';
 
 export const fetchDashboardList = createAction(FETCH_DASHBOARDS_LIST);
@@ -254,6 +255,15 @@ export const setTagsPool = createAction(
   })
 );
 
+export const setDashboardListOrder = createAction(
+  SET_DASHBOARD_LIST_ORDER,
+  (order: string) => ({
+    payload: {
+      order,
+    },
+  })
+);
+
 export type DashboardsActions =
   | ReturnType<typeof fetchDashboardList>
   | ReturnType<typeof fetchDashboardListSuccess>
@@ -283,4 +293,5 @@ export type DashboardsActions =
   | ReturnType<typeof setTagsPool>
   | ReturnType<typeof saveDashboardMeta>
   | ReturnType<typeof saveDashboardMetaSuccess>
-  | ReturnType<typeof saveDashboardMetaError>;
+  | ReturnType<typeof saveDashboardMetaError>
+  | ReturnType<typeof setDashboardListOrder>;
