@@ -10,9 +10,14 @@ import {
 
 export const appStart = createAction(
   APP_START,
-  (baseTheme: Partial<Theme>) => ({
+  (baseTheme: Partial<Theme>, editPrivileges: boolean) => ({
     payload: {
-      baseTheme,
+      dashboards: {
+        baseTheme,
+      },
+      user: {
+        editPrivileges,
+      },
     },
   })
 );

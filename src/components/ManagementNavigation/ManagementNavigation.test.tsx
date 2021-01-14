@@ -6,6 +6,7 @@ import ManagementNavigation from './ManagementNavigation';
 const render = (overProps: any = {}) => {
   const props = {
     onCreateDashboard: jest.fn(),
+    showCreateDashboardButton: true,
     ...overProps,
   };
 
@@ -27,6 +28,16 @@ test('allows user to create new dashboard', () => {
   fireEvent.click(button);
 
   expect(props.onCreateDashboard).toHaveBeenCalled();
+});
+
+test('do not renders create dashboard button', () => {
+  const {
+    wrapper: { queryByText },
+  } = render({ showCreateDashboardButton: false });
+
+  const button = queryByText('dashboard_management.create_dashboard');
+
+  expect(button).not.toBeInTheDocument();
 });
 
 test('renders section title', () => {

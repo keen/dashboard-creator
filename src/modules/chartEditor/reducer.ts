@@ -7,8 +7,10 @@ import {
   SET_QUERY_TYPE,
   SET_VISUALIZATION_SETTINGS,
   SET_QUERY_SETTINGS,
+  SET_INITIAL_QUERY_SETTINGS,
   SET_QUERY_RESULT,
   SET_QUERY_CHANGE,
+  SET_QUERY_DIRTY,
   SET_EDIT_MODE,
   RESET_EDITOR,
   OPEN_EDITOR,
@@ -24,8 +26,10 @@ export const initialState: ReducerState = {
   isOpen: false,
   isEditMode: false,
   isSavedQuery: false,
+  isDirtyQuery: false,
   isQueryPerforming: false,
   hasQueryChanged: false,
+  initialQuerySettings: null,
   querySettings: {},
   visualization: {
     type: null,
@@ -55,6 +59,11 @@ const chartEditorReducer = (
       return {
         ...state,
         isSavedQuery: action.payload.isSavedQuery,
+      };
+    case SET_QUERY_DIRTY:
+      return {
+        ...state,
+        isDirtyQuery: action.payload.isDirtyQuery,
       };
     case SET_QUERY_CHANGE:
       return {
@@ -87,7 +96,11 @@ const chartEditorReducer = (
         },
       };
     case RESET_EDITOR:
-      return initialState;
+      const { changeQueryConfirmation, isOpen, ...editorState } = initialState;
+      return {
+        ...state,
+        ...editorState,
+      };
     case SET_QUERY_RESULT:
       return {
         ...state,
@@ -96,18 +109,25 @@ const chartEditorReducer = (
     case RUN_QUERY_ERROR:
       return {
         ...state,
+        isDirtyQuery: false,
         isQueryPerforming: false,
       };
     case RUN_QUERY_SUCCESS:
       return {
         ...state,
         isQueryPerforming: false,
+        isDirtyQuery: false,
         analysisResult: action.payload.results,
       };
     case RUN_QUERY:
       return {
         ...state,
         isQueryPerforming: true,
+      };
+    case SET_INITIAL_QUERY_SETTINGS:
+      return {
+        ...state,
+        initialQuerySettings: action.payload.query,
       };
     case SET_QUERY_SETTINGS:
       return {
