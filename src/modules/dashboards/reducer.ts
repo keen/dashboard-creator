@@ -1,6 +1,10 @@
 import { DashboardsActions } from './actions';
 
-import { createDashboardMeta, reduceWidgetsCount } from './utils';
+import {
+  createDashboardMeta,
+  reduceWidgetsCount,
+  sortDashboards,
+} from './utils';
 
 import {
   FETCH_DASHBOARDS_LIST_SUCCESS,
@@ -277,6 +281,10 @@ const dashboardsReducer = (
     case SET_DASHBOARD_LIST_ORDER:
       return {
         ...state,
+        metadata: {
+          ...state.metadata,
+          data: sortDashboards(state.metadata.data, action.payload.order),
+        },
         dashboardListOrder: action.payload.order,
       };
     default:

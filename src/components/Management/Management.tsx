@@ -28,8 +28,6 @@ import {
   getDashbaordListOrder,
 } from '../../modules/dashboards';
 
-import { sortDashboards } from './utils/';
-
 type Props = {};
 
 const Management: FC<Props> = () => {
@@ -46,13 +44,8 @@ const Management: FC<Props> = () => {
     dispatch(createDashboard(dashboardId));
   }, []);
 
-  const sortedDashboards = useMemo(
-    () => sortDashboards(dashboards, dashboardListOrder),
-    [dashboardListOrder, dashboards]
-  );
-
   const filteredDashboards = useMemo(() => {
-    let dashboardsList = sortedDashboards;
+    let dashboardsList = dashboards;
 
     if (searchPhrase) {
       const phrase = searchPhrase.toLowerCase();
@@ -62,7 +55,7 @@ const Management: FC<Props> = () => {
     }
 
     return dashboardsList;
-  }, [searchPhrase, sortedDashboards]);
+  }, [searchPhrase, dashboards, dashboardListOrder]);
 
   const isEmptyProject = dashboardsLoaded && dashboards.length === 0;
   const isEmptySearch = dashboardsLoaded && filteredDashboards.length === 0;
