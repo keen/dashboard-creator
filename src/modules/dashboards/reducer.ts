@@ -247,7 +247,6 @@ const dashboardsReducer = (
         },
       };
     case FETCH_DASHBOARDS_LIST_SUCCESS:
-      console.log(state.dashboardListOrder);
       return {
         ...state,
         metadata: {
