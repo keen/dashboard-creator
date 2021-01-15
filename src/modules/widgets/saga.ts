@@ -17,9 +17,11 @@ import {
   initializeWidget as initializeWidgetAction,
   initializeChartWidget as initializeChartWidgetAction,
   editChartWidget as editChartWidgetAction,
+  editImageWidget as editImageWidgetAction,
   setWidgetLoading,
   setWidgetState,
   finishChartWidgetConfiguration,
+  setImageWidget,
   savedQueryUpdated,
 } from './actions';
 
@@ -55,18 +57,23 @@ import {
   updateSaveQuery,
   SELECT_SAVED_QUERY,
   CREATE_QUERY,
+  SAVE_IMAGE,
   SavedQuery,
 } from '../queries';
 import {
   getActiveDashboard,
   showQueryPicker,
   hideQueryPicker,
+  showImagePicker,
+  hideImagePicker,
   HIDE_QUERY_PICKER,
+  HIDE_IMAGE_PICKER,
 } from '../app';
 
 import {
   CREATE_WIDGET,
   EDIT_CHART_WIDGET,
+  EDIT_IMAGE_WIDGET,
   INITIALIZE_WIDGET,
   INITIALIZE_CHART_WIDGET,
   SAVED_QUERY_UPDATED,
@@ -234,6 +241,25 @@ export function* createQueryForWidget(widgetId: string) {
 
     yield put(initializeChartWidgetAction(widgetId));
 
+    const dashboardId = yield select(getActiveDashboard);
+    yield put(saveDashboard(dashboardId));
+  }
+}
+
+export function* selectImageWidget(widgetId: string) {
+  yield put(showImagePicker());
+  const action = yield take([SAVE_IMAGE, HIDE_IMAGE_PICKER]);
+
+  if (action.type === HIDE_IMAGE_PICKER) {
+    yield* cancelWidgetConfiguration(widgetId);
+  } else {
+    yield put(setImageWidget(widgetId, action.payload.link));
+    yield put(
+      setWidgetState(widgetId, {
+        isConfigured: true,
+      })
+    );
+    yield put(hideImagePicker());
     const dashboardId = yield select(getActiveDashboard);
     yield put(saveDashboard(dashboardId));
   }
@@ -487,18 +513,44 @@ export function* editChartWidget({
   }
 }
 
+export function* editImageWidget({
+  payload,
+}: ReturnType<typeof editImageWidgetAction>) {
+  const { id } = payload;
+
+  const state = yield select();
+  const widgetId = getWidget(state, id).widget.id;
+
+  yield put(showImagePicker());
+  const action = yield take([SAVE_IMAGE, HIDE_IMAGE_PICKER]);
+
+  if (action.type === SAVE_IMAGE) {
+    yield put(setImageWidget(widgetId, action.payload.link));
+    yield put(hideImagePicker());
+
+    const dashboardId = yield select(getActiveDashboard);
+    yield put(saveDashboard(dashboardId));
+  } else {
+    cancelWidgetConfiguration(widgetId);
+  }
+}
+
 export function* createWidget({
   payload,
 }: ReturnType<typeof createWidgetAction>) {
-  const { id } = payload;
-  // @TODO: Implement different flows based on widget type
-  yield fork(selectQueryForWidget, id);
+  const { id, widgetType } = payload;
+  if (widgetType === 'image') {
+    yield fork(selectImageWidget, id);
+  } else {
+    yield fork(selectQueryForWidget, id);
+  }
 }
 
 export function* widgetsSaga() {
   yield takeLatest(SAVED_QUERY_UPDATED, reinitializeWidgets);
   yield takeLatest(CREATE_WIDGET, createWidget);
   yield takeLatest(EDIT_CHART_WIDGET, editChartWidget);
+  yield takeLatest(EDIT_IMAGE_WIDGET, editImageWidget);
   yield takeEvery(INITIALIZE_WIDGET, initializeWidget);
   yield takeEvery(INITIALIZE_CHART_WIDGET, initializeChartWidget);
 }

@@ -68,8 +68,17 @@
     "empty_search_results": "No queries found with this name.",
     "empty_project": "There are no saved queries in this project. Create a New Query from scratch."
   },
+  "image_picker": {
+    "title": "Insert image by URL",
+    "image_url": "Image URL",
+    "cancel_button": "Cancel",
+    "insert_button": "Insert image",
+    "placeholder": "Paste URL of image here",
+    "error": "Please, paste correct image url"
+  },
   "widget": {
     "edit_chart": "Edit Chart",
+    "edit_image": "Change image",
     "remove": "Remove",
     "remove_confirm_button": "Yes, delete",
     "remove_dismiss_button": "No, keep it",

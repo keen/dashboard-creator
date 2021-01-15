@@ -29,6 +29,7 @@ import { EditorContext } from '../../contexts';
 
 import EditorNavigation from '../EditorNavigation';
 import QueryPickerModal from '../QueryPickerModal';
+import ImagePickerModal from '../ImagePickerModal';
 import ChartWidgetEditor from '../ChartWidgetEditor';
 import ConfirmQueryChange from '../ConfirmQueryChange';
 import DashboardDeleteConfirmation from '../DashboardDeleteConfirmation';
@@ -157,6 +158,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
       <ConfirmQueryChange isOpen={changeQueryConfirmation} />
       <DashboardDeleteConfirmation />
       <QueryPickerModal />
+      <ImagePickerModal />
     </EditorContext.Provider>
   );
 };

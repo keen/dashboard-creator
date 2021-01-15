@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Loader } from '@keen.io/ui-core';
 import { colors } from '@keen.io/colors';
 
-import ChartPlaceholder from '../ChartPlaceholder';
+import WidgetPlaceholder from '../WidgetPlaceholder';
 import { Container, LoaderWrapper } from './ChartWidget.styles';
 
 import { EditorContext } from '../../contexts';
@@ -96,9 +96,10 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
       ) : (
         <LoaderWrapper ref={loaderRef}>
           {!isConfigured && (
-            <ChartPlaceholder
+            <WidgetPlaceholder
               width={placeholder.width}
               height={placeholder.height}
+              iconType="bar-widget-vertical"
             />
           )}
           {isLoading && (

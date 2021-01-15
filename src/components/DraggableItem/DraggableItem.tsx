@@ -5,8 +5,10 @@ import { Container } from './DraggableItem.styles';
 
 import WidgetItem from '../WidgetItem';
 
+import { WidgetType } from '../../types';
+
 type Props = {
-  type: 'text' | 'visualization';
+  type: WidgetType;
   icon?: IconType;
   text: string;
   dragStartHandler: (e: React.DragEvent<HTMLDivElement>) => void;
@@ -24,6 +26,7 @@ const DraggableItem: FC<Props> = ({
     <Container
       draggable
       unselectable="on"
+      data-icon-type={icon}
       data-widget-type={type}
       onDragStart={dragStartHandler}
       onDragEnd={dragEndHandler}
