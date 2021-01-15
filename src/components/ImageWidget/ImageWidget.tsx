@@ -1,10 +1,13 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
-
-import WidgetPlaceholder from '../WidgetPlaceholder';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../rootReducer';
+import { Card } from '@keen.io/ui-core';
+
+import { Image, ImageWrapper, PlaceholderWrapper } from './ImageWidget.styles';
+import WidgetPlaceholder from '../WidgetPlaceholder';
+
 import { getWidget, ImageWidget } from '../../modules/widgets';
-import { Image, PlaceholderWrapper } from './ImageWidget.styles';
+
+import { RootState } from '../../rootReducer';
 
 type Props = {
   /** Widget identifier */
@@ -28,10 +31,14 @@ const ImageWidget: FC<Props> = ({ id }) => {
   return (
     <>
       {isConfigured ? (
-        <Image
-          src={(widget as ImageWidget).settings.link}
-          data-testid="image-widget"
-        />
+        <Card>
+          <ImageWrapper>
+            <Image
+              src={(widget as ImageWidget).settings.link}
+              data-testid="image-widget"
+            />
+          </ImageWrapper>
+        </Card>
       ) : (
         <PlaceholderWrapper ref={widgetRef}>
           <WidgetPlaceholder
