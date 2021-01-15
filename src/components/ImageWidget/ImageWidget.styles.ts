@@ -19,6 +19,13 @@ export const Image = styled.img`
   margin: auto;
 `;
 
+export const ImageWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+`;
+
 export const PlaceholderWrapper = styled.div`
   display: flex;
   align-items: center;

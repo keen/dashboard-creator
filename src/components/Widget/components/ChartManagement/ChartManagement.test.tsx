@@ -29,22 +29,7 @@ const render = (overProps: any = {}) => {
   };
 };
 
-test('allows user to remove widget', () => {
-  const {
-    props,
-    wrapper: { container, getByText },
-  } = render();
-
-  const button = container.querySelector('[data-testid="delete-chart"] button');
-  fireEvent.click(button);
-
-  const confirmButton = getByText('widget.remove_confirm_button');
-  fireEvent.click(confirmButton);
-
-  expect(props.onRemoveWidget).toHaveBeenCalled();
-});
-
-test('allows user to edit widget', () => {
+test('allows user to chart edit widget', () => {
   const {
     store,
     wrapper: { getByText },
