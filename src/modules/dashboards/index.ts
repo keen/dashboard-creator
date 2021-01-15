@@ -32,7 +32,7 @@ import {
   getTagsPool,
   getDashboardMetaSaving,
 } from './selectors';
-import { DashboardMetaData, DashboardModel } from './types';
+import { DashboardMetaData, DashboardModel, DashboardError } from './types';
 
 export {
   dashboardsReducer,
@@ -66,4 +66,5 @@ export {
   getDashboardMetaSaving,
   DashboardMetaData,
   DashboardModel,
+  DashboardError,
 };

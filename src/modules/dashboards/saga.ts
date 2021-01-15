@@ -6,6 +6,7 @@ import {
   all,
   getContext,
 } from 'redux-saga/effects';
+import { NOT_FOUND } from 'http-status-codes';
 import { push } from 'connected-react-router';
 import { Theme } from '@keen.io/charts';
 
@@ -53,6 +54,8 @@ import {
 } from '../widgets';
 import { removeDashboardTheme, setDashboardTheme } from '../theme';
 import { createTagsPool } from './utils';
+
+import { APIError } from '../../api';
 
 import { BLOB_API, NOTIFICATION_MANAGER, ROUTES } from '../../constants';
 import {
@@ -357,9 +360,14 @@ export function* viewPublicDashboard({
       );
     }
   } catch (err) {
-    yield put(
-      setDashboardError(dashboardId, DashboardError.VIEW_PUBLIC_DASHBOARD)
-    );
+    const error: APIError = err;
+    if (error.statusCode === NOT_FOUND) {
+      yield put(setDashboardError(dashboardId, DashboardError.NOT_EXIST));
+    } else {
+      yield put(
+        setDashboardError(dashboardId, DashboardError.VIEW_PUBLIC_DASHBOARD)
+      );
+    }
   }
 }
 

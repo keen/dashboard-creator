@@ -23,6 +23,7 @@ export type Dashboard = {
 };
 
 export enum DashboardError {
+  NOT_EXIST = 'NOT_EXIST',
   ACCESS_NOT_PUBLIC = 'ACCESS_NOT_PUBLIC',
   VIEW_PUBLIC_DASHBOARD = 'VIEW_PUBLIC_DASHBOARD',
 }
