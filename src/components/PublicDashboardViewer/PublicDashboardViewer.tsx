@@ -1,11 +1,13 @@
 import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
+import { Alert } from '@keen.io/ui-core';
 
 import { Navigation, Container, Content } from './PublicDashboardViewer.styles';
 
 import { getDashboard, getDashboardMeta } from '../../modules/dashboards';
 
 import Grid from '../Grid';
+import DashboardDetails from '../DashboardDetails';
 
 import { RootState } from '../../rootReducer';
 
@@ -42,8 +44,10 @@ const PublicDashboardViewer: FC<Props> = ({ dashboardId }) => {
   return (
     <Container>
       <Content>
-        <Navigation>{metadata && metadata.title}</Navigation>
-        {error && <div>{error}</div>}
+        <Navigation>
+          {metadata && <DashboardDetails title={metadata.title} />}
+        </Navigation>
+        {error && <Alert type="error">{error}</Alert>}
         {isInitialized && !error && (
           <Grid isEditorMode={false} widgetsId={widgetsId} />
         )}

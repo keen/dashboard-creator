@@ -323,8 +323,6 @@ export function* viewPublicDashboard({
   yield put(registerDashboard(dashboardId));
   yield put(setActiveDashboard(dashboardId));
 
-  // metadata do stora!!
-
   try {
     const blobApi = yield getContext(BLOB_API);
     const dashboardMeta: DashboardMetaData = yield blobApi.getDashboardMetaById(
@@ -332,10 +330,9 @@ export function* viewPublicDashboard({
     );
 
     yield put(setDashboardList([dashboardMeta]));
-
     const { isPublic } = dashboardMeta;
 
-    if (!isPublic) {
+    if (isPublic) {
       const responseBody: DashboardModel = yield blobApi.getDashboardById(
         dashboardId
       );

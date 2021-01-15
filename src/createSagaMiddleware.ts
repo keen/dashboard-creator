@@ -8,7 +8,7 @@ import { NotificationManager } from './modules/notifications';
 import {
   PUBSUB,
   BLOB_API,
-  I18N,
+  TRANSLATIONS,
   KEEN_ANALYSIS,
   NOTIFICATION_MANAGER,
 } from './constants';
@@ -30,7 +30,7 @@ const createSagaMiddleware = ({
     context: {
       [BLOB_API]: blobApi,
       [KEEN_ANALYSIS]: keenAnalysis,
-      [I18N]: i18n,
+      [TRANSLATIONS]: i18n,
       [PUBSUB]: getPubSub(),
       [NOTIFICATION_MANAGER]: notificationManager,
     },

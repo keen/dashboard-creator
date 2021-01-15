@@ -75,7 +75,7 @@ import {
   PUBSUB,
   KEEN_ANALYSIS,
   NOTIFICATION_MANAGER,
-  I18N,
+  TRANSLATIONS,
 } from '../../constants';
 
 import { ChartWidget, WidgetItem } from './types';
@@ -117,7 +117,7 @@ export function* initializeChartWidget({
     };
 
     if (isDetachedQuery) {
-      const i18n = yield getContext(I18N);
+      const i18n = yield getContext(TRANSLATIONS);
       const error = {
         title: i18n.t('widget_errors.detached_query_title', {
           chart: visualizationType,

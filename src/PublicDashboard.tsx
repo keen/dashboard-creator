@@ -20,7 +20,7 @@ import PublicDashboardViewer from './components/PublicDashboardViewer';
 import createI18n from './i18n';
 import createSagaMiddleware from './createSagaMiddleware';
 import rootReducer, { history } from './rootReducer';
-import { publicDashboardRootSaga } from './rootSaga';
+import { createRootSaga } from './rootSaga';
 
 import { SHOW_TOAST_NOTIFICATION_EVENT } from './constants';
 
@@ -97,7 +97,9 @@ export class PublicDashboard {
       middleware: [sagaMiddleware, routerMiddleware(history)],
     });
 
-    sagaMiddleware.run(publicDashboardRootSaga);
+    const rootSaga = createRootSaga();
+
+    sagaMiddleware.run(rootSaga);
     store.dispatch(viewPublicDashboard(this.dashboardId));
 
     ReactDOM.render(

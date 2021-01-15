@@ -11,12 +11,46 @@ import {
   showDashboardSettingsModal,
   hideDashboardSettingsModal,
   setTagsPool,
+  setDashboardError,
   saveDashboardMeta,
   saveDashboardMetaSuccess,
   saveDashboardMetaError,
 } from './actions';
 
 import { dashboardsMeta } from './fixtures';
+
+import { DashboardError } from './types';
+
+test('set dashboard error', () => {
+  const state = {
+    ...initialState,
+    items: {
+      '@dashboard/01': {
+        initialized: false,
+        isSaving: false,
+        error: null,
+        settings: null,
+      },
+    },
+  };
+
+  const action = setDashboardError(
+    '@dashboard/01',
+    DashboardError.ACCESS_NOT_PUBLIC
+  );
+  const { items } = dashboardsReducer(state, action);
+
+  expect(items).toMatchInlineSnapshot(`
+    Object {
+      "@dashboard/01": Object {
+        "error": "ACCESS_NOT_PUBLIC",
+        "initialized": false,
+        "isSaving": false,
+        "settings": null,
+      },
+    }
+  `);
+});
 
 test('updates dashboard save indicator', () => {
   const state = {
@@ -37,6 +71,7 @@ test('updates dashboard save indicator', () => {
   expect(items).toMatchInlineSnapshot(`
     Object {
       "@dashboard/01": Object {
+        "error": null,
         "initialized": false,
         "isSaving": true,
         "settings": null,
@@ -99,6 +134,7 @@ test('register a new dashboard', () => {
   expect(items).toMatchInlineSnapshot(`
     Object {
       "@dashboard/01": Object {
+        "error": null,
         "initialized": false,
         "isSaving": false,
         "settings": null,
@@ -130,6 +166,7 @@ test('updates settings for dashboard', () => {
   expect(items).toMatchInlineSnapshot(`
     Object {
       "@dashboard/01": Object {
+        "error": null,
         "initialized": true,
         "isSaving": false,
         "settings": Object {

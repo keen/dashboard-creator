@@ -20,7 +20,7 @@ import { NotificationManager } from './modules/notifications';
 import createI18n from './i18n';
 import createSagaMiddleware from './createSagaMiddleware';
 import rootReducer, { history } from './rootReducer';
-import { dashboardCreatorRootSaga } from './rootSaga';
+import { createRootSaga } from './rootSaga';
 
 import { SHOW_TOAST_NOTIFICATION_EVENT } from './constants';
 
@@ -119,8 +119,9 @@ export class DashboardCreator {
       middleware: [sagaMiddleware, routerMiddleware(history)],
     });
 
-    sagaMiddleware.run(dashboardCreatorRootSaga);
+    const rootSaga = createRootSaga(this.editPrivileges);
 
+    sagaMiddleware.run(rootSaga);
     store.dispatch(appStart(this.themeSettings, this.editPrivileges));
 
     const projectSettings = {

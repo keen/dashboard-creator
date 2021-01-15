@@ -19,12 +19,12 @@ type Props = {
   /** Dashboard title */
   title?: string;
   /** Dashboard tags */
-  tags: string[];
+  tags?: string[];
   /** Back event handler */
   onBack?: () => void;
 };
 
-const DashboardDetails: FC<Props> = ({ title, tags, onBack }) => {
+const DashboardDetails: FC<Props> = ({ title, tags = [], onBack }) => {
   const { t } = useTranslation();
 
   return (

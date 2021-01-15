@@ -66,7 +66,7 @@ import {
   USE_QUERY_FOR_WIDGET,
 } from '../chartEditor';
 
-import { KEEN_ANALYSIS, I18N } from '../../constants';
+import { KEEN_ANALYSIS, TRANSLATIONS } from '../../constants';
 
 import { widget as widgetItem } from './fixtures';
 
@@ -184,7 +184,7 @@ describe('initializeChartWidget()', () => {
     });
 
     test('get i18n from context', (result) => {
-      expect(result).toEqual(getContext(I18N));
+      expect(result).toEqual(getContext(TRANSLATIONS));
 
       return i18n;
     });
