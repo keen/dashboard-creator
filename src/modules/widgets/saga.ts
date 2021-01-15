@@ -46,6 +46,7 @@ import {
   hideQueryUpdateConfirmation,
   CLOSE_EDITOR,
   EDITOR_MOUNTED,
+  EDITOR_UNMOUNTED,
   APPLY_CONFIGURATION,
   CONFIRM_SAVE_QUERY_UPDATE,
   HIDE_QUERY_UPDATE_CONFIRMATION,
@@ -102,7 +103,16 @@ export function* initializeChartWidget({
 
     yield put(setWidgetLoading(id, true));
 
-    const analysisResult = yield keenAnalysis.query(requestBody);
+    let analysisResult = yield keenAnalysis.query(requestBody);
+
+    /** Funnel analysis do not return query settings in response */
+    if (query !== 'string' && query.analysis_type === 'funnel') {
+      analysisResult = {
+        ...analysisResult,
+        query,
+      };
+    }
+
     const { query: querySettings } = analysisResult;
 
     const isDetachedQuery = !getAvailableWidgets(querySettings).includes(
@@ -226,8 +236,10 @@ export function* createQueryForWidget(widgetId: string) {
     );
 
     yield put(closeEditor());
-    yield put(initializeChartWidgetAction(widgetId));
+    yield take(EDITOR_UNMOUNTED);
     yield put(resetEditor());
+
+    yield put(initializeChartWidgetAction(widgetId));
 
     const dashboardId = yield select(getActiveDashboard);
     yield put(saveDashboard(dashboardId));
@@ -346,6 +358,7 @@ export function* editChartSavedQuery(widgetId: string) {
 
       const dashboardId = yield select(getActiveDashboard);
       yield put(saveDashboard(dashboardId));
+      yield put(resetEditor());
     } else if (action.type === CONFIRM_SAVE_QUERY_UPDATE) {
       try {
         const { query: queryName } = yield select(getWidgetSettings, widgetId);
@@ -384,6 +397,9 @@ export function* editChartSavedQuery(widgetId: string) {
     yield put(resetEditor());
   } else {
     yield put(closeEditor());
+    yield take(EDITOR_UNMOUNTED);
+    yield put(resetEditor());
+
     yield put(setWidgetState(widgetId, widgetState));
     const { query: queryName } = yield select(getWidgetSettings, widgetId);
 
@@ -401,7 +417,6 @@ export function* editChartSavedQuery(widgetId: string) {
 
     const dashboardId = yield select(getActiveDashboard);
     yield put(saveDashboard(dashboardId));
-    yield put(resetEditor());
   }
 }
 
@@ -448,12 +463,15 @@ export function* editChartWidget({
 
   if (chartSettings?.stepLabels && chartSettings.stepLabels.length) {
     const { stepLabels } = chartSettings;
-    yield pubsub.publish(SET_CHART_SETTINGS, { chartSettings: { stepLabels } });
+    yield pubsub.publish(SET_CHART_SETTINGS, {
+      chartSettings: { stepLabels },
+    });
   }
 
   const action = yield take([CLOSE_EDITOR, APPLY_CONFIGURATION]);
 
   if (action.type === CLOSE_EDITOR) {
+    yield take(EDITOR_UNMOUNTED);
     yield put(resetEditor());
   } else {
     const {
@@ -484,12 +502,13 @@ export function* editChartWidget({
       );
 
       yield put(initializeChartWidgetAction(id));
+
       yield put(closeEditor());
+      yield take(EDITOR_UNMOUNTED);
+      yield put(resetEditor());
 
       const dashboardId = yield select(getActiveDashboard);
       yield put(saveDashboard(dashboardId));
-
-      yield put(resetEditor());
     }
   }
 }

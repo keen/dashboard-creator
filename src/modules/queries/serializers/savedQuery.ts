@@ -1,4 +1,5 @@
 import { getAvailableWidgets } from '@keen.io/widget-picker';
+import camelCase from 'camelcase-keys';
 
 import {
   SavedQueryAPIResponse,
@@ -28,8 +29,12 @@ export const serializeSavedQuery = ({
 
     visualization = {
       type,
-      chartSettings,
-      widgetSettings,
+      chartSettings: camelCase(chartSettings, {
+        deep: true,
+      }),
+      widgetSettings: camelCase(widgetSettings, {
+        deep: true,
+      }),
     };
   } else {
     const [defaultWidget] = getAvailableWidgets(query);

@@ -1,4 +1,14 @@
 {
+  "confirm_query_change": {
+    "title": "You edited Saved Query",
+    "message": "What do you want to update?",
+    "connect_saved_query": "Connected Saved Query",
+    "connect_saved_query_message": "If Saved Query is used in other places, it will change there too. Some charts may not work properly due to applied changes.",
+    "create_ad_hoc_query": "Only this widget",
+    "create_ad_hoc_query_message": "The chart will be disconnected from Saved Query and will use  Ad-hoc Query from now.",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
   "widget_errors": {
     "detached_query_title": "Unable to present result in {{chart}} chart",
     "detached_query_message": "Please check if query structure has changed or select other visualization"
@@ -92,6 +102,10 @@
     "cancel": "Cancel",
     "run_query_placeholder": "Run Query to visualize your data",
     "run_query": "Run Query",
+    "save_query_edit": "Saved Query edited",
+    "save_query_edit_tooltip": "You edited the Saved Query connected to the chart. In the next step you will be able to overwrite that Save Query or save edits just for this widget instance.",
+    "save_query_restore_hint": "You can also",
+    "save_query_restore": "Restore Saved Query",
     "run_query_loading": "Loading",
     "widget_error": "The selected visualization cannot be used with current query settings. Run query and select visualization."
   },
@@ -263,5 +277,16 @@
     "new_tag": "(New tag)",
     "input_placeholder": "Insert item and confirm by Enter",
     "saving_dashboard": "Saving dashboard"
+  },
+  "absolute_time": {
+    "start_date": "From",
+    "end_date": "To"
+  },
+  "absolute_time_label": {
+    "separator": "to"
+  },
+  "custom_interval": {
+    "main_label": "Every",
+    "unit_placeholder": "Unit placeholder"
   }
 }

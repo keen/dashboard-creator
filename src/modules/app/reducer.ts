@@ -2,6 +2,7 @@ import { AppActions } from './actions';
 
 import {
   HIDE_QUERY_PICKER,
+  APP_START,
   SET_ACTIVE_DASHBOARD,
   SHOW_IMAGE_PICKER,
   HIDE_IMAGE_PICKER,
@@ -10,11 +11,11 @@ import {
 
 import { ReducerState } from './types';
 
-const initialState: ReducerState = {
+export const initialState: ReducerState = {
   view: 'management',
   activeDashboardId: null,
-  queryPicker: {
-    isVisible: false,
+  user: {
+    editPrivileges: false,
   },
   imagePicker: {
     isVisible: false,
@@ -22,10 +23,20 @@ const initialState: ReducerState = {
   visualizationEditor: {
     isVisible: false,
   },
+  queryPicker: {
+    isVisible: false,
+  },
 };
 
 const appReducer = (state: ReducerState = initialState, action: AppActions) => {
   switch (action.type) {
+    case APP_START:
+      return {
+        ...state,
+        user: {
+          editPrivileges: action.payload.user.editPrivileges,
+        },
+      };
     case HIDE_QUERY_PICKER:
       return {
         ...state,

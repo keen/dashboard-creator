@@ -18,6 +18,7 @@ import {
   showDashboardSettingsModal,
   hideDashboardSettingsModal,
   updateDashboardMeta,
+  setDashboardListOrder,
 } from './actions';
 
 import {
@@ -30,6 +31,7 @@ import {
   getDashboardSettingsModal,
   getTagsPool,
   getDashboardMetaSaving,
+  getDashbaordListOrder,
 } from './selectors';
 import { DashboardMetaData, DashboardModel } from './types';
 
@@ -53,6 +55,7 @@ export {
   showDashboardSettingsModal,
   hideDashboardSettingsModal,
   updateDashboardMeta,
+  setDashboardListOrder,
   getDashboardMeta,
   getDashboardSettings,
   getDeleteConfirmation,
@@ -62,6 +65,7 @@ export {
   getDashboardSettingsModal,
   getTagsPool,
   getDashboardMetaSaving,
+  getDashbaordListOrder,
   DashboardMetaData,
   DashboardModel,
 };

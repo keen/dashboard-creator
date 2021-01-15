@@ -11,12 +11,14 @@ import { appSaga } from './saga';
 
 import { HIDE_QUERY_PICKER, HIDE_IMAGE_PICKER } from './constants';
 import {
+  getUser,
   getQueryPicker,
   getActiveDashboard,
   getImagePicker,
 } from './selectors';
 
 export {
+  getUser,
   appReducer,
   appSaga,
   appStart,

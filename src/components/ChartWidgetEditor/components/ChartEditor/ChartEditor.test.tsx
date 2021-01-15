@@ -34,6 +34,7 @@ const render = (storeState: any = {}, overProps: any = {}) => {
 
   const appContext = {
     notificationPubSub: new PubSub(),
+    keenApiUrl: '@keen-api-url',
     modalContainer: '#modalContainer',
     project: {
       id: '@project-id',
@@ -155,6 +156,73 @@ test('calls "onClose" event handler', () => {
   fireEvent.click(cancelButton);
 
   expect(props.onClose).toHaveBeenCalled();
+
+  jest.clearAllTimers();
+});
+
+test('shows saved query updated message', () => {
+  const storeState = {
+    chartEditor: {
+      ...chartEditorState,
+      hasQueryChanged: true,
+      isSavedQuery: true,
+    },
+  };
+  const {
+    wrapper: { getByText },
+  } = render(storeState);
+
+  expect(getByText('chart_widget_editor.save_query_edit')).toBeInTheDocument();
+
+  jest.clearAllTimers();
+});
+
+test('allows user to restore saved query settings', async () => {
+  const storeState = {
+    chartEditor: {
+      ...chartEditorState,
+      hasQueryChanged: true,
+      isSavedQuery: true,
+    },
+  };
+  const {
+    store,
+    wrapper: { getByTestId, getByText },
+  } = render(storeState);
+
+  const element = getByTestId('edit-tooltip-icon');
+  fireEvent.mouseEnter(element);
+
+  await waitFor(() => getByText('chart_widget_editor.save_query_restore'));
+  store.clearActions();
+
+  const anchor = getByText('chart_widget_editor.save_query_restore');
+  fireEvent.click(anchor);
+
+  expect(store.getActions()).toMatchInlineSnapshot(`
+    Array [
+      Object {
+        "payload": undefined,
+        "type": "@chart-editor/RESTORE_SAVED_QUERY",
+      },
+    ]
+  `);
+
+  jest.clearAllTimers();
+});
+
+test('shows placeholder with run query button', () => {
+  const storeState = {
+    chartEditor: {
+      ...chartEditorState,
+      analysisResult: null,
+    },
+  };
+  const {
+    wrapper: { getByText },
+  } = render(storeState);
+
+  expect(getByText('chart_widget_editor.run_query')).toBeInTheDocument();
 
   jest.clearAllTimers();
 });
