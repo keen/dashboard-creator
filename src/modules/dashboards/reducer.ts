@@ -247,13 +247,17 @@ const dashboardsReducer = (
         },
       };
     case FETCH_DASHBOARDS_LIST_SUCCESS:
+      console.log(state.dashboardListOrder);
       return {
         ...state,
         metadata: {
           ...state.metadata,
           isInitiallyLoaded: true,
           error: null,
-          data: action.payload.dashboards,
+          data: sortDashboards(
+            action.payload.dashboards,
+            state.dashboardListOrder
+          ),
         },
       };
     case SET_TAGS_POOL:
