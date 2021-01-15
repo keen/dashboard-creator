@@ -253,7 +253,10 @@ const dashboardsReducer = (
           ...state.metadata,
           isInitiallyLoaded: true,
           error: null,
-          data: action.payload.dashboards,
+          data: sortDashboards(
+            action.payload.dashboards,
+            state.dashboardListOrder
+          ),
         },
       };
     case SET_TAGS_POOL:
