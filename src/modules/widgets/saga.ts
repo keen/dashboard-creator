@@ -503,7 +503,7 @@ export function* editImageWidget({
   const widgetId = getWidget(state, id).widget.id;
 
   yield put(showImagePicker());
-  const action = yield take([SAVE_IMAGE]);
+  const action = yield take([SAVE_IMAGE, HIDE_IMAGE_PICKER]);
 
   if (action.type === SAVE_IMAGE) {
     yield put(setImageWidget(widgetId, action.payload.link));
