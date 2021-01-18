@@ -41,7 +41,11 @@ export type ReducerState = {
   };
   dashboardSettingsModal: {
     isVisible: boolean;
-    dashboardId: string;
+    dashboardId: string | null;
+  };
+  dashboardShareModal: {
+    isVisible: boolean;
+    dashboardId: string | null;
   };
   tagsPool: string[];
   items: Record<string, DashboardItem>;

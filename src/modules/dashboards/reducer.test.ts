@@ -10,6 +10,8 @@ import {
   fetchDashboardListSuccess,
   showDashboardSettingsModal,
   hideDashboardSettingsModal,
+  showDashboardShareModal,
+  hideDashboardShareModal,
   setTagsPool,
   saveDashboardMeta,
   saveDashboardMetaSuccess,
@@ -286,6 +288,44 @@ test('closes dashboard settings', () => {
   const { dashboardSettingsModal } = dashboardsReducer(state, action);
 
   expect(dashboardSettingsModal).toMatchInlineSnapshot(`
+    Object {
+      "dashboardId": null,
+      "isVisible": false,
+    }
+  `);
+});
+
+test('opens dashboard share modal', () => {
+  const state = {
+    ...initialState,
+    metadata: {
+      ...initialState.metadata,
+      data: dashboardsMeta,
+    },
+  };
+  const action = showDashboardShareModal('@dashboard/01');
+  const { dashboardShareModal } = dashboardsReducer(state, action);
+
+  expect(dashboardShareModal).toMatchInlineSnapshot(`
+    Object {
+      "dashboardId": "@dashboard/01",
+      "isVisible": true,
+    }
+  `);
+});
+
+test('closes dashboard share modal', () => {
+  const state = {
+    ...initialState,
+    metadata: {
+      ...initialState.metadata,
+      data: dashboardsMeta,
+    },
+  };
+  const action = hideDashboardShareModal();
+  const { dashboardShareModal } = dashboardsReducer(state, action);
+
+  expect(dashboardShareModal).toMatchInlineSnapshot(`
     Object {
       "dashboardId": null,
       "isVisible": false,

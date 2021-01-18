@@ -22,6 +22,8 @@ import {
   SHOW_DASHBOARD_SETTINGS_MODAL,
   HIDE_DASHBOARD_SETTINGS_MODAL,
   SET_TAGS_POOL,
+  SHOW_DASHBOARD_SHARE_MODAL,
+  HIDE_DASHBOARD_SHARE_MODAL,
 } from './constants';
 
 import { ReducerState } from './types';
@@ -38,6 +40,10 @@ export const initialState: ReducerState = {
     dashboardId: null,
   },
   dashboardSettingsModal: {
+    isVisible: false,
+    dashboardId: null,
+  },
+  dashboardShareModal: {
     isVisible: false,
     dashboardId: null,
   },
@@ -99,6 +105,24 @@ const dashboardsReducer = (
         ...state,
         dashboardSettingsModal: {
           ...state.dashboardSettingsModal,
+          dashboardId: null,
+          isVisible: false,
+        },
+      };
+    case SHOW_DASHBOARD_SHARE_MODAL:
+      return {
+        ...state,
+        dashboardShareModal: {
+          ...state.dashboardShareModal,
+          dashboardId: action.payload.dashboardId,
+          isVisible: true,
+        },
+      };
+    case HIDE_DASHBOARD_SHARE_MODAL:
+      return {
+        ...state,
+        dashboardShareModal: {
+          ...state.dashboardShareModal,
           dashboardId: null,
           isVisible: false,
         },

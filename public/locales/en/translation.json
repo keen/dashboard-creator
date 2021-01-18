@@ -269,6 +269,21 @@
     "input_placeholder": "Insert item and confirm by Enter",
     "saving_dashboard": "Saving dashboard"
   },
+  "dashboard_share": {
+    "modal_title": "Share dashboard",
+    "close": "Close",
+    "make_public": "Make dashboard public",
+    "make_public_tooltip": "The public share link allows people to view the dashboard without having access to Keen.",
+    "copy": "Copy",
+    "public_dashboard_link": "Public dashboard link",
+    "regenerate_link": "Regenerate link",
+    "regenerate_link_tooltip": "The Access Key will be regenerated and the new link wil be created. The old link will no longer work.",
+    "message": "Anyone with this link can view this dashboard and all connected data.",
+    "access_key_error": "Access Key for this dashboard do not exist any more. Make it public again.",
+    "embed_placeholder": "Only public dashboard is embeddable",
+    "copy_code": "Copy code",
+    "download_code": "Download HTML file"
+  },
   "absolute_time": {
     "start_date": "From",
     "end_date": "To"

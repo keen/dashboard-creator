@@ -32,6 +32,8 @@ import {
   SHOW_DASHBOARD_SETTINGS_MODAL,
   HIDE_DASHBOARD_SETTINGS_MODAL,
   SET_TAGS_POOL,
+  SHOW_DASHBOARD_SHARE_MODAL,
+  HIDE_DASHBOARD_SHARE_MODAL,
 } from './constants';
 
 export const fetchDashboardList = createAction(FETCH_DASHBOARDS_LIST);
@@ -254,6 +256,15 @@ export const setTagsPool = createAction(
   })
 );
 
+export const showDashboardShareModal = createAction(
+  SHOW_DASHBOARD_SHARE_MODAL,
+  (dashboardId: string) => ({
+    payload: { dashboardId },
+  })
+);
+
+export const hideDashboardShareModal = createAction(HIDE_DASHBOARD_SHARE_MODAL);
+
 export type DashboardsActions =
   | ReturnType<typeof fetchDashboardList>
   | ReturnType<typeof fetchDashboardListSuccess>
@@ -283,4 +294,6 @@ export type DashboardsActions =
   | ReturnType<typeof setTagsPool>
   | ReturnType<typeof saveDashboardMeta>
   | ReturnType<typeof saveDashboardMetaSuccess>
-  | ReturnType<typeof saveDashboardMetaError>;
+  | ReturnType<typeof saveDashboardMetaError>
+  | ReturnType<typeof showDashboardShareModal>
+  | ReturnType<typeof hideDashboardShareModal>;

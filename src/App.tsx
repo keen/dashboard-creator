@@ -11,6 +11,7 @@ import { DashboardMetaData, saveDashboardMeta } from './modules/dashboards';
 import PageLoader from './components/PageLoader';
 import ToastNotifications from './components/ToastNotifications';
 import DashboardSettingsModal from './components/DashboardSettingsModal';
+import DashboardShareModal from './components/DashboardShareModal';
 
 import { ROUTES } from './constants';
 
@@ -57,6 +58,11 @@ const App: FC<Props> = () => {
       <DashboardSettingsModal
         onSaveDashboard={(dashboardId: string, metadata: DashboardMetaData) =>
           dispatch(saveDashboardMeta(dashboardId, metadata))
+        }
+      />
+      <DashboardShareModal
+        onShareDashboard={(dashboardId: string) =>
+          console.log('share dashboard ', dashboardId)
         }
       />
     </Container>

@@ -17,6 +17,8 @@ import {
   confirmDashboardDelete,
   showDashboardSettingsModal,
   hideDashboardSettingsModal,
+  showDashboardShareModal,
+  hideDashboardShareModal,
   updateDashboardMeta,
 } from './actions';
 
@@ -28,6 +30,7 @@ import {
   getDashboard,
   getDashboardMeta,
   getDashboardSettingsModal,
+  getDashboardShareModal,
   getTagsPool,
   getDashboardMetaSaving,
 } from './selectors';
@@ -52,6 +55,8 @@ export {
   fetchDashboardList,
   showDashboardSettingsModal,
   hideDashboardSettingsModal,
+  showDashboardShareModal,
+  hideDashboardShareModal,
   updateDashboardMeta,
   getDashboardMeta,
   getDashboardSettings,
@@ -60,6 +65,7 @@ export {
   getDashboardsMetadata,
   getDashboard,
   getDashboardSettingsModal,
+  getDashboardShareModal,
   getTagsPool,
   getDashboardMetaSaving,
   DashboardMetaData,

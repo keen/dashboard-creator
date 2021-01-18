@@ -23,6 +23,9 @@ export const getDeleteConfirmation = ({ dashboards }: RootState) =>
 export const getDashboardSettingsModal = ({ dashboards }: RootState) =>
   dashboards.dashboardSettingsModal;
 
+export const getDashboardShareModal = ({ dashboards }: RootState) =>
+  dashboards.dashboardShareModal;
+
 export const getTagsPool = ({ dashboards }: RootState) => dashboards.tagsPool;
 
 export const getDashboardMetaSaving = ({ dashboards }: RootState) =>
