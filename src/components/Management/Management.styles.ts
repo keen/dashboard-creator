@@ -3,6 +3,7 @@ import { colors } from '@keen.io/colors';
 
 export const Content = styled.div`
   position: relative;
+  padding-bottom: 30px;
 `;
 
 export const Navigation = styled.div`

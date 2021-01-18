@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { push } from 'connected-react-router';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Navigation } from './Viewer.styles';
+import { Navigation, Content } from './Viewer.styles';
 
 import {
   getDashboard,
@@ -13,6 +13,7 @@ import {
 import { setActiveDashboard, getUser } from '../../modules/app';
 
 import Grid from '../Grid';
+import GridLoader from '../GridLoader';
 import ViewerNavigation from '../ViewerNavigation';
 
 import { ROUTES } from '../../constants';
@@ -63,13 +64,15 @@ const Viewer: FC<Props> = ({ dashboardId }) => {
           editPrivileges={editPrivileges}
         />
       </Navigation>
-      {isInitialized ? (
-        <>
-          <Grid isEditorMode={false} widgetsId={widgetsId} />
-        </>
-      ) : (
-        <div>Loading</div>
-      )}
+      <Content>
+        {isInitialized ? (
+          <>
+            <Grid isEditorMode={false} widgetsId={widgetsId} />
+          </>
+        ) : (
+          <GridLoader />
+        )}
+      </Content>
     </>
   );
 };
