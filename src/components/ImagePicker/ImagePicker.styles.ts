@@ -6,6 +6,10 @@ export const InsertImage = styled.div`
   border-bottom: solid 1px ${colors.white[300]};
 `;
 
+export const Notification = styled.div`
+  margin-bottom: 15px;
+`;
+
 export const Buttons = styled.div`
   flex-shrink: 0;
   display: flex;

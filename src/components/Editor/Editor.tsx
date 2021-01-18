@@ -1,11 +1,10 @@
 import React, { FC, useState, useCallback, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useTranslation } from 'react-i18next';
 import { Layout as LayoutItem } from 'react-grid-layout';
 import { push } from 'connected-react-router';
 import { PubSub } from '@keen.io/pubsub';
 
-import { EditorContainer } from './Editor.styles';
+import { Content, EditorContainer } from './Editor.styles';
 
 import {
   addWidgetToDashboard,
@@ -35,8 +34,10 @@ import ConfirmQueryChange from '../ConfirmQueryChange';
 import DashboardDeleteConfirmation from '../DashboardDeleteConfirmation';
 import Toolbar from '../Toolbar';
 import EditorBar from '../EditorBar';
+import GridLoader from '../GridLoader';
 import Grid from '../Grid';
 
+import { getDroppingItemSize } from '../../utils';
 import { ROUTES, RESIZE_WIDGET_EVENT } from '../../constants';
 
 import { RootState } from '../../rootReducer';
@@ -47,7 +48,6 @@ type Props = {
 };
 
 const Editor: FC<Props> = ({ dashboardId }) => {
-  const { t } = useTranslation();
   const dispatch = useDispatch();
 
   const editorPubSub = useRef(new PubSub());
@@ -128,32 +128,52 @@ const Editor: FC<Props> = ({ dashboardId }) => {
           lastSaveTime={lastModificationDate}
         >
           <Toolbar
+            onAddWidget={(widgetType) => {
+              const widgetId = createWidgetId();
+              const { w, h, minH, minW } = getDroppingItemSize(widgetType);
+
+              dispatch(
+                createWidget(widgetId, widgetType, {
+                  x: 0,
+                  y: Infinity,
+                  w,
+                  h,
+                  minW,
+                  minH,
+                })
+              );
+              dispatch(addWidgetToDashboard(dashboardId, widgetId));
+            }}
             onWidgetDrag={(widgetType) => setDroppableWidget(widgetType)}
           />
         </EditorBar>
       </EditorContainer>
-      {isInitialized ? (
-        <Grid
-          isEditorMode={true}
-          widgetsId={widgetsId}
-          onWidgetDrop={addWidgetHandler}
-          onWidgetDrag={(gridPositions) => {
-            dispatch(updateWidgetsPosition(gridPositions));
-            dispatch(saveDashboard(dashboardId));
-          }}
-          onWidgetResize={(gridPositions, widgetId) => {
-            dispatch(updateWidgetsPosition(gridPositions));
-            dispatch(saveDashboard(dashboardId));
-            editorPubSub.current.publish(RESIZE_WIDGET_EVENT, { id: widgetId });
-          }}
-          onRemoveWidget={(widgetId) => {
-            dispatch(removeWidgetFromDashboard(dashboardId, widgetId));
-            dispatch(saveDashboard(dashboardId));
-          }}
-        />
-      ) : (
-        <div>{t('dashboard_editor.loading')}</div>
-      )}
+      <Content>
+        {isInitialized ? (
+          <Grid
+            isEditorMode={true}
+            widgetsId={widgetsId}
+            onWidgetDrop={addWidgetHandler}
+            onWidgetDrag={(gridPositions) => {
+              dispatch(updateWidgetsPosition(gridPositions));
+              dispatch(saveDashboard(dashboardId));
+            }}
+            onWidgetResize={(gridPositions, widgetId) => {
+              dispatch(updateWidgetsPosition(gridPositions));
+              dispatch(saveDashboard(dashboardId));
+              editorPubSub.current.publish(RESIZE_WIDGET_EVENT, {
+                id: widgetId,
+              });
+            }}
+            onRemoveWidget={(widgetId) => {
+              dispatch(removeWidgetFromDashboard(dashboardId, widgetId));
+              dispatch(saveDashboard(dashboardId));
+            }}
+          />
+        ) : (
+          <GridLoader />
+        )}
+      </Content>
       <ChartWidgetEditor isOpen={chartWidgetEditorOpen} />
       <ConfirmQueryChange isOpen={changeQueryConfirmation} />
       <DashboardDeleteConfirmation />

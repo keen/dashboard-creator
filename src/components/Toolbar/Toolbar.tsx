@@ -15,11 +15,13 @@ import { calculateGhostSize } from './utils';
 import { WidgetType } from '../../types';
 
 type Props = {
+  /** Add widget event handler */
+  onAddWidget: (widgetType: WidgetType) => void;
   /** Widget drag event handler */
-  onWidgetDrag: (widgetType: string) => void;
+  onWidgetDrag: (widgetType: WidgetType) => void;
 };
 
-const Toolbar: FC<Props> = ({ onWidgetDrag }) => {
+const Toolbar: FC<Props> = ({ onWidgetDrag, onAddWidget }) => {
   const { t } = useTranslation();
   const dragGhostElement = useRef<HTMLDivElement>(null);
   const dragEndHandler = useCallback(() => {
@@ -71,42 +73,20 @@ const Toolbar: FC<Props> = ({ onWidgetDrag }) => {
       <DraggableItem
         type="visualization"
         icon="bar-widget-vertical"
+        onClick={() => onAddWidget('visualization')}
         text={t('widget_item.chart')}
         dragStartHandler={dragStartHandler}
         dragEndHandler={dragEndHandler}
         key="chart"
       />
       <DraggableItem
-        type="text"
-        icon="text"
-        text={t('widget_item.text')}
-        dragStartHandler={dragStartHandler}
-        dragEndHandler={dragEndHandler}
-        key="text"
-      />
-      <DraggableItem
         type="image"
         icon="image"
+        onClick={() => onAddWidget('image')}
         text={t('widget_item.image')}
         dragStartHandler={dragStartHandler}
         dragEndHandler={dragEndHandler}
         key="image"
-      />
-      <DraggableItem
-        type="visualization"
-        icon="funnel-widget-vertical"
-        text={t('widget_item.filter')}
-        dragStartHandler={dragStartHandler}
-        dragEndHandler={dragEndHandler}
-        key="filter"
-      />
-      <DraggableItem
-        type="visualization"
-        icon="date-picker"
-        text={t('widget_item.date_picker')}
-        dragStartHandler={dragStartHandler}
-        dragEndHandler={dragEndHandler}
-        key="date_picker"
       />
     </Container>
   );
