@@ -1,6 +1,10 @@
 import { DashboardsActions } from './actions';
 
-import { createDashboardMeta, reduceWidgetsCount } from './utils';
+import {
+  createDashboardMeta,
+  reduceWidgetsCount,
+  sortDashboards,
+} from './utils';
 
 import {
   FETCH_DASHBOARDS_LIST_SUCCESS,
@@ -24,6 +28,7 @@ import {
   SET_TAGS_POOL,
   SHOW_DASHBOARD_SHARE_MODAL,
   HIDE_DASHBOARD_SHARE_MODAL,
+  SET_DASHBOARD_LIST_ORDER,
 } from './constants';
 
 import { ReducerState } from './types';
@@ -49,6 +54,7 @@ export const initialState: ReducerState = {
   },
   tagsPool: [],
   items: {},
+  dashboardListOrder: 'recent',
 };
 
 const dashboardsReducer = (
@@ -271,7 +277,10 @@ const dashboardsReducer = (
           ...state.metadata,
           isInitiallyLoaded: true,
           error: null,
-          data: action.payload.dashboards,
+          data: sortDashboards(
+            action.payload.dashboards,
+            state.dashboardListOrder
+          ),
         },
       };
     case SET_TAGS_POOL:
@@ -295,6 +304,15 @@ const dashboardsReducer = (
           ...state.metadata,
           isSavingMetaData: false,
         },
+      };
+    case SET_DASHBOARD_LIST_ORDER:
+      return {
+        ...state,
+        metadata: {
+          ...state.metadata,
+          data: sortDashboards(state.metadata.data, action.payload.order),
+        },
+        dashboardListOrder: action.payload.order,
       };
     default:
       return state;

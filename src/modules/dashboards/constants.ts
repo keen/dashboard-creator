@@ -40,3 +40,7 @@ export const SHOW_DASHBOARD_SHARE_MODAL =
   '@dashboards/SHOW_DASHBOARD_SHARE_MODAL';
 export const HIDE_DASHBOARD_SHARE_MODAL =
   '@dashboards/HIDE_DASHBOARD_SHARE_MODAL';
+export const SET_DASHBOARD_LIST_ORDER = '@dashboards/SET_DASHBOARD_LIST_ORDER';
+
+export const DASHBOARD_LIST_ORDER_KEY =
+  '@keen-dashboard-creator/dashboard-list-order';

@@ -21,4 +21,4 @@ export type TranslationsSettings = {
   };
 };
 
-export type WidgetType = 'visualization' | 'text';
+export type WidgetType = 'visualization' | 'text' | 'image';

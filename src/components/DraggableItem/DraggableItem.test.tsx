@@ -6,6 +6,7 @@ const render = (overProps: any = {}) => {
   const props = {
     text: 'Draggable item',
     type: 'text',
+    onClick: jest.fn(),
     dragStartHandler: jest.fn(),
     dragEndHandler: jest.fn(),
     ...overProps,
@@ -19,30 +20,36 @@ const render = (overProps: any = {}) => {
   };
 };
 
-describe('DraggableItem', () => {
-  describe('correct type & icon type', () => {
-    test('renders the component', () => {
-      const {
-        wrapper: { getByText },
-      } = render({ icon: 'arrow-up', text: 'Arrow Up' });
+test('renders text based on property', () => {
+  const {
+    wrapper: { getByText },
+  } = render({ icon: 'arrow-up', text: 'Arrow Up' });
 
-      expect(getByText('Arrow Up')).toBeInTheDocument();
-    });
-  });
+  expect(getByText('Arrow Up')).toBeInTheDocument();
+});
 
-  describe('drag events function', () => {
-    test('it triggers correctly', () => {
-      const {
-        wrapper: { getByText },
-        props,
-      } = render();
+test('calls "onClick" event handler ', () => {
+  const {
+    wrapper: { getByText },
+    props,
+  } = render();
 
-      const item = getByText('Draggable item');
-      fireEvent.dragStart(item);
-      expect(props.dragStartHandler).toHaveBeenCalled();
+  const item = getByText(props.text);
+  fireEvent.click(item);
 
-      fireEvent.dragEnd(item);
-      expect(props.dragEndHandler).toHaveBeenCalled();
-    });
-  });
+  expect(props.onClick).toHaveBeenCalled();
+});
+
+test('handles drag events correctly', () => {
+  const {
+    wrapper: { getByText },
+    props,
+  } = render();
+
+  const item = getByText(props.text);
+  fireEvent.dragStart(item);
+  expect(props.dragStartHandler).toHaveBeenCalled();
+
+  fireEvent.dragEnd(item);
+  expect(props.dragEndHandler).toHaveBeenCalled();
 });

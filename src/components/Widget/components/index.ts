@@ -1,3 +1,4 @@
 import ChartManagement from './ChartManagement';
+import ImageManagement from './ImageManagement';
 
-export { ChartManagement };
+export { ChartManagement, ImageManagement };

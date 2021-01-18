@@ -13,6 +13,8 @@ import {
   INITIALIZE_WIDGET,
   INITIALIZE_CHART_WIDGET,
   EDIT_CHART_WIDGET,
+  EDIT_IMAGE_WIDGET,
+  SET_IMAGE_WIDGET,
   SET_WIDGET_LOADING,
   SET_WIDGET_INITIALIZATION,
   SET_WIDGET_STATE,
@@ -77,6 +79,23 @@ export const editChartWidget = createAction(
   EDIT_CHART_WIDGET,
   (id: string, usePersistedChartEditorState = false) => ({
     payload: { id, usePersistedChartEditorState },
+  })
+);
+
+export const editImageWidget = createAction(
+  EDIT_IMAGE_WIDGET,
+  (id: string) => ({
+    payload: { id },
+  })
+);
+
+export const setImageWidget = createAction(
+  SET_IMAGE_WIDGET,
+  (id: string, link: string) => ({
+    payload: {
+      id,
+      link,
+    },
   })
 );
 
@@ -145,5 +164,6 @@ export type WidgetsActions =
   | ReturnType<typeof setWidgetLoading>
   | ReturnType<typeof setWidgetState>
   | ReturnType<typeof setWidgetInitialization>
+  | ReturnType<typeof setImageWidget>
   | ReturnType<typeof finishChartWidgetConfiguration>
   | ReturnType<typeof savedQueryUpdated>;

@@ -16,6 +16,7 @@ import {
   saveDashboardMeta,
   saveDashboardMetaSuccess,
   saveDashboardMetaError,
+  setDashboardListOrder,
 } from './actions';
 
 import { dashboardsMeta } from './fixtures';
@@ -389,4 +390,11 @@ test('return state for saving dashboard metadata', () => {
       "isSavingMetadata": false,
     }
   `);
+});
+
+test('set order for dashboard list', () => {
+  const action = setDashboardListOrder('az');
+  const { dashboardListOrder } = dashboardsReducer(initialState, action);
+
+  expect(dashboardListOrder).toBe('az');
 });

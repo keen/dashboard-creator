@@ -36,7 +36,14 @@ export interface TextWidget extends BaseWidget {
   settings: {};
 }
 
-export type Widget = ChartWidget | TextWidget;
+export interface ImageWidget extends BaseWidget {
+  type: 'image';
+  settings: {
+    link: string;
+  };
+}
+
+export type Widget = ChartWidget | TextWidget | ImageWidget;
 
 export type WidgetError = {
   title?: string;
