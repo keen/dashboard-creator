@@ -27,6 +27,7 @@ import {
   setImageWidget,
   setTextWidget,
   savedQueryUpdated,
+  saveClonedWidget,
 } from './actions';
 
 import { getWidgetSettings, getWidget } from './selectors';
@@ -35,7 +36,7 @@ import {
   removeWidgetFromDashboard,
   saveDashboard,
   getDashboardSettings,
-  ADD_WIDGET_TO_DASHBOARD,
+  addWidgetToDashboard,
 } from '../dashboards';
 import {
   openEditor,
@@ -656,20 +657,25 @@ export function* cloneWidget({
   const { widgetId } = payload;
   const widgetSettings = yield select(getWidgetSettings, widgetId);
   const clonedWidgetId = createWidgetId();
-  console.log({ widgetId, clonedWidgetId, widgetSettings });
+  const state = yield select();
+  const widgetItem = getWidget(state, widgetId);
+
+  yield put(
+    saveClonedWidget(clonedWidgetId, widgetSettings, widgetItem as WidgetItem)
+  );
+  const dashboardId = yield select(getActiveDashboard);
+  yield put(addWidgetToDashboard(dashboardId, clonedWidgetId));
+  yield put(saveDashboard(dashboardId));
 }
 
 export function* widgetsSaga() {
   yield takeLatest(SAVED_QUERY_UPDATED, reinitializeWidgets);
   yield takeLatest(CREATE_WIDGET, createWidget);
   yield takeLatest(EDIT_CHART_WIDGET, editChartWidget);
-<<<<<<< HEAD
   yield takeLatest(EDIT_IMAGE_WIDGET, editImageWidget);
   yield takeLatest(EDIT_TEXT_WIDGET, editTextWidget);
   yield takeLatest(EDIT_INLINE_TEXT_WIDGET, editInlineTextWidget);
-=======
   yield takeLatest(CLONE_WIDGET, cloneWidget);
->>>>>>> c455978... feat: 🎸 clone widget
   yield takeEvery(INITIALIZE_WIDGET, initializeWidget);
   yield takeEvery(INITIALIZE_CHART_WIDGET, initializeChartWidget);
 }

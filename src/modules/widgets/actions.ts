@@ -19,6 +19,7 @@ import {
   SET_TEXT_WIDGET,
   EDIT_TEXT_WIDGET,
   EDIT_INLINE_TEXT_WIDGET,
+  SAVE_CLONED_WIDGET,
   SET_WIDGET_LOADING,
   SET_WIDGET_INITIALIZATION,
   SET_WIDGET_STATE,
@@ -120,6 +121,17 @@ export const setTextWidget = createAction(
   })
 );
 
+export const saveClonedWidget = createAction(
+  SAVE_CLONED_WIDGET,
+  (id: string, widgetSettings: Widget, widgetItem: WidgetItem) => ({
+    payload: {
+      id,
+      widgetSettings,
+      widgetItem,
+    },
+  })
+);
+
 export const editInlineTextWidget = createAction(
   EDIT_INLINE_TEXT_WIDGET,
   (id: string, content: RawDraftContentState) => ({
@@ -213,4 +225,5 @@ export type WidgetsActions =
   | ReturnType<typeof setImageWidget>
   | ReturnType<typeof finishChartWidgetConfiguration>
   | ReturnType<typeof savedQueryUpdated>
-  | ReturnType<typeof cloneWidget>;
+  | ReturnType<typeof cloneWidget>
+  | ReturnType<typeof saveClonedWidget>;

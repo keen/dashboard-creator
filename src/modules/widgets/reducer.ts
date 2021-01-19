@@ -15,6 +15,7 @@ import {
   SET_WIDGET_LOADING,
   SET_WIDGET_STATE,
   CREATE_WIDGET,
+  SAVE_CLONED_WIDGET,
 } from './constants';
 
 import { ReducerState } from './types';
@@ -139,6 +140,24 @@ const widgetsReducer = (
               ...state.items[action.payload.id].widget,
               settings: {
                 link: action.payload.link,
+              },
+            },
+          },
+        },
+      };
+    case SAVE_CLONED_WIDGET:
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          [action.payload.id]: {
+            ...action.payload.widgetItem,
+            widget: {
+              ...action.payload.widgetSettings,
+              id: action.payload.id,
+              position: {
+                ...action.payload.widgetSettings.position,
+                y: 999_999_999,
               },
             },
           },
