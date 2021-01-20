@@ -36,7 +36,7 @@ import {
 import { NOTIFICATION_MANAGER, BLOB_API, ROUTES } from '../../constants';
 
 import rootReducer from '../../rootReducer';
-import { getActiveDashboard, setActiveDashboard } from '../app';
+import { setActiveDashboard } from '../app';
 
 describe('removeWidgetFromDashboard()', () => {
   const action = removeWidgetFromDashboardAction('@dashboard/01', '@widget/01');
@@ -190,8 +190,7 @@ describe('deleteDashboard()', () => {
 });
 
 describe('cloneDashboard', () => {
-  const mockDate = new Date(1611151694059);
-  jest.spyOn(global, 'Date').mockImplementation(() => mockDate);
+  jest.spyOn(global, 'Date').mockImplementation(() => '1611151694059');
 
   const dashbboardId = '@dashboard/01';
   const action = cloneDashboardAction(dashbboardId);
@@ -276,10 +275,8 @@ describe('cloneDashboard', () => {
       );
     });
 
-    test('prepare state to get activeDashboardId and check if it is null', (result) => {
+    test('prepare state activeDashboardId', (result) => {
       expect(result).toEqual(select());
-      const activeDashboard = getActiveDashboard(state);
-      expect(activeDashboard).toBeNull();
 
       return state;
     });
@@ -340,10 +337,8 @@ describe('cloneDashboard', () => {
       );
     });
 
-    test('prepare state to get activeDashboardId and check if it is not null', (result) => {
+    test('prepare state activeDashboardId', (result) => {
       expect(result).toEqual(select());
-      const activeDashboard = getActiveDashboard(state);
-      expect(activeDashboard).toEqual('@dashboard/01');
 
       return state;
     });
