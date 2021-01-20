@@ -29,7 +29,8 @@
     "dashboard_delete_success": "Dashboard removed",
     "dashboard_delete_error": "We were not able to delete this dashboard. Try again later.",
     "dashboard_meta_success": "Dashboard saved",
-    "dashboard_cloned": "Dashboard cloned"
+    "dashboard_cloned": "Dashboard cloned",
+    "dashboard_cloned_error": "We were not able to clone this dashboard. Try again later."
   },
   "actions_menu": {
     "delete_dashboard": "Delete",

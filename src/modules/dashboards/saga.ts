@@ -410,7 +410,7 @@ export function* cloneDashboard({
   } catch (err) {
     yield notificationManager.showNotification({
       type: 'error',
-      message: err,
+      message: 'notifications.dashboard_cloned_error',
       showDismissButton: true,
       autoDismiss: false,
     });

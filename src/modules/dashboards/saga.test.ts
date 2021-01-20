@@ -366,4 +366,50 @@ describe('cloneDashboard', () => {
       expect(result).toEqual(put(push(ROUTES.EDITOR)));
     });
   });
+
+  describe('Scenario 3: User fail to clone dashboard', () => {
+    const test = sagaHelper(cloneDashboard(action));
+
+    test('gets NotificationManager from context', (result) => {
+      expect(result).toEqual(getContext(NOTIFICATION_MANAGER));
+
+      return notificationManagerMock;
+    });
+
+    test('gets BlobAPI from context', (result) => {
+      expect(result).toEqual(getContext(BLOB_API));
+
+      return blobApiMock;
+    });
+
+    test('calls getDashboardById with dashboard identifer', () => {
+      expect(blobApiMock.getDashboardById).toHaveBeenCalledWith(dashbboardId);
+
+      return model;
+    });
+
+    test('calls getDashboardMetadataById with dashboard identifer', () => {
+      expect(blobApiMock.getDashboardMetadataById).toHaveBeenCalledWith(
+        dashbboardId
+      );
+
+      return metaData;
+    });
+
+    test('calls saveDashboard', () => {
+      expect(blobApiMock.saveDashboard).toHaveBeenCalled();
+
+      return new Error();
+    });
+
+    test('calls show notification method', () => {
+      expect(notificationManagerMock.showNotification).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'error',
+          showDismissButton: true,
+          autoDismiss: false,
+        })
+      );
+    });
+  });
 });
