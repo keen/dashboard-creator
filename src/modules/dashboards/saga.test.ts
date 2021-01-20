@@ -190,7 +190,8 @@ describe('deleteDashboard()', () => {
 });
 
 describe('cloneDashboard', () => {
-  jest.spyOn(global, 'Date').mockImplementation(() => '1611151694059');
+  const mockDate = (new Date(0) as unknown) as string;
+  jest.spyOn(global, 'Date').mockImplementation(() => mockDate);
 
   const dashbboardId = '@dashboard/01';
   const action = cloneDashboardAction(dashbboardId);
@@ -206,7 +207,7 @@ describe('cloneDashboard', () => {
     widgets: 0,
     queries: 0,
     tags: [],
-    lastModificationDate: +new Date(),
+    lastModificationDate: 0,
     isPublic: false,
   };
 
@@ -228,6 +229,12 @@ describe('cloneDashboard', () => {
       },
     };
     const test = sagaHelper(cloneDashboard(action));
+
+    test('gets NotificationManager from context', (result) => {
+      expect(result).toEqual(getContext(NOTIFICATION_MANAGER));
+
+      return notificationManagerMock;
+    });
 
     test('gets BlobAPI from context', (result) => {
       expect(result).toEqual(getContext(BLOB_API));
@@ -257,12 +264,6 @@ describe('cloneDashboard', () => {
       expect(result).toEqual(
         put(addClonedDashboard({ ...metaData, title: 'Clone' }))
       );
-    });
-
-    test('gets NotificationManager from context', (result) => {
-      expect(result).toEqual(getContext(NOTIFICATION_MANAGER));
-
-      return notificationManagerMock;
     });
 
     test('calls show notification method', () => {
@@ -291,6 +292,12 @@ describe('cloneDashboard', () => {
     };
     const test = sagaHelper(cloneDashboard(action));
 
+    test('gets NotificationManager from context', (result) => {
+      expect(result).toEqual(getContext(NOTIFICATION_MANAGER));
+
+      return notificationManagerMock;
+    });
+
     test('gets BlobAPI from context', (result) => {
       expect(result).toEqual(getContext(BLOB_API));
 
@@ -321,12 +328,6 @@ describe('cloneDashboard', () => {
       );
     });
 
-    test('gets NotificationManager from context', (result) => {
-      expect(result).toEqual(getContext(NOTIFICATION_MANAGER));
-
-      return notificationManagerMock;
-    });
-
     test('calls show notification method', () => {
       expect(notificationManagerMock.showNotification).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -343,14 +344,6 @@ describe('cloneDashboard', () => {
       return state;
     });
 
-    test('set proper dashboard as active', (result) => {
-      expect(result).toEqual(put(setActiveDashboard(dashbboardId)));
-    });
-
-    test('switch route to the cloned dashboard', (result) => {
-      expect(result).toEqual(put(push(ROUTES.EDITOR)));
-    });
-
     test('register widgets', (result) => {
       expect(result).toEqual(put(registerWidgets(model.widgets)));
     });
@@ -363,6 +356,14 @@ describe('cloneDashboard', () => {
       expect(result).toEqual(
         put(initializeDashboardWidgetsAction(dashbboardId, model.widgets))
       );
+    });
+
+    test('set proper dashboard as active', (result) => {
+      expect(result).toEqual(put(setActiveDashboard(dashbboardId)));
+    });
+
+    test('switch route to the cloned dashboard', (result) => {
+      expect(result).toEqual(put(push(ROUTES.EDITOR)));
     });
   });
 });

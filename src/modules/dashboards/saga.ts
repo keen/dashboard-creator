@@ -354,36 +354,36 @@ export function* cloneDashboard({
 }: ReturnType<typeof cloneDashboardAction>) {
   const { dashboardId } = payload;
 
-  const blobApi = yield getContext(BLOB_API);
-
-  const model = yield blobApi.getDashboardById(dashboardId);
-
-  const uniqueIdWidgets = model.widgets.map((widget) => ({
-    ...widget,
-    id: createWidgetId(),
-  }));
-
-  const newDashboardId = uuid();
-  const metaData = yield blobApi.getDashboardMetadataById(dashboardId);
-  const newMetaData = {
-    ...metaData,
-    id: newDashboardId,
-    title: metaData.title ? `${metaData.title} Clone` : 'Clone',
-    isPublic: false,
-    lastModificationDate: +new Date(),
-  };
-
-  const newModel = {
-    ...model,
-    widgets: uniqueIdWidgets,
-  };
-
+  const notificationManager = yield getContext(NOTIFICATION_MANAGER);
   try {
+    const blobApi = yield getContext(BLOB_API);
+
+    const model = yield blobApi.getDashboardById(dashboardId);
+
+    const uniqueIdWidgets = model.widgets.map((widget) => ({
+      ...widget,
+      id: createWidgetId(),
+    }));
+
+    const newDashboardId = uuid();
+    const metaData = yield blobApi.getDashboardMetadataById(dashboardId);
+    const newMetaData = {
+      ...metaData,
+      id: newDashboardId,
+      title: metaData.title ? `${metaData.title} Clone` : 'Clone',
+      isPublic: false,
+      lastModificationDate: +new Date(),
+    };
+
+    const newModel = {
+      ...model,
+      widgets: uniqueIdWidgets,
+    };
+
     yield blobApi.saveDashboard(newDashboardId, newModel, newMetaData);
 
     yield put(addClonedDashboard(newMetaData));
 
-    const notificationManager = yield getContext(NOTIFICATION_MANAGER);
     yield notificationManager.showNotification({
       type: 'info',
       message: 'notifications.dashboard_cloned',
@@ -394,9 +394,6 @@ export function* cloneDashboard({
     const activeDashboard = getActiveDashboard(state);
 
     if (activeDashboard) {
-      yield put(setActiveDashboard(newDashboardId));
-      yield put(push(ROUTES.EDITOR));
-
       const serializedDashboard = serializeDashboard(newModel);
       yield put(registerWidgets(uniqueIdWidgets));
       yield put(updateDashboard(newDashboardId, serializedDashboard));
@@ -406,9 +403,17 @@ export function* cloneDashboard({
           serializedDashboard.widgets
         )
       );
+
+      yield put(setActiveDashboard(newDashboardId));
+      yield put(push(ROUTES.EDITOR));
     }
   } catch (err) {
-    console.error(err);
+    yield notificationManager.showNotification({
+      type: 'error',
+      message: err,
+      showDismissButton: true,
+      autoDismiss: false,
+    });
   }
 }
 
