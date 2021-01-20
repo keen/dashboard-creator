@@ -27,6 +27,13 @@ class BlobAPI {
       },
     }).then(handleResponse);
 
+  getDashboardMetadataById = (id: string): Promise<DashboardMetaData> =>
+    fetch(`${this.baseUrl}/metadata/dashboard/${id}`, {
+      headers: {
+        Authorization: this.readKey,
+      },
+    }).then(handleResponse);
+
   getDashboards = (): Promise<DashboardMetaData[]> =>
     fetch(`${this.baseUrl}/metadata/dashboard`, {
       headers: {

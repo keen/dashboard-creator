@@ -51,6 +51,7 @@ const Viewer: FC<Props> = ({ dashboardId }) => {
     <>
       <Navigation>
         <ViewerNavigation
+          dashboardId={dashboardId}
           title={title}
           tags={tags}
           onEditDashboard={() => dispatch(editDashboard(dashboardId))}
