@@ -17,20 +17,32 @@ import {
   EditorContainer,
 } from './Editor.styles';
 
+import { TextAlignment } from '../../../../modules/textEditor';
 import TextEditor, { styles } from '../../../TextEditor';
 import Toolbar from '../Toolbar';
 
 type Props = {
-  /** Initial HTML state */
+  /** Initial content state */
   initialContent: RawDraftContentState;
+  /** Initial text alignment */
+  initialTextAlignment: TextAlignment;
   /** Update text event handler */
-  onUpdateText: (content: RawDraftContentState) => void;
+  onUpdateText: (
+    content: RawDraftContentState,
+    textAlignment: TextAlignment
+  ) => void;
   /** Cancel event handler */
   onCancel: () => void;
 };
 
-const Editor: FC<Props> = ({ onUpdateText, initialContent, onCancel }) => {
+const Editor: FC<Props> = ({
+  onUpdateText,
+  initialContent,
+  initialTextAlignment,
+  onCancel,
+}) => {
   const { t } = useTranslation();
+  const [textAlignment, setTextAlignment] = useState(initialTextAlignment);
   const [editorState, setEditorState] = useState(
     EditorState.createWithContent(convertFromRaw(initialContent))
   );
@@ -40,7 +52,7 @@ const Editor: FC<Props> = ({ onUpdateText, initialContent, onCancel }) => {
       <Header>
         <Description>{t('text_widget_editor.description')}</Description>
         <Toolbar
-          currentInlineStyle={editorState.getCurrentInlineStyle()}
+          editorState={editorState}
           onUpdateInlineStyleAttribute={(inlineStyleType) => {
             const updatedEditorState = RichUtils.toggleInlineStyle(
               editorState,
@@ -52,6 +64,7 @@ const Editor: FC<Props> = ({ onUpdateText, initialContent, onCancel }) => {
             const updatedEditorState = styles.color.toggle(editorState, color);
             setEditorState(updatedEditorState);
           }}
+          onUpdateTextAlignment={(alignment) => setTextAlignment(alignment)}
           onUpdateFontSize={(fontSize) => {
             const updatedEditorState = styles.fontSize.toggle(
               editorState,
@@ -64,6 +77,7 @@ const Editor: FC<Props> = ({ onUpdateText, initialContent, onCancel }) => {
       <EditorContainer>
         <TextEditor
           editorState={editorState}
+          textAlignment={textAlignment}
           onChange={(state) => setEditorState(state)}
           placeholder={t('text_widget_editor.placeholder')}
         />
@@ -72,7 +86,10 @@ const Editor: FC<Props> = ({ onUpdateText, initialContent, onCancel }) => {
         <Button
           variant="secondary"
           onClick={() => {
-            onUpdateText(convertToRaw(editorState.getCurrentContent()));
+            onUpdateText(
+              convertToRaw(editorState.getCurrentContent()),
+              textAlignment
+            );
           }}
         >
           {t('text_widget_editor.update_button')}

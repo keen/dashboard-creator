@@ -1,19 +1,29 @@
 import React, { FC, useState, useRef, useEffect, useCallback } from 'react';
+import { transparentize } from 'polished';
 import { Dropdown } from '@keen.io/ui-core';
+import { Icon } from '@keen.io/icons';
 import { colors } from '@keen.io/colors';
 
 import OptionHeader from '../OptionHeader';
 import {
+  Bar,
   Container,
-  ColorsContainer,
+  CaretDown,
+  ColorIndicator,
+  Grid,
   ColorTone,
   DropdownContainer,
   Square,
 } from './ColorPicker.styles';
 
-type Props = {};
+type Props = {
+  /** Current selected color*/
+  currentColor?: string;
+  /** Select color event handler */
+  onSelectColor: (color: string) => void;
+};
 
-const ColorPicker: FC<Props> = () => {
+const ColorPicker: FC<Props> = ({ currentColor, onSelectColor }) => {
   const [isOpen, setOpen] = useState(false);
 
   const containerRef = useRef(null);
@@ -35,26 +45,41 @@ const ColorPicker: FC<Props> = () => {
     return () => document.removeEventListener('click', outsideClick);
   }, [isOpen, containerRef]);
 
-  const colorNames = Object.keys(colors);
-
   return (
     <Container ref={containerRef}>
-      <OptionHeader onClick={() => setOpen(true)}>header</OptionHeader>
+      <OptionHeader onClick={() => setOpen(true)}>
+        <ColorIndicator>
+          <Icon type="text" fill={colors.black[100]} width={13} height={13} />
+          <Bar
+            style={{
+              background: currentColor ? currentColor : colors.black[100],
+            }}
+          />
+        </ColorIndicator>
+        <CaretDown>
+          <Icon
+            type="caret-down"
+            width={10}
+            height={10}
+            fill={transparentize(0.3, colors.blue[500])}
+          />
+        </CaretDown>
+      </OptionHeader>
       <DropdownContainer>
         <Dropdown isOpen={isOpen}>
-          <ColorsContainer>
-            {colorNames.map((name) => {
-              const saturationLevels = Object.keys(colors[name]);
-              const palette = saturationLevels.map((saturation) => (
-                <Square
-                  key={saturation}
-                  style={{ background: colors[name][saturation] }}
-                />
-              ));
-
-              return <ColorTone key={name}>{palette}</ColorTone>;
-            })}
-          </ColorsContainer>
+          <Grid>
+            {Object.keys(colors).map((name) => (
+              <ColorTone key={name} data-testid={`color-tone-${name}`}>
+                {Object.keys(colors[name]).map((saturation) => (
+                  <Square
+                    key={saturation}
+                    onClick={() => onSelectColor(colors[name][saturation])}
+                    style={{ background: colors[name][saturation] }}
+                  />
+                ))}
+              </ColorTone>
+            ))}
+          </Grid>
         </Dropdown>
       </DropdownContainer>
     </Container>

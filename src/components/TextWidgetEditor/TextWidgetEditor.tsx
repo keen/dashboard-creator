@@ -7,7 +7,11 @@ import { Modal } from '@keen.io/ui-core';
 
 import { Container } from './TextWidgetEditor.styles';
 
-import { closeEditor, applyTextEditorSettings } from '../../modules/textEditor';
+import {
+  closeEditor,
+  applyTextEditorSettings,
+  TextAlignment,
+} from '../../modules/textEditor';
 
 const Editor = Loadable({
   loader: () =>
@@ -20,9 +24,15 @@ type Props = {
   isOpen: boolean;
   /** Initial HTML state */
   textEditorContent: RawDraftContentState;
+  /** Initial HTML state */
+  editorTextAlignment: TextAlignment;
 };
 
-const TextWidgetEditor: FC<Props> = ({ isOpen, textEditorContent }) => {
+const TextWidgetEditor: FC<Props> = ({
+  isOpen,
+  editorTextAlignment,
+  textEditorContent,
+}) => {
   const dispatch = useDispatch();
 
   return (
@@ -35,7 +45,10 @@ const TextWidgetEditor: FC<Props> = ({ isOpen, textEditorContent }) => {
         <Container>
           <Editor
             initialContent={textEditorContent}
-            onUpdateText={(html) => dispatch(applyTextEditorSettings(html))}
+            initialTextAlignment={editorTextAlignment}
+            onUpdateText={(content, textAlignment) =>
+              dispatch(applyTextEditorSettings(content, textAlignment))
+            }
             onCancel={closeHandler}
           />
         </Container>

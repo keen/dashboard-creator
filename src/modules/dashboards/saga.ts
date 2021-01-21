@@ -107,14 +107,14 @@ export function* saveDashboardMetadata({
     yield put(saveDashboardMetaSuccess());
     yield notificationManager.showNotification({
       type: 'info',
-      message: 'notifications.dashboard_meta_error',
+      message: 'notifications.dashboard_meta_success',
       autoDismiss: true,
     });
   } catch (err) {
     yield put(saveDashboardMetaError());
     yield notificationManager.showNotification({
       type: 'error',
-      message: 'notifications.dashboard_update_error',
+      message: 'notifications.dashboard_meta_error',
       showDismissButton: true,
       autoDismiss: false,
     });

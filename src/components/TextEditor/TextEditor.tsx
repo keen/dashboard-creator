@@ -11,11 +11,19 @@ type Props = {
   onChange: (editorState: EditorState) => void;
   /** Placeholder text */
   placeholder: string;
+  /** Text alignment */
+  textAlignment?: 'left' | 'center' | 'right';
 };
 
-const TextEditor: FC<Props> = ({ editorState, onChange, placeholder }) => (
+const TextEditor: FC<Props> = ({
+  editorState,
+  onChange,
+  placeholder,
+  textAlignment = 'left',
+}) => (
   <EditorContainer>
     <Editor
+      textAlignment={textAlignment}
       customStyleFn={customStyleFn}
       editorState={editorState}
       onChange={onChange}

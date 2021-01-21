@@ -105,10 +105,16 @@ export const setImageWidget = createAction(
 
 export const setTextWidget = createAction(
   SET_TEXT_WIDGET,
-  (id: string, content: RawDraftContentState) => ({
+  (
+    id: string,
+    settings: {
+      content: RawDraftContentState;
+      textAlignment?: 'left' | 'center' | 'right';
+    }
+  ) => ({
     payload: {
       id,
-      content,
+      settings,
     },
   })
 );

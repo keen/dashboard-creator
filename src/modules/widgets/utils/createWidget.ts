@@ -39,6 +39,7 @@ export const createWidget = (
         {
           ...baseWidget,
           settings: {
+            textAlignment: 'left',
             content: {
               blocks: [],
               entityMap: {},

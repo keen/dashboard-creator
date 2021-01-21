@@ -55,7 +55,7 @@ const TextManagement: FC<Props> = ({
     getWidget(state, id)
   );
   const {
-    settings: { content },
+    settings: { content, textAlignment },
   } = widget as TextWidget;
 
   const [removeConfirmation, setRemoveConfirmation] = useState(false);
@@ -84,6 +84,7 @@ const TextManagement: FC<Props> = ({
         <TextEditor
           placeholder={t('text_management.placeholder')}
           editorState={editorState}
+          textAlignment={textAlignment}
           onChange={(state) => {
             if (state.getCurrentContent() !== editorState.getCurrentContent()) {
               if (updateWidget.current) clearTimeout(updateWidget.current);

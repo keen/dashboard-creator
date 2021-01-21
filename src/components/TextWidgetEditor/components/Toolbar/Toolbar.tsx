@@ -1,38 +1,43 @@
 import React, { FC } from 'react';
-import { DraftInlineStyle, DraftInlineStyleType } from 'draft-js';
+import { DraftInlineStyleType, EditorState } from 'draft-js';
 import { Icon } from '@keen.io/icons';
 import { colors } from '@keen.io/colors';
 
 import { Container, TextOption } from './Toolbar.styles';
 import ColorPicker from '../ColorPicker';
+import TextAlignment from '../TextAlignment';
 import FontSize from '../FontSize';
 
+import { styles } from '../../../TextEditor';
 import { getBlockFontSize } from '../../utils';
+import { TextAlignment as TextAlignmentType } from '../../../../modules/textEditor';
 
 import { INLINE_OPTIONS } from '../../constants';
 
 type Props = {
-  /** Current inline styles */
-  currentInlineStyle: DraftInlineStyle;
+  /** Current editor state */
+  editorState: EditorState;
   /** Font size update event handler */
   onUpdateFontSize: (fontSize: string) => void;
   /** Update color event handler */
   onUpdateColor: (color: string) => void;
+  /** Update text alignment event handler */
+  onUpdateTextAlignment: (alignment: TextAlignmentType) => void;
   /** Update inline style attribute event handler */
   onUpdateInlineStyleAttribute: (inlineStyleType: DraftInlineStyleType) => void;
 };
 
-/*           {currentInlineStyle.has(inlineStyleType) && 'active'} */
-
 const Toolbar: FC<Props> = ({
-  currentInlineStyle,
+  editorState,
   onUpdateFontSize,
   onUpdateColor,
+  onUpdateTextAlignment,
   onUpdateInlineStyleAttribute,
 }) => {
+  const currentInlineStyle = editorState.getCurrentInlineStyle();
+
   return (
     <Container>
-      <div onClick={() => onUpdateColor('red')}>RED</div>
       {INLINE_OPTIONS.map(({ id, icon, inlineStyleType }) => (
         <TextOption
           key={id}
@@ -46,7 +51,14 @@ const Toolbar: FC<Props> = ({
         currentFontSize={getBlockFontSize(currentInlineStyle)}
         onUpdateFontSize={onUpdateFontSize}
       />
-      <ColorPicker />
+      <ColorPicker
+        currentColor={styles.color.current(editorState)}
+        onSelectColor={onUpdateColor}
+      />
+      <TextAlignment
+        currentAlignment={null}
+        onUpdateTextAlignment={onUpdateTextAlignment}
+      />
     </Container>
   );
 };

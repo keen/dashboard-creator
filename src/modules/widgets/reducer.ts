@@ -120,7 +120,8 @@ const widgetsReducer = (
             widget: {
               ...state.items[action.payload.id].widget,
               settings: {
-                content: action.payload.content,
+                ...state.items[action.payload.id].widget.settings,
+                ...action.payload.settings,
               },
             },
           },

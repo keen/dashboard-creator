@@ -36,6 +36,7 @@ export interface TextWidget extends BaseWidget {
   type: 'text';
   settings: {
     content: RawDraftContentState;
+    textAlignment: 'left' | 'center' | 'right';
   };
 }
 

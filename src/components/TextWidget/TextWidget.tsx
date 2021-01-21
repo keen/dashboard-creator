@@ -19,7 +19,7 @@ const TextWidget: FC<Props> = ({ id }) => {
   const { widget } = useSelector((state: RootState) => getWidget(state, id));
 
   const {
-    settings: { content },
+    settings: { content, textAlignment },
   } = widget as TextWidgetType;
 
   const htmlContent = useMemo(() => {
@@ -34,6 +34,7 @@ const TextWidget: FC<Props> = ({ id }) => {
   return (
     <Container>
       <Html
+        textAlignment={textAlignment}
         dangerouslySetInnerHTML={{
           __html: htmlContent,
         }}

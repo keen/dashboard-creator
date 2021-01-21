@@ -19,8 +19,6 @@ import SearchInput from '../SearchInput';
 import DashboardDeleteConfirmation from '../DashboardDeleteConfirmation';
 import DashboardListOrder from '../DashboardListOrder';
 
-import TextWidgetEditor from '../TextWidgetEditor';
-
 import {
   createDashboard,
   viewDashboard,
@@ -68,10 +66,6 @@ const Management: FC<Props> = () => {
 
   return (
     <div>
-      <TextWidgetEditor
-        isOpen
-        textEditorContent={{ blocks: [], entityMap: {} }}
-      />
       <Navigation>
         <ManagementNavigation
           attractCreateDashboardButton={isEmptyProject}

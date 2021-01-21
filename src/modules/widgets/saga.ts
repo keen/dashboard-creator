@@ -59,6 +59,7 @@ import {
 import {
   openEditor as openTextEditor,
   closeEditor as closeTextEditor,
+  setTextAlignment,
   setEditorContent,
   APPLY_TEXT_EDITOR_SETTINGS,
   CLOSE_EDITOR as CLOSE_TEXT_EDITOR,
@@ -563,8 +564,7 @@ export function* editImageWidget({
 export function* createTextWidget(widgetId: string) {
   yield put(
     setTextWidget(widgetId, {
-      blocks: [],
-      entityMap: {},
+      content: { blocks: [], entityMap: {} },
     })
   );
   yield put(
@@ -580,10 +580,12 @@ export function* editTextWidget({
 }: ReturnType<typeof editInlineTextWidgetAction>) {
   const { id } = payload;
   const {
-    settings: { content },
+    settings: { content, textAlignment },
   } = yield select(getWidgetSettings, id);
 
   yield put(setEditorContent(content));
+  yield put(setTextAlignment(textAlignment));
+
   yield put(openTextEditor());
   yield put(
     setWidgetState(id, {
@@ -594,8 +596,16 @@ export function* editTextWidget({
   const action = yield take([APPLY_TEXT_EDITOR_SETTINGS, CLOSE_TEXT_EDITOR]);
 
   if (action.type === APPLY_TEXT_EDITOR_SETTINGS) {
-    const { content: updatedContent } = action.payload;
-    yield put(setTextWidget(id, updatedContent));
+    const {
+      content: updatedContent,
+      textAlignment: updatedAlignment,
+    } = action.payload;
+    yield put(
+      setTextWidget(id, {
+        content: updatedContent,
+        textAlignment: updatedAlignment,
+      })
+    );
 
     const dashboardId = yield select(getActiveDashboard);
     yield put(saveDashboard(dashboardId));
@@ -614,7 +624,7 @@ export function* editInlineTextWidget({
   payload,
 }: ReturnType<typeof editInlineTextWidgetAction>) {
   const { id, content } = payload;
-  yield put(setTextWidget(id, content));
+  yield put(setTextWidget(id, { content }));
 
   const dashboardId = yield select(getActiveDashboard);
   yield put(saveDashboard(dashboardId));

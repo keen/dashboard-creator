@@ -63,6 +63,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
   const {
     isOpen: textWidgetEditorOpen,
     content: textEditorContent,
+    textAlignment,
   } = useSelector(getTextEditor);
 
   const { widgetsId, isInitialized, isSaving } = useSelector(
@@ -183,6 +184,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
       </Content>
       <ChartWidgetEditor isOpen={chartWidgetEditorOpen} />
       <TextWidgetEditor
+        editorTextAlignment={textAlignment}
         textEditorContent={textEditorContent}
         isOpen={textWidgetEditorOpen}
       />
