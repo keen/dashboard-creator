@@ -27,6 +27,7 @@ import {
   HIDE_DASHBOARD_SETTINGS_MODAL,
   SET_TAGS_POOL,
   SET_DASHBOARD_LIST_ORDER,
+  ADD_CLONED_DASHBOARD,
 } from './constants';
 
 import { ReducerState } from './types';
@@ -289,6 +290,17 @@ const dashboardsReducer = (
           data: sortDashboards(state.metadata.data, action.payload.order),
         },
         dashboardListOrder: action.payload.order,
+      };
+    case ADD_CLONED_DASHBOARD:
+      return {
+        ...state,
+        metadata: {
+          ...state.metadata,
+          data: sortDashboards(
+            [...state.metadata.data, action.payload.dashboardMeta],
+            state.dashboardListOrder
+          ),
+        },
       };
     default:
       return state;

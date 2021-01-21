@@ -28,7 +28,9 @@
     "update_save_query_error": "We were not able to update this save query. Try again later.",
     "dashboard_delete_success": "Dashboard removed",
     "dashboard_delete_error": "We were not able to delete this dashboard. Try again later.",
-    "dashboard_meta_success": "Dashboard saved"
+    "dashboard_meta_success": "Dashboard saved",
+    "dashboard_cloned": "Dashboard cloned",
+    "dashboard_cloned_error": "We were not able to clone this dashboard. Try again later."
   },
   "actions_menu": {
     "delete_dashboard": "Delete",
@@ -52,7 +54,10 @@
     "empty_search_results": "No dashboards found with this criteria."
   },
   "viewer": {
-    "edit_dashboard_button": "Edit"
+    "edit_dashboard_button": "Edit",
+    "delete_dashboard": "Delete Dashboard",
+    "new_dashboard": "New Dashboard",
+    "clone_dashboard": "Clone Dashboard"
   },
   "dashboard_editor": {
     "save": "Save",

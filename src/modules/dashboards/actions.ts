@@ -33,6 +33,7 @@ import {
   HIDE_DASHBOARD_SETTINGS_MODAL,
   SET_TAGS_POOL,
   SET_DASHBOARD_LIST_ORDER,
+  ADD_CLONED_DASHBOARD,
 } from './constants';
 
 export const fetchDashboardList = createAction(FETCH_DASHBOARDS_LIST);
@@ -264,6 +265,15 @@ export const setDashboardListOrder = createAction(
   })
 );
 
+export const addClonedDashboard = createAction(
+  ADD_CLONED_DASHBOARD,
+  (dashboardMeta: DashboardMetaData) => ({
+    payload: {
+      dashboardMeta,
+    },
+  })
+);
+
 export type DashboardsActions =
   | ReturnType<typeof fetchDashboardList>
   | ReturnType<typeof fetchDashboardListSuccess>
@@ -294,4 +304,5 @@ export type DashboardsActions =
   | ReturnType<typeof saveDashboardMeta>
   | ReturnType<typeof saveDashboardMetaSuccess>
   | ReturnType<typeof saveDashboardMetaError>
-  | ReturnType<typeof setDashboardListOrder>;
+  | ReturnType<typeof setDashboardListOrder>
+  | ReturnType<typeof addClonedDashboard>;

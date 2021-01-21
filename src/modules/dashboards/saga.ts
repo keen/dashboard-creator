@@ -8,6 +8,7 @@ import {
   spawn,
 } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
+import { v4 as uuid } from 'uuid';
 import { Theme } from '@keen.io/charts';
 
 import {
@@ -27,12 +28,14 @@ import {
   saveDashboardMeta as saveDashboardMetaAction,
   viewDashboard as viewDashboardAction,
   deleteDashboard as deleteDashboardAction,
+  cloneDashboard as cloneDashboardAction,
   showDeleteConfirmation,
   hideDeleteConfirmation,
   saveDashboardMetaSuccess,
   saveDashboardMetaError,
   setTagsPool,
   setDashboardListOrder,
+  addClonedDashboard,
 } from './actions';
 
 import { serializeDashboard } from './serializers';
@@ -43,15 +46,17 @@ import {
 } from './selectors';
 import { getBaseTheme, getActiveDashboardTheme } from '../theme/selectors';
 
-import { setActiveDashboard } from '../app';
+import { setActiveDashboard, getActiveDashboard } from '../app';
 import {
   initializeWidget,
   registerWidgets,
   removeWidget,
   getWidgetSettings,
 } from '../widgets';
+
 import { removeDashboardTheme, setDashboardTheme } from '../theme';
 import { createTagsPool } from './utils';
+import { createWidgetId } from '../widgets/utils';
 
 import { BLOB_API, NOTIFICATION_MANAGER, ROUTES } from '../../constants';
 import {
@@ -71,6 +76,7 @@ import {
   SAVE_DASHBOARD_METADATA_SUCCESS,
   SET_DASHBOARD_LIST_ORDER,
   DASHBOARD_LIST_ORDER_KEY,
+  CLONE_DASHBOARD,
 } from './constants';
 
 import { RootState } from '../../rootReducer';
@@ -343,6 +349,74 @@ export function* persistDashboardsOrder({
   }
 }
 
+export function* cloneDashboard({
+  payload,
+}: ReturnType<typeof cloneDashboardAction>) {
+  const { dashboardId } = payload;
+
+  const notificationManager = yield getContext(NOTIFICATION_MANAGER);
+  try {
+    const blobApi = yield getContext(BLOB_API);
+
+    const model = yield blobApi.getDashboardById(dashboardId);
+
+    const uniqueIdWidgets = model.widgets.map((widget) => ({
+      ...widget,
+      id: createWidgetId(),
+    }));
+
+    const newDashboardId = uuid();
+    const metaData = yield blobApi.getDashboardMetadataById(dashboardId);
+    const newMetaData = {
+      ...metaData,
+      id: newDashboardId,
+      title: metaData.title ? `${metaData.title} Clone` : 'Clone',
+      isPublic: false,
+      lastModificationDate: +new Date(),
+    };
+
+    const newModel = {
+      ...model,
+      widgets: uniqueIdWidgets,
+    };
+
+    yield blobApi.saveDashboard(newDashboardId, newModel, newMetaData);
+
+    yield put(addClonedDashboard(newMetaData));
+
+    yield notificationManager.showNotification({
+      type: 'info',
+      message: 'notifications.dashboard_cloned',
+      autoDismiss: true,
+    });
+
+    const state: RootState = yield select();
+    const activeDashboard = getActiveDashboard(state);
+
+    if (activeDashboard) {
+      const serializedDashboard = serializeDashboard(newModel);
+      yield put(registerWidgets(uniqueIdWidgets));
+      yield put(updateDashboard(newDashboardId, serializedDashboard));
+      yield put(
+        initializeDashboardWidgetsAction(
+          newDashboardId,
+          serializedDashboard.widgets
+        )
+      );
+
+      yield put(setActiveDashboard(newDashboardId));
+      yield put(push(ROUTES.EDITOR));
+    }
+  } catch (err) {
+    yield notificationManager.showNotification({
+      type: 'error',
+      message: 'notifications.dashboard_cloned_error',
+      showDismissButton: true,
+      autoDismiss: false,
+    });
+  }
+}
+
 export function* dashboardsSaga() {
   yield spawn(rehydrateDashboardsOrder);
   yield takeLatest(
@@ -360,4 +434,5 @@ export function* dashboardsSaga() {
   yield takeLatest(INITIALIZE_DASHBOARD_WIDGETS, initializeDashboardWidgets);
   yield takeLatest(SHOW_DASHBOARD_SETTINGS_MODAL, showDashboardSettings);
   yield takeLatest(HIDE_DASHBOARD_SETTINGS_MODAL, hideDashboardSettings);
+  yield takeLatest(CLONE_DASHBOARD, cloneDashboard);
 }
