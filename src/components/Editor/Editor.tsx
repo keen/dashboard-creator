@@ -22,6 +22,7 @@ import {
   WidgetsPosition,
 } from '../../modules/widgets';
 import { getChartEditor } from '../../modules/chartEditor';
+import { getTextEditor } from '../../modules/textEditor';
 import { setActiveDashboard } from '../../modules/app';
 
 import { EditorContext } from '../../contexts';
@@ -30,6 +31,7 @@ import EditorNavigation from '../EditorNavigation';
 import QueryPickerModal from '../QueryPickerModal';
 import ImagePickerModal from '../ImagePickerModal';
 import ChartWidgetEditor from '../ChartWidgetEditor';
+import TextWidgetEditor from '../TextWidgetEditor';
 import ConfirmQueryChange from '../ConfirmQueryChange';
 import DashboardDeleteConfirmation from '../DashboardDeleteConfirmation';
 import Toolbar from '../Toolbar';
@@ -58,6 +60,11 @@ const Editor: FC<Props> = ({ dashboardId }) => {
     isOpen: chartWidgetEditorOpen,
     changeQueryConfirmation,
   } = useSelector(getChartEditor);
+  const {
+    isOpen: textWidgetEditorOpen,
+    content: textEditorContent,
+  } = useSelector(getTextEditor);
+
   const { widgetsId, isInitialized, isSaving } = useSelector(
     (state: RootState) => {
       const dashboard = getDashboard(state, dashboardId);
@@ -175,6 +182,10 @@ const Editor: FC<Props> = ({ dashboardId }) => {
         )}
       </Content>
       <ChartWidgetEditor isOpen={chartWidgetEditorOpen} />
+      <TextWidgetEditor
+        textEditorContent={textEditorContent}
+        isOpen={textWidgetEditorOpen}
+      />
       <ConfirmQueryChange isOpen={changeQueryConfirmation} />
       <DashboardDeleteConfirmation />
       <QueryPickerModal />

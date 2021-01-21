@@ -73,7 +73,6 @@ import {
   HIDE_DELETE_CONFIRMATION,
   SHOW_DASHBOARD_SETTINGS_MODAL,
   HIDE_DASHBOARD_SETTINGS_MODAL,
-  SAVE_DASHBOARD_METADATA_SUCCESS,
   SET_DASHBOARD_LIST_ORDER,
   DASHBOARD_LIST_ORDER_KEY,
   CLONE_DASHBOARD,
@@ -103,18 +102,19 @@ export function* saveDashboardMetadata({
   try {
     const blobApi = yield getContext(BLOB_API);
     yield blobApi.saveDashboardMeta(dashboardId, metadata);
+    yield put(updateDashboardMeta(dashboardId, metadata));
 
     yield put(saveDashboardMetaSuccess());
     yield notificationManager.showNotification({
       type: 'info',
-      message: 'notifications.dashboard_meta_success',
+      message: 'notifications.dashboard_meta_error',
       autoDismiss: true,
     });
   } catch (err) {
     yield put(saveDashboardMetaError());
     yield notificationManager.showNotification({
       type: 'error',
-      message: err,
+      message: 'notifications.dashboard_update_error',
       showDismissButton: true,
       autoDismiss: false,
     });
@@ -179,6 +179,8 @@ export function* createDashboard({
 
   yield put(setActiveDashboard(dashboardId));
   yield put(push(ROUTES.EDITOR));
+
+  yield put(saveDashboardAction(dashboardId));
 }
 
 export function* deleteDashboard({
@@ -425,10 +427,7 @@ export function* cloneDashboard({
 
 export function* dashboardsSaga() {
   yield spawn(rehydrateDashboardsOrder);
-  yield takeLatest(
-    [FETCH_DASHBOARDS_LIST, SAVE_DASHBOARD_METADATA_SUCCESS],
-    fetchDashboardList
-  );
+  yield takeLatest(FETCH_DASHBOARDS_LIST, fetchDashboardList);
   yield takeLatest(SET_DASHBOARD_LIST_ORDER, persistDashboardsOrder);
   yield takeLatest(CREATE_DASHBOARD, createDashboard);
   yield takeLatest(SAVE_DASHBOARD, saveDashboard);

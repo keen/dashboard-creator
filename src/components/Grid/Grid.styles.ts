@@ -24,10 +24,6 @@ export const Container = styled.div`
     will-change: width, height;
   }
 
-  .react-grid-item.react-draggable {
-    cursor: grab;
-  }
-
   .react-grid-item.react-draggable-dragging {
     transition: none;
     z-index: 3;

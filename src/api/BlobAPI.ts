@@ -63,7 +63,7 @@ class BlobAPI {
         Authorization: this.masterKey,
       },
       body: JSON.stringify(metadata),
-    });
+    }).then(handleResponse);
 
   deleteDashboard = (dashboardId: string) =>
     fetch(`${this.baseUrl}/blobs/dashboard/${dashboardId}`, {

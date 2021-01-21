@@ -1,3 +1,4 @@
+import { RawDraftContentState } from 'draft-js';
 import { Query } from '@keen.io/query';
 import { PickerWidgets } from '@keen.io/widget-picker';
 
@@ -33,7 +34,9 @@ export interface ChartWidget extends BaseWidget {
 
 export interface TextWidget extends BaseWidget {
   type: 'text';
-  settings: {};
+  settings: {
+    content: RawDraftContentState;
+  };
 }
 
 export interface ImageWidget extends BaseWidget {

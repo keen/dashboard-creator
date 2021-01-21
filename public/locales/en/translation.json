@@ -9,6 +9,16 @@
     "cancel": "Cancel",
     "save": "Save"
   },
+  "text_widget_editor": {
+    "description": "Edit styling here and resize the text box on dashboard",
+    "update_button": "Update text",
+    "cancel_button": "Cancel",
+    "placeholder": "Enter text"
+  },
+  "text_management": {
+    "placeholder": "Enter text",
+    "delete_confirmation": "Are you sure you want to delete this text?"
+  },
   "widget_errors": {
     "detached_query_title": "Unable to present result in {{chart}} chart",
     "detached_query_message": "Please check if query structure has changed or select other visualization"
@@ -29,6 +39,7 @@
     "dashboard_delete_success": "Dashboard removed",
     "dashboard_delete_error": "We were not able to delete this dashboard. Try again later.",
     "dashboard_meta_success": "Dashboard saved",
+    "dashboard_meta_error": "We were not able to update this dashboard. Try again later.",
     "dashboard_cloned": "Dashboard cloned",
     "dashboard_cloned_error": "We were not able to clone this dashboard. Try again later."
   },
@@ -83,6 +94,7 @@
   "widget": {
     "edit_chart": "Edit Chart",
     "edit_image": "Change image",
+    "edit_text": "Text Options",
     "remove": "Remove",
     "remove_confirm_button": "Yes, delete",
     "remove_dismiss_button": "No, keep it",

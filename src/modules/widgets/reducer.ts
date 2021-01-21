@@ -11,6 +11,7 @@ import {
   UPDATE_WIDGETS_POSITION,
   FINISH_CHART_WIDGET_CONFIGURATION,
   SET_IMAGE_WIDGET,
+  SET_TEXT_WIDGET,
   SET_WIDGET_LOADING,
   SET_WIDGET_STATE,
   CREATE_WIDGET,
@@ -107,6 +108,22 @@ const widgetsReducer = (
             }),
             {}
           ),
+        },
+      };
+    case SET_TEXT_WIDGET:
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          [action.payload.id]: {
+            ...state.items[action.payload.id],
+            widget: {
+              ...state.items[action.payload.id].widget,
+              settings: {
+                content: action.payload.content,
+              },
+            },
+          },
         },
       };
     case SET_IMAGE_WIDGET:

@@ -4,6 +4,8 @@ import {
   createWidget,
   editChartWidget,
   editImageWidget,
+  editTextWidget,
+  editInlineTextWidget,
   removeWidget,
   initializeWidget,
   initializeChartWidget,
@@ -17,6 +19,7 @@ import {
   GridPosition,
   WidgetsPosition,
   ChartWidget,
+  TextWidget,
   ImageWidget,
 } from './types';
 
@@ -26,6 +29,7 @@ export {
   WidgetsPosition,
   ChartWidget,
   ImageWidget,
+  TextWidget,
   widgetsReducer,
   widgetsSaga,
   createWidget,
@@ -34,6 +38,8 @@ export {
   initializeWidget,
   editChartWidget,
   editImageWidget,
+  editInlineTextWidget,
+  editTextWidget,
   initializeChartWidget,
   updateWidgetsPosition,
   getWidget,
