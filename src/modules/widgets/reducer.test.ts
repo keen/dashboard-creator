@@ -7,6 +7,7 @@ import {
   setWidgetLoading,
   updateWidgetsPosition,
   finishChartWidgetConfiguration,
+  saveClonedWidget,
 } from './actions';
 import { widget } from './fixtures';
 
@@ -114,4 +115,18 @@ test('set widget state', () => {
 
   expect(isConfigured).toEqual(true);
   expect(isInitialized).toEqual(true);
+});
+
+test('save cloned widget', () => {
+  const state = {
+    ...initialState,
+    items: {
+      '@widget/id': widget,
+    },
+  };
+
+  const action = saveClonedWidget('@widget/id', widget.widget, widget);
+  const { items } = widgetsReducer(state, action);
+
+  expect(items).toMatchSnapshot();
 });

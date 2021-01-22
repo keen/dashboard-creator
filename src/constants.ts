@@ -13,3 +13,5 @@ export const ROUTES = {
   EDITOR: '/editor',
   VIEWER: '/viewer',
 };
+
+export const GRID_MAX_VALUE = 999999;
