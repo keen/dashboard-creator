@@ -56,8 +56,7 @@
   "viewer": {
     "edit_dashboard_button": "Edit",
     "delete_dashboard": "Delete Dashboard",
-    "new_dashboard": "New Dashboard",
-    "clone_dashboard": "Clone Dashboard"
+    "new_dashboard": "New Dashboard"
   },
   "dashboard_editor": {
     "save": "Save",

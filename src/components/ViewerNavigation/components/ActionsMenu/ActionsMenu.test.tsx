@@ -34,7 +34,7 @@ test('allows user to clone dashbord', () => {
     store,
   } = render();
 
-  const cloneLink = getByText('viewer.clone_dashboard');
+  const cloneLink = getByText('actions_menu.clone_dashboard');
   fireEvent.click(cloneLink);
 
   expect(store.getActions()).toMatchInlineSnapshot(`
@@ -44,6 +44,27 @@ test('allows user to clone dashbord', () => {
           "dashboardId": "@dashboard/id",
         },
         "type": "@dashboards/CLONE_DASHBOARD",
+      },
+    ]
+  `);
+});
+
+test('allows user to delete dashbord', () => {
+  const {
+    wrapper: { getByText },
+    store,
+  } = render();
+
+  const deleteLink = getByText('actions_menu.delete_dashboard');
+  fireEvent.click(deleteLink);
+
+  expect(store.getActions()).toMatchInlineSnapshot(`
+    Array [
+      Object {
+        "payload": Object {
+          "dashboardId": "@dashboard/id",
+        },
+        "type": "@dashboards/DELETE_DASHBOARD",
       },
     ]
   `);
