@@ -19,6 +19,7 @@ import {
   editChartWidget as editChartWidgetAction,
   editImageWidget as editImageWidgetAction,
   editInlineTextWidget as editInlineTextWidgetAction,
+  editTextWidget as editTextWidgetAction,
   setWidgetLoading,
   setWidgetState,
   finishChartWidgetConfiguration,
@@ -577,7 +578,7 @@ export function* createTextWidget(widgetId: string) {
 
 export function* editTextWidget({
   payload,
-}: ReturnType<typeof editInlineTextWidgetAction>) {
+}: ReturnType<typeof editTextWidgetAction>) {
   const { id } = payload;
   const {
     settings: { content, textAlignment },

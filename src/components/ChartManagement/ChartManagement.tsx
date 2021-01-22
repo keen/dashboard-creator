@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 
 import WidgetManagement from '../WidgetManagement';
 
-import { editChartWidget } from '../../../../modules/widgets';
+import { editChartWidget } from '../../modules/widgets';
 
 type Props = {
   /** Widget identifier */

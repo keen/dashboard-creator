@@ -3,11 +3,12 @@ import { useSelector } from 'react-redux';
 
 import { Container } from './Widget.styles';
 
-import { ImageManagement, ChartManagement } from './components';
 import ChartWidget from '../ChartWidget';
 import TextWidget from '../TextWidget';
-
 import ImageWidget from '../ImageWidget';
+
+import ImageManagement from '../ImageManagement';
+import ChartManagement from '../ChartManagement';
 import TextManagement from '../TextManagement';
 
 import { getWidget } from '../../modules/widgets';
