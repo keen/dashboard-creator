@@ -41,6 +41,7 @@ type Props = {
   updateDebounceTime?: number;
 };
 
+// TODO: Integrate widget clone functionality
 const TextManagement: FC<Props> = ({
   id,
   isHoverActive,
@@ -128,16 +129,20 @@ const TextManagement: FC<Props> = ({
             >
               {t('widget.edit_text')}
             </Button>
-            <CircleButton
-              variant="blank"
-              onClick={() => setRemoveConfirmation(true)}
-              icon={<Icon type="delete" fill={colors.red[500]} />}
-            />
-            <CircleButton
-              variant="blank"
-              onClick={() => setRemoveConfirmation(true)}
-              icon={<Icon type="clone" fill={colors.black[500]} />}
-            />
+            <div data-testid="remove-text-widget">
+              <CircleButton
+                variant="blank"
+                onClick={() => setRemoveConfirmation(true)}
+                icon={<Icon type="delete" fill={colors.red[500]} />}
+              />
+            </div>
+            <div data-testid="clone-text-widget">
+              <CircleButton
+                variant="blank"
+                onClick={() => setRemoveConfirmation(true)}
+                icon={<Icon type="clone" fill={colors.black[500]} />}
+              />
+            </div>
           </ManagementContainer>
         )}
       </AnimatePresence>

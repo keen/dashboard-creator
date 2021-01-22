@@ -53,6 +53,7 @@ const Editor: FC<Props> = ({
         <Description>{t('text_widget_editor.description')}</Description>
         <Toolbar
           editorState={editorState}
+          textAlignment={textAlignment}
           onUpdateInlineStyleAttribute={(inlineStyleType) => {
             const updatedEditorState = RichUtils.toggleInlineStyle(
               editorState,

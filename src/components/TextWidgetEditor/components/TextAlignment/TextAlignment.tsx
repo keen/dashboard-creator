@@ -6,12 +6,13 @@ import { colors } from '@keen.io/colors';
 import { Header, CaretDown } from './TextAlignment.styles';
 
 import AttributeDropdown from '../AttributeDropdown';
+import Option from '../Option';
 
-import { OPTIONS } from './constants';
+import { ICON, OPTIONS } from './constants';
 
 type Props = {
   /** Current font size */
-  currentAlignment: string;
+  currentAlignment: 'left' | 'center' | 'right';
   /** Update font size event handler */
   onUpdateTextAlignment: (fontSize: string) => void;
 };
@@ -22,8 +23,13 @@ const TextAlignment: FC<Props> = ({
 }) => (
   <AttributeDropdown
     renderHeader={() => (
-      <Header>
-        {currentAlignment}
+      <Header data-testid="text-alignment-header">
+        <Icon
+          type={ICON[currentAlignment]}
+          fill={colors.black[100]}
+          width={13}
+          height={13}
+        />
         <CaretDown>
           <Icon
             type="caret-down"
@@ -35,10 +41,15 @@ const TextAlignment: FC<Props> = ({
       </Header>
     )}
   >
-    {OPTIONS.map(({ id, style }) => (
-      <div key={id} onClick={() => onUpdateTextAlignment(style)}>
-        {style}
-      </div>
+    {OPTIONS.map(({ id, icon, style }) => (
+      <Option
+        key={id}
+        data-testid={`option-${style}`}
+        onClick={() => onUpdateTextAlignment(style)}
+        isActive={currentAlignment === style}
+      >
+        <Icon type={icon} fill={colors.black[100]} width={13} height={13} />
+      </Option>
     ))}
   </AttributeDropdown>
 );

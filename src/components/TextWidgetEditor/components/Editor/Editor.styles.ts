@@ -28,7 +28,5 @@ export const EditorContainer = styled.div`
   padding: 10px 12px;
   background: #f1f5f8;
 
-  font-size: 20px;
-  font-family: 'Lato Regular', sans-serif;
-  color: ${colors.black[100]};
+  min-height: 200px;
 `;

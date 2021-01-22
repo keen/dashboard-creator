@@ -48,7 +48,7 @@ const ColorPicker: FC<Props> = ({ currentColor, onSelectColor }) => {
   return (
     <Container ref={containerRef}>
       <OptionHeader onClick={() => setOpen(true)}>
-        <ColorIndicator>
+        <ColorIndicator data-testid="color-indicator">
           <Icon type="text" fill={colors.black[100]} width={13} height={13} />
           <Bar
             style={{
@@ -73,6 +73,7 @@ const ColorPicker: FC<Props> = ({ currentColor, onSelectColor }) => {
                 {Object.keys(colors[name]).map((saturation) => (
                   <Square
                     key={saturation}
+                    data-testid={`color-${colors[name][saturation]}`}
                     onClick={() => onSelectColor(colors[name][saturation])}
                     style={{ background: colors[name][saturation] }}
                   />

@@ -20,7 +20,7 @@ type Props = {
 const FontSize: FC<Props> = ({ currentFontSize, onUpdateFontSize }) => (
   <AttributeDropdown
     renderHeader={() => (
-      <Header>
+      <Header data-testid="font-size-header">
         {currentFontSize}
         <CaretDown>
           <Icon

@@ -3,7 +3,12 @@ import { DraftInlineStyleType, EditorState } from 'draft-js';
 import { Icon } from '@keen.io/icons';
 import { colors } from '@keen.io/colors';
 
-import { Container, TextOption } from './Toolbar.styles';
+import {
+  PickerContainer,
+  Container,
+  Separator,
+  TextOption,
+} from './Toolbar.styles';
 import ColorPicker from '../ColorPicker';
 import TextAlignment from '../TextAlignment';
 import FontSize from '../FontSize';
@@ -17,6 +22,8 @@ import { INLINE_OPTIONS } from '../../constants';
 type Props = {
   /** Current editor state */
   editorState: EditorState;
+  /** Current text alignment */
+  textAlignment: TextAlignmentType;
   /** Font size update event handler */
   onUpdateFontSize: (fontSize: string) => void;
   /** Update color event handler */
@@ -29,6 +36,7 @@ type Props = {
 
 const Toolbar: FC<Props> = ({
   editorState,
+  textAlignment,
   onUpdateFontSize,
   onUpdateColor,
   onUpdateTextAlignment,
@@ -38,6 +46,16 @@ const Toolbar: FC<Props> = ({
 
   return (
     <Container>
+      <FontSize
+        currentFontSize={getBlockFontSize(currentInlineStyle)}
+        onUpdateFontSize={onUpdateFontSize}
+      />
+      <PickerContainer>
+        <ColorPicker
+          currentColor={styles.color.current(editorState)}
+          onSelectColor={onUpdateColor}
+        />
+      </PickerContainer>
       {INLINE_OPTIONS.map(({ id, icon, inlineStyleType }) => (
         <TextOption
           key={id}
@@ -47,16 +65,9 @@ const Toolbar: FC<Props> = ({
           <Icon type={icon} width={15} height={15} fill={colors.black[100]} />
         </TextOption>
       ))}
-      <FontSize
-        currentFontSize={getBlockFontSize(currentInlineStyle)}
-        onUpdateFontSize={onUpdateFontSize}
-      />
-      <ColorPicker
-        currentColor={styles.color.current(editorState)}
-        onSelectColor={onUpdateColor}
-      />
+      <Separator />
       <TextAlignment
-        currentAlignment={null}
+        currentAlignment={textAlignment}
         onUpdateTextAlignment={onUpdateTextAlignment}
       />
     </Container>

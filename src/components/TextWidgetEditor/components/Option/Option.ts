@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 import { transparentize } from 'polished';
 import { colors } from '@keen.io/colors';
 
-const RichEditorOption = styled.div<{ isActive?: boolean }>`
+const Option = styled.div<{ isActive?: boolean }>`
   padding: 5px 14px;
   font-size: 14px;
   font-family: 'Lato Regular', sans-serif;
@@ -20,4 +20,4 @@ const RichEditorOption = styled.div<{ isActive?: boolean }>`
     `}
 `;
 
-export default RichEditorOption;
+export default Option;

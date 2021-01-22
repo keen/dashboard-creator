@@ -1,4 +1,11 @@
+import { IconType } from '@keen.io/icons';
 import { TextAlignmentOption } from './types';
+
+export const ICON: Record<string, IconType> = {
+  left: 'align-left',
+  center: 'align-center',
+  right: 'align-right',
+};
 
 export const OPTIONS: TextAlignmentOption[] = [
   {

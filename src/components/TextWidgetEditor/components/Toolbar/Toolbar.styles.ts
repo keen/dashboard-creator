@@ -2,10 +2,6 @@ import styled, { css } from 'styled-components';
 import { transparentize } from 'polished';
 import { colors } from '@keen.io/colors';
 
-export const Container = styled.div`
-  display: flex;
-`;
-
 export const TextOption = styled.div<{ isActive?: boolean }>`
   padding: 0 14px;
   display: inline-flex;
@@ -22,4 +18,24 @@ export const TextOption = styled.div<{ isActive?: boolean }>`
     css`
       background: ${transparentize(0.85, colors.blue[500])};
     `}
+`;
+
+export const PickerContainer = styled.div`
+  margin: 0 5px;
+`;
+
+export const Container = styled.div`
+  display: flex;
+  align-items: center;
+
+  ${TextOption} + ${TextOption} {
+    margin-left: 5px;
+  }
+`;
+
+export const Separator = styled.div`
+  margin: 0 8px;
+  width: 1px;
+  height: 33px;
+  background: ${transparentize(0.5, colors.black[100])};
 `;
