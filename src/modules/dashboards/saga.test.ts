@@ -27,6 +27,7 @@ import {
 } from './saga';
 
 import { removeWidget, registerWidgets } from '../widgets';
+import { setActiveDashboard, getActiveDashboard } from '../app';
 
 import {
   CONFIRM_DASHBOARD_DELETE,
@@ -36,7 +37,6 @@ import {
 import { NOTIFICATION_MANAGER, BLOB_API, ROUTES } from '../../constants';
 
 import rootReducer from '../../rootReducer';
-import { setActiveDashboard } from '../app';
 
 describe('removeWidgetFromDashboard()', () => {
   const action = removeWidgetFromDashboardAction('@dashboard/01', '@widget/01');
@@ -118,6 +118,12 @@ describe('deleteDashboard()', () => {
       expect(blobApiMock.deleteDashboard).toHaveBeenCalledWith(dashboardId);
     });
 
+    test('get active dashboard identifer', (result) => {
+      expect(result).toEqual(select(getActiveDashboard));
+
+      return null;
+    });
+
     test('triggers dashboard delete success action with dashboard identifer', (result) => {
       expect(result).toEqual(put(deleteDashboardSuccess(dashboardId)));
     });
@@ -185,6 +191,56 @@ describe('deleteDashboard()', () => {
           autoDismiss: false,
         })
       );
+    });
+  });
+
+  describe('Scenario 4: User deletes dashboard in viewer mode', () => {
+    const test = sagaHelper(deleteDashboard(action));
+
+    test('triggers show delete confirmation action with dashboard identifer', (result) => {
+      expect(result).toEqual(put(showDeleteConfirmation(dashboardId)));
+    });
+
+    test('gets NotificationManager from context', (result) => {
+      expect(result).toEqual(getContext(NOTIFICATION_MANAGER));
+
+      return notificationManagerMock;
+    });
+
+    test('waits for specific user action', (result) => {
+      expect(result).toEqual(
+        take([CONFIRM_DASHBOARD_DELETE, HIDE_DELETE_CONFIRMATION])
+      );
+
+      return { type: CONFIRM_DASHBOARD_DELETE };
+    });
+
+    test('triggers hides confirmation action', (result) => {
+      expect(result).toEqual(put(hideDeleteConfirmation()));
+    });
+
+    test('gets BlobAPI instance from context', (result) => {
+      expect(result).toEqual(getContext(BLOB_API));
+
+      return blobApiMock;
+    });
+
+    test('calls dashboard delete method with dashboard identifer', () => {
+      expect(blobApiMock.deleteDashboard).toHaveBeenCalledWith(dashboardId);
+    });
+
+    test('get active dashboard identifer', (result) => {
+      expect(result).toEqual(select(getActiveDashboard));
+
+      return '@dashboard-id';
+    });
+
+    test('changes application view to management', (result) => {
+      expect(result).toEqual(put(push(ROUTES.MANAGEMENT)));
+    });
+
+    test('set active dashboard identifer', (result) => {
+      expect(result).toEqual(put(setActiveDashboard(null)));
     });
   });
 });

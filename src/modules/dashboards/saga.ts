@@ -199,6 +199,12 @@ export function* deleteDashboard({
       const blobApi = yield getContext(BLOB_API);
       yield blobApi.deleteDashboard(dashboardId);
 
+      const activeDashboardId = yield select(getActiveDashboard);
+      if (activeDashboardId) {
+        yield put(push(ROUTES.MANAGEMENT));
+        yield put(setActiveDashboard(null));
+      }
+
       yield put(deleteDashboardSuccess(dashboardId));
       yield put(removeDashboardTheme(dashboardId));
 

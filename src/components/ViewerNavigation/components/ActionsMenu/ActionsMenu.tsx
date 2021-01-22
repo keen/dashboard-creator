@@ -3,9 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { DropdownMenu } from '@keen.io/ui-core';
 
-import { Container } from './ActionsMenu.styles';
+import { Container, DeleteDashboard } from './ActionsMenu.styles';
 
-import { cloneDashboard } from '../../../../modules/dashboards';
+import {
+  cloneDashboard,
+  deleteDashboard,
+} from '../../../../modules/dashboards';
 
 type Props = {
   /** Dashboard identifer */
@@ -27,7 +30,17 @@ const ActionsMenu: FC<Props> = ({ dashboardId, onClose }) => {
             dispatch(cloneDashboard(dashboardId));
           }}
         >
-          {t('viewer.clone_dashboard')}
+          {t('actions_menu.clone_dashboard')}
+        </DropdownMenu.Item>
+        <DropdownMenu.Item
+          onClick={() => {
+            onClose();
+            dispatch(deleteDashboard(dashboardId));
+          }}
+        >
+          <DeleteDashboard>
+            {t('actions_menu.delete_dashboard')}
+          </DeleteDashboard>
         </DropdownMenu.Item>
       </DropdownMenu.Container>
     </Container>
