@@ -10,6 +10,7 @@ import {
   initializeWidget,
   initializeChartWidget,
   updateWidgetsPosition,
+  cloneWidget,
 } from './actions';
 import { getWidgetsPosition, getWidgetSettings, getWidget } from './selectors';
 import { widgetsSaga } from './saga';
@@ -46,4 +47,5 @@ export {
   getWidgetSettings,
   getWidgetsPosition,
   createWidgetId,
+  cloneWidget,
 };
