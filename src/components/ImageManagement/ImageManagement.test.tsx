@@ -3,7 +3,7 @@ import { render as rtlRender, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 
-import ChartManagement from './ChartManagement';
+import ImageManagement from './ImageManagement';
 
 const render = (overProps: any = {}) => {
   const props = {
@@ -18,7 +18,7 @@ const render = (overProps: any = {}) => {
 
   const wrapper = rtlRender(
     <Provider store={store}>
-      <ChartManagement {...props} />
+      <ImageManagement {...props} />
     </Provider>
   );
 
@@ -29,28 +29,13 @@ const render = (overProps: any = {}) => {
   };
 };
 
-test('allows user to remove widget', () => {
-  const {
-    props,
-    wrapper: { container, getByText },
-  } = render();
-
-  const button = container.querySelector('[data-testid="delete-chart"] button');
-  fireEvent.click(button);
-
-  const confirmButton = getByText('widget.remove_confirm_button');
-  fireEvent.click(confirmButton);
-
-  expect(props.onRemoveWidget).toHaveBeenCalled();
-});
-
-test('allows user to edit widget', () => {
+test('allows user to chart edit widget', () => {
   const {
     store,
     wrapper: { getByText },
   } = render();
 
-  const editButton = getByText('widget.edit_chart');
+  const editButton = getByText('widget.edit_image');
   fireEvent.click(editButton);
 
   expect(store.getActions()).toMatchInlineSnapshot(`
@@ -58,9 +43,8 @@ test('allows user to edit widget', () => {
       Object {
         "payload": Object {
           "id": "@widget/01",
-          "usePersistedChartEditorState": false,
         },
-        "type": "@widgets/EDIT_CHART_WIDGET",
+        "type": "@widgets/EDIT_IMAGE_WIDGET",
       },
     ]
   `);

@@ -5,9 +5,11 @@ import {
   take,
   all,
   getContext,
+  spawn,
 } from 'redux-saga/effects';
 import { NOT_FOUND } from 'http-status-codes';
 import { push } from 'connected-react-router';
+import { v4 as uuid } from 'uuid';
 import { Theme } from '@keen.io/charts';
 
 import {
@@ -28,6 +30,7 @@ import {
   viewDashboard as viewDashboardAction,
   viewPublicDashboard as viewPublicDashboardAction,
   deleteDashboard as deleteDashboardAction,
+  cloneDashboard as cloneDashboardAction,
   showDeleteConfirmation,
   hideDeleteConfirmation,
   saveDashboardMetaSuccess,
@@ -35,6 +38,8 @@ import {
   setTagsPool,
   setDashboardList,
   setDashboardError,
+  setDashboardListOrder,
+  addClonedDashboard,
 } from './actions';
 
 import { serializeDashboard } from './serializers';
@@ -45,15 +50,17 @@ import {
 } from './selectors';
 import { getBaseTheme, getActiveDashboardTheme } from '../theme/selectors';
 
-import { setActiveDashboard } from '../app';
+import { setActiveDashboard, getActiveDashboard } from '../app';
 import {
   initializeWidget,
   registerWidgets,
   removeWidget,
   getWidgetSettings,
 } from '../widgets';
+
 import { removeDashboardTheme, setDashboardTheme } from '../theme';
 import { createTagsPool } from './utils';
+import { createWidgetId } from '../widgets/utils';
 
 import { APIError } from '../../api';
 
@@ -73,7 +80,9 @@ import {
   HIDE_DELETE_CONFIRMATION,
   SHOW_DASHBOARD_SETTINGS_MODAL,
   HIDE_DASHBOARD_SETTINGS_MODAL,
-  SAVE_DASHBOARD_METADATA_SUCCESS,
+  SET_DASHBOARD_LIST_ORDER,
+  DASHBOARD_LIST_ORDER_KEY,
+  CLONE_DASHBOARD,
 } from './constants';
 
 import { RootState } from '../../rootReducer';
@@ -105,6 +114,7 @@ export function* saveDashboardMetadata({
   try {
     const blobApi = yield getContext(BLOB_API);
     yield blobApi.saveDashboardMeta(dashboardId, metadata);
+    yield put(updateDashboardMeta(dashboardId, metadata));
 
     yield put(saveDashboardMetaSuccess());
     yield notificationManager.showNotification({
@@ -116,7 +126,7 @@ export function* saveDashboardMetadata({
     yield put(saveDashboardMetaError());
     yield notificationManager.showNotification({
       type: 'error',
-      message: err,
+      message: 'notifications.dashboard_meta_error',
       showDismissButton: true,
       autoDismiss: false,
     });
@@ -181,6 +191,8 @@ export function* createDashboard({
 
   yield put(setActiveDashboard(dashboardId));
   yield put(push(ROUTES.EDITOR));
+
+  yield put(saveDashboardAction(dashboardId));
 }
 
 export function* deleteDashboard({
@@ -200,6 +212,12 @@ export function* deleteDashboard({
     try {
       const blobApi = yield getContext(BLOB_API);
       yield blobApi.deleteDashboard(dashboardId);
+
+      const activeDashboardId = yield select(getActiveDashboard);
+      if (activeDashboardId) {
+        yield put(push(ROUTES.MANAGEMENT));
+        yield put(setActiveDashboard(null));
+      }
 
       yield put(deleteDashboardSuccess(dashboardId));
       yield put(removeDashboardTheme(dashboardId));
@@ -388,11 +406,101 @@ export function* hideDashboardSettings() {
   yield put(setTagsPool([]));
 }
 
+export function* rehydrateDashboardsOrder() {
+  try {
+    const settings = localStorage.getItem(DASHBOARD_LIST_ORDER_KEY);
+    if (settings) {
+      const { order } = JSON.parse(settings);
+      yield put(setDashboardListOrder(order));
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export function* persistDashboardsOrder({
+  payload,
+}: ReturnType<typeof setDashboardListOrder>) {
+  const { order } = payload;
+  try {
+    localStorage.setItem(DASHBOARD_LIST_ORDER_KEY, JSON.stringify({ order }));
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export function* cloneDashboard({
+  payload,
+}: ReturnType<typeof cloneDashboardAction>) {
+  const { dashboardId } = payload;
+
+  const notificationManager = yield getContext(NOTIFICATION_MANAGER);
+  try {
+    const blobApi = yield getContext(BLOB_API);
+
+    const model = yield blobApi.getDashboardById(dashboardId);
+
+    const uniqueIdWidgets = model.widgets.map((widget) => ({
+      ...widget,
+      id: createWidgetId(),
+    }));
+
+    const newDashboardId = uuid();
+    const metaData = yield blobApi.getDashboardMetadataById(dashboardId);
+    const newMetaData = {
+      ...metaData,
+      id: newDashboardId,
+      title: metaData.title ? `${metaData.title} Clone` : 'Clone',
+      isPublic: false,
+      lastModificationDate: +new Date(),
+    };
+
+    const newModel = {
+      ...model,
+      widgets: uniqueIdWidgets,
+    };
+
+    yield blobApi.saveDashboard(newDashboardId, newModel, newMetaData);
+
+    yield put(addClonedDashboard(newMetaData));
+
+    yield notificationManager.showNotification({
+      type: 'info',
+      message: 'notifications.dashboard_cloned',
+      autoDismiss: true,
+    });
+
+    const state: RootState = yield select();
+    const activeDashboard = getActiveDashboard(state);
+
+    if (activeDashboard) {
+      const serializedDashboard = serializeDashboard(newModel);
+      yield put(registerWidgets(uniqueIdWidgets));
+      yield put(updateDashboard(newDashboardId, serializedDashboard));
+      yield put(
+        initializeDashboardWidgetsAction(
+          newDashboardId,
+          serializedDashboard.widgets
+        )
+      );
+
+      yield put(setActiveDashboard(newDashboardId));
+      yield put(push(ROUTES.EDITOR));
+    }
+  } catch (err) {
+    yield notificationManager.showNotification({
+      type: 'error',
+      message: 'notifications.dashboard_cloned_error',
+      showDismissButton: true,
+      autoDismiss: false,
+    });
+  }
+}
+
 export function* dashboardsSaga() {
-  yield takeLatest(
-    [FETCH_DASHBOARDS_LIST, SAVE_DASHBOARD_METADATA_SUCCESS],
-    fetchDashboardList
-  );
+  yield spawn(rehydrateDashboardsOrder);
+  yield takeLatest(FETCH_DASHBOARDS_LIST, fetchDashboardList);
+  yield takeLatest(SET_DASHBOARD_LIST_ORDER, persistDashboardsOrder);
   yield takeLatest(CREATE_DASHBOARD, createDashboard);
   yield takeLatest(SAVE_DASHBOARD, saveDashboard);
   yield takeLatest(SAVE_DASHBOARD_METADATA, saveDashboardMetadata);
@@ -404,4 +512,5 @@ export function* dashboardsSaga() {
   yield takeLatest(INITIALIZE_DASHBOARD_WIDGETS, initializeDashboardWidgets);
   yield takeLatest(SHOW_DASHBOARD_SETTINGS_MODAL, showDashboardSettings);
   yield takeLatest(HIDE_DASHBOARD_SETTINGS_MODAL, hideDashboardSettings);
+  yield takeLatest(CLONE_DASHBOARD, cloneDashboard);
 }

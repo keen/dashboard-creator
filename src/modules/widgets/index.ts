@@ -3,6 +3,9 @@ import {
   registerWidgets,
   createWidget,
   editChartWidget,
+  editImageWidget,
+  editTextWidget,
+  editInlineTextWidget,
   removeWidget,
   initializeWidget,
   initializeChartWidget,
@@ -11,13 +14,22 @@ import {
 import { getWidgetsPosition, getWidgetSettings, getWidget } from './selectors';
 import { widgetsSaga } from './saga';
 import { createWidgetId } from './utils';
-import { Widget, GridPosition, WidgetsPosition, ChartWidget } from './types';
+import {
+  Widget,
+  GridPosition,
+  WidgetsPosition,
+  ChartWidget,
+  TextWidget,
+  ImageWidget,
+} from './types';
 
 export {
   Widget,
   GridPosition,
   WidgetsPosition,
   ChartWidget,
+  ImageWidget,
+  TextWidget,
   widgetsReducer,
   widgetsSaga,
   createWidget,
@@ -25,6 +37,9 @@ export {
   registerWidgets,
   initializeWidget,
   editChartWidget,
+  editImageWidget,
+  editInlineTextWidget,
+  editTextWidget,
   initializeChartWidget,
   updateWidgetsPosition,
   getWidget,

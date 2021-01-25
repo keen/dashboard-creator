@@ -17,6 +17,7 @@ import DashboardsPlaceholder from '../DashboardsPlaceholder';
 import ManagementNavigation from '../ManagementNavigation';
 import SearchInput from '../SearchInput';
 import DashboardDeleteConfirmation from '../DashboardDeleteConfirmation';
+import DashboardListOrder from '../DashboardListOrder';
 
 import {
   createDashboard,
@@ -24,6 +25,7 @@ import {
   getDashboardsMetadata,
   getDashboardsLoadState,
   showDashboardSettingsModal,
+  getDashbaordListOrder,
 } from '../../modules/dashboards';
 import { getUser } from '../../modules/app';
 
@@ -34,6 +36,7 @@ const Management: FC<Props> = () => {
   const dispatch = useDispatch();
   const dashboards = useSelector(getDashboardsMetadata);
   const dashboardsLoaded = useSelector(getDashboardsLoadState);
+  const dashboardListOrder = useSelector(getDashbaordListOrder);
   const { editPrivileges } = useSelector(getUser);
 
   const [searchPhrase, setSearchPhrase] = useState('');
@@ -54,7 +57,7 @@ const Management: FC<Props> = () => {
     }
 
     return dashboardsList;
-  }, [searchPhrase, dashboards]);
+  }, [searchPhrase, dashboards, dashboardListOrder]);
 
   const isEmptyProject = dashboardsLoaded && dashboards.length === 0;
   const isEmptySearch =
@@ -78,6 +81,7 @@ const Management: FC<Props> = () => {
               onClearSearch={() => setSearchPhrase('')}
             />
           </Search>
+          <DashboardListOrder />
         </Filters>
       </Navigation>
       <Content>

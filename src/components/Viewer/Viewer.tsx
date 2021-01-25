@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { push } from 'connected-react-router';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Navigation } from './Viewer.styles';
+import { Navigation, Content } from './Viewer.styles';
 
 import {
   getDashboard,
@@ -13,7 +13,9 @@ import {
 import { setActiveDashboard, getUser } from '../../modules/app';
 
 import Grid from '../Grid';
+import GridLoader from '../GridLoader';
 import ViewerNavigation from '../ViewerNavigation';
+import DashboardDeleteConfirmation from '../DashboardDeleteConfirmation';
 
 import { ROUTES } from '../../constants';
 import { RootState } from '../../rootReducer';
@@ -50,6 +52,7 @@ const Viewer: FC<Props> = ({ dashboardId }) => {
     <>
       <Navigation>
         <ViewerNavigation
+          dashboardId={dashboardId}
           title={title}
           tags={tags}
           onEditDashboard={() => dispatch(editDashboard(dashboardId))}
@@ -63,12 +66,19 @@ const Viewer: FC<Props> = ({ dashboardId }) => {
           editPrivileges={editPrivileges}
         />
       </Navigation>
-      {isInitialized ? (
+      <Content>
+        {isInitialized ? (
+          <>
+            <Grid isEditorMode={false} widgetsId={widgetsId} />
+          </>
+        ) : (
+          <GridLoader />
+        )}
+      </Content>
+      {editPrivileges && (
         <>
-          <Grid isEditorMode={false} widgetsId={widgetsId} />
+          <DashboardDeleteConfirmation />
         </>
-      ) : (
-        <div>Loading</div>
       )}
     </>
   );

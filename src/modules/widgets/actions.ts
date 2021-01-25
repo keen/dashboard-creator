@@ -1,4 +1,5 @@
 import { createAction } from '@reduxjs/toolkit';
+import { RawDraftContentState } from 'draft-js';
 import { Query } from '@keen.io/query';
 
 import { WidgetType } from '../../types';
@@ -13,6 +14,11 @@ import {
   INITIALIZE_WIDGET,
   INITIALIZE_CHART_WIDGET,
   EDIT_CHART_WIDGET,
+  EDIT_IMAGE_WIDGET,
+  SET_IMAGE_WIDGET,
+  SET_TEXT_WIDGET,
+  EDIT_TEXT_WIDGET,
+  EDIT_INLINE_TEXT_WIDGET,
   SET_WIDGET_LOADING,
   SET_WIDGET_INITIALIZATION,
   SET_WIDGET_STATE,
@@ -80,6 +86,55 @@ export const editChartWidget = createAction(
   })
 );
 
+export const editImageWidget = createAction(
+  EDIT_IMAGE_WIDGET,
+  (id: string) => ({
+    payload: { id },
+  })
+);
+
+export const setImageWidget = createAction(
+  SET_IMAGE_WIDGET,
+  (id: string, link: string) => ({
+    payload: {
+      id,
+      link,
+    },
+  })
+);
+
+export const setTextWidget = createAction(
+  SET_TEXT_WIDGET,
+  (
+    id: string,
+    settings: {
+      content: RawDraftContentState;
+      textAlignment?: 'left' | 'center' | 'right';
+    }
+  ) => ({
+    payload: {
+      id,
+      settings,
+    },
+  })
+);
+
+export const editInlineTextWidget = createAction(
+  EDIT_INLINE_TEXT_WIDGET,
+  (id: string, content: RawDraftContentState) => ({
+    payload: {
+      id,
+      content,
+    },
+  })
+);
+
+export const editTextWidget = createAction(EDIT_TEXT_WIDGET, (id: string) => ({
+  payload: {
+    id,
+  },
+}));
+
 export const initializeChartWidget = createAction(
   INITIALIZE_CHART_WIDGET,
   (id: string) => ({
@@ -145,5 +200,9 @@ export type WidgetsActions =
   | ReturnType<typeof setWidgetLoading>
   | ReturnType<typeof setWidgetState>
   | ReturnType<typeof setWidgetInitialization>
+  | ReturnType<typeof setTextWidget>
+  | ReturnType<typeof editTextWidget>
+  | ReturnType<typeof editInlineTextWidget>
+  | ReturnType<typeof setImageWidget>
   | ReturnType<typeof finishChartWidgetConfiguration>
   | ReturnType<typeof savedQueryUpdated>;

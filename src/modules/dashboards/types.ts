@@ -52,4 +52,5 @@ export type ReducerState = {
   };
   tagsPool: string[];
   items: Record<string, DashboardItem>;
+  dashboardListOrder: string;
 };

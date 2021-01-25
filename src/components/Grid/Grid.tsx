@@ -131,7 +131,7 @@ const Grid: FC<Props> = ({
               id={id}
               onRemoveWidget={() => onRemoveWidget(id)}
               isHoverActive={isEditorMode && id === activeWidget}
-              disableInteractions={isEditorMode}
+              isEditorMode={isEditorMode}
             />
           </div>
         ))}

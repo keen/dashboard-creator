@@ -12,6 +12,10 @@ import {
   initializeChartWidget as initializeChartWidgetAction,
   initializeWidget as initializeWidgetAction,
   editChartWidget as editChartWidgetAction,
+  setImageWidget as setImageWidgetAction,
+  editTextWidget as editTextWidgetAction,
+  editInlineTextWidget as editInlineTextWidgetAction,
+  setTextWidget,
   setWidgetLoading,
 } from './actions';
 import {
@@ -19,9 +23,12 @@ import {
   createQueryForWidget,
   editChartWidget,
   editChartSavedQuery,
+  editTextWidget,
+  editInlineTextWidget,
   reinitializeWidgets,
   initializeChartWidget,
   initializeWidget,
+  selectImageWidget,
 } from './saga';
 
 import { getWidgetSettings } from './selectors';
@@ -31,18 +38,25 @@ import {
   showQueryPicker,
   hideQueryPicker,
   HIDE_QUERY_PICKER,
+  showImagePicker,
+  HIDE_IMAGE_PICKER,
+  hideImagePicker,
 } from '../app';
+
 import {
   getDashboardSettings,
   saveDashboard,
   removeWidgetFromDashboard,
 } from '../dashboards';
+
 import {
   selectSavedQuery,
   createQuery,
   SELECT_SAVED_QUERY,
   CREATE_QUERY,
   SavedQuery,
+  SAVE_IMAGE,
+  saveImage,
 } from '../queries';
 
 import {
@@ -67,11 +81,140 @@ import {
 } from '../chartEditor';
 
 import { KEEN_ANALYSIS, TRANSLATIONS } from '../../constants';
+import {
+  setEditorContent,
+  setTextAlignment,
+  openEditor as openTextEditor,
+  closeEditor as closeTextEditor,
+  applyTextEditorSettings,
+  APPLY_TEXT_EDITOR_SETTINGS,
+  CLOSE_EDITOR as CLOSE_TEXT_EDITOR,
+} from '../textEditor';
 
 import { widget as widgetItem } from './fixtures';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
+
+describe('editTextWidget()', () => {
+  describe('Scenario 1: User edits text widget in editor', () => {
+    const action = editTextWidgetAction(widgetId);
+    const test = sagaHelper(editTextWidget(action));
+
+    const textWidgetContent = {
+      blocks: [
+        {
+          key: '@key',
+          text: '@text',
+          type: 'unstyled',
+          depth: 0,
+          inlineStyleRanges: [],
+          entityRanges: [],
+        },
+      ],
+      entityMap: {},
+    };
+
+    test('get widget settings', (result) => {
+      expect(result).toEqual(select(getWidgetSettings, widgetId));
+
+      return {
+        settings: {
+          textAlignment: 'center',
+          content: textWidgetContent,
+        },
+      };
+    });
+
+    test('set editor content', (result) => {
+      expect(result).toEqual(put(setEditorContent(textWidgetContent)));
+    });
+
+    test('set editor text alignment', (result) => {
+      expect(result).toEqual(put(setTextAlignment('center')));
+    });
+
+    test('opens text editor', (result) => {
+      expect(result).toEqual(put(openTextEditor()));
+    });
+
+    test('updates widget state', (result) => {
+      expect(result).toEqual(
+        put(
+          setWidgetState(widgetId, {
+            isInitialized: false,
+          })
+        )
+      );
+    });
+
+    test('waits for user action', (result) => {
+      expect(result).toEqual(
+        take([APPLY_TEXT_EDITOR_SETTINGS, CLOSE_TEXT_EDITOR])
+      );
+
+      return applyTextEditorSettings(textWidgetContent, 'left');
+    });
+
+    test('set text widget settings', (result) => {
+      expect(result).toEqual(
+        put(
+          setTextWidget(widgetId, {
+            content: textWidgetContent,
+            textAlignment: 'left',
+          })
+        )
+      );
+    });
+
+    test('gets active dashboard identifier', () => {
+      return dashboardId;
+    });
+
+    test('triggers save dashboard action', (result) => {
+      expect(result).toEqual(put(saveDashboard(dashboardId)));
+    });
+
+    test('close text editor', (result) => {
+      expect(result).toEqual(put(closeTextEditor()));
+    });
+  });
+});
+
+describe('editInlineTextWidget()', () => {
+  const textWidgetContent = {
+    blocks: [
+      {
+        key: '@key',
+        text: '@text',
+        type: 'unstyled',
+        depth: 0,
+        inlineStyleRanges: [],
+        entityRanges: [],
+      },
+    ],
+    entityMap: {},
+  };
+
+  describe('Scenario 1: User edits inline text widget', () => {
+    const action = editInlineTextWidgetAction(widgetId, textWidgetContent);
+    const test = sagaHelper(editInlineTextWidget(action));
+
+    test('set text widget settings', (result) => {
+      expect(result).toEqual(
+        put(setTextWidget(widgetId, { content: textWidgetContent }))
+      );
+    });
+
+    test('gets active dashboard identifier', () => {
+      return dashboardId;
+    });
+
+    test('triggers save dashboard action', (result) => {
+      expect(result).toEqual(put(saveDashboard(dashboardId)));
+    });
+  });
+});
 
 describe('reinitializeWidgets()', () => {
   const queryName = 'purchases';
@@ -908,6 +1051,71 @@ describe('selectQueryForWidget()', () => {
 
     test('runs create query flow', (result) => {
       expect(result).toEqual(call(createQueryForWidget, widgetId));
+    });
+  });
+});
+
+describe('selectImageWidget()', () => {
+  describe('Scenario 1: User saves new image', () => {
+    const test = sagaHelper(selectImageWidget(widgetId));
+    const link = 'https://example.com/image-1.jpg';
+
+    test('shows query picker', (result) => {
+      expect(result).toEqual(put(showImagePicker()));
+    });
+
+    test('waits until user save new image', (result) => {
+      expect(result).toEqual(take([SAVE_IMAGE, HIDE_IMAGE_PICKER]));
+
+      return saveImage(link);
+    });
+
+    test('configures image widget', (result) => {
+      const action = setImageWidgetAction(widgetId, link);
+
+      expect(result).toEqual(put(action));
+    });
+
+    test('sets widget state', (result) => {
+      expect(result).toEqual(
+        put(setWidgetState(widgetId, { isConfigured: true }))
+      );
+    });
+
+    test('hides Image picker', (result) => {
+      expect(result).toEqual(put(hideImagePicker()));
+    });
+
+    test('gets active dashboard identifier', () => {
+      return dashboardId;
+    });
+
+    test('triggers save dashboard action', (result) => {
+      expect(result).toEqual(put(saveDashboard(dashboardId)));
+    });
+  });
+
+  describe('Scenario 2: User cancel creation of chart widget', () => {
+    const test = sagaHelper(selectImageWidget(widgetId));
+
+    test('shows image picker', (result) => {
+      expect(result).toEqual(put(showImagePicker()));
+    });
+
+    test('waits until user close image picker', (result) => {
+      expect(result).toEqual(take([SAVE_IMAGE, HIDE_IMAGE_PICKER]));
+
+      return hideImagePicker();
+    });
+
+    test('gets active dashboard identifier', () => {
+      return dashboardId;
+    });
+
+    test('removes widget from dashboard', (result) => {
+      expect(result).toEqual(
+        put(removeWidgetFromDashboard(dashboardId, widgetId))
+      );
     });
   });
 });

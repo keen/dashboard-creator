@@ -15,6 +15,8 @@ import {
   saveDashboardMeta,
   saveDashboardMetaSuccess,
   saveDashboardMetaError,
+  setDashboardListOrder,
+  addClonedDashboard,
 } from './actions';
 
 import { dashboardsMeta } from './fixtures';
@@ -389,5 +391,42 @@ test('return state for saving dashboard metadata', () => {
       "isSavingMetaData": false,
       "isSavingMetadata": false,
     }
+  `);
+});
+
+test('set order for dashboard list', () => {
+  const action = setDashboardListOrder('az');
+  const { dashboardListOrder } = dashboardsReducer(initialState, action);
+
+  expect(dashboardListOrder).toBe('az');
+});
+
+test('add cloned dashboard to the list', () => {
+  const newDashboard = {
+    id: '@dashboard/01',
+    title: null,
+    widgets: 0,
+    queries: 0,
+    tags: [],
+    lastModificationDate: 1606895352390,
+    isPublic: false,
+  };
+  const action = addClonedDashboard(newDashboard);
+  const {
+    metadata: { data },
+  } = dashboardsReducer(initialState, action);
+
+  expect(data).toMatchInlineSnapshot(`
+    Array [
+      Object {
+        "id": "@dashboard/01",
+        "isPublic": false,
+        "lastModificationDate": 1606895352390,
+        "queries": 0,
+        "tags": Array [],
+        "title": null,
+        "widgets": 0,
+      },
+    ]
   `);
 });

@@ -203,7 +203,7 @@ test('renders chart placeholder', () => {
   const {
     wrapper: { getByTestId },
   } = render(storeState);
-  const placeholder = getByTestId('chart-placeholder');
+  const placeholder = getByTestId('widget-placeholder');
 
   expect(placeholder).toBeInTheDocument();
 });

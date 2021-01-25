@@ -8,7 +8,7 @@ test('get dropping item size for "visualization" item', () => {
       "i": "dropping-item",
       "minH": 6,
       "minW": 2,
-      "w": 3,
+      "w": 4,
     }
   `);
 });
@@ -17,11 +17,11 @@ test('get dropping item size for "text" item', () => {
   const itemSize = getDroppingItemSize('text');
   expect(itemSize).toMatchInlineSnapshot(`
     Object {
-      "h": 3,
+      "h": 2,
       "i": "dropping-item",
       "minH": 1,
       "minW": 2,
-      "w": 3,
+      "w": 2,
     }
   `);
 });

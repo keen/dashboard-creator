@@ -1,7 +1,7 @@
 import { serializeWidget } from '../serializers';
 
 import { WidgetType } from '../../../types';
-import { GridPosition, TextWidget, ChartWidget } from '../types';
+import { GridPosition, TextWidget, ChartWidget, ImageWidget } from '../types';
 
 type Options = {
   id: string;
@@ -38,8 +38,22 @@ export const createWidget = (
       return serializeWidget(
         {
           ...baseWidget,
-          settings: {},
+          settings: {
+            textAlignment: 'left',
+            content: {
+              blocks: [],
+              entityMap: {},
+            },
+          },
         } as TextWidget,
+        isConfigured
+      );
+    case 'image':
+      return serializeWidget(
+        {
+          ...baseWidget,
+          settings: { link: '' },
+        } as ImageWidget,
         isConfigured
       );
   }

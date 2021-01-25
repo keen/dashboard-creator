@@ -17,9 +17,14 @@ import {
   initializeWidget as initializeWidgetAction,
   initializeChartWidget as initializeChartWidgetAction,
   editChartWidget as editChartWidgetAction,
+  editImageWidget as editImageWidgetAction,
+  editInlineTextWidget as editInlineTextWidgetAction,
+  editTextWidget as editTextWidgetAction,
   setWidgetLoading,
   setWidgetState,
   finishChartWidgetConfiguration,
+  setImageWidget,
+  setTextWidget,
   savedQueryUpdated,
 } from './actions';
 
@@ -29,6 +34,7 @@ import {
   removeWidgetFromDashboard,
   saveDashboard,
   getDashboardSettings,
+  ADD_WIDGET_TO_DASHBOARD,
 } from '../dashboards';
 import {
   openEditor,
@@ -42,7 +48,7 @@ import {
   setVisualizationSettings,
   showQueryUpdateConfirmation,
   hideQueryUpdateConfirmation,
-  CLOSE_EDITOR,
+  CLOSE_EDITOR as CLOSE_CHART_EDITOR,
   EDITOR_MOUNTED,
   EDITOR_UNMOUNTED,
   APPLY_CONFIGURATION,
@@ -52,21 +58,37 @@ import {
 } from '../chartEditor';
 
 import {
+  openEditor as openTextEditor,
+  closeEditor as closeTextEditor,
+  setTextAlignment,
+  setEditorContent,
+  APPLY_TEXT_EDITOR_SETTINGS,
+  CLOSE_EDITOR as CLOSE_TEXT_EDITOR,
+} from '../textEditor';
+
+import {
   updateSaveQuery,
   SELECT_SAVED_QUERY,
   CREATE_QUERY,
+  SAVE_IMAGE,
   SavedQuery,
 } from '../queries';
 import {
   getActiveDashboard,
   showQueryPicker,
   hideQueryPicker,
+  showImagePicker,
+  hideImagePicker,
   HIDE_QUERY_PICKER,
+  HIDE_IMAGE_PICKER,
 } from '../app';
 
 import {
   CREATE_WIDGET,
+  EDIT_INLINE_TEXT_WIDGET,
+  EDIT_TEXT_WIDGET,
   EDIT_CHART_WIDGET,
+  EDIT_IMAGE_WIDGET,
   INITIALIZE_WIDGET,
   INITIALIZE_CHART_WIDGET,
   SAVED_QUERY_UPDATED,
@@ -191,6 +213,13 @@ export function* initializeWidget({
   const { type } = yield select(getWidgetSettings, id);
   if (type === 'visualization') {
     yield put(initializeChartWidgetAction(id));
+  } else {
+    yield put(
+      setWidgetState(id, {
+        isConfigured: true,
+        isInitialized: true,
+      })
+    );
   }
 }
 
@@ -208,9 +237,9 @@ function* cancelWidgetConfiguration(widgetId: string) {
  */
 export function* createQueryForWidget(widgetId: string) {
   yield put(openEditor());
-  const action = yield take([CLOSE_EDITOR, APPLY_CONFIGURATION]);
+  const action = yield take([CLOSE_CHART_EDITOR, APPLY_CONFIGURATION]);
 
-  if (action.type === CLOSE_EDITOR) {
+  if (action.type === CLOSE_CHART_EDITOR) {
     yield* cancelWidgetConfiguration(widgetId);
   } else {
     const {
@@ -234,6 +263,25 @@ export function* createQueryForWidget(widgetId: string) {
 
     yield put(initializeChartWidgetAction(widgetId));
 
+    const dashboardId = yield select(getActiveDashboard);
+    yield put(saveDashboard(dashboardId));
+  }
+}
+
+export function* selectImageWidget(widgetId: string) {
+  yield put(showImagePicker());
+  const action = yield take([SAVE_IMAGE, HIDE_IMAGE_PICKER]);
+
+  if (action.type === HIDE_IMAGE_PICKER) {
+    yield* cancelWidgetConfiguration(widgetId);
+  } else {
+    yield put(setImageWidget(widgetId, action.payload.link));
+    yield put(
+      setWidgetState(widgetId, {
+        isConfigured: true,
+      })
+    );
+    yield put(hideImagePicker());
     const dashboardId = yield select(getActiveDashboard);
     yield put(saveDashboard(dashboardId));
   }
@@ -442,9 +490,9 @@ export function* editChartWidget({
     });
   }
 
-  const action = yield take([CLOSE_EDITOR, APPLY_CONFIGURATION]);
+  const action = yield take([CLOSE_CHART_EDITOR, APPLY_CONFIGURATION]);
 
-  if (action.type === CLOSE_EDITOR) {
+  if (action.type === CLOSE_CHART_EDITOR) {
     yield take(EDITOR_UNMOUNTED);
     yield put(resetEditor());
   } else {
@@ -487,18 +535,125 @@ export function* editChartWidget({
   }
 }
 
+export function* editImageWidget({
+  payload,
+}: ReturnType<typeof editImageWidgetAction>) {
+  const { id } = payload;
+
+  const state = yield select();
+  const widgetId = getWidget(state, id).widget.id;
+
+  yield put(showImagePicker());
+  const action = yield take([SAVE_IMAGE, HIDE_IMAGE_PICKER]);
+
+  if (action.type === SAVE_IMAGE) {
+    yield put(setImageWidget(widgetId, action.payload.link));
+    yield put(hideImagePicker());
+
+    const dashboardId = yield select(getActiveDashboard);
+    yield put(saveDashboard(dashboardId));
+  }
+}
+
+/**
+ * Flow responsible for creating text widget.
+ *
+ * @param widgetId - Widget identifer
+ * @return void
+ *
+ */
+export function* createTextWidget(widgetId: string) {
+  yield put(
+    setTextWidget(widgetId, {
+      content: { blocks: [], entityMap: {} },
+    })
+  );
+  yield put(
+    setWidgetState(widgetId, {
+      isConfigured: true,
+      isInitialized: true,
+    })
+  );
+}
+
+export function* editTextWidget({
+  payload,
+}: ReturnType<typeof editTextWidgetAction>) {
+  const { id } = payload;
+  const {
+    settings: { content, textAlignment },
+  } = yield select(getWidgetSettings, id);
+
+  yield put(setEditorContent(content));
+  yield put(setTextAlignment(textAlignment));
+
+  yield put(openTextEditor());
+  yield put(
+    setWidgetState(id, {
+      isInitialized: false,
+    })
+  );
+
+  const action = yield take([APPLY_TEXT_EDITOR_SETTINGS, CLOSE_TEXT_EDITOR]);
+
+  if (action.type === APPLY_TEXT_EDITOR_SETTINGS) {
+    const {
+      content: updatedContent,
+      textAlignment: updatedAlignment,
+    } = action.payload;
+    yield put(
+      setTextWidget(id, {
+        content: updatedContent,
+        textAlignment: updatedAlignment,
+      })
+    );
+
+    const dashboardId = yield select(getActiveDashboard);
+    yield put(saveDashboard(dashboardId));
+
+    yield put(closeTextEditor());
+  }
+
+  yield put(
+    setWidgetState(id, {
+      isInitialized: true,
+    })
+  );
+}
+
+export function* editInlineTextWidget({
+  payload,
+}: ReturnType<typeof editInlineTextWidgetAction>) {
+  const { id, content } = payload;
+  yield put(setTextWidget(id, { content }));
+
+  const dashboardId = yield select(getActiveDashboard);
+  yield put(saveDashboard(dashboardId));
+}
+
 export function* createWidget({
   payload,
 }: ReturnType<typeof createWidgetAction>) {
-  const { id } = payload;
-  // @TODO: Implement different flows based on widget type
-  yield fork(selectQueryForWidget, id);
+  const { id, widgetType } = payload;
+  if (widgetType === 'image') {
+    yield fork(selectImageWidget, id);
+  } else if (widgetType === 'text') {
+    yield fork(createTextWidget, id);
+    yield take(ADD_WIDGET_TO_DASHBOARD);
+    const dashboardId = yield select(getActiveDashboard);
+    yield put(saveDashboard(dashboardId));
+  } else {
+    yield fork(selectQueryForWidget, id);
+  }
 }
 
 export function* widgetsSaga() {
   yield takeLatest(SAVED_QUERY_UPDATED, reinitializeWidgets);
   yield takeLatest(CREATE_WIDGET, createWidget);
   yield takeLatest(EDIT_CHART_WIDGET, editChartWidget);
+  yield takeLatest(EDIT_IMAGE_WIDGET, editImageWidget);
+  yield takeLatest(EDIT_TEXT_WIDGET, editTextWidget);
+  yield takeLatest(EDIT_INLINE_TEXT_WIDGET, editInlineTextWidget);
   yield takeEvery(INITIALIZE_WIDGET, initializeWidget);
   yield takeEvery(INITIALIZE_CHART_WIDGET, initializeChartWidget);
 }

@@ -19,6 +19,7 @@ import {
   showDashboardSettingsModal,
   hideDashboardSettingsModal,
   updateDashboardMeta,
+  setDashboardListOrder,
 } from './actions';
 
 import {
@@ -31,8 +32,10 @@ import {
   getDashboardSettingsModal,
   getTagsPool,
   getDashboardMetaSaving,
+  getDashbaordListOrder,
 } from './selectors';
 import { DashboardMetaData, DashboardModel, DashboardError } from './types';
+import { ADD_WIDGET_TO_DASHBOARD } from './constants';
 
 export {
   dashboardsReducer,
@@ -55,6 +58,7 @@ export {
   showDashboardSettingsModal,
   hideDashboardSettingsModal,
   updateDashboardMeta,
+  setDashboardListOrder,
   getDashboardMeta,
   getDashboardSettings,
   getDeleteConfirmation,
@@ -64,6 +68,8 @@ export {
   getDashboardSettingsModal,
   getTagsPool,
   getDashboardMetaSaving,
+  getDashbaordListOrder,
+  ADD_WIDGET_TO_DASHBOARD,
   DashboardMetaData,
   DashboardModel,
   DashboardError,
