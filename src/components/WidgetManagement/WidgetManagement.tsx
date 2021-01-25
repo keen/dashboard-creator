@@ -11,11 +11,11 @@ import {
   ButtonsContainer,
 } from './WidgetManagement.styles';
 
-import RemoveWidget from '../../../RemoveWidget';
-import PreventDragPropagation from '../../../PreventDragPropagation';
+import RemoveWidget from '../RemoveWidget';
+import PreventDragPropagation from '../PreventDragPropagation';
 
-import { settingsMotion, removeMotion } from '../motions';
-import { DRAG_HANDLE_ELEMENT } from '../../constants';
+import { settingsMotion, removeMotion } from './motions';
+import { DRAG_HANDLE_ELEMENT } from '../Widget';
 
 type Props = {
   /** Hover state indicator */

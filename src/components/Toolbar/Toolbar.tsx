@@ -80,6 +80,15 @@ const Toolbar: FC<Props> = ({ onWidgetDrag, onAddWidget }) => {
         key="chart"
       />
       <DraggableItem
+        type="text"
+        icon="text"
+        onClick={() => onAddWidget('text')}
+        text={t('widget_item.text')}
+        dragStartHandler={dragStartHandler}
+        dragEndHandler={dragEndHandler}
+        key="text"
+      />
+      <DraggableItem
         type="image"
         icon="image"
         onClick={() => onAddWidget('image')}

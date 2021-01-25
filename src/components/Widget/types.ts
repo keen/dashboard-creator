@@ -3,7 +3,7 @@ import { WidgetType } from '../../types';
 export type RenderOptions = {
   widgetType: WidgetType;
   widgetId: string;
-  disableInteractions: boolean;
+  isEditorMode: boolean;
   isHoverActive: boolean;
   onRemoveWidget: () => void;
 };

@@ -7,6 +7,7 @@ import { dashboardsReducer } from './modules/dashboards';
 import { widgetsReducer } from './modules/widgets';
 import { themeReducer } from './modules/theme';
 import { chartEditorReducer } from './modules/chartEditor';
+import { textEditorReducer } from './modules/textEditor';
 
 export const history = createMemoryHistory();
 
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
   dashboards: dashboardsReducer,
   widgets: widgetsReducer,
   chartEditor: chartEditorReducer,
+  textEditor: textEditorReducer,
   router: connectRouter(history),
   theme: themeReducer,
 });

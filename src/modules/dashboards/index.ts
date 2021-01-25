@@ -33,6 +33,7 @@ import {
   getDashboardMetaSaving,
   getDashbaordListOrder,
 } from './selectors';
+import { ADD_WIDGET_TO_DASHBOARD } from './constants';
 import { DashboardMetaData, DashboardModel } from './types';
 
 export {
@@ -66,6 +67,7 @@ export {
   getTagsPool,
   getDashboardMetaSaving,
   getDashbaordListOrder,
+  ADD_WIDGET_TO_DASHBOARD,
   DashboardMetaData,
   DashboardModel,
 };
