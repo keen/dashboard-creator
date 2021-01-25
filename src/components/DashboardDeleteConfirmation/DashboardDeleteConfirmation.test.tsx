@@ -4,6 +4,8 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 
 import DashboardDeleteConfirmation from './DashboardDeleteConfirmation';
+
+import { DISCLAIMERS } from '../DeleteDisclaimer';
 import { dashboardsMeta } from '../../modules/dashboards/fixtures';
 
 const render = (storeState: any = {}, overProps: any = {}) => {
@@ -60,7 +62,17 @@ test('allows user to confirm dashboard delete', () => {
       metadata: {
         isInitiallyLoaded: true,
         error: null,
-        data: dashboardsMeta,
+        data: [
+          {
+            id: '@dashboard/01',
+            widgets: 5,
+            queries: 0,
+            title: 'Dashboard 1',
+            tags: [],
+            lastModificationDate: 1606895352390,
+            isPublic: false,
+          },
+        ],
       },
     },
   };
@@ -71,6 +83,89 @@ test('allows user to confirm dashboard delete', () => {
 
   const element = getByText('delete_dashboard.confirm');
   fireEvent.click(element);
+
+  expect(store.getActions()).toMatchInlineSnapshot(`
+    Array [
+      Object {
+        "payload": undefined,
+        "type": "@dashboards/CONFIRM_DASHBOARD_DELETE",
+      },
+    ]
+  `);
+});
+
+test('shows public dashboard disclaimer error', () => {
+  const storeState = {
+    dashboards: {
+      deleteConfirmation: {
+        isVisible: true,
+        dashboardId: '@dashboard/01',
+      },
+      metadata: {
+        isInitiallyLoaded: true,
+        error: null,
+        data: [
+          {
+            id: '@dashboard/01',
+            widgets: 5,
+            queries: 0,
+            title: 'Dashboard 1',
+            tags: [],
+            lastModificationDate: 1606895352390,
+            isPublic: true,
+          },
+        ],
+      },
+    },
+  };
+  const {
+    wrapper: { getByText },
+  } = render(storeState);
+
+  const element = getByText('delete_dashboard.confirm');
+  fireEvent.click(element);
+
+  expect(
+    getByText('delete_dashboard.public_dashboard_confirmation_error')
+  ).toBeInTheDocument();
+});
+
+test('allows user to delete public dashboard', () => {
+  const storeState = {
+    dashboards: {
+      deleteConfirmation: {
+        isVisible: true,
+        dashboardId: '@dashboard/01',
+      },
+      metadata: {
+        isInitiallyLoaded: true,
+        error: null,
+        data: [
+          {
+            id: '@dashboard/01',
+            widgets: 5,
+            queries: 0,
+            title: 'Dashboard 1',
+            tags: [],
+            lastModificationDate: 1606895352390,
+            isPublic: true,
+          },
+        ],
+      },
+    },
+  };
+  const {
+    store,
+    wrapper: { getByTestId, getByText },
+  } = render(storeState);
+
+  DISCLAIMERS.forEach(({ id }) => {
+    const element = getByTestId(`disclaimer-${id}`);
+    fireEvent.click(element);
+  });
+
+  const button = getByText('delete_dashboard.confirm');
+  fireEvent.click(button);
 
   expect(store.getActions()).toMatchInlineSnapshot(`
     Array [

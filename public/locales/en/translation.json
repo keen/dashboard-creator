@@ -54,7 +54,14 @@
     "untitled_dashboard": "Untitled Dashboard",
     "message": "Do you want to permanently delete dashboard {{name}} from your project?",
     "confirm": "Delete",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "public_dashboard_confirmation_error": "Mark all checkboxes to delete the Public dashboard"
+  },
+  "delete_public_dashboard": {
+    "title": "This dashboard is Public.",
+    "share_links": "All share links will be inaccessible.",
+    "access_keys": "Dashboard Access Key will be deleted.",
+    "embedded_html": "Embedded HTML will not display the dashboard."
   },
   "dashboard_management": {
     "title": "Dashboards",

@@ -3,9 +3,13 @@ import { colors } from '@keen.io/colors';
 
 export const Content = styled.div`
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
   padding: 25px;
   box-sizing: border-box;
+`;
+
+export const DisclaimerContainer = styled.div`
+  margin: 20px 0;
 `;
 
 export const Title = styled.span`
