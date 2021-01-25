@@ -69,6 +69,7 @@ import {
   REMOVE_WIDGET_FROM_DASHBOARD,
   DELETE_DASHBOARD,
   VIEW_DASHBOARD,
+  SHOW_DELETE_CONFIRMATION,
   CONFIRM_DASHBOARD_DELETE,
   HIDE_DELETE_CONFIRMATION,
   SHOW_DASHBOARD_SETTINGS_MODAL,
@@ -366,7 +367,7 @@ export function* cloneDashboard({
   try {
     const blobApi = yield getContext(BLOB_API);
 
-    const model = yield blobApi.getDashboardById(dashboardId);
+    const model: DashboardModel = yield blobApi.getDashboardById(dashboardId);
 
     const uniqueIdWidgets = model.widgets.map((widget) => ({
       ...widget,
@@ -425,6 +426,10 @@ export function* cloneDashboard({
   }
 }
 
+export function* showDashboardDeleteConfirmation() {
+  yield window.scrollTo(0, 0);
+}
+
 export function* dashboardsSaga() {
   yield spawn(rehydrateDashboardsOrder);
   yield takeLatest(FETCH_DASHBOARDS_LIST, fetchDashboardList);
@@ -437,6 +442,7 @@ export function* dashboardsSaga() {
   yield takeLatest(EDIT_DASHBOARD, editDashboard);
   yield takeLatest(REMOVE_WIDGET_FROM_DASHBOARD, removeWidgetFromDashboard);
   yield takeLatest(INITIALIZE_DASHBOARD_WIDGETS, initializeDashboardWidgets);
+  yield takeLatest(SHOW_DELETE_CONFIRMATION, showDashboardDeleteConfirmation);
   yield takeLatest(SHOW_DASHBOARD_SETTINGS_MODAL, showDashboardSettings);
   yield takeLatest(HIDE_DASHBOARD_SETTINGS_MODAL, hideDashboardSettings);
   yield takeLatest(CLONE_DASHBOARD, cloneDashboard);

@@ -1,7 +1,8 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import {
+  Alert,
   Anchor,
   Button,
   Modal,
@@ -13,11 +14,13 @@ import { colors } from '@keen.io/colors';
 import {
   Content,
   Cancel,
+  DisclaimerContainer,
   FooterContent,
   Message,
   Title,
   ConfirmButton,
 } from './DashboardDeleteConfirmation.styles';
+import DeleteDisclaimer from '../DeleteDisclaimer';
 
 import {
   hideDeleteConfirmation,
@@ -35,12 +38,34 @@ const DashboardDeleteConfirmation: FC<Props> = () => {
   const dispatch = useDispatch();
   const { isVisible, dashboardId } = useSelector(getDeleteConfirmation);
 
-  const { title } = useSelector((state: RootState) => {
+  const { title, isPublic } = useSelector((state: RootState) => {
     if (dashboardId) return getDashboardMeta(state, dashboardId);
     return {
+      isPublic: null,
       title: null,
     };
   });
+
+  const [disclaimerAccepted, setDisclaimer] = useState(false);
+  const [disclaimerError, setDisclaimerError] = useState(false);
+
+  const deleteHandler = useCallback(() => {
+    if (isPublic) {
+      setDisclaimerError(false);
+      if (disclaimerAccepted) {
+        dispatch(confirmDashboardDelete());
+      } else {
+        setDisclaimerError(true);
+      }
+    } else {
+      dispatch(confirmDashboardDelete());
+    }
+  }, [isPublic, disclaimerAccepted]);
+
+  useEffect(() => {
+    setDisclaimerError(false);
+    setDisclaimer(false);
+  }, [isVisible]);
 
   const dashboardTitle = title
     ? title
@@ -49,6 +74,7 @@ const DashboardDeleteConfirmation: FC<Props> = () => {
   return (
     <Modal
       isOpen={isVisible}
+      adjustPositionToScroll={false}
       onClose={() => dispatch(hideDeleteConfirmation())}
     >
       {(_, closeHandler) => (
@@ -65,6 +91,18 @@ const DashboardDeleteConfirmation: FC<Props> = () => {
                 }),
               }}
             />
+            {isPublic && (
+              <DisclaimerContainer>
+                <DeleteDisclaimer
+                  onChange={(isAccepted) => setDisclaimer(isAccepted)}
+                />
+              </DisclaimerContainer>
+            )}
+            {disclaimerError && (
+              <Alert type="error">
+                {t('delete_dashboard.public_dashboard_confirmation_error')}
+              </Alert>
+            )}
           </Content>
           <ModalFooter>
             <FooterContent>
@@ -72,7 +110,7 @@ const DashboardDeleteConfirmation: FC<Props> = () => {
                 <Button
                   variant="danger"
                   htmlType="button"
-                  onClick={() => dispatch(confirmDashboardDelete())}
+                  onClick={deleteHandler}
                 >
                   {t('delete_dashboard.confirm')}
                 </Button>
