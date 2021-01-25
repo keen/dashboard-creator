@@ -3,9 +3,13 @@ import { useSelector } from 'react-redux';
 
 import { Container } from './Widget.styles';
 
-import { ImageManagement, ChartManagement } from './components';
 import ChartWidget from '../ChartWidget';
+import TextWidget from '../TextWidget';
 import ImageWidget from '../ImageWidget';
+
+import ImageManagement from '../ImageManagement';
+import ChartManagement from '../ChartManagement';
+import TextManagement from '../TextManagement';
 
 import { getWidget } from '../../modules/widgets';
 
@@ -17,8 +21,8 @@ type Props = {
   id: string;
   /** Widget hover indicator */
   isHoverActive: boolean;
-  /** Disable interactions on charts */
-  disableInteractions?: boolean;
+  /** Editor mode indicator */
+  isEditorMode?: boolean;
   /** Remove widget event handler */
   onRemoveWidget: () => void;
 };
@@ -26,35 +30,44 @@ type Props = {
 const renderWidget = ({
   widgetType,
   widgetId,
-  disableInteractions,
+  isEditorMode,
   isHoverActive,
   onRemoveWidget,
 }: RenderOptions) => {
   switch (widgetType) {
+    case 'text':
+      if (isEditorMode) {
+        return (
+          <TextManagement
+            id={widgetId}
+            isHoverActive={isHoverActive}
+            onRemoveWidget={onRemoveWidget}
+          />
+        );
+      } else {
+        return <TextWidget id={widgetId} />;
+      }
     case 'visualization':
       return (
-        <>
-          <ChartWidget
-            id={widgetId}
-            disableInteractions={disableInteractions}
-          />
+        <Container>
+          <ChartWidget id={widgetId} disableInteractions={isEditorMode} />
           <ChartManagement
             widgetId={widgetId}
             isHoverActive={isHoverActive}
             onRemoveWidget={onRemoveWidget}
           />
-        </>
+        </Container>
       );
     case 'image':
       return (
-        <>
+        <Container>
           <ImageWidget id={widgetId} />
           <ImageManagement
             widgetId={widgetId}
             isHoverActive={isHoverActive}
             onRemoveWidget={onRemoveWidget}
           />
-        </>
+        </Container>
       );
     default:
       return null;
@@ -65,23 +78,19 @@ const Widget: FC<Props> = ({
   id,
   isHoverActive,
   onRemoveWidget,
-  disableInteractions = false,
+  isEditorMode = false,
 }) => {
   const {
     widget: { id: widgetId, type: widgetType },
   } = useSelector((rootState: RootState) => getWidget(rootState, id));
 
-  return (
-    <Container>
-      {renderWidget({
-        widgetType,
-        widgetId,
-        disableInteractions,
-        isHoverActive,
-        onRemoveWidget,
-      })}
-    </Container>
-  );
+  return renderWidget({
+    widgetType,
+    widgetId,
+    isEditorMode,
+    isHoverActive,
+    onRemoveWidget,
+  });
 };
 
 export default Widget;

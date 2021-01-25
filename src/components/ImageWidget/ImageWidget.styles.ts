@@ -1,15 +1,4 @@
-import styled, { css } from 'styled-components';
-
-export const Container = styled.div<{ disableInteractions: boolean }>`
-  width: 100%;
-  height: 100%;
-
-  ${(props) =>
-    props.disableInteractions &&
-    css`
-      pointer-events: none;
-    `};
-`;
+import styled from 'styled-components';
 
 export const Image = styled.img`
   width: 100%;

@@ -31,9 +31,11 @@
    new KeenDashboardCreator({
      container: '#root',
      editPrivileges: true,
+     backend: {
+       analyticsApiUrl: 'staging-api.keen.io',
+       dashboardsApiUrl: 'https://blob-service.us-west-2.test.aws.keen.io',
+     },
      modalContainer: '#modal-root',
-     keenApiUrl: 'staging-api.keen.io',
-     blobApiUrl: 'https://blob-service.us-west-2.test.aws.keen.io',
      project: <%= config %>,
      theme,
      createSharedDashboardUrl: (accessKey, dashboardId) => `https://dashboards.keen.io/${dashboardId}/${accessKey}`,

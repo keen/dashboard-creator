@@ -16,6 +16,19 @@ or
 yarn add @keen.io/dashboard-creator
 ```
 
+### project setup
+
+##### prerequisites
+
+1.  [yarn](https://classic.yarnpkg.com/) - package manager
+2.  `node` - make sure it's minimum **10.x.x**
+
+##### steps
+
+1.  checkout repository
+2.  run `yarn` - to install project dependencies
+3.  run application in development mode `yarn start:dashboard-creator`
+
 ### npm scripts
 
 List of useful commands that could be used by developers. Execution in the command-line interface should be prefixed with `yarn` package manager.

@@ -6,7 +6,7 @@ export const Container = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
-  background: ${colors.white[500]};
   position: relative;
   overflow: hidden;
+  background: ${colors.white[500]};
 `;

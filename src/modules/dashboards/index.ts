@@ -6,6 +6,7 @@ import {
   saveDashboard,
   saveDashboardMeta,
   viewDashboard,
+  viewPublicDashboard,
   cloneDashboard,
   shareDashboard,
   deleteDashboard,
@@ -39,8 +40,8 @@ import {
   getDashboardMetaSaving,
   getDashboardListOrder,
 } from './selectors';
-import { DashboardMetaData, DashboardModel } from './types';
-import { DASHBOARDS_ORDER } from './constants';
+import { DashboardMetaData, DashboardModel, DashboardError } from './types';
+import { DASHBOARDS_ORDER, ADD_WIDGET_TO_DASHBOARD } from './constants';
 
 export {
   dashboardsReducer,
@@ -49,6 +50,7 @@ export {
   removeWidgetFromDashboard,
   createDashboard,
   viewDashboard,
+  viewPublicDashboard,
   editDashboard,
   cloneDashboard,
   shareDashboard,
@@ -82,4 +84,6 @@ export {
   DashboardMetaData,
   DashboardModel,
   DASHBOARDS_ORDER,
+  ADD_WIDGET_TO_DASHBOARD,
+  DashboardError,
 };

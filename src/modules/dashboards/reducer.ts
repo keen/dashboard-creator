@@ -19,6 +19,8 @@ import {
   DELETE_DASHBOARD_SUCCESS,
   UPDATE_DASHBOARD,
   CREATE_DASHBOARD,
+  SET_DASHBOARD_LIST,
+  SET_DASHBOARD_ERROR,
   ADD_WIDGET_TO_DASHBOARD,
   REMOVE_WIDGET_FROM_DASHBOARD,
   SHOW_DELETE_CONFIRMATION,
@@ -31,6 +33,7 @@ import {
   SET_DASHBOARD_LIST_ORDER,
   SET_DASHBOARD_PUBLIC_ACCESS,
   DASHBOARDS_ORDER,
+  ADD_CLONED_DASHBOARD,
 } from './constants';
 
 import { ReducerState } from './types';
@@ -223,7 +226,19 @@ const dashboardsReducer = (
           [action.payload.dashboardId]: {
             initialized: false,
             isSaving: false,
+            error: null,
             settings: null,
+          },
+        },
+      };
+    case SET_DASHBOARD_ERROR:
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          [action.payload.dashboardId]: {
+            ...state.items[action.payload.dashboardId],
+            error: action.payload.error,
           },
         },
       };
@@ -272,6 +287,7 @@ const dashboardsReducer = (
           },
         },
       };
+    case SET_DASHBOARD_LIST:
     case FETCH_DASHBOARDS_LIST_SUCCESS:
       return {
         ...state,
@@ -331,6 +347,17 @@ const dashboardsReducer = (
 
             return dashboardMeta;
           }),
+        },
+      };
+    case ADD_CLONED_DASHBOARD:
+      return {
+        ...state,
+        metadata: {
+          ...state.metadata,
+          data: sortDashboards(
+            [...state.metadata.data, action.payload.dashboardMeta],
+            state.dashboardListOrder
+          ),
         },
       };
     default:

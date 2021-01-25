@@ -5,6 +5,14 @@ import { widgetsSaga } from './modules/widgets';
 import { dashboardsSaga } from './modules/dashboards';
 import { chartEditorSaga } from './modules/chartEditor';
 
-export default function* rootSaga() {
-  yield all([appSaga(), dashboardsSaga(), widgetsSaga(), chartEditorSaga()]);
-}
+export const createRootSaga = (editPrivileges = false) => {
+  const sagaFlows = [appSaga(), dashboardsSaga(), widgetsSaga()];
+
+  if (editPrivileges) {
+    sagaFlows.push(chartEditorSaga());
+  }
+
+  return function* () {
+    yield all(sagaFlows);
+  };
+};

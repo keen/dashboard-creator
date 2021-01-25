@@ -17,6 +17,7 @@ Object {
   },
   "items": Object {
     "@dashboard/01": Object {
+      "error": null,
       "initialized": true,
       "isSaving": false,
       "settings": Object {
@@ -66,6 +67,7 @@ Object {
   },
   "items": Object {
     "@dashboard/01": Object {
+      "error": null,
       "initialized": true,
       "isSaving": false,
       "settings": Object {

@@ -18,10 +18,13 @@ import {
   initializeChartWidget as initializeChartWidgetAction,
   editChartWidget as editChartWidgetAction,
   editImageWidget as editImageWidgetAction,
+  editInlineTextWidget as editInlineTextWidgetAction,
+  editTextWidget as editTextWidgetAction,
   setWidgetLoading,
   setWidgetState,
   finishChartWidgetConfiguration,
   setImageWidget,
+  setTextWidget,
   savedQueryUpdated,
 } from './actions';
 
@@ -32,6 +35,7 @@ import {
   saveDashboard,
   getDashboardSettings,
   updateAccessKeyOptions,
+  ADD_WIDGET_TO_DASHBOARD,
 } from '../dashboards';
 import {
   openEditor,
@@ -45,7 +49,7 @@ import {
   setVisualizationSettings,
   showQueryUpdateConfirmation,
   hideQueryUpdateConfirmation,
-  CLOSE_EDITOR,
+  CLOSE_EDITOR as CLOSE_CHART_EDITOR,
   EDITOR_MOUNTED,
   EDITOR_UNMOUNTED,
   APPLY_CONFIGURATION,
@@ -53,6 +57,15 @@ import {
   HIDE_QUERY_UPDATE_CONFIRMATION,
   USE_QUERY_FOR_WIDGET,
 } from '../chartEditor';
+
+import {
+  openEditor as openTextEditor,
+  closeEditor as closeTextEditor,
+  setTextAlignment,
+  setEditorContent,
+  APPLY_TEXT_EDITOR_SETTINGS,
+  CLOSE_EDITOR as CLOSE_TEXT_EDITOR,
+} from '../textEditor';
 
 import {
   updateSaveQuery,
@@ -73,6 +86,8 @@ import {
 
 import {
   CREATE_WIDGET,
+  EDIT_INLINE_TEXT_WIDGET,
+  EDIT_TEXT_WIDGET,
   EDIT_CHART_WIDGET,
   EDIT_IMAGE_WIDGET,
   INITIALIZE_WIDGET,
@@ -83,7 +98,7 @@ import {
   PUBSUB,
   KEEN_ANALYSIS,
   NOTIFICATION_MANAGER,
-  I18N,
+  TRANSLATIONS,
 } from '../../constants';
 
 import { ChartWidget, WidgetItem } from './types';
@@ -125,7 +140,7 @@ export function* initializeChartWidget({
     };
 
     if (isDetachedQuery) {
-      const i18n = yield getContext(I18N);
+      const i18n = yield getContext(TRANSLATIONS);
       const error = {
         title: i18n.t('widget_errors.detached_query_title', {
           chart: visualizationType,
@@ -199,6 +214,13 @@ export function* initializeWidget({
   const { type } = yield select(getWidgetSettings, id);
   if (type === 'visualization') {
     yield put(initializeChartWidgetAction(id));
+  } else {
+    yield put(
+      setWidgetState(id, {
+        isConfigured: true,
+        isInitialized: true,
+      })
+    );
   }
 }
 
@@ -216,9 +238,9 @@ function* cancelWidgetConfiguration(widgetId: string) {
  */
 export function* createQueryForWidget(widgetId: string) {
   yield put(openEditor());
-  const action = yield take([CLOSE_EDITOR, APPLY_CONFIGURATION]);
+  const action = yield take([CLOSE_CHART_EDITOR, APPLY_CONFIGURATION]);
 
-  if (action.type === CLOSE_EDITOR) {
+  if (action.type === CLOSE_CHART_EDITOR) {
     yield* cancelWidgetConfiguration(widgetId);
   } else {
     const {
@@ -472,9 +494,9 @@ export function* editChartWidget({
     });
   }
 
-  const action = yield take([CLOSE_EDITOR, APPLY_CONFIGURATION]);
+  const action = yield take([CLOSE_CHART_EDITOR, APPLY_CONFIGURATION]);
 
-  if (action.type === CLOSE_EDITOR) {
+  if (action.type === CLOSE_CHART_EDITOR) {
     yield take(EDITOR_UNMOUNTED);
     yield put(resetEditor());
   } else {
@@ -534,9 +556,83 @@ export function* editImageWidget({
 
     const dashboardId = yield select(getActiveDashboard);
     yield put(saveDashboard(dashboardId));
-  } else {
-    cancelWidgetConfiguration(widgetId);
   }
+}
+
+/**
+ * Flow responsible for creating text widget.
+ *
+ * @param widgetId - Widget identifer
+ * @return void
+ *
+ */
+export function* createTextWidget(widgetId: string) {
+  yield put(
+    setTextWidget(widgetId, {
+      content: { blocks: [], entityMap: {} },
+    })
+  );
+  yield put(
+    setWidgetState(widgetId, {
+      isConfigured: true,
+      isInitialized: true,
+    })
+  );
+}
+
+export function* editTextWidget({
+  payload,
+}: ReturnType<typeof editTextWidgetAction>) {
+  const { id } = payload;
+  const {
+    settings: { content, textAlignment },
+  } = yield select(getWidgetSettings, id);
+
+  yield put(setEditorContent(content));
+  yield put(setTextAlignment(textAlignment));
+
+  yield put(openTextEditor());
+  yield put(
+    setWidgetState(id, {
+      isInitialized: false,
+    })
+  );
+
+  const action = yield take([APPLY_TEXT_EDITOR_SETTINGS, CLOSE_TEXT_EDITOR]);
+
+  if (action.type === APPLY_TEXT_EDITOR_SETTINGS) {
+    const {
+      content: updatedContent,
+      textAlignment: updatedAlignment,
+    } = action.payload;
+    yield put(
+      setTextWidget(id, {
+        content: updatedContent,
+        textAlignment: updatedAlignment,
+      })
+    );
+
+    const dashboardId = yield select(getActiveDashboard);
+    yield put(saveDashboard(dashboardId));
+
+    yield put(closeTextEditor());
+  }
+
+  yield put(
+    setWidgetState(id, {
+      isInitialized: true,
+    })
+  );
+}
+
+export function* editInlineTextWidget({
+  payload,
+}: ReturnType<typeof editInlineTextWidgetAction>) {
+  const { id, content } = payload;
+  yield put(setTextWidget(id, { content }));
+
+  const dashboardId = yield select(getActiveDashboard);
+  yield put(saveDashboard(dashboardId));
 }
 
 export function* createWidget({
@@ -545,6 +641,11 @@ export function* createWidget({
   const { id, widgetType } = payload;
   if (widgetType === 'image') {
     yield fork(selectImageWidget, id);
+  } else if (widgetType === 'text') {
+    yield fork(createTextWidget, id);
+    yield take(ADD_WIDGET_TO_DASHBOARD);
+    const dashboardId = yield select(getActiveDashboard);
+    yield put(saveDashboard(dashboardId));
   } else {
     yield fork(selectQueryForWidget, id);
   }
@@ -555,6 +656,8 @@ export function* widgetsSaga() {
   yield takeLatest(CREATE_WIDGET, createWidget);
   yield takeLatest(EDIT_CHART_WIDGET, editChartWidget);
   yield takeLatest(EDIT_IMAGE_WIDGET, editImageWidget);
+  yield takeLatest(EDIT_TEXT_WIDGET, editTextWidget);
+  yield takeLatest(EDIT_INLINE_TEXT_WIDGET, editInlineTextWidget);
   yield takeEvery(INITIALIZE_WIDGET, initializeWidget);
   yield takeEvery(INITIALIZE_CHART_WIDGET, initializeChartWidget);
 }

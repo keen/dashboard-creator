@@ -19,7 +19,7 @@ type Props = {
   /** Dashboard title */
   title?: string;
   /** Dashboard tags */
-  tags: string[];
+  tags?: string[];
   /** Dashboard is public identifier */
   isPublic?: boolean;
   /** Back event handler */
@@ -28,7 +28,7 @@ type Props = {
 
 const DashboardDetails: FC<Props> = ({
   title,
-  tags,
+  tags = [],
   isPublic = false,
   onBack,
 }) => {

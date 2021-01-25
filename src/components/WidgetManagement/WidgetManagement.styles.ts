@@ -20,6 +20,7 @@ export const Cover = styled(motion.div)`
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: grab;
 
   position: absolute;
   top: 0;

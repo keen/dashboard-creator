@@ -5,7 +5,10 @@ import { Card } from '@keen.io/ui-core';
 import { Image, ImageWrapper, PlaceholderWrapper } from './ImageWidget.styles';
 import WidgetPlaceholder from '../WidgetPlaceholder';
 
-import { getWidget, ImageWidget } from '../../modules/widgets';
+import {
+  getWidget,
+  ImageWidget as ImageWidgetType,
+} from '../../modules/widgets';
 
 import { RootState } from '../../rootReducer';
 
@@ -34,7 +37,7 @@ const ImageWidget: FC<Props> = ({ id }) => {
         <Card>
           <ImageWrapper>
             <Image
-              src={(widget as ImageWidget).settings.link}
+              src={(widget as ImageWidgetType).settings.link}
               data-testid="image-widget"
             />
           </ImageWrapper>

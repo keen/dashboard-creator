@@ -38,7 +38,13 @@ export const createWidget = (
       return serializeWidget(
         {
           ...baseWidget,
-          settings: {},
+          settings: {
+            textAlignment: 'left',
+            content: {
+              blocks: [],
+              entityMap: {},
+            },
+          },
         } as TextWidget,
         isConfigured
       );

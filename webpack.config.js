@@ -3,7 +3,18 @@ const merge = require('webpack-merge');
 
 const commonConfig = require('./webpack.common');
 
-const config = merge(commonConfig, {
+const APP_OUTPUT = {
+  'dashboard-creator': {
+    library: 'KeenDashboardCreator',
+    libraryExport: 'KeenDashboardCreator',
+  },
+  'public-dashboard': {
+    library: 'KeenPublicDashboard',
+    libraryExport: 'KeenPublicDashboard',
+  },
+};
+
+const config = (env) => merge(commonConfig(env.APP_NAME), {
   mode: 'development',
   target: 'web',
   devServer: {
@@ -14,10 +25,10 @@ const config = merge(commonConfig, {
   output: {
     filename: '[name].js',
     path: path.join(__dirname, 'dist'),
-    library: 'KeenDashboardCreator',
-    libraryExport: 'KeenDashboardCreator',
     libraryTarget: 'umd',
+    ...APP_OUTPUT[env.APP_NAME]
   },
 });
+
 
 module.exports = config;

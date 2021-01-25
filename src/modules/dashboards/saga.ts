@@ -10,7 +10,9 @@ import {
   call,
 } from 'redux-saga/effects';
 import { StatusCodes } from 'http-status-codes';
+import { NOT_FOUND } from 'http-status-codes';
 import { push } from 'connected-react-router';
+import { v4 as uuid } from 'uuid';
 import { Theme } from '@keen.io/charts';
 
 import {
@@ -29,15 +31,20 @@ import {
   saveDashboard as saveDashboardAction,
   saveDashboardMeta as saveDashboardMetaAction,
   viewDashboard as viewDashboardAction,
+  viewPublicDashboard as viewPublicDashboardAction,
   deleteDashboard as deleteDashboardAction,
   setDashboardPublicAccess as setDashboardPublicAccessAction,
   regenerateAccessKey as regenerateAccessKeyAction,
+  cloneDashboard as cloneDashboardAction,
   showDeleteConfirmation,
   hideDeleteConfirmation,
   saveDashboardMetaSuccess,
   saveDashboardMetaError,
   setTagsPool,
+  setDashboardList,
+  setDashboardError,
   setDashboardListOrder,
+  addClonedDashboard,
 } from './actions';
 
 import { serializeDashboard } from './serializers';
@@ -57,8 +64,12 @@ import {
   getWidget,
   getWidgetSettings,
 } from '../widgets';
+
 import { removeDashboardTheme, setDashboardTheme } from '../theme';
 import { createTagsPool, createPublicDashboardKeyName } from './utils';
+import { createWidgetId } from '../widgets/utils';
+
+import { APIError } from '../../api';
 
 import {
   BLOB_API,
@@ -76,20 +87,26 @@ import {
   REMOVE_WIDGET_FROM_DASHBOARD,
   DELETE_DASHBOARD,
   VIEW_DASHBOARD,
+  VIEW_PUBLIC_DASHBOARD,
   CONFIRM_DASHBOARD_DELETE,
   HIDE_DELETE_CONFIRMATION,
   SHOW_DASHBOARD_SETTINGS_MODAL,
   HIDE_DASHBOARD_SETTINGS_MODAL,
-  SAVE_DASHBOARD_METADATA_SUCCESS,
   SET_DASHBOARD_LIST_ORDER,
   DASHBOARD_LIST_ORDER_KEY,
   SET_DASHBOARD_PUBLIC_ACCESS,
   UPDATE_ACCESS_KEY_OPTIONS,
   REGENERATE_ACCESS_KEY,
+  CLONE_DASHBOARD,
 } from './constants';
 
 import { RootState } from '../../rootReducer';
-import { DashboardModel, Dashboard, DashboardMetaData } from './types';
+import {
+  DashboardModel,
+  Dashboard,
+  DashboardMetaData,
+  DashboardError,
+} from './types';
 
 export function* fetchDashboardList() {
   const blobApi = yield getContext(BLOB_API);
@@ -112,6 +129,7 @@ export function* saveDashboardMetadata({
   try {
     const blobApi = yield getContext(BLOB_API);
     yield blobApi.saveDashboardMeta(dashboardId, metadata);
+    yield put(updateDashboardMeta(dashboardId, metadata));
 
     yield put(saveDashboardMetaSuccess());
     yield notificationManager.showNotification({
@@ -123,7 +141,7 @@ export function* saveDashboardMetadata({
     yield put(saveDashboardMetaError());
     yield notificationManager.showNotification({
       type: 'error',
-      message: err,
+      message: 'notifications.dashboard_meta_error',
       showDismissButton: true,
       autoDismiss: false,
     });
@@ -183,26 +201,6 @@ function* generateAccessKeyOptions(dashboardId) {
     },
   };
 }
-
-// function* getAccessKeys() {
-//   const client = yield getContext(KEEN_ANALYSIS);
-//   const accessKeys = yield client
-//     .get(client.url('projectId', 'keys'))
-//     .auth(client.masterKey())
-//     .send();
-
-//   return accessKeys;
-// }
-
-// export function* getAccessKey(keyName: string) {
-//   const client = yield getContext(KEEN_ANALYSIS);
-//   const accessKey = yield client
-//     .get(client.url('projectId', `keys?name=${keyName}`))
-//     .auth(client.masterKey())
-//     .send();
-
-//   return accessKey;
-// }
 
 export function* createAccessKey(dashboardId: string) {
   const client = yield getContext(KEEN_ANALYSIS);
@@ -316,6 +314,8 @@ export function* createDashboard({
 
   yield put(setActiveDashboard(dashboardId));
   yield put(push(ROUTES.EDITOR));
+
+  yield put(saveDashboardAction(dashboardId));
 }
 
 export function* deleteDashboard({
@@ -337,6 +337,12 @@ export function* deleteDashboard({
       const blobApi = yield getContext(BLOB_API);
       yield blobApi.deleteDashboard(dashboardId);
 
+      const activeDashboardId = yield select(getActiveDashboard);
+      if (activeDashboardId) {
+        yield put(push(ROUTES.MANAGEMENT));
+        yield put(setActiveDashboard(null));
+      }
+
       yield put(deleteDashboardSuccess(dashboardId));
       yield put(removeDashboardTheme(dashboardId));
 
@@ -357,14 +363,6 @@ export function* deleteDashboard({
         autoDismiss: false,
       });
     }
-
-    // if (publicAccessKey) {
-    //   try {
-    //     yield deleteAccessKey(publicAccessKey);
-    //   } catch (error) {
-    //     console.error(error);
-    //   }
-    // }
   }
 }
 
@@ -373,8 +371,6 @@ export function* removeWidgetFromDashboard({
 }: ReturnType<typeof removeWidgetFromDashboardAction>) {
   const { widgetId } = payload;
 
-  // const state: RootState = yield select();
-  // const { type, query } = yield getWidgetSettings(state, widgetId);
   const { type, query } = yield select(getWidgetSettings, widgetId);
   if (type === 'visualization' && query && typeof query === 'string') {
     yield call(updateAccessKeyOptions);
@@ -467,6 +463,66 @@ export function* viewDashboard({
   }
 }
 
+/**
+ * Flow responsible for initializing public dashboard viewer.
+ *
+ * @param dashboardId - Dashboard identifer
+ * @return void
+ *
+ */
+export function* viewPublicDashboard({
+  payload,
+}: ReturnType<typeof viewPublicDashboardAction>) {
+  const { dashboardId } = payload;
+
+  yield put(registerDashboard(dashboardId));
+  yield put(setActiveDashboard(dashboardId));
+
+  try {
+    const blobApi = yield getContext(BLOB_API);
+    const dashboardMeta: DashboardMetaData = yield blobApi.getDashboardMetaById(
+      dashboardId
+    );
+
+    yield put(setDashboardList([dashboardMeta]));
+    const { isPublic } = dashboardMeta;
+
+    if (isPublic) {
+      const responseBody: DashboardModel = yield blobApi.getDashboardById(
+        dashboardId
+      );
+
+      const { baseTheme, ...dashboard } = responseBody;
+      const serializedDashboard = serializeDashboard(dashboard);
+      const { widgets } = responseBody;
+
+      yield put(registerWidgets(widgets));
+      yield put(updateDashboard(dashboardId, serializedDashboard));
+      yield put(setDashboardTheme(dashboardId, baseTheme));
+
+      yield put(
+        initializeDashboardWidgetsAction(
+          dashboardId,
+          serializedDashboard.widgets
+        )
+      );
+    } else {
+      yield put(
+        setDashboardError(dashboardId, DashboardError.ACCESS_NOT_PUBLIC)
+      );
+    }
+  } catch (err) {
+    const error: APIError = err;
+    if (error.statusCode === NOT_FOUND) {
+      yield put(setDashboardError(dashboardId, DashboardError.NOT_EXIST));
+    } else {
+      yield put(
+        setDashboardError(dashboardId, DashboardError.VIEW_PUBLIC_DASHBOARD)
+      );
+    }
+  }
+}
+
 export function* initializeDashboardWidgets({
   payload,
 }: ReturnType<typeof initializeDashboardWidgetsAction>) {
@@ -526,7 +582,7 @@ export function* setAccessKey({
 
       yield put(saveDashboardMetaAction(dashboardId, updatedMetadata));
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   } else {
     const { publicAccessKey } = metadata;
@@ -552,7 +608,6 @@ export function* regenerateAccessKey({
   payload,
 }: ReturnType<typeof regenerateAccessKeyAction>) {
   const { dashboardId } = payload;
-  // const state: RootState = yield select();
   const metadata = yield select(getDashboardMeta, dashboardId);
   const { publicAccessKey } = metadata;
 
@@ -574,18 +629,84 @@ export function* regenerateAccessKey({
   }
 }
 
+export function* cloneDashboard({
+  payload,
+}: ReturnType<typeof cloneDashboardAction>) {
+  const { dashboardId } = payload;
+
+  const notificationManager = yield getContext(NOTIFICATION_MANAGER);
+  try {
+    const blobApi = yield getContext(BLOB_API);
+
+    const model = yield blobApi.getDashboardById(dashboardId);
+
+    const uniqueIdWidgets = model.widgets.map((widget) => ({
+      ...widget,
+      id: createWidgetId(),
+    }));
+
+    const newDashboardId = uuid();
+    const metaData = yield blobApi.getDashboardMetadataById(dashboardId);
+    const newMetaData = {
+      ...metaData,
+      id: newDashboardId,
+      title: metaData.title ? `${metaData.title} Clone` : 'Clone',
+      isPublic: false,
+      lastModificationDate: +new Date(),
+    };
+
+    const newModel = {
+      ...model,
+      widgets: uniqueIdWidgets,
+    };
+
+    yield blobApi.saveDashboard(newDashboardId, newModel, newMetaData);
+
+    yield put(addClonedDashboard(newMetaData));
+
+    yield notificationManager.showNotification({
+      type: 'info',
+      message: 'notifications.dashboard_cloned',
+      autoDismiss: true,
+    });
+
+    const state: RootState = yield select();
+    const activeDashboard = getActiveDashboard(state);
+
+    if (activeDashboard) {
+      const serializedDashboard = serializeDashboard(newModel);
+      yield put(registerWidgets(uniqueIdWidgets));
+      yield put(updateDashboard(newDashboardId, serializedDashboard));
+      yield put(
+        initializeDashboardWidgetsAction(
+          newDashboardId,
+          serializedDashboard.widgets
+        )
+      );
+
+      yield put(setActiveDashboard(newDashboardId));
+      yield put(push(ROUTES.EDITOR));
+    }
+  } catch (err) {
+    yield notificationManager.showNotification({
+      type: 'error',
+      message: 'notifications.dashboard_cloned_error',
+      showDismissButton: true,
+      autoDismiss: false,
+    });
+  }
+}
+
 export function* dashboardsSaga() {
   yield spawn(rehydrateDashboardsOrder);
-  yield takeLatest(
-    [FETCH_DASHBOARDS_LIST, SAVE_DASHBOARD_METADATA_SUCCESS],
-    fetchDashboardList
-  );
+  yield takeLatest(FETCH_DASHBOARDS_LIST, fetchDashboardList);
   yield takeLatest(SET_DASHBOARD_LIST_ORDER, persistDashboardsOrder);
   yield takeLatest(CREATE_DASHBOARD, createDashboard);
   yield takeLatest(SAVE_DASHBOARD, saveDashboard);
   yield takeLatest(SAVE_DASHBOARD_METADATA, saveDashboardMetadata);
   yield takeLatest(DELETE_DASHBOARD, deleteDashboard);
   yield takeLatest(VIEW_DASHBOARD, viewDashboard);
+  yield takeLatest(VIEW_PUBLIC_DASHBOARD, viewPublicDashboard);
   yield takeLatest(EDIT_DASHBOARD, editDashboard);
   yield takeLatest(REMOVE_WIDGET_FROM_DASHBOARD, removeWidgetFromDashboard);
   yield takeLatest(INITIALIZE_DASHBOARD_WIDGETS, initializeDashboardWidgets);
@@ -594,4 +715,5 @@ export function* dashboardsSaga() {
   yield takeLatest(SET_DASHBOARD_PUBLIC_ACCESS, setAccessKey);
   yield takeLatest(UPDATE_ACCESS_KEY_OPTIONS, updateAccessKeyOptions);
   yield takeLatest(REGENERATE_ACCESS_KEY, regenerateAccessKey);
+  yield takeLatest(CLONE_DASHBOARD, cloneDashboard);
 }

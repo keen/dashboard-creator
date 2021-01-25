@@ -15,6 +15,7 @@ import { setActiveDashboard, getUser } from '../../modules/app';
 import Grid from '../Grid';
 import GridLoader from '../GridLoader';
 import ViewerNavigation from '../ViewerNavigation';
+import DashboardDeleteConfirmation from '../DashboardDeleteConfirmation';
 
 import { ROUTES } from '../../constants';
 import { RootState } from '../../rootReducer';
@@ -51,6 +52,7 @@ const Viewer: FC<Props> = ({ dashboardId }) => {
     <>
       <Navigation>
         <ViewerNavigation
+          dashboardId={dashboardId}
           title={title}
           tags={tags}
           isPublic={isPublic}
@@ -74,6 +76,11 @@ const Viewer: FC<Props> = ({ dashboardId }) => {
           <GridLoader />
         )}
       </Content>
+      {editPrivileges && (
+        <>
+          <DashboardDeleteConfirmation />
+        </>
+      )}
     </>
   );
 };

@@ -13,15 +13,50 @@ import {
   showDashboardShareModal,
   hideDashboardShareModal,
   setTagsPool,
+  setDashboardError,
   saveDashboardMeta,
   saveDashboardMetaSuccess,
   saveDashboardMetaError,
   setDashboardListOrder,
   setDashboardPublicAccess,
   regenerateAccessKey,
+  addClonedDashboard,
 } from './actions';
 
 import { dashboardsMeta } from './fixtures';
+
+import { DashboardError } from './types';
+
+test('set dashboard error', () => {
+  const state = {
+    ...initialState,
+    items: {
+      '@dashboard/01': {
+        initialized: false,
+        isSaving: false,
+        error: null,
+        settings: null,
+      },
+    },
+  };
+
+  const action = setDashboardError(
+    '@dashboard/01',
+    DashboardError.ACCESS_NOT_PUBLIC
+  );
+  const { items } = dashboardsReducer(state, action);
+
+  expect(items).toMatchInlineSnapshot(`
+    Object {
+      "@dashboard/01": Object {
+        "error": "ACCESS_NOT_PUBLIC",
+        "initialized": false,
+        "isSaving": false,
+        "settings": null,
+      },
+    }
+  `);
+});
 
 test('updates dashboard save indicator', () => {
   const state = {
@@ -30,6 +65,7 @@ test('updates dashboard save indicator', () => {
       '@dashboard/01': {
         initialized: false,
         isSaving: false,
+        error: null,
         settings: null,
       },
     },
@@ -41,6 +77,7 @@ test('updates dashboard save indicator', () => {
   expect(items).toMatchInlineSnapshot(`
     Object {
       "@dashboard/01": Object {
+        "error": null,
         "initialized": false,
         "isSaving": true,
         "settings": null,
@@ -105,6 +142,7 @@ test('register a new dashboard', () => {
   expect(items).toMatchInlineSnapshot(`
     Object {
       "@dashboard/01": Object {
+        "error": null,
         "initialized": false,
         "isSaving": false,
         "settings": null,
@@ -120,6 +158,7 @@ test('updates settings for dashboard', () => {
       '@dashboard/01': {
         initialized: false,
         isSaving: false,
+        error: null,
         settings: null,
       },
     },
@@ -135,6 +174,7 @@ test('updates settings for dashboard', () => {
   expect(items).toMatchInlineSnapshot(`
     Object {
       "@dashboard/01": Object {
+        "error": null,
         "initialized": true,
         "isSaving": false,
         "settings": Object {
@@ -172,6 +212,7 @@ test('add widget to dashboard', () => {
       '@dashboard/01': {
         initialized: true,
         isSaving: false,
+        error: null,
         settings: {
           version: '0.0.1',
           widgets: [],
@@ -209,6 +250,7 @@ test('removes widget from dashboard', () => {
       '@dashboard/01': {
         initialized: true,
         isSaving: false,
+        error: null,
         settings: {
           version: '0.0.1',
           widgets: ['@widget/01'],
@@ -440,5 +482,37 @@ test('regenerate access key for the dashboard', () => {
       },
       "type": "@dashboards/REGENERATE_ACCESS_KEY",
     }
+    `);
+});
+
+test('add cloned dashboard to the list', () => {
+  const newDashboard = {
+    id: '@dashboard/01',
+    title: null,
+    widgets: 0,
+    queries: 0,
+    tags: [],
+    lastModificationDate: 1606895352390,
+    isPublic: false,
+    publicAccessKey: null,
+  };
+  const action = addClonedDashboard(newDashboard);
+  const {
+    metadata: { data },
+  } = dashboardsReducer(initialState, action);
+
+  expect(data).toMatchInlineSnapshot(`
+    Array [
+      Object {
+        "id": "@dashboard/01",
+        "isPublic": false,
+        "lastModificationDate": 1606895352390,
+        "publicAccessKey": null,
+        "queries": 0,
+        "tags": Array [],
+        "title": null,
+        "widgets": 0,
+      },
+    ]
   `);
 });

@@ -7,7 +7,6 @@ import { Container, DeleteDashboard } from './ActionsMenu.styles';
 
 import {
   cloneDashboard,
-  // shareDashboard,
   editDashboard,
   deleteDashboard,
   showDashboardShareModal,

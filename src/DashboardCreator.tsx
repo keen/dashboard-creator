@@ -6,8 +6,7 @@ import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
 import KeenAnalysis from 'keen-analysis';
 import { ThemeProvider } from 'styled-components';
 import { configureStore } from '@reduxjs/toolkit';
-import createSagaMiddleware from 'redux-saga';
-import { PubSub, getPubSub } from '@keen.io/pubsub';
+import { PubSub } from '@keen.io/pubsub';
 import { ToastProvider } from '@keen.io/toast-notifications';
 import { screenBreakpoints } from '@keen.io/ui-core';
 import { Theme } from '@keen.io/charts';
@@ -19,23 +18,19 @@ import { appStart } from './modules/app';
 import { NotificationManager } from './modules/notifications';
 
 import createI18n from './i18n';
+import createSagaMiddleware from './createSagaMiddleware';
 import rootReducer, { history } from './rootReducer';
-import rootSaga from './rootSaga';
+import { createRootSaga } from './rootSaga';
 
-import {
-  PUBSUB,
-  BLOB_API,
-  I18N,
-  KEEN_ANALYSIS,
-  NOTIFICATION_MANAGER,
-  SHOW_TOAST_NOTIFICATION_EVENT,
-} from './constants';
+import { SHOW_TOAST_NOTIFICATION_EVENT } from './constants';
 
-import { Options, TranslationsSettings } from './types';
+import { DashboardCreatorOptions, TranslationsSettings } from './types';
 
 export class DashboardCreator {
+  /** Container used to mount application */
   private container: string;
 
+  /** Container used to mount application modals */
   private modalContainer: string;
 
   /** User edit privileges */
@@ -45,16 +40,16 @@ export class DashboardCreator {
   private readonly masterKey: string;
 
   /** User key for Keen project */
-  private readonly userKey: string;
+  private readonly accessKey: string;
 
   /** Project identifer */
   private readonly projectId: string;
 
-  /** Blob API url */
-  private readonly blobApiUrl: string;
+  /** Dashboards API url */
+  private dashboardsApiUrl = 'blob-service.us-west-2.prod.aws.keen.io';
 
-  /** Keen API url */
-  private keenApiUrl = 'api.keen.io';
+  /** Analytics API url */
+  private analyticsApiUrl = 'api.keen.io';
 
   /** App localization settings */
   private readonly translationsSettings: TranslationsSettings;
@@ -68,30 +63,32 @@ export class DashboardCreator {
     dashboardId: string
   ) => string;
 
-  constructor(config: Options) {
+  constructor(config: DashboardCreatorOptions) {
     const {
       container,
       modalContainer,
       editPrivileges,
-      blobApiUrl,
-      keenApiUrl,
+      backend,
       project,
       translations,
       theme,
       createSharedDashboardUrl,
     } = config;
 
-    const { id, masterKey, userKey } = project;
-    if (keenApiUrl) this.keenApiUrl = keenApiUrl;
+    const { id, masterKey, accessKey } = project;
+    console.log({ project });
 
+    if (backend?.analyticsApiUrl)
+      this.analyticsApiUrl = backend.analyticsApiUrl;
+    if (backend?.dashboardsApiUrl)
+      this.dashboardsApiUrl = backend.dashboardsApiUrl;
     if (editPrivileges) this.editPrivileges = editPrivileges;
 
     this.container = container;
     this.modalContainer = modalContainer;
     this.projectId = id;
     this.masterKey = masterKey;
-    this.userKey = userKey;
-    this.blobApiUrl = blobApiUrl;
+    this.accessKey = accessKey;
     this.translationsSettings = translations || {};
     this.themeSettings = theme || {};
     this.createSharedDashboardUrl = createSharedDashboardUrl;
@@ -100,16 +97,16 @@ export class DashboardCreator {
   render() {
     const blobApi = new BlobAPI({
       projectId: this.projectId,
-      accessKey: this.userKey,
+      accessKey: this.accessKey,
       masterKey: this.masterKey,
-      url: this.blobApiUrl,
+      url: this.dashboardsApiUrl,
     });
 
     const keenAnalysis = new KeenAnalysis({
       projectId: this.projectId,
       masterKey: this.masterKey,
-      readKey: this.userKey,
-      host: 'staging-api.keen.io',
+      readKey: this.accessKey,
+      host: this.analyticsApiUrl,
     });
 
     createI18n(this.translationsSettings);
@@ -117,16 +114,13 @@ export class DashboardCreator {
     const notificationPubSub = new PubSub();
 
     const sagaMiddleware = createSagaMiddleware({
-      context: {
-        [BLOB_API]: blobApi,
-        [KEEN_ANALYSIS]: keenAnalysis,
-        [I18N]: i18n,
-        [PUBSUB]: getPubSub(),
-        [NOTIFICATION_MANAGER]: new NotificationManager({
-          pubsub: notificationPubSub,
-          eventName: SHOW_TOAST_NOTIFICATION_EVENT,
-        }),
-      },
+      blobApi,
+      keenAnalysis,
+      i18n,
+      notificationManager: new NotificationManager({
+        pubsub: notificationPubSub,
+        eventName: SHOW_TOAST_NOTIFICATION_EVENT,
+      }),
     });
 
     const store = configureStore({
@@ -134,13 +128,14 @@ export class DashboardCreator {
       middleware: [sagaMiddleware, routerMiddleware(history)],
     });
 
-    sagaMiddleware.run(rootSaga);
+    const rootSaga = createRootSaga(this.editPrivileges);
 
+    sagaMiddleware.run(rootSaga);
     store.dispatch(appStart(this.themeSettings, this.editPrivileges));
 
     const projectSettings = {
       id: this.projectId,
-      userKey: this.userKey,
+      userKey: this.accessKey,
       masterKey: this.masterKey,
     };
 
@@ -157,7 +152,7 @@ export class DashboardCreator {
                 value={{
                   notificationPubSub,
                   project: projectSettings,
-                  keenApiUrl: this.keenApiUrl,
+                  analyticsApiUrl: this.analyticsApiUrl,
                   modalContainer: this.modalContainer,
                   createSharedDashboardUrl: this.createSharedDashboardUrl,
                 }}
