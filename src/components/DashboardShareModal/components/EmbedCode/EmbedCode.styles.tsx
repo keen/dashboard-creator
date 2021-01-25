@@ -1,6 +1,9 @@
 import styled from 'styled-components';
+import { motion } from 'framer-motion';
+import { layout, space, LayoutProps, SpaceProps } from 'styled-system';
 import { transparentize } from 'polished';
 import { colors } from '@keen.io/colors';
+import { UI_LAYERS } from '@keen.io/ui-core';
 
 export const Placeholder = styled.div`
   padding: 50px 0;
@@ -14,22 +17,59 @@ export const Placeholder = styled.div`
   align-items: center;
 `;
 
-export const CodeWrapper = styled.div`
-  max-height: 360px;
-  overflow-y: auto;
-`;
-
 export const Navigation = styled.div`
-  padding: 10px 25px;
+  margin-top: 20px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
 `;
 
-export const NavigationItem = styled.div`
-  margin-right: 20px;
+export const Container = styled.div`
+  padding: 20px 25px;
+`;
 
-  &:last-child {
-    margin-right: 0;
+export const Subtitle = styled.div`
+  font-family: 'Lato Bold', sans-serif;
+  font-size: 14px;
+  line-height: 17px;
+
+  color: ${colors.green[500]};
+`;
+
+export const Text = styled.div<LayoutProps & SpaceProps>`
+  font-family: 'Lato Regular', sans-serif;
+  font-size: 14px;
+  line-height: 18px;
+  color: ${colors.black[100]};
+
+  ${layout};
+  ${space};
+
+  strong {
+    font-family: 'Lato Bold', sans-serif;
   }
+`;
+
+export const Step = styled.span`
+  font-family: 'Lato Bold', sans-serif;
+  font-size: 14px;
+  line-height: 18px;
+
+  color: ${colors.green[500]};
+`;
+
+export const Code = styled.div`
+  background-color: ${colors.gray[100]};
+  margin: 10px 0;
+  padding: 10px;
+
+  position: relative;
+`;
+
+export const ButtonContainer = styled(motion.div)`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+
+  z-index: ${UI_LAYERS.tooltip};
 `;

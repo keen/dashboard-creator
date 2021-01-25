@@ -1,4 +1,5 @@
 import sortDashboards from './sortDashboards';
+import { DASHBOARDS_ORDER } from '../../../modules/dashboards';
 
 const dashboards = [
   {
@@ -9,6 +10,7 @@ const dashboards = [
     isPublic: false,
     title: 'First',
     lastModificationDate: 1610528149408,
+    publicAccessKey: null,
   },
   {
     id: '2',
@@ -18,6 +20,7 @@ const dashboards = [
     isPublic: false,
     title: 'Second',
     lastModificationDate: 1610466500832,
+    publicAccessKey: null,
   },
   {
     id: '3',
@@ -27,6 +30,7 @@ const dashboards = [
     isPublic: false,
     title: 'Third',
     lastModificationDate: 1610464613510,
+    publicAccessKey: null,
   },
   {
     id: '4',
@@ -36,11 +40,12 @@ const dashboards = [
     isPublic: false,
     title: null,
     lastModificationDate: 1610465584382,
+    publicAccessKey: null,
   },
 ];
 
 test('should sort dashboards as Recent', () => {
-  const sorted = sortDashboards(dashboards, 'recent');
+  const sorted = sortDashboards(dashboards, DASHBOARDS_ORDER.recent);
 
   expect(sorted).toMatchInlineSnapshot(`
     Array [
@@ -48,6 +53,7 @@ test('should sort dashboards as Recent', () => {
         "id": "1",
         "isPublic": false,
         "lastModificationDate": 1610528149408,
+        "publicAccessKey": null,
         "queries": 0,
         "tags": Array [],
         "title": "First",
@@ -57,6 +63,7 @@ test('should sort dashboards as Recent', () => {
         "id": "2",
         "isPublic": false,
         "lastModificationDate": 1610466500832,
+        "publicAccessKey": null,
         "queries": 0,
         "tags": Array [],
         "title": "Second",
@@ -66,6 +73,7 @@ test('should sort dashboards as Recent', () => {
         "id": "4",
         "isPublic": false,
         "lastModificationDate": 1610465584382,
+        "publicAccessKey": null,
         "queries": 0,
         "tags": Array [],
         "title": null,
@@ -75,6 +83,7 @@ test('should sort dashboards as Recent', () => {
         "id": "3",
         "isPublic": false,
         "lastModificationDate": 1610464613510,
+        "publicAccessKey": null,
         "queries": 0,
         "tags": Array [],
         "title": "Third",
@@ -85,7 +94,7 @@ test('should sort dashboards as Recent', () => {
 });
 
 test('should sort dashboards as Oldest', () => {
-  const sorted = sortDashboards(dashboards, 'oldest');
+  const sorted = sortDashboards(dashboards, DASHBOARDS_ORDER.oldest);
 
   expect(sorted).toMatchInlineSnapshot(`
     Array [
@@ -93,6 +102,7 @@ test('should sort dashboards as Oldest', () => {
         "id": "3",
         "isPublic": false,
         "lastModificationDate": 1610464613510,
+        "publicAccessKey": null,
         "queries": 0,
         "tags": Array [],
         "title": "Third",
@@ -102,6 +112,7 @@ test('should sort dashboards as Oldest', () => {
         "id": "4",
         "isPublic": false,
         "lastModificationDate": 1610465584382,
+        "publicAccessKey": null,
         "queries": 0,
         "tags": Array [],
         "title": null,
@@ -111,6 +122,7 @@ test('should sort dashboards as Oldest', () => {
         "id": "2",
         "isPublic": false,
         "lastModificationDate": 1610466500832,
+        "publicAccessKey": null,
         "queries": 0,
         "tags": Array [],
         "title": "Second",
@@ -120,6 +132,7 @@ test('should sort dashboards as Oldest', () => {
         "id": "1",
         "isPublic": false,
         "lastModificationDate": 1610528149408,
+        "publicAccessKey": null,
         "queries": 0,
         "tags": Array [],
         "title": "First",
@@ -130,7 +143,7 @@ test('should sort dashboards as Oldest', () => {
 });
 
 test('should sort dashboards as A - Z', () => {
-  const sorted = sortDashboards(dashboards, 'az');
+  const sorted = sortDashboards(dashboards, DASHBOARDS_ORDER.az);
 
   expect(sorted).toMatchInlineSnapshot(`
     Array [
@@ -138,6 +151,7 @@ test('should sort dashboards as A - Z', () => {
         "id": "1",
         "isPublic": false,
         "lastModificationDate": 1610528149408,
+        "publicAccessKey": null,
         "queries": 0,
         "tags": Array [],
         "title": "First",
@@ -147,6 +161,7 @@ test('should sort dashboards as A - Z', () => {
         "id": "2",
         "isPublic": false,
         "lastModificationDate": 1610466500832,
+        "publicAccessKey": null,
         "queries": 0,
         "tags": Array [],
         "title": "Second",
@@ -156,6 +171,7 @@ test('should sort dashboards as A - Z', () => {
         "id": "3",
         "isPublic": false,
         "lastModificationDate": 1610464613510,
+        "publicAccessKey": null,
         "queries": 0,
         "tags": Array [],
         "title": "Third",
@@ -165,6 +181,7 @@ test('should sort dashboards as A - Z', () => {
         "id": "4",
         "isPublic": false,
         "lastModificationDate": 1610465584382,
+        "publicAccessKey": null,
         "queries": 0,
         "tags": Array [],
         "title": null,
@@ -175,7 +192,7 @@ test('should sort dashboards as A - Z', () => {
 });
 
 test('should sort dashboards as Z - A', () => {
-  const sorted = sortDashboards(dashboards, 'za');
+  const sorted = sortDashboards(dashboards, DASHBOARDS_ORDER.za);
 
   expect(sorted).toMatchInlineSnapshot(`
     Array [
@@ -183,6 +200,7 @@ test('should sort dashboards as Z - A', () => {
         "id": "3",
         "isPublic": false,
         "lastModificationDate": 1610464613510,
+        "publicAccessKey": null,
         "queries": 0,
         "tags": Array [],
         "title": "Third",
@@ -192,6 +210,7 @@ test('should sort dashboards as Z - A', () => {
         "id": "2",
         "isPublic": false,
         "lastModificationDate": 1610466500832,
+        "publicAccessKey": null,
         "queries": 0,
         "tags": Array [],
         "title": "Second",
@@ -201,6 +220,7 @@ test('should sort dashboards as Z - A', () => {
         "id": "1",
         "isPublic": false,
         "lastModificationDate": 1610528149408,
+        "publicAccessKey": null,
         "queries": 0,
         "tags": Array [],
         "title": "First",
@@ -210,6 +230,7 @@ test('should sort dashboards as Z - A', () => {
         "id": "4",
         "isPublic": false,
         "lastModificationDate": 1610465584382,
+        "publicAccessKey": null,
         "queries": 0,
         "tags": Array [],
         "title": null,

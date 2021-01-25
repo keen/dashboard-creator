@@ -35,6 +35,9 @@ import {
   SHOW_DASHBOARD_SHARE_MODAL,
   HIDE_DASHBOARD_SHARE_MODAL,
   SET_DASHBOARD_LIST_ORDER,
+  SET_DASHBOARD_PUBLIC_ACCESS,
+  UPDATE_ACCESS_KEY_OPTIONS,
+  REGENERATE_ACCESS_KEY,
 } from './constants';
 
 export const fetchDashboardList = createAction(FETCH_DASHBOARDS_LIST);
@@ -275,6 +278,26 @@ export const setDashboardListOrder = createAction(
   })
 );
 
+export const setDashboardPublicAccess = createAction(
+  SET_DASHBOARD_PUBLIC_ACCESS,
+  (dashboardId: string, isPublic: boolean) => ({
+    payload: {
+      dashboardId,
+      isPublic,
+    },
+  })
+);
+
+export const updateAccessKeyOptions = createAction(UPDATE_ACCESS_KEY_OPTIONS);
+export const regenerateAccessKey = createAction(
+  REGENERATE_ACCESS_KEY,
+  (dashboardId: string) => ({
+    payload: {
+      dashboardId,
+    },
+  })
+);
+
 export type DashboardsActions =
   | ReturnType<typeof fetchDashboardList>
   | ReturnType<typeof fetchDashboardListSuccess>
@@ -307,4 +330,7 @@ export type DashboardsActions =
   | ReturnType<typeof saveDashboardMetaError>
   | ReturnType<typeof showDashboardShareModal>
   | ReturnType<typeof hideDashboardShareModal>
-  | ReturnType<typeof setDashboardListOrder>;
+  | ReturnType<typeof setDashboardListOrder>
+  | ReturnType<typeof setDashboardPublicAccess>
+  | ReturnType<typeof updateAccessKeyOptions>
+  | ReturnType<typeof regenerateAccessKey>;

@@ -65,11 +65,14 @@ export const Title = styled.div`
   color: ${colors.black[100]};
 `;
 
-export const Link = styled.span`
+export const Link = styled.a`
   font-family: 'Lato Bold', sans-serif;
   font-size: 12px;
   line-height: 15px;
   color: ${colors.blue[500]};
+  text-decoration: none;
+
+  cursor: pointer;
 `;
 
 export const Container = styled.div<{ isActive: boolean }>`

@@ -25,7 +25,7 @@ import {
   getDashboardsMetadata,
   getDashboardsLoadState,
   showDashboardSettingsModal,
-  getDashbaordListOrder,
+  getDashboardListOrder,
 } from '../../modules/dashboards';
 import { getUser } from '../../modules/app';
 
@@ -36,7 +36,7 @@ const Management: FC<Props> = () => {
   const dispatch = useDispatch();
   const dashboards = useSelector(getDashboardsMetadata);
   const dashboardsLoaded = useSelector(getDashboardsLoadState);
-  const dashboardListOrder = useSelector(getDashbaordListOrder);
+  const dashboardListOrder = useSelector(getDashboardListOrder);
   const { editPrivileges } = useSelector(getUser);
 
   const [searchPhrase, setSearchPhrase] = useState('');

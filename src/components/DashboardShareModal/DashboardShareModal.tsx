@@ -1,4 +1,5 @@
-import React, { FC, useContext, useCallback, useState } from 'react';
+/* eslint-disable @typescript-eslint/camelcase */
+import React, { FC, useEffect, useContext, useCallback, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence } from 'framer-motion';
@@ -17,11 +18,13 @@ import { colors } from '@keen.io/colors';
 import {
   hideDashboardShareModal,
   getDashboardShareModal,
+  getDashboardMeta,
+  setDashboardPublicAccess,
 } from '../../modules/dashboards';
 
-import { AppContext } from '../../contexts';
+import { APIContext, AppContext } from '../../contexts';
 
-import { EmbedCode, ModalContent, Divider, PublicLink } from './components';
+import { EmbedCode, ModalContent, PublicLink } from './components';
 import {
   Label,
   TooltipWrapper,
@@ -31,34 +34,75 @@ import {
   Text,
   ModalWrapper,
   TabsContainer,
+  Divider,
 } from './DashboardShareModal.styles';
 
+import { TOOLTIP_MOTION } from '../../constants';
 import {
   MODAL_VIEWS,
   PUBLIC_LINK_VIEW_ID,
   EMBED_HTML_VIEW_ID,
 } from './constants';
-import { tooltipMotion } from './motion';
 
-type Props = {
-  /** Share dashobard event handler */
-  onShareDashboard?: (dashboardId: string) => void;
-};
+import { RootState } from '../../rootReducer';
+import { createPublicDashboardKeyName } from '../../modules/dashboards/utils';
 
-const DashboardShareModal: FC<Props> = ({}) => {
+const DashboardShareModal: FC = () => {
   const dispatch = useDispatch();
   const { modalContainer } = useContext(AppContext);
+  const { keenAnalysis } = useContext(APIContext);
   const { t } = useTranslation();
 
   const { isVisible, dashboardId } = useSelector(getDashboardShareModal);
+  const { isPublic, publicAccessKey } = useSelector((state: RootState) => {
+    if (dashboardId) return getDashboardMeta(state, dashboardId);
+    return {
+      isPublic: false,
+      publicAccessKey: null,
+    };
+  });
+
+  const [labelTooltip, setLabelTooltip] = useState(false);
+  const [activeTab, setActiveTab] = useState(MODAL_VIEWS[0].id);
+  const [accessKeyError, setAccessKeyError] = useState(false);
+
+  useEffect(() => {
+    if (!dashboardId) return;
+    const keyName = createPublicDashboardKeyName(dashboardId);
+    const accessKey = keenAnalysis
+      .get(keenAnalysis.url('projectId', `keys?name=${keyName}`))
+      .auth(keenAnalysis.masterKey())
+      .send();
+
+    accessKey
+      .then((res) => {
+        if (!res.length && isPublic) {
+          setAccessKeyError(true);
+          dispatch(setDashboardPublicAccess(dashboardId, false));
+        }
+        if (res.length) {
+          const { is_active } = res[0];
+          if (!isPublic || (isPublic && is_active)) setAccessKeyError(false);
+          if (isPublic && !is_active) setAccessKeyError(true); // TODO: handle error when is_active has been changed
+        }
+      })
+      .catch((e) => {
+        console.error(e);
+        setAccessKeyError(true);
+      });
+  }, [dashboardId]);
+
+  useEffect(() => {
+    if (isPublic && publicAccessKey) setAccessKeyError(false);
+  }, [publicAccessKey]);
 
   const closeHandler = useCallback(() => {
     dispatch(hideDashboardShareModal());
   }, []);
 
-  const [labelTooltip, setLabelTooltip] = useState(false);
-  const [activeTab, setActiveTab] = useState(MODAL_VIEWS[0].id);
-  const [isPublic, setIsPublic] = useState(false);
+  const handleToggleChange = useCallback(() => {
+    dispatch(setDashboardPublicAccess(dashboardId, !isPublic));
+  }, [dashboardId, isPublic]);
 
   return (
     <Portal modalContainer={modalContainer}>
@@ -78,16 +122,15 @@ const DashboardShareModal: FC<Props> = ({}) => {
               </TabsContainer>
             </ModalContent>
             <ModalContent>
-              <Alert type="error">
-                {t('dashboard_share.access_key_error')}
-              </Alert>
+              {accessKeyError && (
+                <Alert type="error">
+                  {t('dashboard_share.access_key_error')}
+                </Alert>
+              )}
               <ToggleWrapper>
-                <Toggle
-                  isOn={isPublic}
-                  onChange={() => setIsPublic(!isPublic)}
-                />
+                <Toggle isOn={isPublic} onChange={handleToggleChange} />
                 <Label>
-                  <Text onClick={() => setIsPublic(!isPublic)}>
+                  <Text onClick={handleToggleChange}>
                     {t('dashboard_share.make_public')}
                   </Text>
                   <TooltipWrapper
@@ -103,7 +146,7 @@ const DashboardShareModal: FC<Props> = ({}) => {
                     />
                     <AnimatePresence>
                       {labelTooltip && (
-                        <TooltipContainer {...tooltipMotion}>
+                        <TooltipContainer {...TOOLTIP_MOTION}>
                           <Tooltip mode="light" hasArrow={false}>
                             <TooltipContent>
                               {t('dashboard_share.make_public_tooltip')}

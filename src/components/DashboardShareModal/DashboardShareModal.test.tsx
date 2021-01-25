@@ -9,7 +9,9 @@ import configureStore from 'redux-mock-store';
 
 import DashboardShareModal from './DashboardShareModal';
 
-import { AppContext } from '../../contexts';
+import { BlobAPI } from '../../api';
+
+import { AppContext, APIContext } from '../../contexts';
 
 const render = (storeState: any = {}, overProps: any = {}) => {
   const mockStore = configureStore([]);
@@ -45,6 +47,14 @@ const render = (storeState: any = {}, overProps: any = {}) => {
     ...storeState,
   };
 
+  const keenAnalysis = {
+    get: jest.fn().mockReturnThis(),
+    auth: jest.fn().mockReturnThis(),
+    url: jest.fn(),
+    masterKey: jest.fn(),
+    send: jest.fn().mockResolvedValue([]),
+  };
+
   const store = mockStore({ ...state });
 
   const props = {
@@ -53,10 +63,19 @@ const render = (storeState: any = {}, overProps: any = {}) => {
   };
 
   const wrapper = rtlRender(
-    <AppContext.Provider value={{ modalContainer: '#modal-root' } as any}>
-      <Provider store={store}>
-        <DashboardShareModal {...props} />
-      </Provider>
+    <AppContext.Provider
+      value={
+        {
+          modalContainer: '#modal-root',
+          createSharedDashboardUrl: () => 'url',
+        } as any
+      }
+    >
+      <APIContext.Provider value={{ keenAnalysis, blobApi: {} as BlobAPI }}>
+        <Provider store={store}>
+          <DashboardShareModal {...props} />
+        </Provider>
+      </APIContext.Provider>
     </AppContext.Provider>
   );
 

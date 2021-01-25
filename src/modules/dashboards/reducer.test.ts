@@ -17,6 +17,8 @@ import {
   saveDashboardMetaSuccess,
   saveDashboardMetaError,
   setDashboardListOrder,
+  setDashboardPublicAccess,
+  regenerateAccessKey,
 } from './actions';
 
 import { dashboardsMeta } from './fixtures';
@@ -66,6 +68,7 @@ test('updates dashboard metadata', () => {
           lastModificationDate: 0,
           tags: [],
           isPublic: false,
+          publicAccessKey: null,
         },
       ],
     },
@@ -80,6 +83,7 @@ test('updates dashboard metadata', () => {
           "id": "@dashboard/01",
           "isPublic": false,
           "lastModificationDate": 0,
+          "publicAccessKey": null,
           "queries": 30,
           "tags": Array [],
           "title": "Title",
@@ -160,6 +164,7 @@ test('add widget to dashboard', () => {
           lastModificationDate: 0,
           tags: [],
           isPublic: false,
+          publicAccessKey: null,
         },
       ],
     },
@@ -196,6 +201,7 @@ test('removes widget from dashboard', () => {
           lastModificationDate: 0,
           tags: [],
           isPublic: false,
+          publicAccessKey: null,
         },
       ],
     },
@@ -227,6 +233,7 @@ test('serializes dashboards metadata', () => {
           "id": "@dashboard/01",
           "isPublic": true,
           "lastModificationDate": 1606895352390,
+          "publicAccessKey": "@public/1",
           "queries": 0,
           "tags": Array [],
           "title": "Dashboard 1",
@@ -236,6 +243,7 @@ test('serializes dashboards metadata', () => {
           "id": "@dashboard/02",
           "isPublic": true,
           "lastModificationDate": 1606895352390,
+          "publicAccessKey": "@public/2",
           "queries": 2,
           "tags": Array [],
           "title": "Dashboard 2",
@@ -245,6 +253,7 @@ test('serializes dashboards metadata', () => {
           "id": "@dashboard/03",
           "isPublic": true,
           "lastModificationDate": 1606895352390,
+          "publicAccessKey": "@public/3",
           "queries": 0,
           "tags": Array [],
           "title": null,
@@ -397,4 +406,39 @@ test('set order for dashboard list', () => {
   const { dashboardListOrder } = dashboardsReducer(initialState, action);
 
   expect(dashboardListOrder).toBe('az');
+});
+
+test('set public access to the dashboard', () => {
+  const dashboardId = '@dashboard/01';
+  const isPublicTest = false;
+
+  const state = {
+    ...initialState,
+    metadata: {
+      ...initialState.metadata,
+      data: dashboardsMeta,
+    },
+  };
+  const action = setDashboardPublicAccess(dashboardId, isPublicTest);
+  const {
+    metadata: { data },
+  } = dashboardsReducer(state, action);
+
+  const { isPublic } = data.find((item) => item.id === dashboardId);
+
+  expect(isPublic).toEqual(isPublicTest);
+});
+
+test('regenerate access key for the dashboard', () => {
+  const dashboardId = '@dashboard/01';
+  const action = regenerateAccessKey(dashboardId);
+
+  expect(action).toMatchInlineSnapshot(`
+    Object {
+      "payload": Object {
+        "dashboardId": "@dashboard/01",
+      },
+      "type": "@dashboards/REGENERATE_ACCESS_KEY",
+    }
+  `);
 });

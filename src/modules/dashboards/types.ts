@@ -9,6 +9,7 @@ export type DashboardMetaData = {
   tags: string[];
   lastModificationDate: number;
   isPublic: boolean;
+  publicAccessKey: null | string;
 };
 
 export type DashboardModel = {

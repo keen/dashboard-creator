@@ -62,6 +62,12 @@ export class DashboardCreator {
   /** Charts theme settings */
   private readonly themeSettings: Partial<Theme>;
 
+  /** Method that creates url for shared dashboard */
+  private createSharedDashboardUrl: (
+    accessKey: string,
+    dashboardId: string
+  ) => string;
+
   constructor(config: Options) {
     const {
       container,
@@ -72,6 +78,7 @@ export class DashboardCreator {
       project,
       translations,
       theme,
+      createSharedDashboardUrl,
     } = config;
 
     const { id, masterKey, userKey } = project;
@@ -87,6 +94,7 @@ export class DashboardCreator {
     this.blobApiUrl = blobApiUrl;
     this.translationsSettings = translations || {};
     this.themeSettings = theme || {};
+    this.createSharedDashboardUrl = createSharedDashboardUrl;
   }
 
   render() {
@@ -151,6 +159,7 @@ export class DashboardCreator {
                   project: projectSettings,
                   keenApiUrl: this.keenApiUrl,
                   modalContainer: this.modalContainer,
+                  createSharedDashboardUrl: this.createSharedDashboardUrl,
                 }}
               >
                 <APIContext.Provider value={{ blobApi, keenAnalysis }}>

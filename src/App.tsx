@@ -60,11 +60,7 @@ const App: FC<Props> = () => {
           dispatch(saveDashboardMeta(dashboardId, metadata))
         }
       />
-      <DashboardShareModal
-        onShareDashboard={(dashboardId: string) =>
-          console.log('share dashboard ', dashboardId)
-        }
-      />
+      <DashboardShareModal />
     </Container>
   );
 };

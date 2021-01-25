@@ -16,14 +16,13 @@ import {
 
 import {
   setDashboardListOrder,
-  getDashbaordListOrder,
+  getDashboardListOrder,
+  DASHBOARDS_ORDER,
 } from '../../modules/dashboards';
-
-import { DASHBOARDS_ORDER } from './constants';
 
 const DashboardListOrder = () => {
   const dispatch = useDispatch();
-  const dashboardListOrder = useSelector(getDashbaordListOrder);
+  const dashboardListOrder = useSelector(getDashboardListOrder);
 
   const [isOpen, setOpen] = useState(false);
   const [selected, setSelected] = useState(dashboardListOrder);

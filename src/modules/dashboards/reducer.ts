@@ -29,6 +29,8 @@ import {
   SHOW_DASHBOARD_SHARE_MODAL,
   HIDE_DASHBOARD_SHARE_MODAL,
   SET_DASHBOARD_LIST_ORDER,
+  SET_DASHBOARD_PUBLIC_ACCESS,
+  DASHBOARDS_ORDER,
 } from './constants';
 
 import { ReducerState } from './types';
@@ -54,7 +56,7 @@ export const initialState: ReducerState = {
   },
   tagsPool: [],
   items: {},
-  dashboardListOrder: 'recent',
+  dashboardListOrder: Object.keys(DASHBOARDS_ORDER)[0],
 };
 
 const dashboardsReducer = (
@@ -313,6 +315,23 @@ const dashboardsReducer = (
           data: sortDashboards(state.metadata.data, action.payload.order),
         },
         dashboardListOrder: action.payload.order,
+      };
+    case SET_DASHBOARD_PUBLIC_ACCESS:
+      return {
+        ...state,
+        metadata: {
+          ...state.metadata,
+          data: state.metadata.data.map((dashboardMeta) => {
+            if (action.payload.dashboardId === dashboardMeta.id) {
+              return {
+                ...dashboardMeta,
+                isPublic: action.payload.isPublic,
+              };
+            }
+
+            return dashboardMeta;
+          }),
+        },
       };
     default:
       return state;

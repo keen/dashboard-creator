@@ -41,6 +41,7 @@ const render = (storeState: any = {}, overProps: any = {}) => {
       userKey: '@user-key',
       masterKey: '@master-key',
     },
+    createSharedDashboardUrl: () => 'url',
   };
 
   const wrapper = rtlRender(

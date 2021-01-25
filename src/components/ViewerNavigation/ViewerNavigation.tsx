@@ -14,6 +14,8 @@ type Props = {
   title?: string;
   /** User privilages */
   editPrivileges?: boolean;
+  /** Dashboard is public identifier */
+  isPublic?: boolean;
   /** Edit dashboard event handler */
   onEditDashboard: () => void;
   /** Show dashboard settings */
@@ -25,6 +27,7 @@ type Props = {
 const ViewerNavigation: FC<Props> = ({
   title,
   tags,
+  isPublic,
   onBack,
   editPrivileges,
   onShowSettings,
@@ -34,7 +37,12 @@ const ViewerNavigation: FC<Props> = ({
 
   return (
     <Container>
-      <DashboardDetails title={title} tags={tags} onBack={onBack} />
+      <DashboardDetails
+        title={title}
+        tags={tags}
+        isPublic={isPublic}
+        onBack={onBack}
+      />
       <Aside>
         {editPrivileges && (
           <>

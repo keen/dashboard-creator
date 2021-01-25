@@ -35,7 +35,8 @@
      keenApiUrl: 'staging-api.keen.io',
      blobApiUrl: 'https://blob-service.us-west-2.test.aws.keen.io',
      project: <%= config %>,
-     theme
+     theme,
+     createSharedDashboardUrl: (accessKey, dashboardId) => `https://dashboards.keen.io/${dashboardId}/${accessKey}`,
    }).render();
   </script>
 </html>

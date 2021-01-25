@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import {
   takeLatest,
   put,
@@ -6,7 +7,9 @@ import {
   all,
   getContext,
   spawn,
+  call,
 } from 'redux-saga/effects';
+import { StatusCodes } from 'http-status-codes';
 import { push } from 'connected-react-router';
 import { Theme } from '@keen.io/charts';
 
@@ -27,6 +30,8 @@ import {
   saveDashboardMeta as saveDashboardMetaAction,
   viewDashboard as viewDashboardAction,
   deleteDashboard as deleteDashboardAction,
+  setDashboardPublicAccess as setDashboardPublicAccessAction,
+  regenerateAccessKey as regenerateAccessKeyAction,
   showDeleteConfirmation,
   hideDeleteConfirmation,
   saveDashboardMetaSuccess,
@@ -38,22 +43,29 @@ import {
 import { serializeDashboard } from './serializers';
 import {
   getDashboard,
+  getDashboardMeta,
   getDashboardSettings,
   getDashboardsMetadata,
 } from './selectors';
 import { getBaseTheme, getActiveDashboardTheme } from '../theme/selectors';
 
-import { setActiveDashboard } from '../app';
+import { setActiveDashboard, getActiveDashboard } from '../app';
 import {
   initializeWidget,
   registerWidgets,
   removeWidget,
+  getWidget,
   getWidgetSettings,
 } from '../widgets';
 import { removeDashboardTheme, setDashboardTheme } from '../theme';
-import { createTagsPool } from './utils';
+import { createTagsPool, createPublicDashboardKeyName } from './utils';
 
-import { BLOB_API, NOTIFICATION_MANAGER, ROUTES } from '../../constants';
+import {
+  BLOB_API,
+  KEEN_ANALYSIS,
+  NOTIFICATION_MANAGER,
+  ROUTES,
+} from '../../constants';
 import {
   INITIALIZE_DASHBOARD_WIDGETS,
   FETCH_DASHBOARDS_LIST,
@@ -71,6 +83,9 @@ import {
   SAVE_DASHBOARD_METADATA_SUCCESS,
   SET_DASHBOARD_LIST_ORDER,
   DASHBOARD_LIST_ORDER_KEY,
+  SET_DASHBOARD_PUBLIC_ACCESS,
+  UPDATE_ACCESS_KEY_OPTIONS,
+  REGENERATE_ACCESS_KEY,
 } from './constants';
 
 import { RootState } from '../../rootReducer';
@@ -112,6 +127,134 @@ export function* saveDashboardMetadata({
       showDismissButton: true,
       autoDismiss: false,
     });
+  }
+}
+
+function* generateAccessKeyOptions(dashboardId) {
+  const state: RootState = yield select();
+  const dashboard = yield getDashboard(state, dashboardId);
+  const queries = new Set();
+
+  if (!dashboard) {
+    const blobApi = yield getContext(BLOB_API);
+
+    try {
+      const responseBody: DashboardModel = yield blobApi.getDashboardById(
+        dashboardId
+      );
+      const { widgets } = responseBody;
+      widgets.forEach((widget) => {
+        if (
+          widget.type === 'visualization' &&
+          typeof widget.query === 'string'
+        ) {
+          queries.add(widget.query);
+        }
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  } else {
+    const {
+      settings: { widgets },
+    } = dashboard;
+    const dashboardWidgets = widgets.map((widgetId: string) =>
+      getWidget(state, widgetId)
+    );
+    dashboardWidgets.forEach((item) => {
+      const {
+        widget: { type, query },
+      } = item;
+      if (type === 'visualization' && typeof query === 'string') {
+        queries.add(query);
+      }
+    });
+  }
+
+  const allowedQueries = Array.from(queries);
+  return {
+    options: {
+      cached_queries: {
+        allowed: allowedQueries,
+      },
+      saved_queries: {
+        allowed: allowedQueries,
+      },
+    },
+  };
+}
+
+// function* getAccessKeys() {
+//   const client = yield getContext(KEEN_ANALYSIS);
+//   const accessKeys = yield client
+//     .get(client.url('projectId', 'keys'))
+//     .auth(client.masterKey())
+//     .send();
+
+//   return accessKeys;
+// }
+
+// export function* getAccessKey(keyName: string) {
+//   const client = yield getContext(KEEN_ANALYSIS);
+//   const accessKey = yield client
+//     .get(client.url('projectId', `keys?name=${keyName}`))
+//     .auth(client.masterKey())
+//     .send();
+
+//   return accessKey;
+// }
+
+export function* createAccessKey(dashboardId: string) {
+  const client = yield getContext(KEEN_ANALYSIS);
+  const options = yield generateAccessKeyOptions(dashboardId);
+  const params = {
+    name: createPublicDashboardKeyName(dashboardId),
+    isActive: true,
+    permitted: ['queries', 'saved_queries', 'cached_queries', 'schema'],
+    ...options,
+  };
+  const accessKey = yield client.post({
+    url: client.url('projectId', 'keys'),
+    api_key: client.masterKey(),
+    params,
+  });
+  return accessKey;
+}
+
+export function* updateAccessKey(dashboardId: string) {
+  const state: RootState = yield select();
+  const { publicAccessKey } = yield getDashboardMeta(state, dashboardId);
+  const client = yield getContext(KEEN_ANALYSIS);
+  const options = yield generateAccessKeyOptions(dashboardId);
+  const params = {
+    name: createPublicDashboardKeyName(dashboardId),
+    isActive: true,
+    permitted: ['queries', 'saved_queries', 'cached_queries', 'schema'],
+    ...options,
+  };
+
+  yield client.post({
+    url: client.url('projectId', 'keys', publicAccessKey),
+    api_key: client.masterKey(),
+    params,
+  });
+}
+
+export function* deleteAccessKey(publicAcessKey: string) {
+  const client = yield getContext(KEEN_ANALYSIS);
+  yield client.del({
+    url: client.url('projectId', `keys/${publicAcessKey}`),
+    api_key: client.masterKey(),
+  });
+}
+
+export function* updateAccessKeyOptions() {
+  const state: RootState = yield select();
+  const dashboardId = yield select(getActiveDashboard);
+  const { isPublic } = yield getDashboardMeta(state, dashboardId);
+
+  if (isPublic) {
+    yield updateAccessKey(dashboardId);
   }
 }
 
@@ -179,6 +322,7 @@ export function* deleteDashboard({
   payload,
 }: ReturnType<typeof deleteDashboardAction>) {
   const { dashboardId } = payload;
+  const { publicAccessKey } = yield select(getDashboardMeta, dashboardId);
   yield put(showDeleteConfirmation(dashboardId));
   const notificationManager = yield getContext(NOTIFICATION_MANAGER);
 
@@ -201,6 +345,10 @@ export function* deleteDashboard({
         message: 'notifications.dashboard_delete_success',
         autoDismiss: true,
       });
+
+      if (publicAccessKey) {
+        yield call(deleteAccessKey, publicAccessKey);
+      }
     } catch (err) {
       yield notificationManager.showNotification({
         type: 'error',
@@ -209,6 +357,14 @@ export function* deleteDashboard({
         autoDismiss: false,
       });
     }
+
+    // if (publicAccessKey) {
+    //   try {
+    //     yield deleteAccessKey(publicAccessKey);
+    //   } catch (error) {
+    //     console.error(error);
+    //   }
+    // }
   }
 }
 
@@ -216,6 +372,14 @@ export function* removeWidgetFromDashboard({
   payload,
 }: ReturnType<typeof removeWidgetFromDashboardAction>) {
   const { widgetId } = payload;
+
+  // const state: RootState = yield select();
+  // const { type, query } = yield getWidgetSettings(state, widgetId);
+  const { type, query } = yield select(getWidgetSettings, widgetId);
+  if (type === 'visualization' && query && typeof query === 'string') {
+    yield call(updateAccessKeyOptions);
+  }
+
   yield put(removeWidget(widgetId));
 }
 
@@ -343,6 +507,73 @@ export function* persistDashboardsOrder({
   }
 }
 
+export function* setAccessKey({
+  payload,
+}: ReturnType<typeof setDashboardPublicAccessAction>) {
+  const { dashboardId, isPublic } = payload;
+
+  const state: RootState = yield select();
+  const metadata = yield getDashboardMeta(state, dashboardId);
+
+  if (isPublic) {
+    try {
+      const accessKey = yield createAccessKey(dashboardId);
+      const { key: publicAccessKey } = accessKey;
+      const updatedMetadata: DashboardMetaData = {
+        ...metadata,
+        publicAccessKey,
+      };
+
+      yield put(saveDashboardMetaAction(dashboardId, updatedMetadata));
+    } catch (error) {
+      console.log(error);
+    }
+  } else {
+    const { publicAccessKey } = metadata;
+    const updatedMetadata: DashboardMetaData = {
+      ...metadata,
+      publicAccessKey: null,
+    };
+
+    if (publicAccessKey) {
+      try {
+        yield call(deleteAccessKey, publicAccessKey);
+        yield put(saveDashboardMetaAction(dashboardId, updatedMetadata));
+      } catch (error) {
+        console.error(error);
+        if (error.status === StatusCodes.NOT_FOUND)
+          yield put(saveDashboardMetaAction(dashboardId, updatedMetadata));
+      }
+    }
+  }
+}
+
+export function* regenerateAccessKey({
+  payload,
+}: ReturnType<typeof regenerateAccessKeyAction>) {
+  const { dashboardId } = payload;
+  // const state: RootState = yield select();
+  const metadata = yield select(getDashboardMeta, dashboardId);
+  const { publicAccessKey } = metadata;
+
+  if (publicAccessKey) {
+    try {
+      yield call(deleteAccessKey, publicAccessKey);
+
+      const accessKey = yield call(createAccessKey, dashboardId);
+      const { key } = accessKey;
+      const updatedMetadata: DashboardMetaData = {
+        ...metadata,
+        publicAccessKey: key,
+      };
+
+      yield put(saveDashboardMetaAction(dashboardId, updatedMetadata));
+    } catch (error) {
+      console.error(error);
+    }
+  }
+}
+
 export function* dashboardsSaga() {
   yield spawn(rehydrateDashboardsOrder);
   yield takeLatest(
@@ -360,4 +591,7 @@ export function* dashboardsSaga() {
   yield takeLatest(INITIALIZE_DASHBOARD_WIDGETS, initializeDashboardWidgets);
   yield takeLatest(SHOW_DASHBOARD_SETTINGS_MODAL, showDashboardSettings);
   yield takeLatest(HIDE_DASHBOARD_SETTINGS_MODAL, hideDashboardSettings);
+  yield takeLatest(SET_DASHBOARD_PUBLIC_ACCESS, setAccessKey);
+  yield takeLatest(UPDATE_ACCESS_KEY_OPTIONS, updateAccessKeyOptions);
+  yield takeLatest(REGENERATE_ACCESS_KEY, regenerateAccessKey);
 }

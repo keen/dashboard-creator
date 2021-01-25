@@ -20,11 +20,18 @@ type Props = {
   title?: string;
   /** Dashboard tags */
   tags: string[];
+  /** Dashboard is public identifier */
+  isPublic?: boolean;
   /** Back event handler */
   onBack?: () => void;
 };
 
-const DashboardDetails: FC<Props> = ({ title, tags, onBack }) => {
+const DashboardDetails: FC<Props> = ({
+  title,
+  tags,
+  isPublic = false,
+  onBack,
+}) => {
   const { t } = useTranslation();
 
   return (
@@ -33,6 +40,11 @@ const DashboardDetails: FC<Props> = ({ title, tags, onBack }) => {
         <Title isActive={!!title}>
           {title ? title : t('dashboard_details.untitled_dashboard')}
         </Title>
+        {isPublic && (
+          <Tag>
+            <Badge variant="green">{t('dashboard_details.public')}</Badge>
+          </Tag>
+        )}
         {tags.map((tag) => (
           <Tag key={tag}>
             <Badge variant="purple">{tag}</Badge>

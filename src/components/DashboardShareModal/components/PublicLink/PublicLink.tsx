@@ -1,4 +1,5 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useContext, useState, useMemo } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence } from 'framer-motion';
 import { Tooltip } from '@keen.io/ui-core';
@@ -19,7 +20,14 @@ import {
   Container,
 } from './PublicLink.styles';
 
-import { tooltipMotion } from '../../motion';
+import { TOOLTIP_MOTION } from '../../../../constants';
+
+import {
+  getDashboardMeta,
+  regenerateAccessKey,
+} from '../../../../modules/dashboards';
+import { AppContext } from '../../../../contexts';
+import { RootState } from '../../../../rootReducer';
 
 type Props = {
   dashboardId: string;
@@ -29,6 +37,16 @@ type Props = {
 const PublicLink: FC<Props> = ({ dashboardId, isPublic = true }) => {
   const { t } = useTranslation();
   const [tooltip, setTooltip] = useState(false);
+  const { createSharedDashboardUrl } = useContext(AppContext);
+  const { publicAccessKey } = useSelector((state: RootState) =>
+    getDashboardMeta(state, dashboardId)
+  );
+  const dispatch = useDispatch();
+
+  const publicDashboardShareUrl = useMemo(
+    () => createSharedDashboardUrl(publicAccessKey, dashboardId),
+    [dashboardId, publicAccessKey]
+  );
 
   return (
     <Container isActive={isPublic}>
@@ -44,7 +62,7 @@ const PublicLink: FC<Props> = ({ dashboardId, isPublic = true }) => {
             <Icon type="info" width={15} height={15} fill={colors.black[100]} />
             <AnimatePresence>
               {tooltip && (
-                <TooltipContainer {...tooltipMotion}>
+                <TooltipContainer {...TOOLTIP_MOTION}>
                   <Tooltip mode="light" hasArrow={false}>
                     <TooltipContent>
                       {t('dashboard_share.regenerate_link_tooltip')}
@@ -54,12 +72,12 @@ const PublicLink: FC<Props> = ({ dashboardId, isPublic = true }) => {
               )}
             </AnimatePresence>
           </TooltipWrapper>
-          <Link onClick={() => console.log('regenerate link')}>
+          <Link onClick={() => dispatch(regenerateAccessKey(dashboardId))}>
             {t('dashboard_share.regenerate_link')}
           </Link>
         </TitleWrapper>
         <Message>{t('dashboard_share.message')}</Message>
-        <InputGroup value={`http://dashboards.keen.io/${dashboardId}`} />
+        <InputGroup value={publicDashboardShareUrl} />
       </ModalContent>
     </Container>
   );

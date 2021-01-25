@@ -21,6 +21,9 @@ import {
   hideDashboardShareModal,
   updateDashboardMeta,
   setDashboardListOrder,
+  setDashboardPublicAccess,
+  updateAccessKeyOptions,
+  regenerateAccessKey,
 } from './actions';
 
 import {
@@ -34,9 +37,10 @@ import {
   getDashboardShareModal,
   getTagsPool,
   getDashboardMetaSaving,
-  getDashbaordListOrder,
+  getDashboardListOrder,
 } from './selectors';
 import { DashboardMetaData, DashboardModel } from './types';
+import { DASHBOARDS_ORDER } from './constants';
 
 export {
   dashboardsReducer,
@@ -61,6 +65,9 @@ export {
   hideDashboardShareModal,
   updateDashboardMeta,
   setDashboardListOrder,
+  setDashboardPublicAccess,
+  updateAccessKeyOptions,
+  regenerateAccessKey,
   getDashboardMeta,
   getDashboardSettings,
   getDeleteConfirmation,
@@ -71,7 +78,8 @@ export {
   getDashboardShareModal,
   getTagsPool,
   getDashboardMetaSaving,
-  getDashbaordListOrder,
+  getDashboardListOrder,
   DashboardMetaData,
   DashboardModel,
+  DASHBOARDS_ORDER,
 };

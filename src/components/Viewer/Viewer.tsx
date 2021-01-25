@@ -43,7 +43,7 @@ const Viewer: FC<Props> = ({ dashboardId }) => {
     };
   });
 
-  const { title, tags } = useSelector((state: RootState) =>
+  const { title, tags, isPublic } = useSelector((state: RootState) =>
     getDashboardMeta(state, dashboardId)
   );
 
@@ -53,6 +53,7 @@ const Viewer: FC<Props> = ({ dashboardId }) => {
         <ViewerNavigation
           title={title}
           tags={tags}
+          isPublic={isPublic}
           onEditDashboard={() => dispatch(editDashboard(dashboardId))}
           onBack={() => {
             dispatch(setActiveDashboard(null));

@@ -13,6 +13,7 @@ export type Options = {
   keenApiUrl?: string;
   translations?: TranslationsSettings;
   theme?: Partial<Theme>;
+  createSharedDashboardUrl: (accessKey: string, dashboardId: string) => string;
 };
 
 export type TranslationsSettings = {
