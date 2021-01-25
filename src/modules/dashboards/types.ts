@@ -9,6 +9,7 @@ export type DashboardMetaData = {
   tags: string[];
   lastModificationDate: number;
   isPublic: boolean;
+  publicAccessKey: null | string;
 };
 
 export type DashboardModel = {
@@ -48,7 +49,11 @@ export type ReducerState = {
   };
   dashboardSettingsModal: {
     isVisible: boolean;
-    dashboardId: string;
+    dashboardId: string | null;
+  };
+  dashboardShareModal: {
+    isVisible: boolean;
+    dashboardId: string | null;
   };
   tagsPool: string[];
   items: Record<string, DashboardItem>;

@@ -48,9 +48,9 @@ import {
 } from '../../../../modules/chartEditor';
 import { getActiveDashboardTheme } from '../../../../modules/theme';
 
-import { notificationBarMotion, editTooltipMotion } from './motion';
 import WidgetVisualization from '../WidgetVisualization';
 import { AppContext } from '../../../../contexts';
+import { TOOLTIP_MOTION } from '../../../../constants';
 
 type Props = {
   /** Close editor event handler */
@@ -129,7 +129,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
     <Container id="chart-editor">
       <AnimatePresence>
         {widgetError && (
-          <NotificationBar {...notificationBarMotion}>
+          <NotificationBar {...TOOLTIP_MOTION}>
             <Alert type="error">{t('chart_widget_editor.widget_error')}</Alert>
           </NotificationBar>
         )}
@@ -207,7 +207,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
               />
               <AnimatePresence>
                 {editTooltip && (
-                  <TooltipContainer {...editTooltipMotion}>
+                  <TooltipContainer {...TOOLTIP_MOTION}>
                     <Tooltip mode="light" hasArrow={false}>
                       <TooltipContent>
                         {t('chart_widget_editor.save_query_edit_tooltip')}

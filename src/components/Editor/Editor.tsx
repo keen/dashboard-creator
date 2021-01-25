@@ -13,7 +13,6 @@ import {
   getDashboard,
   saveDashboard,
   getDashboardMeta,
-  showDashboardSettingsModal,
 } from '../../modules/dashboards';
 import {
   createWidget,
@@ -106,6 +105,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
     lastModificationDate,
     title,
     tags,
+    isPublic,
   } = useSelector((state: RootState) => getDashboardMeta(state, dashboardId));
 
   return (
@@ -120,7 +120,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
       <EditorNavigation
         title={title}
         tags={tags}
-        onShowSettings={() => dispatch(showDashboardSettingsModal(dashboardId))}
+        isPublic={isPublic}
         onBack={() => {
           dispatch(setActiveDashboard(null));
           dispatch(push(ROUTES.MANAGEMENT));

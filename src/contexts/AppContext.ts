@@ -10,6 +10,7 @@ export const AppContext = React.createContext<{
     userKey: string;
     masterKey: string;
   };
+  createSharedDashboardUrl: (accessKey: string, dashboardId: string) => string;
 }>({
   notificationPubSub: null,
   modalContainer: null,
@@ -19,4 +20,5 @@ export const AppContext = React.createContext<{
     userKey: null,
     masterKey: null,
   },
+  createSharedDashboardUrl: () => '',
 });

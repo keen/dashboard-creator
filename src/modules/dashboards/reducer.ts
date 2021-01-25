@@ -28,7 +28,11 @@ import {
   SHOW_DASHBOARD_SETTINGS_MODAL,
   HIDE_DASHBOARD_SETTINGS_MODAL,
   SET_TAGS_POOL,
+  SHOW_DASHBOARD_SHARE_MODAL,
+  HIDE_DASHBOARD_SHARE_MODAL,
   SET_DASHBOARD_LIST_ORDER,
+  SET_DASHBOARD_PUBLIC_ACCESS,
+  DASHBOARDS_ORDER,
   ADD_CLONED_DASHBOARD,
 } from './constants';
 
@@ -49,9 +53,13 @@ export const initialState: ReducerState = {
     isVisible: false,
     dashboardId: null,
   },
+  dashboardShareModal: {
+    isVisible: false,
+    dashboardId: null,
+  },
   tagsPool: [],
   items: {},
-  dashboardListOrder: 'recent',
+  dashboardListOrder: Object.keys(DASHBOARDS_ORDER)[0],
 };
 
 const dashboardsReducer = (
@@ -108,6 +116,24 @@ const dashboardsReducer = (
         ...state,
         dashboardSettingsModal: {
           ...state.dashboardSettingsModal,
+          dashboardId: null,
+          isVisible: false,
+        },
+      };
+    case SHOW_DASHBOARD_SHARE_MODAL:
+      return {
+        ...state,
+        dashboardShareModal: {
+          ...state.dashboardShareModal,
+          dashboardId: action.payload.dashboardId,
+          isVisible: true,
+        },
+      };
+    case HIDE_DASHBOARD_SHARE_MODAL:
+      return {
+        ...state,
+        dashboardShareModal: {
+          ...state.dashboardShareModal,
           dashboardId: null,
           isVisible: false,
         },
@@ -305,6 +331,23 @@ const dashboardsReducer = (
           data: sortDashboards(state.metadata.data, action.payload.order),
         },
         dashboardListOrder: action.payload.order,
+      };
+    case SET_DASHBOARD_PUBLIC_ACCESS:
+      return {
+        ...state,
+        metadata: {
+          ...state.metadata,
+          data: state.metadata.data.map((dashboardMeta) => {
+            if (action.payload.dashboardId === dashboardMeta.id) {
+              return {
+                ...dashboardMeta,
+                isPublic: action.payload.isPublic,
+              };
+            }
+
+            return dashboardMeta;
+          }),
+        },
       };
     case ADD_CLONED_DASHBOARD:
       return {

@@ -35,7 +35,12 @@ import {
   SHOW_DASHBOARD_SETTINGS_MODAL,
   HIDE_DASHBOARD_SETTINGS_MODAL,
   SET_TAGS_POOL,
+  SHOW_DASHBOARD_SHARE_MODAL,
+  HIDE_DASHBOARD_SHARE_MODAL,
   SET_DASHBOARD_LIST_ORDER,
+  SET_DASHBOARD_PUBLIC_ACCESS,
+  UPDATE_ACCESS_KEY_OPTIONS,
+  REGENERATE_ACCESS_KEY,
   ADD_CLONED_DASHBOARD,
 } from './constants';
 
@@ -287,11 +292,40 @@ export const setTagsPool = createAction(
   })
 );
 
+export const showDashboardShareModal = createAction(
+  SHOW_DASHBOARD_SHARE_MODAL,
+  (dashboardId: string) => ({
+    payload: { dashboardId },
+  })
+);
+
+export const hideDashboardShareModal = createAction(HIDE_DASHBOARD_SHARE_MODAL);
+
 export const setDashboardListOrder = createAction(
   SET_DASHBOARD_LIST_ORDER,
   (order: string) => ({
     payload: {
       order,
+    },
+  })
+);
+
+export const setDashboardPublicAccess = createAction(
+  SET_DASHBOARD_PUBLIC_ACCESS,
+  (dashboardId: string, isPublic: boolean) => ({
+    payload: {
+      dashboardId,
+      isPublic,
+    },
+  })
+);
+
+export const updateAccessKeyOptions = createAction(UPDATE_ACCESS_KEY_OPTIONS);
+export const regenerateAccessKey = createAction(
+  REGENERATE_ACCESS_KEY,
+  (dashboardId: string) => ({
+    payload: {
+      dashboardId,
     },
   })
 );
@@ -338,5 +372,11 @@ export type DashboardsActions =
   | ReturnType<typeof saveDashboardMeta>
   | ReturnType<typeof saveDashboardMetaSuccess>
   | ReturnType<typeof saveDashboardMetaError>
+  | ReturnType<typeof showDashboardShareModal>
+  | ReturnType<typeof hideDashboardShareModal>
+  | ReturnType<typeof setDashboardListOrder>
+  | ReturnType<typeof setDashboardPublicAccess>
+  | ReturnType<typeof updateAccessKeyOptions>
+  | ReturnType<typeof regenerateAccessKey>
   | ReturnType<typeof setDashboardListOrder>
   | ReturnType<typeof addClonedDashboard>;

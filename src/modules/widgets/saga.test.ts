@@ -47,6 +47,7 @@ import {
   getDashboardSettings,
   saveDashboard,
   removeWidgetFromDashboard,
+  updateAccessKeyOptions,
 } from '../dashboards';
 
 import {
@@ -993,6 +994,10 @@ describe('selectQueryForWidget()', () => {
 
     test('initializes chart widget', (result) => {
       expect(result).toEqual(put(initializeChartWidgetAction(widgetId)));
+    });
+
+    test('updates access key options if necessary', (result) => {
+      expect(result).toStrictEqual(put(updateAccessKeyOptions()));
     });
 
     test('gets active dashboard identifier', () => {

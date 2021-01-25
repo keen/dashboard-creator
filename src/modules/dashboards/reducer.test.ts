@@ -10,12 +10,16 @@ import {
   fetchDashboardListSuccess,
   showDashboardSettingsModal,
   hideDashboardSettingsModal,
+  showDashboardShareModal,
+  hideDashboardShareModal,
   setTagsPool,
   setDashboardError,
   saveDashboardMeta,
   saveDashboardMetaSuccess,
   saveDashboardMetaError,
   setDashboardListOrder,
+  setDashboardPublicAccess,
+  regenerateAccessKey,
   addClonedDashboard,
 } from './actions';
 
@@ -101,6 +105,7 @@ test('updates dashboard metadata', () => {
           lastModificationDate: 0,
           tags: [],
           isPublic: false,
+          publicAccessKey: null,
         },
       ],
     },
@@ -115,6 +120,7 @@ test('updates dashboard metadata', () => {
           "id": "@dashboard/01",
           "isPublic": false,
           "lastModificationDate": 0,
+          "publicAccessKey": null,
           "queries": 30,
           "tags": Array [],
           "title": "Title",
@@ -198,6 +204,7 @@ test('add widget to dashboard', () => {
           lastModificationDate: 0,
           tags: [],
           isPublic: false,
+          publicAccessKey: null,
         },
       ],
     },
@@ -235,6 +242,7 @@ test('removes widget from dashboard', () => {
           lastModificationDate: 0,
           tags: [],
           isPublic: false,
+          publicAccessKey: null,
         },
       ],
     },
@@ -267,6 +275,7 @@ test('serializes dashboards metadata', () => {
           "id": "@dashboard/01",
           "isPublic": true,
           "lastModificationDate": 1606895352390,
+          "publicAccessKey": "@public/1",
           "queries": 0,
           "tags": Array [],
           "title": "Dashboard 1",
@@ -276,6 +285,7 @@ test('serializes dashboards metadata', () => {
           "id": "@dashboard/02",
           "isPublic": true,
           "lastModificationDate": 1606895352390,
+          "publicAccessKey": "@public/2",
           "queries": 2,
           "tags": Array [],
           "title": "Dashboard 2",
@@ -285,6 +295,7 @@ test('serializes dashboards metadata', () => {
           "id": "@dashboard/03",
           "isPublic": true,
           "lastModificationDate": 1606895352390,
+          "publicAccessKey": "@public/3",
           "queries": 0,
           "tags": Array [],
           "title": null,
@@ -329,6 +340,44 @@ test('closes dashboard settings', () => {
   const { dashboardSettingsModal } = dashboardsReducer(state, action);
 
   expect(dashboardSettingsModal).toMatchInlineSnapshot(`
+    Object {
+      "dashboardId": null,
+      "isVisible": false,
+    }
+  `);
+});
+
+test('opens dashboard share modal', () => {
+  const state = {
+    ...initialState,
+    metadata: {
+      ...initialState.metadata,
+      data: dashboardsMeta,
+    },
+  };
+  const action = showDashboardShareModal('@dashboard/01');
+  const { dashboardShareModal } = dashboardsReducer(state, action);
+
+  expect(dashboardShareModal).toMatchInlineSnapshot(`
+    Object {
+      "dashboardId": "@dashboard/01",
+      "isVisible": true,
+    }
+  `);
+});
+
+test('closes dashboard share modal', () => {
+  const state = {
+    ...initialState,
+    metadata: {
+      ...initialState.metadata,
+      data: dashboardsMeta,
+    },
+  };
+  const action = hideDashboardShareModal();
+  const { dashboardShareModal } = dashboardsReducer(state, action);
+
+  expect(dashboardShareModal).toMatchInlineSnapshot(`
     Object {
       "dashboardId": null,
       "isVisible": false,
@@ -401,6 +450,41 @@ test('set order for dashboard list', () => {
   expect(dashboardListOrder).toBe('az');
 });
 
+test('set public access to the dashboard', () => {
+  const dashboardId = '@dashboard/01';
+  const isPublicTest = false;
+
+  const state = {
+    ...initialState,
+    metadata: {
+      ...initialState.metadata,
+      data: dashboardsMeta,
+    },
+  };
+  const action = setDashboardPublicAccess(dashboardId, isPublicTest);
+  const {
+    metadata: { data },
+  } = dashboardsReducer(state, action);
+
+  const { isPublic } = data.find((item) => item.id === dashboardId);
+
+  expect(isPublic).toEqual(isPublicTest);
+});
+
+test('regenerate access key for the dashboard', () => {
+  const dashboardId = '@dashboard/01';
+  const action = regenerateAccessKey(dashboardId);
+
+  expect(action).toMatchInlineSnapshot(`
+    Object {
+      "payload": Object {
+        "dashboardId": "@dashboard/01",
+      },
+      "type": "@dashboards/REGENERATE_ACCESS_KEY",
+    }
+    `);
+});
+
 test('add cloned dashboard to the list', () => {
   const newDashboard = {
     id: '@dashboard/01',
@@ -410,6 +494,7 @@ test('add cloned dashboard to the list', () => {
     tags: [],
     lastModificationDate: 1606895352390,
     isPublic: false,
+    publicAccessKey: null,
   };
   const action = addClonedDashboard(newDashboard);
   const {
@@ -422,6 +507,7 @@ test('add cloned dashboard to the list', () => {
         "id": "@dashboard/01",
         "isPublic": false,
         "lastModificationDate": 1606895352390,
+        "publicAccessKey": null,
         "queries": 0,
         "tags": Array [],
         "title": null,

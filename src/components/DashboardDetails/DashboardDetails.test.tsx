@@ -36,6 +36,14 @@ test('renders dashboard title', () => {
   expect(getByText(props.title)).toBeInTheDocument();
 });
 
+test('render "Public" marker', () => {
+  const {
+    wrapper: { getByText },
+  } = render({ isPublic: true });
+
+  expect(getByText('dashboard_details.public')).toBeInTheDocument();
+});
+
 test('renders tags', () => {
   const props = {
     tags: ['marketing'],

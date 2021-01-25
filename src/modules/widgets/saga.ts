@@ -34,6 +34,7 @@ import {
   removeWidgetFromDashboard,
   saveDashboard,
   getDashboardSettings,
+  updateAccessKeyOptions,
   ADD_WIDGET_TO_DASHBOARD,
 } from '../dashboards';
 import {
@@ -326,6 +327,7 @@ export function* selectQueryForWidget(widgetId: string) {
       )
     );
     yield put(initializeChartWidgetAction(widgetId));
+    yield put(updateAccessKeyOptions());
 
     const dashboardId = yield select(getActiveDashboard);
     yield put(saveDashboard(dashboardId));
@@ -377,6 +379,7 @@ export function* editChartSavedQuery(widgetId: string) {
       );
 
       yield put(initializeChartWidgetAction(widgetId));
+      yield put(updateAccessKeyOptions());
 
       const dashboardId = yield select(getActiveDashboard);
       yield put(saveDashboard(dashboardId));
@@ -390,6 +393,7 @@ export function* editChartSavedQuery(widgetId: string) {
         yield* updateSaveQuery(queryName, querySettings, metadata);
 
         yield put(setWidgetState(widgetId, widgetState));
+
         yield put(
           finishChartWidgetConfiguration(
             widgetId,

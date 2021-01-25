@@ -37,7 +37,8 @@
      },
      modalContainer: '#modal-root',
      project: <%= config %>,
-     theme
+     theme,
+     createSharedDashboardUrl: (accessKey, dashboardId) => `https://dashboards.keen.io/${dashboardId}/${accessKey}`,
    }).render();
   </script>
 </html>

@@ -31,7 +31,8 @@
   },
   "dashboard_details": {
     "untitled_dashboard": "Untitled dashboard",
-    "back": "All Dashboards"
+    "back": "All Dashboards",
+    "public": "Public"
   },
   "dashboard_tile": {
     "preview_dashboard": "View Dashboard",
@@ -300,6 +301,25 @@
     "input_placeholder": "Insert item and confirm by Enter",
     "saving_dashboard": "Saving dashboard"
   },
+  "dashboard_share": {
+    "modal_title": "Share dashboard",
+    "make_public": "Make dashboard public",
+    "make_public_tooltip": "The public share link allows people to view the dashboard without having access to Keen.",
+    "copy": "Copy",
+    "public_dashboard_link": "Public dashboard link",
+    "regenerate_link": "Regenerate link",
+    "regenerate_link_tooltip": "The Access Key will be regenerated and the new link wil be created. The old link will no longer work.",
+    "message": "Anyone with this link can view this dashboard and all connected data.",
+    "access_key_error": "Access Key for this dashboard do not exist any more. Make it public again.",
+    "embed_placeholder": "Only public dashboard is embeddable",
+    "download_code": "Download HTML file",
+    "embed_title": "Embed the dashboard in your platform",
+    "embed_text": "When you edit this dashboard in our UI, all changes will be automatically visible in your external platform too.",
+    "embed_step_label": "Step",
+    "embed_step_first": "Paste the code into the {{tag}} of the page where you will place the dashboard",
+    "embed_step_second": "Paste this dashboard code into the {{tag}} where you want to display it",
+    "embed_full_page": "Do you need full page code?"
+  },
   "absolute_time": {
     "start_date": "From",
     "end_date": "To"
@@ -310,6 +330,10 @@
   "custom_interval": {
     "main_label": "Every",
     "unit_placeholder": "Unit placeholder"
+  },
+  "editor_navigation": {
+    "settings_tooltip": "Settings",
+    "share_tooltip": "Share"
   },
   "extraction": {
     "preview_extraction": "Preview events",

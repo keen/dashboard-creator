@@ -34,6 +34,7 @@ const metadata = {
   tags: [],
   lastModificationDate: 0,
   isPublic: false,
+  publicAccessKey: null,
 };
 
 test('calls API to get blob objects metadata', () => {

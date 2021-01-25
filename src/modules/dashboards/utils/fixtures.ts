@@ -9,6 +9,7 @@ export const dashboardsMeta: DashboardMetaData[] = [
     tags: ['tag-1', 'tag-2', 'tag-4'],
     lastModificationDate: 1606895352390,
     isPublic: true,
+    publicAccessKey: '@public/1',
   },
   {
     id: '@dashboard/02',
@@ -18,6 +19,7 @@ export const dashboardsMeta: DashboardMetaData[] = [
     tags: ['tag-2', 'tag-3'],
     lastModificationDate: 1606895352390,
     isPublic: true,
+    publicAccessKey: '@public/2',
   },
   {
     id: '@dashboard/03',
@@ -27,5 +29,6 @@ export const dashboardsMeta: DashboardMetaData[] = [
     tags: ['tag-1', 'tag-4'],
     lastModificationDate: 1606895352390,
     isPublic: true,
+    publicAccessKey: '@public/3',
   },
 ];

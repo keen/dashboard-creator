@@ -7,6 +7,10 @@ Object {
     "dashboardId": null,
     "isVisible": false,
   },
+  "dashboardShareModal": Object {
+    "dashboardId": null,
+    "isVisible": false,
+  },
   "deleteConfirmation": Object {
     "dashboardId": null,
     "isVisible": false,
@@ -30,6 +34,7 @@ Object {
         "id": "@dashboard/01",
         "isPublic": false,
         "lastModificationDate": 0,
+        "publicAccessKey": null,
         "queries": 0,
         "tags": Array [],
         "title": null,
@@ -49,6 +54,10 @@ exports[`removes widget from dashboard 1`] = `
 Object {
   "dashboardListOrder": "recent",
   "dashboardSettingsModal": Object {
+    "dashboardId": null,
+    "isVisible": false,
+  },
+  "dashboardShareModal": Object {
     "dashboardId": null,
     "isVisible": false,
   },
@@ -73,6 +82,7 @@ Object {
         "id": "@dashboard/01",
         "isPublic": false,
         "lastModificationDate": 0,
+        "publicAccessKey": null,
         "queries": 0,
         "tags": Array [],
         "title": null,

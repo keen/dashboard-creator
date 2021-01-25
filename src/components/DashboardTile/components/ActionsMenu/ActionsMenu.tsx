@@ -7,9 +7,9 @@ import { Container, DeleteDashboard } from './ActionsMenu.styles';
 
 import {
   cloneDashboard,
-  shareDashboard,
   editDashboard,
   deleteDashboard,
+  showDashboardShareModal,
 } from '../../../../modules/dashboards';
 
 type Props = {
@@ -29,7 +29,7 @@ const ActionsMenu: FC<Props> = ({ dashboardId, onClose }) => {
         <DropdownMenu.Item
           onClick={() => {
             onClose();
-            dispatch(shareDashboard(dashboardId));
+            dispatch(showDashboardShareModal(dashboardId));
           }}
         >
           {t('actions_menu.share_dashboard')}

@@ -17,6 +17,7 @@ export type DashboardCreatorOptions = {
   backend?: BackendSettings;
   translations?: TranslationsSettings;
   theme?: Partial<Theme>;
+  createSharedDashboardUrl: (accessKey: string, dashboardId: string) => string;
 };
 
 export type PublicDashboardOptions = {
