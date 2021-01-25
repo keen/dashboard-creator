@@ -8,7 +8,7 @@ test('get dropping item size for "visualization" item', () => {
       "i": "dropping-item",
       "minH": 6,
       "minW": 2,
-      "w": 3,
+      "w": 4,
     }
   `);
 });
