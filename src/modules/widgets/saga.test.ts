@@ -34,7 +34,7 @@ import {
   cloneWidget,
 } from './saga';
 
-import { getWidgetSettings } from './selectors';
+import { getWidget, getWidgetSettings } from './selectors';
 
 import {
   getActiveDashboard,
@@ -93,7 +93,6 @@ import {
   APPLY_TEXT_EDITOR_SETTINGS,
   CLOSE_EDITOR as CLOSE_TEXT_EDITOR,
 } from '../textEditor';
-import rootReducer from '../../rootReducer';
 
 import { KEEN_ANALYSIS, I18N } from '../../constants';
 
@@ -1135,27 +1134,13 @@ describe('selectImageWidget()', () => {
 describe('cloneWidget()', () => {
   const action = cloneWidgetAction(widgetId);
 
-  const state = {
-    rootReducer,
-    widgets: {
-      items: {
-        '@widget/01': widgetItem,
-      },
-    },
-  };
   describe('Scenario 1: User clone dashboard widget', () => {
     const test = sagaHelper(cloneWidget(action));
 
-    test('get root widget settings', (result) => {
-      expect(result).toEqual(select(getWidgetSettings, widgetId));
+    test('get root widget', (result) => {
+      expect(result).toEqual(select(getWidget, widgetId));
 
-      return widgetItem.widget;
-    });
-
-    test('prepare widgets state', (result) => {
-      expect(result).toEqual(select());
-
-      return state;
+      return widgetItem;
     });
 
     test('trigger saveClonedWidget action', (result) => {

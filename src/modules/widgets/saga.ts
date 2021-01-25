@@ -655,13 +655,15 @@ export function* cloneWidget({
   payload,
 }: ReturnType<typeof cloneWidgetAction>) {
   const { widgetId } = payload;
-  const widgetSettings = yield select(getWidgetSettings, widgetId);
   const clonedWidgetId = createWidgetId();
-  const state = yield select();
-  const widgetItem = getWidget(state, widgetId);
+  const widgetItem = yield select(getWidget, widgetId);
 
   yield put(
-    saveClonedWidget(clonedWidgetId, widgetSettings, widgetItem as WidgetItem)
+    saveClonedWidget(
+      clonedWidgetId,
+      widgetItem.widget,
+      widgetItem as WidgetItem
+    )
   );
   const dashboardId = yield select(getActiveDashboard);
   yield put(addWidgetToDashboard(dashboardId, clonedWidgetId));
