@@ -26,7 +26,7 @@ import {
 
 import { DRAG_HANDLE_ELEMENT } from '../Widget';
 
-import { settingsMotion, removeMotion } from './motions';
+import { settingsMotion } from './motions';
 
 import { RootState } from '../../rootReducer';
 
@@ -102,7 +102,7 @@ const TextManagement: FC<Props> = ({
       </EditorContainer>
       <AnimatePresence>
         {showRemoveConfirmation && (
-          <RemoveContainer {...removeMotion}>
+          <RemoveContainer {...settingsMotion}>
             <RemoveWidget
               onConfirm={onRemoveWidget}
               onDismiss={() => setRemoveConfirmation(false)}
