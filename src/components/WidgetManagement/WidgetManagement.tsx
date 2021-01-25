@@ -13,10 +13,6 @@ import {
 
 import RemoveWidget from '../RemoveWidget';
 import PreventDragPropagation from '../PreventDragPropagation';
-import RemoveWidget from '../../../RemoveWidget';
-import PreventDragPropagation from '../../../PreventDragPropagation';
-
-import { editChartWidget, cloneWidget } from '../../../../modules/widgets';
 
 import { settingsMotion, removeMotion } from './motions';
 import { DRAG_HANDLE_ELEMENT } from '../Widget';
@@ -91,7 +87,7 @@ const WidgetManagement: FC<Props> = ({
                 <div data-testid="clone-widget">
                   <CircleButton
                     variant="blank"
-                    onClick={() => dispatch(cloneWidget(widgetId))}
+                    onClick={onCloneWidget}
                     icon={<Icon type="clone" fill={colors.black[500]} />}
                   />
                 </div>

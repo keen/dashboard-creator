@@ -37,6 +37,7 @@ import {
   saveDashboard,
   getDashboardSettings,
   addWidgetToDashboard,
+  ADD_WIDGET_TO_DASHBOARD,
 } from '../dashboards';
 import {
   openEditor,
