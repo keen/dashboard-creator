@@ -13,7 +13,7 @@ test('get ghost size for chart widget', () => {
   expect(ghost).toMatchInlineSnapshot(`
     Object {
       "height": 50,
-      "width": 216,
+      "width": 176.66666666666666,
     }
   `);
 });
@@ -23,7 +23,7 @@ test('get ghost size for text widget', () => {
   expect(ghost).toMatchInlineSnapshot(`
     Object {
       "height": 50,
-      "width": 216,
+      "width": 176.66666666666666,
     }
   `);
 });
