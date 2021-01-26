@@ -114,3 +114,26 @@ test('allows user to remove text widget', async () => {
 
   expect(props.onRemoveWidget).toHaveBeenCalled();
 });
+
+test('allows user to clone text widget', async () => {
+  const {
+    store,
+    wrapper: { container },
+  } = render({}, { isHoverActive: true });
+
+  const button = container.querySelector(
+    '[data-testid="clone-text-widget"] button'
+  );
+  fireEvent.click(button);
+
+  expect(store.getActions()).toMatchInlineSnapshot(`
+    Array [
+      Object {
+        "payload": Object {
+          "widgetId": "@widget-id",
+        },
+        "type": "@widgets/CLONE_WIDGET",
+      },
+    ]
+  `);
+});
