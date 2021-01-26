@@ -49,3 +49,24 @@ test('allows user to chart edit widget', () => {
     ]
   `);
 });
+
+test('allows user to clone image widget', () => {
+  const {
+    store,
+    wrapper: { container },
+  } = render();
+
+  const button = container.querySelector('[data-testid="clone-widget"] button');
+  fireEvent.click(button);
+
+  expect(store.getActions()).toMatchInlineSnapshot(`
+    Array [
+      Object {
+        "payload": Object {
+          "widgetId": "@widget/01",
+        },
+        "type": "@widgets/CLONE_WIDGET",
+      },
+    ]
+  `);
+});
