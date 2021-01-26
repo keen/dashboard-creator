@@ -310,7 +310,11 @@
     "regenerate_link": "Regenerate link",
     "regenerate_link_tooltip": "The Access Key will be regenerated and the new link wil be created. The old link will no longer work.",
     "message": "Anyone with this link can view this dashboard and all connected data.",
-    "access_key_error": "Access Key for this dashboard do not exist any more. Make it public again.",
+    "access_key_not_exist_error": "Access Key for this dashboard do not exist any more. Make it public again.",
+    "access_key_api_error": "You cannot change anything here right now. We're having an issue with our API. Please try again later.",
+    "access_key_limit_error": "You cannot make this dashboard public because you have reached the limit of Access Keys for your organization. Upgrade your plan",
+    "access_key_duplicate_error": "We were not able to create Access Key to make this dashboard public. Please try again.",
+    "access_key_revoke_error": "Access Key for this dashboard has been revoked. Activate the key to make the dashboard public.",
     "embed_placeholder": "Only public dashboard is embeddable",
     "download_code": "Download HTML file",
     "embed_title": "Embed the dashboard in your platform",
@@ -318,7 +322,9 @@
     "embed_step_label": "Step",
     "embed_step_first": "Paste the code into the {{tag}} of the page where you will place the dashboard",
     "embed_step_second": "Paste this dashboard code into the {{tag}} where you want to display it",
-    "embed_full_page": "Do you need full page code?"
+    "embed_full_page": "Do you need full page code?",
+    "public_link": "Public link",
+    "embed_html": "Embed HTML"
   },
   "absolute_time": {
     "start_date": "From",

@@ -1,5 +1,12 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import React, { FC, useEffect, useContext, useCallback, useState } from 'react';
+import React, {
+  FC,
+  useEffect,
+  useContext,
+  useCallback,
+  useState,
+  useMemo,
+} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence } from 'framer-motion';
@@ -42,6 +49,7 @@ import {
   MODAL_VIEWS,
   PUBLIC_LINK_VIEW_ID,
   EMBED_HTML_VIEW_ID,
+  ACCESS_KEY_ERROR,
 } from './constants';
 
 import { RootState } from '../../rootReducer';
@@ -64,7 +72,12 @@ const DashboardShareModal: FC = () => {
 
   const [labelTooltip, setLabelTooltip] = useState(false);
   const [activeTab, setActiveTab] = useState(MODAL_VIEWS[0].id);
-  const [accessKeyError, setAccessKeyError] = useState(false);
+  const [accessKeyError, setAccessKeyError] = useState(null);
+
+  const tabs = useMemo(
+    () => MODAL_VIEWS.map((view) => ({ ...view, label: t(view.label) })),
+    [isVisible]
+  );
 
   useEffect(() => {
     if (!dashboardId) return;
@@ -77,23 +90,24 @@ const DashboardShareModal: FC = () => {
     accessKey
       .then((res) => {
         if (!res.length && isPublic) {
-          setAccessKeyError(true);
+          setAccessKeyError(t(ACCESS_KEY_ERROR.NOT_EXIST));
           dispatch(setDashboardPublicAccess(dashboardId, false));
         }
         if (res.length) {
           const { is_active } = res[0];
-          if (!isPublic || (isPublic && is_active)) setAccessKeyError(false);
-          if (isPublic && !is_active) setAccessKeyError(true); // TODO: handle error when is_active has been changed
+          if (!isPublic || (isPublic && is_active)) setAccessKeyError(null);
+          if (isPublic && !is_active)
+            setAccessKeyError(ACCESS_KEY_ERROR.REVOKE_ERROR);
         }
       })
       .catch((e) => {
+        setAccessKeyError(t(ACCESS_KEY_ERROR.API_ERROR));
         console.error(e);
-        setAccessKeyError(true);
       });
   }, [dashboardId]);
 
   useEffect(() => {
-    if (isPublic && publicAccessKey) setAccessKeyError(false);
+    if (isPublic && publicAccessKey) setAccessKeyError(null);
   }, [publicAccessKey]);
 
   const closeHandler = useCallback(() => {
@@ -117,16 +131,12 @@ const DashboardShareModal: FC = () => {
                 <Tabs
                   activeTab={activeTab}
                   onClick={(id) => setActiveTab(id)}
-                  tabs={MODAL_VIEWS}
+                  tabs={tabs}
                 />
               </TabsContainer>
             </ModalContent>
             <ModalContent>
-              {accessKeyError && (
-                <Alert type="error">
-                  {t('dashboard_share.access_key_error')}
-                </Alert>
-              )}
+              {accessKeyError && <Alert type="error">{accessKeyError}</Alert>}
               <ToggleWrapper>
                 <Toggle isOn={isPublic} onChange={handleToggleChange} />
                 <Label>
