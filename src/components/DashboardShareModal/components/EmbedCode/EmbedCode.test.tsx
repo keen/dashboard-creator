@@ -1,4 +1,6 @@
 import React from 'react';
+import { Provider } from 'react-redux';
+import configureStore from 'redux-mock-store';
 import { render as rtlRender } from '@testing-library/react';
 
 import EmbedCode from './EmbedCode';
@@ -6,7 +8,10 @@ import EmbedCode from './EmbedCode';
 import { AppContext } from '../../../../contexts';
 
 const render = (overProps: any = {}) => {
+  const mockStore = configureStore([]);
   const dashboardId = 'dashboardId';
+
+  const store = mockStore({});
 
   const props = {
     dashboardId,
@@ -19,11 +24,14 @@ const render = (overProps: any = {}) => {
         {
           project: {
             id: 'projectId',
+            masterKey: 'masterKey',
           },
         } as any
       }
     >
-      <EmbedCode {...props} />
+      <Provider store={store}>
+        <EmbedCode {...props} />
+      </Provider>
     </AppContext.Provider>
   );
 

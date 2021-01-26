@@ -42,6 +42,7 @@ import {
   UPDATE_ACCESS_KEY_OPTIONS,
   REGENERATE_ACCESS_KEY,
   ADD_CLONED_DASHBOARD,
+  EXPORT_DASHBOARD_TO_HTML,
 } from './constants';
 
 export const fetchDashboardList = createAction(FETCH_DASHBOARDS_LIST);
@@ -339,6 +340,15 @@ export const addClonedDashboard = createAction(
   })
 );
 
+export const exportDashboardToHtml = createAction(
+  EXPORT_DASHBOARD_TO_HTML,
+  (dashboardId: string) => ({
+    payload: {
+      dashboardId,
+    },
+  })
+);
+
 export type DashboardsActions =
   | ReturnType<typeof fetchDashboardList>
   | ReturnType<typeof fetchDashboardListSuccess>
@@ -379,4 +389,5 @@ export type DashboardsActions =
   | ReturnType<typeof updateAccessKeyOptions>
   | ReturnType<typeof regenerateAccessKey>
   | ReturnType<typeof setDashboardListOrder>
-  | ReturnType<typeof addClonedDashboard>;
+  | ReturnType<typeof addClonedDashboard>
+  | ReturnType<typeof exportDashboardToHtml>;

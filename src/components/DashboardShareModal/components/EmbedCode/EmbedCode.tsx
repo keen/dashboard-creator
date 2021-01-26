@@ -1,4 +1,5 @@
 import React, { FC, useMemo, useState, useContext } from 'react';
+import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence } from 'framer-motion';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -19,7 +20,11 @@ import {
   ButtonContainer,
 } from './EmbedCode.styles';
 
-import { createCodeSnippet } from '../../../../utils';
+import {
+  exportDashboardToHtml,
+  createCodeSnippet,
+} from '../../../../modules/dashboards';
+
 import { TOOLTIP_MOTION as BUTTON_MOTION } from '../../../../constants';
 import { AppContext } from '../../../../contexts';
 
@@ -38,17 +43,21 @@ const BUTTONS = {
 
 const EmbedCode: FC<Props> = ({ dashboardId, isPublic }) => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+
   const [showButton, setShowButton] = useState(null);
   const {
-    project: { id: projectId },
+    project: { id: projectId, masterKey },
   } = useContext(AppContext);
 
   const codeHead = useMemo(
-    () => createCodeSnippet({ projectId, dashboardId, type: 'head' }),
+    () =>
+      createCodeSnippet({ projectId, masterKey, dashboardId, type: 'head' }),
     [dashboardId]
   );
   const codeBody = useMemo(
-    () => createCodeSnippet({ projectId, dashboardId, type: 'body' }),
+    () =>
+      createCodeSnippet({ projectId, masterKey, dashboardId, type: 'body' }),
     [dashboardId]
   );
 
@@ -139,10 +148,7 @@ const EmbedCode: FC<Props> = ({ dashboardId, isPublic }) => {
             <Button
               variant="secondary"
               style="outline"
-              onClick={() =>
-                // dispatch(downloadCodeSnippet(projectId, readKey))
-                console.log('download')
-              }
+              onClick={() => dispatch(exportDashboardToHtml(dashboardId))}
             >
               {t('dashboard_share.download_code')}
             </Button>
