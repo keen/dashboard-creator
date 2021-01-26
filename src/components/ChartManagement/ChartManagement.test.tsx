@@ -29,7 +29,7 @@ const render = (overProps: any = {}) => {
   };
 };
 
-test('allows user to chart edit widget', () => {
+test('allows user to edit chart widget', () => {
   const {
     store,
     wrapper: { getByText },
@@ -46,6 +46,27 @@ test('allows user to chart edit widget', () => {
           "usePersistedChartEditorState": false,
         },
         "type": "@widgets/EDIT_CHART_WIDGET",
+      },
+    ]
+  `);
+});
+
+test('allows user to clone chart widget', () => {
+  const {
+    store,
+    wrapper: { container },
+  } = render();
+
+  const button = container.querySelector('[data-testid="clone-widget"] button');
+  fireEvent.click(button);
+
+  expect(store.getActions()).toMatchInlineSnapshot(`
+    Array [
+      Object {
+        "payload": Object {
+          "widgetId": "@widget/01",
+        },
+        "type": "@widgets/CLONE_WIDGET",
       },
     ]
   `);

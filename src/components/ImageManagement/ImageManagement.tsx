@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 
 import WidgetManagement from '../WidgetManagement';
 
-import { editImageWidget } from '../../modules/widgets';
+import { editImageWidget, cloneWidget } from '../../modules/widgets';
 
 type Props = {
   /** Widget identifier */
@@ -26,7 +26,7 @@ const ImageManagement: FC<Props> = ({
   return (
     <WidgetManagement
       isHoverActive={isHoverActive}
-      onCloneWidget={() => console.log('clone')}
+      onCloneWidget={() => dispatch(cloneWidget(widgetId))}
       onEditWidget={() => dispatch(editImageWidget(widgetId))}
       onRemoveWidget={onRemoveWidget}
       editButtonLabel={t('widget.edit_image')}
