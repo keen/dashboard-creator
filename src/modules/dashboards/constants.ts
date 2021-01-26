@@ -50,6 +50,7 @@ export const UPDATE_ACCESS_KEY_OPTIONS =
   '@dashboards/UPDATE_ACCESS_KEY_OPTIONS';
 export const REGENERATE_ACCESS_KEY = '@dashboards/REGENERATE_ACCESS_KEY';
 export const ADD_CLONED_DASHBOARD = '@dashboard/ADD_CLONED_DASHBOARD';
+export const EXPORT_DASHBOARD_TO_HTML = '@dashboard/EXPORT_DASHBOARD_TO_HTML';
 
 export const DASHBOARD_LIST_ORDER_KEY =
   '@keen-dashboard-creator/dashboard-list-order';

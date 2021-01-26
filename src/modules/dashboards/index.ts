@@ -25,7 +25,10 @@ import {
   setDashboardPublicAccess,
   updateAccessKeyOptions,
   regenerateAccessKey,
+  exportDashboardToHtml,
 } from './actions';
+
+import { createCodeSnippet } from './utils';
 
 import {
   getDashboardsMetadata,
@@ -70,6 +73,8 @@ export {
   setDashboardPublicAccess,
   updateAccessKeyOptions,
   regenerateAccessKey,
+  exportDashboardToHtml,
+  createCodeSnippet,
   getDashboardMeta,
   getDashboardSettings,
   getDeleteConfirmation,

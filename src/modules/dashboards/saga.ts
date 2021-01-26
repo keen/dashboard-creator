@@ -10,9 +10,9 @@ import {
   call,
 } from 'redux-saga/effects';
 import { StatusCodes } from 'http-status-codes';
-import { NOT_FOUND } from 'http-status-codes';
 import { push } from 'connected-react-router';
 import { v4 as uuid } from 'uuid';
+import { exportToHtml } from '@keen.io/ui-core';
 import { Theme } from '@keen.io/charts';
 
 import {
@@ -36,6 +36,7 @@ import {
   setDashboardPublicAccess as setDashboardPublicAccessAction,
   regenerateAccessKey as regenerateAccessKeyAction,
   cloneDashboard as cloneDashboardAction,
+  exportDashboardToHtml as exportDashboardToHtmlAction,
   showDeleteConfirmation,
   hideDeleteConfirmation,
   saveDashboardMetaSuccess,
@@ -66,7 +67,11 @@ import {
 } from '../widgets';
 
 import { removeDashboardTheme, setDashboardTheme } from '../theme';
-import { createTagsPool, createPublicDashboardKeyName } from './utils';
+import {
+  createTagsPool,
+  createPublicDashboardKeyName,
+  createCodeSnippet,
+} from './utils';
 import { createWidgetId } from '../widgets/utils';
 
 import { APIError } from '../../api';
@@ -98,6 +103,7 @@ import {
   UPDATE_ACCESS_KEY_OPTIONS,
   REGENERATE_ACCESS_KEY,
   CLONE_DASHBOARD,
+  EXPORT_DASHBOARD_TO_HTML,
 } from './constants';
 
 import { RootState } from '../../rootReducer';
@@ -513,7 +519,7 @@ export function* viewPublicDashboard({
     }
   } catch (err) {
     const error: APIError = err;
-    if (error.statusCode === NOT_FOUND) {
+    if (error.statusCode === StatusCodes.NOT_FOUND) {
       yield put(setDashboardError(dashboardId, DashboardError.NOT_EXIST));
     } else {
       yield put(
@@ -697,6 +703,20 @@ export function* cloneDashboard({
   }
 }
 
+export function* exportDashboardToHtml({
+  payload,
+}: ReturnType<typeof exportDashboardToHtmlAction>) {
+  const { dashboardId } = payload;
+  const client = yield getContext(KEEN_ANALYSIS);
+  const { projectId, masterKey } = client.config;
+  const codeSnippet = yield createCodeSnippet({
+    projectId,
+    masterKey,
+    dashboardId,
+  });
+  exportToHtml({ data: codeSnippet, fileName: dashboardId });
+}
+
 export function* dashboardsSaga() {
   yield spawn(rehydrateDashboardsOrder);
   yield takeLatest(FETCH_DASHBOARDS_LIST, fetchDashboardList);
@@ -716,4 +736,5 @@ export function* dashboardsSaga() {
   yield takeLatest(UPDATE_ACCESS_KEY_OPTIONS, updateAccessKeyOptions);
   yield takeLatest(REGENERATE_ACCESS_KEY, regenerateAccessKey);
   yield takeLatest(CLONE_DASHBOARD, cloneDashboard);
+  yield takeLatest(EXPORT_DASHBOARD_TO_HTML, exportDashboardToHtml);
 }
