@@ -2,10 +2,17 @@
 import sagaHelper from 'redux-saga-testing';
 import { put, take, select, getContext, call } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
+import { exportToHtml } from '@keen.io/ui-core';
 
 jest.mock('uuid', () => {
   return {
     v4: () => '@dashboard/01',
+  };
+});
+
+jest.mock('@keen.io/ui-core', () => {
+  return {
+    exportToHtml: jest.fn().mockImplementation(() => ''),
   };
 });
 
@@ -26,6 +33,7 @@ import {
   cloneDashboard as cloneDashboardAction,
   addClonedDashboard,
   initializeDashboardWidgets as initializeDashboardWidgetsAction,
+  exportDashboardToHtml as exportDashboardToHtmlAction,
 } from './actions';
 import { removeDashboardTheme } from '../theme/actions';
 import {
@@ -37,6 +45,7 @@ import {
   createAccessKey,
   viewPublicDashboard,
   cloneDashboard,
+  exportDashboardToHtml,
 } from './saga';
 
 import { removeWidget, registerWidgets, getWidgetSettings } from '../widgets';
@@ -45,21 +54,27 @@ import { setDashboardTheme } from '../theme';
 import { setActiveDashboard, getActiveDashboard } from '../app';
 
 import { serializeDashboard } from './serializers';
+import { createCodeSnippet } from './utils';
 
 import { DashboardModel, DashboardMetaData, DashboardError } from './types';
+
+import rootReducer from '../../rootReducer';
 
 import {
   CONFIRM_DASHBOARD_DELETE,
   HIDE_DELETE_CONFIRMATION,
 } from './constants';
 
-import { NOTIFICATION_MANAGER, BLOB_API, ROUTES } from '../../constants';
+import {
+  NOTIFICATION_MANAGER,
+  BLOB_API,
+  ROUTES,
+  KEEN_ANALYSIS,
+} from '../../constants';
 import { getDashboardMeta } from './selectors';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
-
-import rootReducer from '../../rootReducer';
 
 describe('viewPublicDashboard()', () => {
   const dashboardId = '@dashboard/01';
@@ -743,5 +758,42 @@ describe('regenerateAccessKey()', () => {
 
   test('terminates regenerate access key flow', (result) => {
     expect(result).toBeUndefined();
+  });
+});
+
+describe('exportDashboardToHtml()', () => {
+  const action = exportDashboardToHtmlAction(dashboardId);
+  const test = sagaHelper(exportDashboardToHtml(action));
+
+  const projectId = 'projectId';
+  const masterKey = 'masterKey';
+
+  const keenAnalysisMock = {
+    config: {
+      projectId,
+      masterKey,
+    },
+  };
+
+  const snippet = 'snippet';
+
+  test('get Keen client from context', (result) => {
+    expect(result).toEqual(getContext(KEEN_ANALYSIS));
+
+    return keenAnalysisMock;
+  });
+
+  test('creates code snippet', (result) => {
+    expect(result).toEqual(
+      createCodeSnippet({ projectId, masterKey, dashboardId })
+    );
+    return snippet;
+  });
+
+  test('exports created snippet', () => {
+    expect(exportToHtml).toHaveBeenCalledWith({
+      data: snippet,
+      fileName: dashboardId,
+    });
   });
 });

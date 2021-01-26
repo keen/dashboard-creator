@@ -13,8 +13,9 @@ test('return code snippet for provided projectId and dashboardId', () => {
       <head>
         <meta charset=\\"utf-8\\">
         <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=11\\" />
-        <title><%= htmlWebpackPlugin.options.title %></title>
+        <title>Public Dashboard</title>
         <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"https://static.keen.io/assets/keen-fonts.css\\" />
+        <script crossorigin src=\\"https://cdn.jsdelivr.net/npm/@keen.io/dashboard-creator@latest/dist/public-dashboard/main.min.js\\"></script>
         <style>
           body {
             margin: 0;
@@ -24,14 +25,13 @@ test('return code snippet for provided projectId and dashboardId', () => {
       </head>
       <body>
         <div id=\\"root\\"></div>
-      </body>
       <script type=\\"text/javascript\\">
          new KeenPublicDashboard({
            container: '#root',
            dashboardId: dashboardId,
            backend: {
-             analyticsApiUrl: 'staging-api.keen.io',
-             dashboardsApiUrl: 'https://blob-service.us-west-2.test.aws.keen.io',
+             analyticsApiUrl: 'api.keen.io',
+             dashboardsApiUrl: 'https://blob-service.keen.io',
            },
            project: {
              id: projectId,
@@ -39,6 +39,7 @@ test('return code snippet for provided projectId and dashboardId', () => {
            },
          }).render();
         </script>
+        </body>
       </html>  
     "
   `);
@@ -53,7 +54,7 @@ test('return code snippet for head section', () => {
   expect(
     createCodeSnippet({ projectId, masterKey, dashboardId, type })
   ).toMatchInlineSnapshot(
-    `"<script crossorigin src=\\"https://cdn.jsdelivr.net/npm/keen-dashboard-builder@latest/dist/viewer.min.js\\"></script>"`
+    `"<script crossorigin src=\\"https://cdn.jsdelivr.net/npm/@keen.io/dashboard-creator@latest/dist/public-dashboard/main.min.js\\"></script>"`
   );
 });
 
@@ -65,22 +66,20 @@ test('return code snippet for body section', () => {
 
   expect(createCodeSnippet({ projectId, masterKey, dashboardId, type }))
     .toMatchInlineSnapshot(`
-    "
-        <div id=\\"root\\"></div>
-        <script type=\\"text/javascript\\">
-           new KeenPublicDashboard({
-             container: '#root',
-             dashboardId: dashboardId,
-             backend: {
-               analyticsApiUrl: 'staging-api.keen.io',
-               dashboardsApiUrl: 'https://blob-service.us-west-2.test.aws.keen.io',
-             },
-             project: {
-               id: projectId,
-               masterKey: masterKey 
-             },
-           }).render();
-          </script>
-        "
+    "<div id=\\"root\\"></div>
+    <script type=\\"text/javascript\\">
+      new KeenPublicDashboard({
+        container: '#root',
+        dashboardId: dashboardId,
+        backend: {
+          analyticsApiUrl: 'api.keen.io',
+          dashboardsApiUrl: 'https://blob-service.keen.io',
+        },
+        project: {
+          id: projectId,
+          masterKey: masterKey 
+        },
+      }).render();
+    </script>"
   `);
 });

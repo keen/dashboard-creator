@@ -703,13 +703,17 @@ export function* cloneDashboard({
   }
 }
 
-function* exportDashboardToHtml({
+export function* exportDashboardToHtml({
   payload,
 }: ReturnType<typeof exportDashboardToHtmlAction>) {
   const { dashboardId } = payload;
   const client = yield getContext(KEEN_ANALYSIS);
   const { projectId, masterKey } = client.config;
-  const codeSnippet = createCodeSnippet({ projectId, masterKey, dashboardId });
+  const codeSnippet = yield createCodeSnippet({
+    projectId,
+    masterKey,
+    dashboardId,
+  });
   exportToHtml({ data: codeSnippet, fileName: dashboardId });
 }
 
