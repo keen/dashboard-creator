@@ -76,7 +76,6 @@ export class DashboardCreator {
     } = config;
 
     const { id, masterKey, accessKey } = project;
-    console.log({ project });
 
     if (backend?.analyticsApiUrl)
       this.analyticsApiUrl = backend.analyticsApiUrl;

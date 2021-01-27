@@ -32,7 +32,7 @@ export const Button = styled.button`
   color: ${colors.white[500]};
   box-shadow: 0 2px 4px 0 rgba(29, 39, 41, 0.15);
 
-  font-family: 'Lato-Bold', sans-serif;
+  font-family: 'Lato Bold', sans-serif;
   font-size: 14px;
   line-height: 27px;
 

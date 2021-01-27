@@ -9,10 +9,10 @@ export const MODAL_VIEWS = [
 ];
 
 export const ACCESS_KEY_ERROR: Record<AccessKeyError, string> = {
-  [AccessKeyError.NOT_EXIST]: 'dashboard_share.access_key_no_exist_error',
+  [AccessKeyError.NOT_EXIST]: 'dashboard_share.access_key_not_exist_error',
   [AccessKeyError.API_ERROR]: 'dashboard_share.access_key_api_error',
-  [AccessKeyError.LIMIT_ERROR]: 'dashboard_share.access_key_limit_error',
+  [AccessKeyError.LIMIT_ERROR]: 'dashboard_share.access_key_limit_error', // TODO: handle errors for access keys limit
   [AccessKeyError.DUPLICATE_ERROR]:
-    'dashboard_share.access_key_duplicate_error',
+    'dashboard_share.access_key_duplicate_error', // TODO: handle error for duplicated access key
   [AccessKeyError.REVOKE_ERROR]: 'dashboard_share.access_key_revoke_error',
 };

@@ -46,10 +46,10 @@ const EmbedCode: FC<Props> = ({ dashboardId, isPublic }) => {
   const dispatch = useDispatch();
 
   const [showButton, setShowButton] = useState(null);
+
   const {
     project: { id: projectId, masterKey },
   } = useContext(AppContext);
-
   const codeHead = useMemo(
     () =>
       createCodeSnippet({ projectId, masterKey, dashboardId, type: 'head' }),
