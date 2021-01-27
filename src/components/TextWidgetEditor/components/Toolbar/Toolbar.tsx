@@ -45,7 +45,7 @@ const Toolbar: FC<Props> = ({
   const currentInlineStyle = editorState.getCurrentInlineStyle();
 
   return (
-    <Container>
+    <Container onMouseDown={(e) => e.preventDefault()}>
       <FontSize
         currentFontSize={getBlockFontSize(currentInlineStyle)}
         onUpdateFontSize={onUpdateFontSize}

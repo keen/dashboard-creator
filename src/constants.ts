@@ -19,3 +19,5 @@ export const TOOLTIP_MOTION = {
   animate: { opacity: 1 },
   exit: { opacity: 0 },
 };
+
+export const GRID_MAX_VALUE = 999999;

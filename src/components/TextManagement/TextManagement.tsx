@@ -21,6 +21,7 @@ import {
   editInlineTextWidget,
   editTextWidget,
   getWidget,
+  cloneWidget,
   TextWidget,
 } from '../../modules/widgets';
 
@@ -139,7 +140,7 @@ const TextManagement: FC<Props> = ({
             <div data-testid="clone-text-widget">
               <CircleButton
                 variant="blank"
-                onClick={() => setRemoveConfirmation(true)}
+                onClick={() => dispatch(cloneWidget(id))}
                 icon={<Icon type="clone" fill={colors.black[500]} />}
               />
             </div>

@@ -20,12 +20,14 @@ import {
   editImageWidget as editImageWidgetAction,
   editInlineTextWidget as editInlineTextWidgetAction,
   editTextWidget as editTextWidgetAction,
+  cloneWidget as cloneWidgetAction,
   setWidgetLoading,
   setWidgetState,
   finishChartWidgetConfiguration,
   setImageWidget,
   setTextWidget,
   savedQueryUpdated,
+  saveClonedWidget,
 } from './actions';
 
 import { getWidgetSettings, getWidget } from './selectors';
@@ -35,6 +37,7 @@ import {
   saveDashboard,
   getDashboardSettings,
   updateAccessKeyOptions,
+  addWidgetToDashboard,
   ADD_WIDGET_TO_DASHBOARD,
 } from '../dashboards';
 import {
@@ -83,6 +86,7 @@ import {
   HIDE_QUERY_PICKER,
   HIDE_IMAGE_PICKER,
 } from '../app';
+import { createWidgetId } from './utils';
 
 import {
   CREATE_WIDGET,
@@ -93,6 +97,7 @@ import {
   INITIALIZE_WIDGET,
   INITIALIZE_CHART_WIDGET,
   SAVED_QUERY_UPDATED,
+  CLONE_WIDGET,
 } from './constants';
 import {
   PUBSUB,
@@ -651,6 +656,25 @@ export function* createWidget({
   }
 }
 
+export function* cloneWidget({
+  payload,
+}: ReturnType<typeof cloneWidgetAction>) {
+  const { widgetId } = payload;
+  const clonedWidgetId = createWidgetId();
+  const widgetItem = yield select(getWidget, widgetId);
+
+  yield put(
+    saveClonedWidget(
+      clonedWidgetId,
+      widgetItem.widget,
+      widgetItem as WidgetItem
+    )
+  );
+  const dashboardId = yield select(getActiveDashboard);
+  yield put(addWidgetToDashboard(dashboardId, clonedWidgetId));
+  yield put(saveDashboard(dashboardId));
+}
+
 export function* widgetsSaga() {
   yield takeLatest(SAVED_QUERY_UPDATED, reinitializeWidgets);
   yield takeLatest(CREATE_WIDGET, createWidget);
@@ -658,6 +682,7 @@ export function* widgetsSaga() {
   yield takeLatest(EDIT_IMAGE_WIDGET, editImageWidget);
   yield takeLatest(EDIT_TEXT_WIDGET, editTextWidget);
   yield takeLatest(EDIT_INLINE_TEXT_WIDGET, editInlineTextWidget);
+  yield takeLatest(CLONE_WIDGET, cloneWidget);
   yield takeEvery(INITIALIZE_WIDGET, initializeWidget);
   yield takeEvery(INITIALIZE_CHART_WIDGET, initializeChartWidget);
 }

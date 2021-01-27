@@ -55,3 +55,31 @@ Object {
   },
 }
 `;
+
+exports[`save cloned widget 1`] = `
+Object {
+  "@widget/id": Object {
+    "data": null,
+    "error": null,
+    "isConfigured": false,
+    "isInitialized": false,
+    "isLoading": false,
+    "widget": Object {
+      "id": "@widget/id",
+      "position": Object {
+        "h": 2,
+        "w": 6,
+        "x": 3,
+        "y": 999999,
+      },
+      "query": null,
+      "settings": Object {
+        "chartSettings": Object {},
+        "visualizationType": null,
+        "widgetSettings": Object {},
+      },
+      "type": "visualization",
+    },
+  },
+}
+`;

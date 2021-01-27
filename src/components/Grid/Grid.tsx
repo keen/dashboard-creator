@@ -19,7 +19,7 @@ import {
   GridPosition,
 } from '../../modules/widgets';
 import { RootState } from '../../rootReducer';
-import { getDroppingItemSize } from '../../utils';
+import { getDroppingItemSize, getGridItemStyles } from '../../utils';
 
 import {
   GRID_CONTAINER_ID,
@@ -126,6 +126,7 @@ const Grid: FC<Props> = ({
             data-grid={{ ...position, i: id, static: false }}
             onMouseEnter={() => !isResize && setActiveWidget(id)}
             onMouseLeave={() => setActiveWidget(null)}
+            style={getGridItemStyles(position)}
           >
             <Widget
               id={id}

@@ -17,6 +17,8 @@ import {
   editInlineTextWidget as editInlineTextWidgetAction,
   setTextWidget,
   setWidgetLoading,
+  cloneWidget as cloneWidgetAction,
+  saveClonedWidget,
 } from './actions';
 import {
   selectQueryForWidget,
@@ -29,9 +31,10 @@ import {
   initializeChartWidget,
   initializeWidget,
   selectImageWidget,
+  cloneWidget,
 } from './saga';
 
-import { getWidgetSettings } from './selectors';
+import { getWidget, getWidgetSettings } from './selectors';
 
 import {
   getActiveDashboard,
@@ -48,6 +51,7 @@ import {
   saveDashboard,
   removeWidgetFromDashboard,
   updateAccessKeyOptions,
+  addWidgetToDashboard,
 } from '../dashboards';
 
 import {
@@ -96,6 +100,12 @@ import { widget as widgetItem } from './fixtures';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
+
+jest.mock('uuid', () => {
+  return {
+    v4: () => '@widget/01',
+  };
+});
 
 describe('editTextWidget()', () => {
   describe('Scenario 1: User edits text widget in editor', () => {
@@ -1121,6 +1131,44 @@ describe('selectImageWidget()', () => {
       expect(result).toEqual(
         put(removeWidgetFromDashboard(dashboardId, widgetId))
       );
+    });
+  });
+});
+
+describe('cloneWidget()', () => {
+  const action = cloneWidgetAction(widgetId);
+
+  describe('Scenario 1: User clone dashboard widget', () => {
+    const test = sagaHelper(cloneWidget(action));
+
+    test('get root widget', (result) => {
+      expect(result).toEqual(select(getWidget, widgetId));
+
+      return widgetItem;
+    });
+
+    test('trigger saveClonedWidget action', (result) => {
+      expect(result).toEqual(
+        put(
+          saveClonedWidget(`widget/${widgetId}`, widgetItem.widget, widgetItem)
+        )
+      );
+    });
+
+    test('select active dashbboard id', (result) => {
+      expect(result).toEqual(select(getActiveDashboard));
+
+      return dashboardId;
+    });
+
+    test('trigger addWidgetToDashboard action', (result) => {
+      expect(result).toEqual(
+        put(addWidgetToDashboard(dashboardId, `widget/${widgetId}`))
+      );
+    });
+
+    test('trigger saveDashboard action', (result) => {
+      expect(result).toEqual(put(saveDashboard(dashboardId)));
     });
   });
 });

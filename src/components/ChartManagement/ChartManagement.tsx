@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 
 import WidgetManagement from '../WidgetManagement';
 
-import { editChartWidget } from '../../modules/widgets';
+import { editChartWidget, cloneWidget } from '../../modules/widgets';
 
 type Props = {
   /** Widget identifier */
@@ -26,7 +26,7 @@ const ChartManagement: FC<Props> = ({
   return (
     <WidgetManagement
       isHoverActive={isHoverActive}
-      onCloneWidget={() => console.log('clone')}
+      onCloneWidget={() => dispatch(cloneWidget(widgetId))}
       onEditWidget={() => dispatch(editChartWidget(widgetId))}
       onRemoveWidget={onRemoveWidget}
       editButtonLabel={t('widget.edit_chart')}
