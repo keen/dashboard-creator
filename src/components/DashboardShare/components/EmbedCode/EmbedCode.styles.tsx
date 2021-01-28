@@ -36,7 +36,7 @@ export const Subtitle = styled.div`
   color: ${colors.green[500]};
 `;
 
-export const Text = styled.div<LayoutProps & SpaceProps>`
+export const StyledText = styled.div<LayoutProps & SpaceProps>`
   font-family: 'Lato Regular', sans-serif;
   font-size: 14px;
   line-height: 18px;
@@ -72,4 +72,11 @@ export const ButtonContainer = styled(motion.div)`
   right: 10px;
 
   z-index: ${UI_LAYERS.tooltip};
+`;
+
+export const TooltipText = styled.div`
+  font-family: 'Lato Light', sans-serif;
+  font-size: 11px;
+  line-height: 14px;
+  color: ${colors.white['500']};
 `;

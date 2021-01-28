@@ -1,23 +1,31 @@
-import React, { FC, useMemo, useState, useContext } from 'react';
+import React, {
+  FC,
+  useMemo,
+  useState,
+  useContext,
+  useRef,
+  useCallback,
+} from 'react';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { copyToClipboard } from '@keen.io/charts-utils';
 import xml from 'react-syntax-highlighter/dist/cjs/languages/hljs/xml';
 import js from 'react-syntax-highlighter/dist/cjs/languages/hljs/javascript';
 import a11y from 'react-syntax-highlighter/dist/cjs/styles/hljs/a11y-light';
 
-import { Button } from '@keen.io/ui-core';
+import { Button, Tooltip, UI_LAYERS } from '@keen.io/ui-core';
 import {
   Placeholder,
   Navigation,
   Container,
   Subtitle,
-  Text,
+  StyledText,
   Step,
   Code,
   ButtonContainer,
+  TooltipText,
 } from './EmbedCode.styles';
 
 import {
@@ -25,8 +33,9 @@ import {
   createCodeSnippet,
 } from '../../../../modules/dashboards';
 
-import { TOOLTIP_MOTION as BUTTON_MOTION } from '../../../../constants';
 import { AppContext } from '../../../../contexts';
+import { TOOLTIP_MOTION as MOTION } from '../../../../constants';
+import { TOOLTIP_HIDE } from './constants';
 
 SyntaxHighlighter.registerLanguage('xml', xml);
 SyntaxHighlighter.registerLanguage('javascript', js);
@@ -36,20 +45,26 @@ type Props = {
   isPublic?: boolean;
 };
 
-const BUTTONS = {
-  copy: 'copy',
-  download: 'download',
-};
+type Buttons = 'download' | 'copy';
 
 const EmbedCode: FC<Props> = ({ dashboardId, isPublic }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  const [showButton, setShowButton] = useState(null);
+  const [showButton, setShowButton] = useState<Buttons>(null);
+  const [tooltip, setTooltip] = useState({
+    visible: false,
+    x: 0,
+    y: 0,
+  });
+
+  const tooltipHide = useRef(null);
+  const containerRef = useRef(null);
 
   const {
     project: { id: projectId, masterKey },
   } = useContext(AppContext);
+
   const codeHead = useMemo(
     () =>
       createCodeSnippet({ projectId, masterKey, dashboardId, type: 'head' }),
@@ -61,14 +76,46 @@ const EmbedCode: FC<Props> = ({ dashboardId, isPublic }) => {
     [dashboardId]
   );
 
+  const clickHandler = useCallback((e: any, value: string) => {
+    if (tooltipHide.current) clearTimeout(tooltipHide.current);
+    copyToClipboard(value);
+
+    const {
+      top,
+      left,
+      height,
+    }: ClientRect = containerRef.current.getBoundingClientRect();
+
+    const tooltipX = e.pageX - left - window.scrollX;
+    const tooltipY = e.pageY - top - height - window.scrollY;
+
+    setTooltip((state) => ({
+      ...state,
+      visible: true,
+      x: tooltipX,
+      y: tooltipY,
+    }));
+
+    tooltipHide.current = setTimeout(() => {
+      setTooltip((state) => ({
+        ...state,
+        visible: false,
+        x: 0,
+        y: 0,
+      }));
+    }, TOOLTIP_HIDE);
+  }, []);
+
   return (
     <Container>
       {isPublic ? (
-        <>
+        <div ref={containerRef}>
           <Subtitle>{t('dashboard_share.embed_title')}</Subtitle>
-          <Text marginBottom="20px">{t('dashboard_share.embed_text')}</Text>
+          <StyledText marginBottom="20px">
+            {t('dashboard_share.embed_text')}
+          </StyledText>
           <Step>{t('dashboard_share.embed_step_label')} 1</Step>
-          <Text
+          <StyledText
             display="inline-block"
             marginLeft="10px"
             dangerouslySetInnerHTML={{
@@ -79,7 +126,7 @@ const EmbedCode: FC<Props> = ({ dashboardId, isPublic }) => {
             }}
           />
           <Code
-            onMouseEnter={() => setShowButton(BUTTONS.copy)}
+            onMouseEnter={() => setShowButton('copy')}
             onMouseLeave={() => setShowButton(null)}
           >
             <SyntaxHighlighter
@@ -91,12 +138,12 @@ const EmbedCode: FC<Props> = ({ dashboardId, isPublic }) => {
               {codeHead}
             </SyntaxHighlighter>
             <AnimatePresence>
-              {showButton === BUTTONS.copy && (
-                <ButtonContainer {...BUTTON_MOTION}>
+              {showButton === 'copy' && (
+                <ButtonContainer {...MOTION}>
                   <Button
                     variant="secondary"
                     style="solid"
-                    onClick={() => copyToClipboard(codeHead)}
+                    onClick={(e) => clickHandler(e, codeHead)}
                   >
                     {t('dashboard_share.copy')}
                   </Button>
@@ -105,7 +152,7 @@ const EmbedCode: FC<Props> = ({ dashboardId, isPublic }) => {
             </AnimatePresence>
           </Code>
           <Step>{t('dashboard_share.embed_step_label')} 2</Step>
-          <Text
+          <StyledText
             display="inline-block"
             marginLeft="10px"
             dangerouslySetInnerHTML={{
@@ -116,7 +163,7 @@ const EmbedCode: FC<Props> = ({ dashboardId, isPublic }) => {
             }}
           />
           <Code
-            onMouseEnter={() => setShowButton(BUTTONS.download)}
+            onMouseEnter={() => setShowButton('download')}
             onMouseLeave={() => setShowButton(null)}
           >
             <SyntaxHighlighter
@@ -128,12 +175,12 @@ const EmbedCode: FC<Props> = ({ dashboardId, isPublic }) => {
               {codeBody}
             </SyntaxHighlighter>
             <AnimatePresence>
-              {showButton === BUTTONS.download && (
-                <ButtonContainer {...BUTTON_MOTION}>
+              {showButton === 'download' && (
+                <ButtonContainer {...MOTION}>
                   <Button
                     variant="secondary"
                     style="solid"
-                    onClick={() => copyToClipboard(codeBody)}
+                    onClick={(e) => clickHandler(e, codeBody)}
                   >
                     {t('dashboard_share.copy')}
                   </Button>
@@ -142,9 +189,9 @@ const EmbedCode: FC<Props> = ({ dashboardId, isPublic }) => {
             </AnimatePresence>
           </Code>
           <Navigation>
-            <Text marginRight="20px">
+            <StyledText marginRight="20px">
               {t('dashboard_share.embed_full_page')}
-            </Text>
+            </StyledText>
             <Button
               variant="secondary"
               style="outline"
@@ -153,7 +200,29 @@ const EmbedCode: FC<Props> = ({ dashboardId, isPublic }) => {
               {t('dashboard_share.download_code')}
             </Button>
           </Navigation>
-        </>
+          <AnimatePresence>
+            {tooltip.visible && (
+              <motion.div
+                {...MOTION}
+                initial={{ opacity: 0, x: tooltip.x, y: tooltip.y }}
+                animate={{
+                  x: tooltip.x,
+                  y: tooltip.y,
+                  opacity: 1,
+                }}
+                style={{
+                  position: 'absolute',
+                  pointerEvents: 'none',
+                  zIndex: UI_LAYERS.dropdown,
+                }}
+              >
+                <Tooltip mode="dark" hasArrow={false}>
+                  <TooltipText>{t('dashboard_share.copied')}</TooltipText>
+                </Tooltip>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       ) : (
         <Placeholder>{t('dashboard_share.embed_placeholder')}</Placeholder>
       )}
