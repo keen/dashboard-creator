@@ -34,10 +34,6 @@ type Props = {
   onPreview: () => void;
   /** Show dashboard settings event handler */
   onShowSettings: () => void;
-  /** Remove dashboard handler */
-  onRemove?: () => void;
-  /** Clone dashboard handler */
-  onClone?: () => void;
   /** User edit privilages */
   editPrivileges?: boolean;
 };

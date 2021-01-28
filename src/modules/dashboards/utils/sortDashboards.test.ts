@@ -1,5 +1,4 @@
 import sortDashboards from './sortDashboards';
-import { DASHBOARDS_ORDER } from '../../../modules/dashboards';
 
 const dashboards = [
   {
@@ -45,7 +44,7 @@ const dashboards = [
 ];
 
 test('should sort dashboards as Recent', () => {
-  const sorted = sortDashboards(dashboards, DASHBOARDS_ORDER.recent);
+  const sorted = sortDashboards(dashboards, 'recent');
 
   expect(sorted).toMatchInlineSnapshot(`
     Array [
@@ -94,7 +93,7 @@ test('should sort dashboards as Recent', () => {
 });
 
 test('should sort dashboards as Oldest', () => {
-  const sorted = sortDashboards(dashboards, DASHBOARDS_ORDER.oldest);
+  const sorted = sortDashboards(dashboards, 'oldest');
 
   expect(sorted).toMatchInlineSnapshot(`
     Array [
@@ -143,7 +142,7 @@ test('should sort dashboards as Oldest', () => {
 });
 
 test('should sort dashboards as A - Z', () => {
-  const sorted = sortDashboards(dashboards, DASHBOARDS_ORDER.az);
+  const sorted = sortDashboards(dashboards, 'az');
 
   expect(sorted).toMatchInlineSnapshot(`
     Array [
@@ -192,7 +191,7 @@ test('should sort dashboards as A - Z', () => {
 });
 
 test('should sort dashboards as Z - A', () => {
-  const sorted = sortDashboards(dashboards, DASHBOARDS_ORDER.za);
+  const sorted = sortDashboards(dashboards, 'za');
 
   expect(sorted).toMatchInlineSnapshot(`
     Array [

@@ -45,8 +45,6 @@ const DashboardsList: FC<Props> = ({
               onPreview={() => onPreviewDashboard(id)}
               onShowSettings={() => onShowDashboardSettings(id)}
               useDefaultThumbnail={widgets === 0}
-              onRemove={() => console.log('remove')}
-              onClone={() => console.log('clone')}
               editPrivileges={editPrivileges}
               tags={tags}
               isPublic={isPublic}

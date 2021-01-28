@@ -43,7 +43,12 @@ import {
   getDashboardMetaSaving,
   getDashboardListOrder,
 } from './selectors';
-import { DashboardMetaData, DashboardModel, DashboardError } from './types';
+import {
+  DashboardMetaData,
+  DashboardModel,
+  DashboardError,
+  DashboardListOrder,
+} from './types';
 import { DASHBOARDS_ORDER, ADD_WIDGET_TO_DASHBOARD } from './constants';
 
 export {
@@ -88,7 +93,8 @@ export {
   getDashboardListOrder,
   DashboardMetaData,
   DashboardModel,
+  DashboardListOrder,
+  DashboardError,
   DASHBOARDS_ORDER,
   ADD_WIDGET_TO_DASHBOARD,
-  DashboardError,
 };
