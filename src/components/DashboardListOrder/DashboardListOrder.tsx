@@ -18,6 +18,7 @@ import {
   setDashboardListOrder,
   getDashboardListOrder,
   DASHBOARDS_ORDER,
+  DashboardListOrder,
 } from '../../modules/dashboards';
 
 const DashboardListOrder = () => {
@@ -66,7 +67,7 @@ const DashboardListOrder = () => {
       <div style={{ zIndex: UI_LAYERS.dropdown }}>
         <Dropdown isOpen={isOpen}>
           <List>
-            {Object.keys(DASHBOARDS_ORDER).map((order) => (
+            {Object.keys(DASHBOARDS_ORDER).map((order: DashboardListOrder) => (
               <ListItem
                 isActive={order === selected}
                 key={order}

@@ -32,7 +32,6 @@ import {
   HIDE_DASHBOARD_SHARE_MODAL,
   SET_DASHBOARD_LIST_ORDER,
   SET_DASHBOARD_PUBLIC_ACCESS,
-  DASHBOARDS_ORDER,
   ADD_CLONED_DASHBOARD,
 } from './constants';
 
@@ -59,7 +58,7 @@ export const initialState: ReducerState = {
   },
   tagsPool: [],
   items: {},
-  dashboardListOrder: Object.keys(DASHBOARDS_ORDER)[0],
+  dashboardListOrder: 'recent',
 };
 
 const dashboardsReducer = (

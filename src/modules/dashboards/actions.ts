@@ -1,6 +1,11 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { DashboardMetaData, Dashboard, DashboardError } from './types';
+import {
+  DashboardMetaData,
+  Dashboard,
+  DashboardError,
+  DashboardListOrder,
+} from './types';
 
 import {
   FETCH_DASHBOARDS_LIST,
@@ -304,7 +309,7 @@ export const hideDashboardShareModal = createAction(HIDE_DASHBOARD_SHARE_MODAL);
 
 export const setDashboardListOrder = createAction(
   SET_DASHBOARD_LIST_ORDER,
-  (order: string) => ({
+  (order: DashboardListOrder) => ({
     payload: {
       order,
     },

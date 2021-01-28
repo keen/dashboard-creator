@@ -36,6 +36,8 @@ export type DashboardItem = {
   error: null | DashboardError;
 };
 
+export type DashboardListOrder = 'recent' | 'oldest' | 'az' | 'za';
+
 export type ReducerState = {
   deleteConfirmation: {
     isVisible: boolean;
@@ -57,5 +59,5 @@ export type ReducerState = {
   };
   tagsPool: string[];
   items: Record<string, DashboardItem>;
-  dashboardListOrder: string;
+  dashboardListOrder: DashboardListOrder;
 };
