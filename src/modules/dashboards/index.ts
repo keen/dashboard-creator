@@ -6,6 +6,7 @@ import {
   saveDashboard,
   saveDashboardMeta,
   viewDashboard,
+  viewPublicDashboard,
   cloneDashboard,
   shareDashboard,
   deleteDashboard,
@@ -17,9 +18,17 @@ import {
   confirmDashboardDelete,
   showDashboardSettingsModal,
   hideDashboardSettingsModal,
+  showDashboardShareModal,
+  hideDashboardShareModal,
   updateDashboardMeta,
   setDashboardListOrder,
+  setDashboardPublicAccess,
+  updateAccessKeyOptions,
+  regenerateAccessKey,
+  exportDashboardToHtml,
 } from './actions';
+
+import { createCodeSnippet } from './utils';
 
 import {
   getDashboardsMetadata,
@@ -29,12 +38,13 @@ import {
   getDashboard,
   getDashboardMeta,
   getDashboardSettingsModal,
+  getDashboardShareModal,
   getTagsPool,
   getDashboardMetaSaving,
-  getDashbaordListOrder,
+  getDashboardListOrder,
 } from './selectors';
-import { ADD_WIDGET_TO_DASHBOARD } from './constants';
-import { DashboardMetaData, DashboardModel } from './types';
+import { DashboardMetaData, DashboardModel, DashboardError } from './types';
+import { DASHBOARDS_ORDER, ADD_WIDGET_TO_DASHBOARD } from './constants';
 
 export {
   dashboardsReducer,
@@ -43,6 +53,7 @@ export {
   removeWidgetFromDashboard,
   createDashboard,
   viewDashboard,
+  viewPublicDashboard,
   editDashboard,
   cloneDashboard,
   shareDashboard,
@@ -55,8 +66,15 @@ export {
   fetchDashboardList,
   showDashboardSettingsModal,
   hideDashboardSettingsModal,
+  showDashboardShareModal,
+  hideDashboardShareModal,
   updateDashboardMeta,
   setDashboardListOrder,
+  setDashboardPublicAccess,
+  updateAccessKeyOptions,
+  regenerateAccessKey,
+  exportDashboardToHtml,
+  createCodeSnippet,
   getDashboardMeta,
   getDashboardSettings,
   getDeleteConfirmation,
@@ -64,10 +82,13 @@ export {
   getDashboardsMetadata,
   getDashboard,
   getDashboardSettingsModal,
+  getDashboardShareModal,
   getTagsPool,
   getDashboardMetaSaving,
-  getDashbaordListOrder,
-  ADD_WIDGET_TO_DASHBOARD,
+  getDashboardListOrder,
   DashboardMetaData,
   DashboardModel,
+  DASHBOARDS_ORDER,
+  ADD_WIDGET_TO_DASHBOARD,
+  DashboardError,
 };

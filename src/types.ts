@@ -1,18 +1,35 @@
 import { Theme } from '@keen.io/charts';
 
-export type Options = {
+export type BackendSettings = {
+  dashboardsApiUrl?: string;
+  analyticsApiUrl?: string;
+};
+
+export type DashboardCreatorOptions = {
   container: string;
   modalContainer: string;
   editPrivileges: boolean;
-  blobApiUrl: string;
   project: {
     masterKey: string;
-    userKey: string;
+    accessKey: string;
     id: string;
   };
-  keenApiUrl?: string;
+  backend?: BackendSettings;
   translations?: TranslationsSettings;
   theme?: Partial<Theme>;
+  createSharedDashboardUrl: (accessKey: string, dashboardId: string) => string;
+};
+
+export type PublicDashboardOptions = {
+  container: string;
+  dashboardId: string;
+  backend?: BackendSettings;
+  project: {
+    accessKey: string;
+    id: string;
+  };
+  modalContainer: string;
+  translations?: TranslationsSettings;
 };
 
 export type TranslationsSettings = {

@@ -14,7 +14,7 @@ import DashboardSettings from '../DashboardSettings';
 import { AppContext } from '../../contexts';
 
 type Props = {
-  /** Save dashobard event handler */
+  /** Save dashboard event handler */
   onSaveDashboard: (dashboardId: string, metadata: DashboardMetaData) => void;
 };
 

@@ -53,8 +53,6 @@ const DashboardTile: FC<Props> = ({
   tags,
   onPreview,
   onShowSettings,
-  // onRemove,
-  // onClone,
 }) => {
   const { t } = useTranslation();
   const [showActionsMenu, setActionsMenuVisibility] = useState(false);

@@ -106,7 +106,7 @@ test('allows user to share dashbord', () => {
         "payload": Object {
           "dashboardId": "@dashboard/id",
         },
-        "type": "@dashboards/SHARE_DASHBOARD",
+        "type": "@dashboards/SHOW_DASHBOARD_SHARE_MODAL",
       },
     ]
   `);

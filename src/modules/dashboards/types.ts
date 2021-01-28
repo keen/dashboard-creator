@@ -9,6 +9,7 @@ export type DashboardMetaData = {
   tags: string[];
   lastModificationDate: number;
   isPublic: boolean;
+  publicAccessKey: null | string;
 };
 
 export type DashboardModel = {
@@ -22,10 +23,17 @@ export type Dashboard = {
   widgets: string[];
 };
 
+export enum DashboardError {
+  NOT_EXIST = 'NOT_EXIST',
+  ACCESS_NOT_PUBLIC = 'ACCESS_NOT_PUBLIC',
+  VIEW_PUBLIC_DASHBOARD = 'VIEW_PUBLIC_DASHBOARD',
+}
+
 export type DashboardItem = {
   initialized: boolean;
   isSaving: boolean;
   settings: Dashboard;
+  error: null | DashboardError;
 };
 
 export type ReducerState = {
@@ -41,7 +49,11 @@ export type ReducerState = {
   };
   dashboardSettingsModal: {
     isVisible: boolean;
-    dashboardId: string;
+    dashboardId: string | null;
+  };
+  dashboardShareModal: {
+    isVisible: boolean;
+    dashboardId: string | null;
   };
   tagsPool: string[];
   items: Record<string, DashboardItem>;

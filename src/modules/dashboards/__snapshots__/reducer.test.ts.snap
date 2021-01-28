@@ -7,12 +7,17 @@ Object {
     "dashboardId": null,
     "isVisible": false,
   },
+  "dashboardShareModal": Object {
+    "dashboardId": null,
+    "isVisible": false,
+  },
   "deleteConfirmation": Object {
     "dashboardId": null,
     "isVisible": false,
   },
   "items": Object {
     "@dashboard/01": Object {
+      "error": null,
       "initialized": true,
       "isSaving": false,
       "settings": Object {
@@ -29,6 +34,7 @@ Object {
         "id": "@dashboard/01",
         "isPublic": false,
         "lastModificationDate": 0,
+        "publicAccessKey": null,
         "queries": 0,
         "tags": Array [],
         "title": null,
@@ -51,12 +57,17 @@ Object {
     "dashboardId": null,
     "isVisible": false,
   },
+  "dashboardShareModal": Object {
+    "dashboardId": null,
+    "isVisible": false,
+  },
   "deleteConfirmation": Object {
     "dashboardId": null,
     "isVisible": false,
   },
   "items": Object {
     "@dashboard/01": Object {
+      "error": null,
       "initialized": true,
       "isSaving": false,
       "settings": Object {
@@ -71,6 +82,7 @@ Object {
         "id": "@dashboard/01",
         "isPublic": false,
         "lastModificationDate": 0,
+        "publicAccessKey": null,
         "queries": 0,
         "tags": Array [],
         "title": null,

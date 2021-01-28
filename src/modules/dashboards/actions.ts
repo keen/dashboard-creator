@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { DashboardMetaData, Dashboard } from './types';
+import { DashboardMetaData, Dashboard, DashboardError } from './types';
 
 import {
   FETCH_DASHBOARDS_LIST,
@@ -17,6 +17,8 @@ import {
   DELETE_DASHBOARD,
   DELETE_DASHBOARD_SUCCESS,
   EDIT_DASHBOARD,
+  SET_DASHBOARD_LIST,
+  SET_DASHBOARD_ERROR,
   SAVE_DASHBOARD,
   SAVE_DASHBOARD_SUCCESS,
   SAVE_DASHBOARD_ERROR,
@@ -25,6 +27,7 @@ import {
   SAVE_DASHBOARD_METADATA_ERROR,
   UPDATE_DASHBOARD_METADATA,
   VIEW_DASHBOARD,
+  VIEW_PUBLIC_DASHBOARD,
   INITIALIZE_DASHBOARD_WIDGETS,
   SHOW_DELETE_CONFIRMATION,
   HIDE_DELETE_CONFIRMATION,
@@ -32,8 +35,14 @@ import {
   SHOW_DASHBOARD_SETTINGS_MODAL,
   HIDE_DASHBOARD_SETTINGS_MODAL,
   SET_TAGS_POOL,
+  SHOW_DASHBOARD_SHARE_MODAL,
+  HIDE_DASHBOARD_SHARE_MODAL,
   SET_DASHBOARD_LIST_ORDER,
+  SET_DASHBOARD_PUBLIC_ACCESS,
+  UPDATE_ACCESS_KEY_OPTIONS,
+  REGENERATE_ACCESS_KEY,
   ADD_CLONED_DASHBOARD,
+  EXPORT_DASHBOARD_TO_HTML,
 } from './constants';
 
 export const fetchDashboardList = createAction(FETCH_DASHBOARDS_LIST);
@@ -49,6 +58,15 @@ export const fetchDashboardListSuccess = createAction(
 
 export const fetchDashboardListError = createAction(
   FETCH_DASHBOARDS_LIST_ERROR
+);
+
+export const setDashboardList = createAction(
+  SET_DASHBOARD_LIST,
+  (dashboards: DashboardMetaData[]) => ({
+    payload: {
+      dashboards,
+    },
+  })
 );
 
 export const addWidgetToDashboard = createAction(
@@ -98,6 +116,15 @@ export const viewDashboard = createAction(
   })
 );
 
+export const viewPublicDashboard = createAction(
+  VIEW_PUBLIC_DASHBOARD,
+  (dashboardId: string) => ({
+    payload: {
+      dashboardId,
+    },
+  })
+);
+
 export const deleteDashboardSuccess = createAction(
   DELETE_DASHBOARD_SUCCESS,
   (dashboardId: string) => ({
@@ -130,6 +157,16 @@ export const shareDashboard = createAction(
   (dashboardId: string) => ({
     payload: {
       dashboardId,
+    },
+  })
+);
+
+export const setDashboardError = createAction(
+  SET_DASHBOARD_ERROR,
+  (dashboardId: string, error: null | DashboardError) => ({
+    payload: {
+      dashboardId,
+      error,
     },
   })
 );
@@ -256,6 +293,15 @@ export const setTagsPool = createAction(
   })
 );
 
+export const showDashboardShareModal = createAction(
+  SHOW_DASHBOARD_SHARE_MODAL,
+  (dashboardId: string) => ({
+    payload: { dashboardId },
+  })
+);
+
+export const hideDashboardShareModal = createAction(HIDE_DASHBOARD_SHARE_MODAL);
+
 export const setDashboardListOrder = createAction(
   SET_DASHBOARD_LIST_ORDER,
   (order: string) => ({
@@ -265,11 +311,40 @@ export const setDashboardListOrder = createAction(
   })
 );
 
+export const setDashboardPublicAccess = createAction(
+  SET_DASHBOARD_PUBLIC_ACCESS,
+  (dashboardId: string, isPublic: boolean) => ({
+    payload: {
+      dashboardId,
+      isPublic,
+    },
+  })
+);
+
+export const updateAccessKeyOptions = createAction(UPDATE_ACCESS_KEY_OPTIONS);
+export const regenerateAccessKey = createAction(
+  REGENERATE_ACCESS_KEY,
+  (dashboardId: string) => ({
+    payload: {
+      dashboardId,
+    },
+  })
+);
+
 export const addClonedDashboard = createAction(
   ADD_CLONED_DASHBOARD,
   (dashboardMeta: DashboardMetaData) => ({
     payload: {
       dashboardMeta,
+    },
+  })
+);
+
+export const exportDashboardToHtml = createAction(
+  EXPORT_DASHBOARD_TO_HTML,
+  (dashboardId: string) => ({
+    payload: {
+      dashboardId,
     },
   })
 );
@@ -291,6 +366,9 @@ export type DashboardsActions =
   | ReturnType<typeof saveDashboardError>
   | ReturnType<typeof updateDashboard>
   | ReturnType<typeof viewDashboard>
+  | ReturnType<typeof viewPublicDashboard>
+  | ReturnType<typeof setDashboardError>
+  | ReturnType<typeof setDashboardList>
   | ReturnType<typeof editDashboard>
   | ReturnType<typeof addWidgetToDashboard>
   | ReturnType<typeof removeWidgetFromDashboard>
@@ -304,5 +382,12 @@ export type DashboardsActions =
   | ReturnType<typeof saveDashboardMeta>
   | ReturnType<typeof saveDashboardMetaSuccess>
   | ReturnType<typeof saveDashboardMetaError>
+  | ReturnType<typeof showDashboardShareModal>
+  | ReturnType<typeof hideDashboardShareModal>
   | ReturnType<typeof setDashboardListOrder>
-  | ReturnType<typeof addClonedDashboard>;
+  | ReturnType<typeof setDashboardPublicAccess>
+  | ReturnType<typeof updateAccessKeyOptions>
+  | ReturnType<typeof regenerateAccessKey>
+  | ReturnType<typeof setDashboardListOrder>
+  | ReturnType<typeof addClonedDashboard>
+  | ReturnType<typeof exportDashboardToHtml>;

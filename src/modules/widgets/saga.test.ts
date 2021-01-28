@@ -50,6 +50,7 @@ import {
   getDashboardSettings,
   saveDashboard,
   removeWidgetFromDashboard,
+  updateAccessKeyOptions,
   addWidgetToDashboard,
 } from '../dashboards';
 
@@ -84,6 +85,7 @@ import {
   USE_QUERY_FOR_WIDGET,
 } from '../chartEditor';
 
+import { KEEN_ANALYSIS, TRANSLATIONS } from '../../constants';
 import {
   setEditorContent,
   setTextAlignment,
@@ -93,8 +95,6 @@ import {
   APPLY_TEXT_EDITOR_SETTINGS,
   CLOSE_EDITOR as CLOSE_TEXT_EDITOR,
 } from '../textEditor';
-
-import { KEEN_ANALYSIS, I18N } from '../../constants';
 
 import { widget as widgetItem } from './fixtures';
 
@@ -338,7 +338,7 @@ describe('initializeChartWidget()', () => {
     });
 
     test('get i18n from context', (result) => {
-      expect(result).toEqual(getContext(I18N));
+      expect(result).toEqual(getContext(TRANSLATIONS));
 
       return i18n;
     });
@@ -1004,6 +1004,10 @@ describe('selectQueryForWidget()', () => {
 
     test('initializes chart widget', (result) => {
       expect(result).toEqual(put(initializeChartWidgetAction(widgetId)));
+    });
+
+    test('updates access key options if necessary', (result) => {
+      expect(result).toStrictEqual(put(updateAccessKeyOptions()));
     });
 
     test('gets active dashboard identifier', () => {

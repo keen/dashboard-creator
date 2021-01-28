@@ -11,9 +11,9 @@ const loadAppConfig = () => {
   return {};
 };
 
-module.exports = {
+module.exports = (appName) => ({
   entry: {
-    main: './src/index.ts',
+    main: `./src/${appName}.ts`,
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
@@ -39,7 +39,7 @@ module.exports = {
           loadAppConfig()
         )
       },
-      template: path.join(__dirname, 'public', 'index.html'),
+      template: path.join(__dirname, 'public', `${appName}.html`),
     }),
   ],
-};
+});

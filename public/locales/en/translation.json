@@ -9,6 +9,12 @@
     "cancel": "Cancel",
     "save": "Save"
   },
+  "public_dashboard_errors": {
+    "generic_title": "This dashboard can’t be reached",
+    "not_exist_message": "This dashboard has been removed. Contact the admin if you need that data.",
+    "access_not_public_message": "This dashboard is no longer public. Contact the admin if you need an access.",
+    "view_public_message": "There is something wrong with loading data. Please try again later."
+  },
   "text_widget_editor": {
     "description": "Edit styling here and resize the text box on dashboard",
     "update_button": "Update text",
@@ -25,7 +31,8 @@
   },
   "dashboard_details": {
     "untitled_dashboard": "Untitled dashboard",
-    "back": "All Dashboards"
+    "back": "All Dashboards",
+    "public": "Public"
   },
   "dashboard_tile": {
     "preview_dashboard": "View Dashboard",
@@ -301,6 +308,31 @@
     "input_placeholder": "Insert item and confirm by Enter",
     "saving_dashboard": "Saving dashboard"
   },
+  "dashboard_share": {
+    "modal_title": "Share dashboard",
+    "make_public": "Make dashboard public",
+    "make_public_tooltip": "The public share link allows people to view the dashboard without having access to Keen.",
+    "copy": "Copy",
+    "public_dashboard_link": "Public dashboard link",
+    "regenerate_link": "Regenerate link",
+    "regenerate_link_tooltip": "The Access Key will be regenerated and the new link wil be created. The old link will no longer work.",
+    "message": "Anyone with this link can view this dashboard and all connected data.",
+    "access_key_not_exist_error": "Access Key for this dashboard do not exist any more. Make it public again.",
+    "access_key_api_error": "You cannot change anything here right now. We're having an issue with our API. Please try again later.",
+    "access_key_limit_error": "You cannot make this dashboard public because you have reached the limit of Access Keys for your organization. Upgrade your plan",
+    "access_key_duplicate_error": "We were not able to create Access Key to make this dashboard public. Please try again.",
+    "access_key_revoke_error": "Access Key for this dashboard has been revoked. Activate the key to make the dashboard public.",
+    "embed_placeholder": "Only public dashboard is embeddable",
+    "download_code": "Download HTML file",
+    "embed_title": "Embed the dashboard in your platform",
+    "embed_text": "When you edit this dashboard in our UI, all changes will be automatically visible in your external platform too.",
+    "embed_step_label": "Step",
+    "embed_step_first": "Paste the code into the {{tag}} of the page where you will place the dashboard",
+    "embed_step_second": "Paste this dashboard code into the {{tag}} where you want to display it",
+    "embed_full_page": "Do you need full page code?",
+    "public_link": "Public link",
+    "embed_html": "Embed HTML"
+  },
   "absolute_time": {
     "start_date": "From",
     "end_date": "To"
@@ -311,5 +343,24 @@
   "custom_interval": {
     "main_label": "Every",
     "unit_placeholder": "Unit placeholder"
+  },
+  "editor_navigation": {
+    "settings_tooltip": "Settings",
+    "share_tooltip": "Share"
+  },
+  "extraction": {
+    "preview_extraction": "Preview events",
+    "email_extraction": "Extract to Email",
+    "limit_label": "Limit number of events",
+    "limit_placeholder": "Events limit",
+    "maximum_events_limit": "The maximum number of events for preview is 100,000.",
+    "maximum_email_events_limit": "Maximum number of events for email extraction is 10,000,000.",
+    "email_events_limit_first": "Need more? Consider",
+    "email_events_limit_second": ", which has an extraction limit of 10,000,000 events.",
+    "extraction_to_email": "Extraction to Email",
+    "title": "Properties to Extract",
+    "full_extraction": "Select properties to extract. All will be extracted by default.",
+    "filtered_extraction": " Extracting only selected properties.",
+    "clear_properties": "Clear to extract all."
   }
 }
