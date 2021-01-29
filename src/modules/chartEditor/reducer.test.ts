@@ -107,6 +107,7 @@ test('set query settings', () => {
   const query: Query = {
     analysis_type: 'percentile',
     event_collection: 'logins',
+    timeframe: 'this_14_days',
     order_by: null,
   };
 

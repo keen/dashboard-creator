@@ -7,6 +7,7 @@ test('serializes query without metadata', () => {
   const savedQuery: SavedQueryAPIResponse = {
     query: {
       analysis_type: 'count',
+      timeframe: 'this_14_days',
       event_collection: 'purchases',
       order_by: null,
     },
@@ -29,6 +30,7 @@ test('serializes query with metadata', () => {
   const savedQuery: SavedQueryAPIResponse = {
     query: {
       analysis_type: 'count',
+      timeframe: 'this_14_days',
       event_collection: 'purchases',
       order_by: null,
     },
