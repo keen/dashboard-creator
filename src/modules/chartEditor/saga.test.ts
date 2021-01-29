@@ -30,6 +30,7 @@ describe('updateQuerySettings()', () => {
   describe('Scenario 1: Query settings are equal initial settings', () => {
     const query: Query = {
       analysis_type: 'count',
+      timeframe: 'this_14_days',
       event_collection: 'logins',
       order_by: null,
     };
@@ -53,6 +54,7 @@ describe('updateQuerySettings()', () => {
   describe('Scenario 2: Query settings are different than initial settings', () => {
     const query: Query = {
       analysis_type: 'count',
+      timeframe: 'this_14_days',
       event_collection: 'logins',
       order_by: null,
     };
@@ -79,6 +81,7 @@ describe('updateQuerySettings()', () => {
   describe('Scenario 3: Initial query settings was not defined', () => {
     const query: Query = {
       analysis_type: 'count',
+      timeframe: 'this_14_days',
       event_collection: 'logins',
       order_by: null,
     };
@@ -104,6 +107,7 @@ describe('restoreSavedQuery()', () => {
   describe('Scenario 1: Restores saved query settings', () => {
     const query: Query = {
       analysis_type: 'count',
+      timeframe: 'this_14_days',
       event_collection: 'logins',
       order_by: null,
     };
@@ -147,6 +151,7 @@ describe('restoreSavedQuery()', () => {
   describe('Scenario 1: Restores query settings with chart settings', () => {
     const query: Query = {
       analysis_type: 'funnel',
+      timeframe: 'this_14_days',
       event_collection: 'logins',
       order_by: null,
     };

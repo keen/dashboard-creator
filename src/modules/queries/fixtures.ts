@@ -6,6 +6,7 @@ export const savedQueriesResponse: SavedQueryAPIResponse[] = [
   {
     query: {
       analysis_type: 'count',
+      timeframe: 'this_14_days',
       event_collection: 'logins',
       order_by: null,
     },
@@ -23,6 +24,7 @@ export const savedQueriesResponse: SavedQueryAPIResponse[] = [
   {
     query: {
       analysis_type: 'sum',
+      timeframe: 'this_14_days',
       event_collection: 'purchases',
       order_by: null,
     },
@@ -50,6 +52,7 @@ export const savedQueries: SavedQuery[] = [
     },
     settings: {
       analysis_type: 'count',
+      timeframe: 'this_14_days',
       event_collection: 'purchases',
       order_by: null,
     },
@@ -64,6 +67,7 @@ export const savedQueries: SavedQuery[] = [
     },
     settings: {
       analysis_type: 'count',
+      timeframe: 'this_14_days',
       event_collection: 'pageviews',
       order_by: null,
     },

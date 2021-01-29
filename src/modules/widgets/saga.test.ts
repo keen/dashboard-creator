@@ -371,6 +371,7 @@ describe('initializeChartWidget()', () => {
 
     const query: Query = {
       analysis_type: 'count',
+      timeframe: 'this_14_days',
       event_collection: 'purchases',
       order_by: null,
     };
@@ -577,6 +578,7 @@ describe('editChartWidget()', () => {
     const test = sagaHelper(editChartWidget(action));
     const query: Query = {
       analysis_type: 'count',
+      timeframe: 'this_14_days',
       event_collection: 'logins',
       order_by: null,
     };
@@ -765,6 +767,7 @@ describe('editChartWidget()', () => {
     const test = sagaHelper(editChartWidget(action));
     const query: Query = {
       analysis_type: 'count',
+      timeframe: 'this_14_days',
       event_collection: 'logins',
       order_by: null,
     };
@@ -964,6 +967,7 @@ describe('selectQueryForWidget()', () => {
       },
       settings: {
         analysis_type: 'count',
+        timeframe: 'this_14_days',
         event_collection: 'purchases',
         order_by: null,
       },
