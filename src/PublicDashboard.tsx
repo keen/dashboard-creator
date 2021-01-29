@@ -1,3 +1,9 @@
+/* eslint-disable @typescript-eslint/camelcase, @typescript-eslint/ban-ts-ignore */
+if (process.env.NODE_ENV === 'production') {
+  // @ts-ignore
+  __webpack_public_path__ = window.dashboardCreatorResourcesBasePath;
+}
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import i18n from 'i18next';
