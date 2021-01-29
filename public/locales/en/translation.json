@@ -334,7 +334,8 @@
     "embed_step_second": "Paste this dashboard code into the {{tag}} where you want to display it",
     "embed_full_page": "Do you need full page code?",
     "public_link": "Public link",
-    "embed_html": "Embed HTML"
+    "embed_html": "Embed HTML",
+    "copied": "Copied to clipboard"
   },
   "absolute_time": {
     "start_date": "From",
