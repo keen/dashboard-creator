@@ -159,5 +159,8 @@
     "url": "git@github.com:keen/explorer.git"
   },
   "bugs": "https://github.com/keen/dashboard-creator/issues",
-  "homepage": "https://keen.io"
+  "homepage": "https://keen.io",
+  "publishConfig": {
+    "access": "public"
+  }
 }
