@@ -35,7 +35,7 @@ import {
 
 import { AppContext } from '../../../../contexts';
 import { TOOLTIP_MOTION as MOTION } from '../../../../constants';
-import { TOOLTIP_HIDE } from './constants';
+import { TOOLTIP_HIDE } from '../../constants';
 
 SyntaxHighlighter.registerLanguage('xml', xml);
 SyntaxHighlighter.registerLanguage('javascript', js);
@@ -62,17 +62,15 @@ const EmbedCode: FC<Props> = ({ dashboardId, isPublic }) => {
   const containerRef = useRef(null);
 
   const {
-    project: { id: projectId, masterKey },
+    project: { id: projectId, userKey },
   } = useContext(AppContext);
 
   const codeHead = useMemo(
-    () =>
-      createCodeSnippet({ projectId, masterKey, dashboardId, type: 'head' }),
+    () => createCodeSnippet({ projectId, userKey, dashboardId, type: 'head' }),
     [dashboardId]
   );
   const codeBody = useMemo(
-    () =>
-      createCodeSnippet({ projectId, masterKey, dashboardId, type: 'body' }),
+    () => createCodeSnippet({ projectId, userKey, dashboardId, type: 'body' }),
     [dashboardId]
   );
 

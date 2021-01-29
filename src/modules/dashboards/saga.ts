@@ -709,10 +709,10 @@ export function* exportDashboardToHtml({
 }: ReturnType<typeof exportDashboardToHtmlAction>) {
   const { dashboardId } = payload;
   const client = yield getContext(KEEN_ANALYSIS);
-  const { projectId, masterKey } = client.config;
+  const { projectId, readKey: userKey } = client.config;
   const codeSnippet = yield createCodeSnippet({
     projectId,
-    masterKey,
+    userKey,
     dashboardId,
   });
   exportToHtml({ data: codeSnippet, fileName: dashboardId });

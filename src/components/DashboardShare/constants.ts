@@ -16,3 +16,5 @@ export const ACCESS_KEY_ERROR: Record<AccessKeyError, string> = {
     'dashboard_share.access_key_duplicate_error', // TODO: handle error for duplicated access key
   [AccessKeyError.REVOKE_ERROR]: 'dashboard_share.access_key_revoke_error',
 };
+
+export const TOOLTIP_HIDE = 1500;

@@ -766,12 +766,12 @@ describe('exportDashboardToHtml()', () => {
   const test = sagaHelper(exportDashboardToHtml(action));
 
   const projectId = 'projectId';
-  const masterKey = 'masterKey';
+  const userKey = 'userKey';
 
   const keenAnalysisMock = {
     config: {
       projectId,
-      masterKey,
+      readKey: userKey,
     },
   };
 
@@ -785,7 +785,7 @@ describe('exportDashboardToHtml()', () => {
 
   test('creates code snippet', (result) => {
     expect(result).toEqual(
-      createCodeSnippet({ projectId, masterKey, dashboardId })
+      createCodeSnippet({ projectId, userKey, dashboardId })
     );
     return snippet;
   });

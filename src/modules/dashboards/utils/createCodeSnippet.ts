@@ -2,12 +2,12 @@ type Snippet = 'body' | 'head';
 
 const createCodeSnippet = ({
   projectId,
-  masterKey,
+  userKey,
   dashboardId,
   type,
 }: {
   projectId: string;
-  masterKey: string;
+  userKey: string;
   dashboardId: string;
   type?: Snippet;
 }) => {
@@ -19,14 +19,14 @@ const createCodeSnippet = ({
 <script type="text/javascript">
   new KeenPublicDashboard({
     container: '#root',
-    dashboardId: ${dashboardId},
+    dashboardId: '${dashboardId}',
     backend: {
       analyticsApiUrl: 'api.keen.io',
       dashboardsApiUrl: 'https://blob-service.keen.io',
     },
     project: {
-      id: ${projectId},
-      masterKey: ${masterKey} 
+      id: '${projectId}',
+      accessKey: '${userKey}' 
     },
   }).render();
 </script>`;
@@ -52,14 +52,14 @@ const createCodeSnippet = ({
   <script type="text/javascript">
      new KeenPublicDashboard({
        container: '#root',
-       dashboardId: ${dashboardId},
+       dashboardId: '${dashboardId}',
        backend: {
          analyticsApiUrl: 'api.keen.io',
          dashboardsApiUrl: 'https://blob-service.keen.io',
        },
        project: {
-         id: ${projectId},
-         masterKey: ${masterKey} 
+         id: '${projectId}',
+         accessKey: '${userKey}' 
        },
      }).render();
     </script>
