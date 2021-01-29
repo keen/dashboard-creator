@@ -1,5 +1,7 @@
 import React from 'react';
 import { render as rtlRender, fireEvent } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import configureStore from 'redux-mock-store';
 
 import ViewerNavigation from './ViewerNavigation';
 
@@ -13,10 +15,23 @@ const render = (overProps: any = {}) => {
     ...overProps,
   };
 
-  const wrapper = rtlRender(<ViewerNavigation {...props} />);
+  const state = {
+    app: {
+      activeDashboardId: '@dashboard/01',
+    },
+  };
+  const mockStore = configureStore([]);
+  const store = mockStore(state);
+
+  const wrapper = rtlRender(
+    <Provider store={store}>
+      <ViewerNavigation {...props} />
+    </Provider>
+  );
 
   return {
     props,
+    store,
     wrapper,
   };
 };
