@@ -91,6 +91,7 @@ const Grid: FC<Props> = ({
   return (
     <Container id={GRID_CONTAINER_ID} ref={containerRef}>
       <ResponsiveReactGridLayout
+        compactType="horizontal"
         draggableHandle={`.${DRAG_HANDLE_ELEMENT}`}
         isDraggable={isEditorMode}
         isResizable={isEditorMode}
