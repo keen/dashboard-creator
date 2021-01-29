@@ -76,35 +76,38 @@ const EmbedCode: FC<Props> = ({ dashboardId, isPublic }) => {
     [dashboardId]
   );
 
-  const clickHandler = useCallback((e: any, value: string) => {
-    if (tooltipHide.current) clearTimeout(tooltipHide.current);
-    copyToClipboard(value);
+  const clickHandler = useCallback(
+    (e: React.MouseEvent<Element, MouseEvent>, value: string) => {
+      if (tooltipHide.current) clearTimeout(tooltipHide.current);
+      copyToClipboard(value);
 
-    const {
-      top,
-      left,
-      height,
-    }: ClientRect = containerRef.current.getBoundingClientRect();
+      const {
+        top,
+        left,
+        height,
+      }: ClientRect = containerRef.current.getBoundingClientRect();
 
-    const tooltipX = e.pageX - left - window.scrollX;
-    const tooltipY = e.pageY - top - height - window.scrollY;
+      const tooltipX = e.pageX - left - window.scrollX;
+      const tooltipY = e.pageY - top - height - window.scrollY;
 
-    setTooltip((state) => ({
-      ...state,
-      visible: true,
-      x: tooltipX,
-      y: tooltipY,
-    }));
-
-    tooltipHide.current = setTimeout(() => {
       setTooltip((state) => ({
         ...state,
-        visible: false,
-        x: 0,
-        y: 0,
+        visible: true,
+        x: tooltipX,
+        y: tooltipY,
       }));
-    }, TOOLTIP_HIDE);
-  }, []);
+
+      tooltipHide.current = setTimeout(() => {
+        setTooltip((state) => ({
+          ...state,
+          visible: false,
+          x: 0,
+          y: 0,
+        }));
+      }, TOOLTIP_HIDE);
+    },
+    []
+  );
 
   return (
     <Container>
@@ -143,7 +146,7 @@ const EmbedCode: FC<Props> = ({ dashboardId, isPublic }) => {
                   <Button
                     variant="secondary"
                     style="solid"
-                    onClick={(e) => clickHandler(e, codeHead)}
+                    onClick={(e: React.MouseEvent) => clickHandler(e, codeHead)}
                   >
                     {t('dashboard_share.copy')}
                   </Button>
@@ -180,7 +183,7 @@ const EmbedCode: FC<Props> = ({ dashboardId, isPublic }) => {
                   <Button
                     variant="secondary"
                     style="solid"
-                    onClick={(e) => clickHandler(e, codeBody)}
+                    onClick={(e: React.MouseEvent) => clickHandler(e, codeBody)}
                   >
                     {t('dashboard_share.copy')}
                   </Button>
