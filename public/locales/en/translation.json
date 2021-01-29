@@ -81,7 +81,10 @@
   "viewer": {
     "edit_dashboard_button": "Edit",
     "delete_dashboard": "Delete Dashboard",
-    "new_dashboard": "New Dashboard"
+    "new_dashboard": "New Dashboard",
+    "share_tooltip": "Share",
+    "settings_tooltip": "Settings",
+    "actions_tooltip": "Actions"
   },
   "dashboard_editor": {
     "save": "Save",
