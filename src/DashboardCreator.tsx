@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import React from 'react';
 import ReactDOM from 'react-dom';
 import i18n from 'i18next';
@@ -25,6 +26,16 @@ import { createRootSaga } from './rootSaga';
 import { SHOW_TOAST_NOTIFICATION_EVENT } from './constants';
 
 import { DashboardCreatorOptions, TranslationsSettings } from './types';
+
+/*global __webpack_public_path__ */
+/* Set Asset Path so that chunks load from CDNs as appropriate */
+if (process.env.NODE_ENV === 'production') {
+  /* @ts-ignore */
+  const url = new URL(document.currentScript.src);
+  // eslint-disable-next-line no-native-reassign, no-global-assign
+  /* @ts-ignore */
+  __webpack_public_path__ = url.origin + __webpack_public_path__;
+}
 
 export class DashboardCreator {
   /** Container used to mount application */
