@@ -24,7 +24,7 @@ import {
   createDashboard,
 } from '../../modules/dashboards';
 
-import EmptySearch from './components/EmptySearch';
+import { EmptySearch, ListItem } from './components';
 
 import {
   Container,
@@ -34,7 +34,6 @@ import {
   TitleWrapper,
   OverflowContainer,
   List,
-  ListItem,
   DropdownFooter,
   NewDashboard,
   AllDashboards,
@@ -58,6 +57,7 @@ const DashboardViewSwitch: FC<Props> = ({ title }) => {
   const [isOpen, setOpen] = useState(false);
   const [searchPhrase, setSearchPhrase] = useState('');
   const [selected, setSelected] = useState(dashboardId);
+  const [offsetTop, setOffsetTop] = useState(0);
 
   const filteredDashboards = useMemo(() => {
     let dashboardsList = sortDashboards([...dashboards], 'az');
@@ -78,6 +78,8 @@ const DashboardViewSwitch: FC<Props> = ({ title }) => {
   }, []);
 
   const containerRef = useRef(null);
+  const listRef = useRef(null);
+
   const outsideClick = useCallback(
     (e) => {
       if (
@@ -100,6 +102,10 @@ const DashboardViewSwitch: FC<Props> = ({ title }) => {
     setSelected(dashboardId);
     setSearchPhrase('');
   }, [isOpen]);
+
+  useEffect(() => {
+    listRef.current && setOffsetTop(listRef.current.offsetTop);
+  }, [isOpen, listRef]);
 
   return (
     <div ref={containerRef}>
@@ -128,13 +134,13 @@ const DashboardViewSwitch: FC<Props> = ({ title }) => {
               />
             </Search>
             <OverflowContainer>
-              <List>
+              <List ref={listRef}>
                 {filteredDashboards.length ? (
                   filteredDashboards.map(({ title, id }) => (
                     <ListItem
-                      data-testid="dashboard-item"
                       key={id}
                       isActive={id === selected}
+                      offsetTop={offsetTop}
                       onClick={() => {
                         dispatch(viewDashboard(id));
                         setOpen(false);
@@ -166,7 +172,7 @@ const DashboardViewSwitch: FC<Props> = ({ title }) => {
                   dispatch(push(ROUTES.MANAGEMENT));
                 }}
               >
-                {t('dashboard_details.all_dashboard')}
+                {t('dashboard_details.all_dashboards')}
               </AllDashboards>
             </DropdownFooter>
           </Dropdown>

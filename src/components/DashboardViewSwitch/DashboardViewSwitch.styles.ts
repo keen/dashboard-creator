@@ -69,28 +69,6 @@ export const List = styled.ul`
   font-family: Lato Medium, sans-serif;
 `;
 
-export const ListItem = styled.li<{
-  isActive: boolean;
-  isUntitled?: boolean;
-}>`
-  padding: 10px 16px;
-  cursor: pointer;
-  color: ${(props) =>
-    props.isUntitled
-      ? colors.blue[500]
-      : transparentize(0.5, colors.black[300])};
-
-  ${(props) =>
-    props.isActive &&
-    css`
-      background: ${transparentize(0.8, colors.green[100])};
-    `}
-
-  &:hover {
-    background: ${transparentize(0.8, colors.green[100])};
-  }
-`;
-
 export const DropdownFooter = styled.div`
   display: fix;
   flex-direction: row;
