@@ -5,13 +5,9 @@ import { Icon } from '@keen.io/icons';
 import { Badge } from '@keen.io/ui-core';
 import { colors } from '@keen.io/colors';
 
-import {
-  Title,
-  Tag,
-  Header,
-  BackButton,
-  BackText,
-} from './DashboardDetails.styles';
+import DashboardViewSwitch from '../DashboardViewSwitch';
+
+import { Tag, Header, BackButton, BackText } from './DashboardDetails.styles';
 
 import { backMotion } from './motion';
 
@@ -37,9 +33,7 @@ const DashboardDetails: FC<Props> = ({
   return (
     <div>
       <Header>
-        <Title isActive={!!title}>
-          {title ? title : t('dashboard_details.untitled_dashboard')}
-        </Title>
+        <DashboardViewSwitch title={title} />
         {isPublic && (
           <Tag>
             <Badge variant="green">{t('dashboard_details.public')}</Badge>
