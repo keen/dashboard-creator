@@ -80,6 +80,7 @@ export const DropdownFooter = styled.div`
 `;
 
 export const NewDashboard = styled.div`
+  padding-left: 10px;
   width: 60%;
 `;
 
