@@ -73,14 +73,14 @@ test('renders dashboard switch with dropdown', () => {
 
 test('renders dashboard switch with dropdown and allows users to search dashboard based on phrase', () => {
   const {
-    wrapper: { container, getAllByTestId, getByText },
+    wrapper: { getAllByTestId, getByText, getByRole },
   } = render();
 
   const dashboardSwitch = getByText('dashboard_details.untitled_dashboard');
   fireEvent.click(dashboardSwitch);
 
   waitFor(() => {
-    const searchInput = container.querySelector('input[type="text"]');
+    const searchInput = getByRole('textbox');
     fireEvent.change(searchInput, { target: { value: 'Dashboard 1' } });
 
     const dashboardItems = getAllByTestId('dashboard-item');

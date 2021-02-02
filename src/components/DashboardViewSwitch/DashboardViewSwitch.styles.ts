@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components';
 import { transparentize } from 'polished';
 import { colors } from '@keen.io/colors';
+import { UI_LAYERS } from '@keen.io/ui-core';
 
 export const Container = styled.div`
   position: relative;
@@ -48,6 +49,7 @@ export const DropdownContainer = styled.div`
   bottom: 0;
   left: 0;
   width: 300px;
+  zindex: ${UI_LAYERS.dropdown};
 `;
 
 export const Search = styled.div`
@@ -66,11 +68,11 @@ export const List = styled.ul`
   margin: 0;
   list-style: none;
   font-size: 16px;
-  font-family: Lato Medium, sans-serif;
+  font-family: Lato Regular, sans-serif;
 `;
 
 export const DropdownFooter = styled.div`
-  display: fix;
+  display: flex;
   flex-direction: row;
   padding: 10px;
   align-items: center;

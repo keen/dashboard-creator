@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { v4 as uuid } from 'uuid';
 import { Icon } from '@keen.io/icons';
-import { Dropdown, UI_LAYERS, Button } from '@keen.io/ui-core';
+import { Dropdown, Button } from '@keen.io/ui-core';
 import { colors } from '@keen.io/colors';
 
 import SearchInput from '../SearchInput';
@@ -21,7 +21,7 @@ import {
   getDashboardsMetadata,
   sortDashboards,
   viewDashboard,
-  createDashboard,
+  createDashboard as createDashboardAction,
 } from '../../modules/dashboards';
 
 import { EmptySearch, ListItem } from './components';
@@ -72,9 +72,9 @@ const DashboardViewSwitch: FC<Props> = ({ title }) => {
     return dashboardsList;
   }, [searchPhrase, dashboards]);
 
-  const createDashbord = useCallback(() => {
+  const createDashboard = useCallback(() => {
     const dashboardId = uuid();
-    dispatch(createDashboard(dashboardId));
+    dispatch(createDashboardAction(dashboardId));
   }, []);
 
   const containerRef = useRef(null);
@@ -123,7 +123,7 @@ const DashboardViewSwitch: FC<Props> = ({ title }) => {
             />
           </DropIndicator>
         </TitleWrapper>
-        <DropdownContainer style={{ zIndex: UI_LAYERS.dropdown }}>
+        <DropdownContainer>
           <Dropdown isOpen={isOpen}>
             <Search>
               <SearchInput
@@ -162,7 +162,7 @@ const DashboardViewSwitch: FC<Props> = ({ title }) => {
             </OverflowContainer>
             <DropdownFooter>
               <NewDashboard>
-                <Button variant="secondary" onClick={createDashbord}>
+                <Button variant="secondary" onClick={createDashboard}>
                   {t('dashboard_details.new_dashboard')}
                 </Button>
               </NewDashboard>
