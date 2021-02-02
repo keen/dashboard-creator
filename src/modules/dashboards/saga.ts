@@ -171,6 +171,7 @@ function* generateAccessKeyOptions(dashboardId) {
       widgets.forEach((widget) => {
         if (
           widget.type === 'visualization' &&
+          widget.query &&
           typeof widget.query === 'string'
         ) {
           queries.add(widget.query);
@@ -190,7 +191,7 @@ function* generateAccessKeyOptions(dashboardId) {
       const {
         widget: { type, query },
       } = item;
-      if (type === 'visualization' && typeof query === 'string') {
+      if (type === 'visualization' && query && typeof query === 'string') {
         queries.add(query);
       }
     });
@@ -270,8 +271,11 @@ export function* saveDashboard({
   const state: RootState = yield select();
 
   try {
-    const dashboard: Dashboard = yield getDashboardSettings(state, dashboardId);
-    const dashboardTheme = yield getActiveDashboardTheme(state);
+    const dashboard: Dashboard = yield select(
+      getDashboardSettings,
+      dashboardId
+    );
+    const dashboardTheme = yield select(getActiveDashboardTheme);
     const serializedDashboard = {
       ...dashboard,
       widgets: dashboard.widgets.map((widgetId) =>
@@ -280,6 +284,18 @@ export function* saveDashboard({
       baseTheme: dashboardTheme,
     };
 
+    const { widgets } = serializedDashboard;
+    const queries = widgets.reduce((acc, widget) => {
+      if (
+        widget.type === 'visualization' &&
+        widget.query &&
+        typeof widget.query === 'string'
+      ) {
+        acc.add(widget.query);
+      }
+      return acc;
+    }, new Set([]));
+
     const dashboardsMeta = yield select(getDashboardsMetadata);
     const metadata: DashboardMetaData = dashboardsMeta.find(
       ({ id }) => id === dashboardId
@@ -287,6 +303,7 @@ export function* saveDashboard({
 
     const updatedMetadata: DashboardMetaData = {
       ...metadata,
+      queries: queries.size,
       lastModificationDate: +new Date(),
     };
 
