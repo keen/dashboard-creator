@@ -4,8 +4,6 @@ import { Tooltip } from '@keen.io/ui-core';
 
 import { Container, TooltipContainer, TooltipContent } from './ListItem.styles';
 
-import { MAX_WIDTH } from './constants';
-
 import { TOOLTIP_MOTION } from '../../../../constants';
 
 type Props = {
@@ -21,6 +19,8 @@ type Props = {
   children?: React.ReactNode;
   /** Parent offsetTop */
   offsetTop?: number;
+  /** Patent width */
+  dropdownWidth?: number;
 };
 
 const ListItem: FC<Props> = ({
@@ -30,6 +30,7 @@ const ListItem: FC<Props> = ({
   onMouseEnter,
   children,
   offsetTop,
+  dropdownWidth,
 }) => {
   const [isOverflow, setIsOverflow] = useState(false);
   const [yPos, setYPos] = useState(0);
@@ -37,7 +38,7 @@ const ListItem: FC<Props> = ({
   const container = useRef(null);
 
   useEffect(() => {
-    if (container.current && container.current.scrollWidth > MAX_WIDTH) {
+    if (container.current && container.current.scrollWidth > dropdownWidth) {
       setIsOverflow(true);
       const { y, height } = container.current.getBoundingClientRect();
       setYPos(y + height / 3 - offsetTop);
