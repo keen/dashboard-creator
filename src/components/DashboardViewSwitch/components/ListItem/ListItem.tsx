@@ -19,7 +19,7 @@ type Props = {
   children?: React.ReactNode;
   /** Parent offsetTop */
   offsetTop?: number;
-  /** Patent width */
+  /** Parent width */
   dropdownWidth?: number;
 };
 
