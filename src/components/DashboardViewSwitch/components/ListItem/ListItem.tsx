@@ -38,12 +38,16 @@ const ListItem: FC<Props> = ({
   const container = useRef(null);
 
   useEffect(() => {
-    if (container.current && container.current.scrollWidth > dropdownWidth) {
+    if (
+      container.current &&
+      dropdownWidth &&
+      container.current.scrollWidth > dropdownWidth
+    ) {
       setIsOverflow(true);
       const { y, height } = container.current.getBoundingClientRect();
       setYPos(y + height / 3 - offsetTop);
     }
-  }, [container, offsetTop, isVisible]);
+  }, [container, offsetTop, dropdownWidth, isVisible]);
 
   return (
     <>
