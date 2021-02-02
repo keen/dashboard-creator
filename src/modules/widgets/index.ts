@@ -11,6 +11,7 @@ import {
   initializeChartWidget,
   updateWidgetsPosition,
   cloneWidget,
+  saveImage,
 } from './actions';
 import { getWidgetsPosition, getWidgetSettings, getWidget } from './selectors';
 import { widgetsSaga } from './saga';
@@ -48,4 +49,5 @@ export {
   getWidgetsPosition,
   createWidgetId,
   cloneWidget,
+  saveImage,
 };

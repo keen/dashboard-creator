@@ -19,6 +19,7 @@ import {
   setWidgetLoading,
   cloneWidget as cloneWidgetAction,
   saveClonedWidget,
+  saveImage,
 } from './actions';
 import {
   selectQueryForWidget,
@@ -35,6 +36,8 @@ import {
 } from './saga';
 
 import { getWidget, getWidgetSettings } from './selectors';
+
+import { SAVE_IMAGE } from './constants';
 
 import {
   getActiveDashboard,
@@ -60,8 +63,6 @@ import {
   SELECT_SAVED_QUERY,
   CREATE_QUERY,
   SavedQuery,
-  SAVE_IMAGE,
-  saveImage,
 } from '../queries';
 
 import {

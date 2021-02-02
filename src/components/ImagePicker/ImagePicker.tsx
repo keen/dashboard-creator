@@ -14,7 +14,7 @@ import {
 
 import { isLink } from '../../utils';
 
-import { saveImage } from '../../modules/queries';
+import { saveImage } from '../../modules/widgets';
 import { hideImagePicker } from '../../modules/app';
 
 const ImagePicker: FC<{}> = () => {

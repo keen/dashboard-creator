@@ -25,6 +25,7 @@ import {
   SET_WIDGET_STATE,
   SAVED_QUERY_UPDATED,
   CLONE_WIDGET,
+  SAVE_IMAGE,
 } from './constants';
 
 export const registerWidgets = createAction(
@@ -208,6 +209,12 @@ export const cloneWidget = createAction(CLONE_WIDGET, (widgetId: string) => ({
   },
 }));
 
+export const saveImage = createAction(SAVE_IMAGE, (link: string) => ({
+  payload: {
+    link,
+  },
+}));
+
 export type WidgetsActions =
   | ReturnType<typeof createWidget>
   | ReturnType<typeof removeWidget>
@@ -226,4 +233,5 @@ export type WidgetsActions =
   | ReturnType<typeof finishChartWidgetConfiguration>
   | ReturnType<typeof savedQueryUpdated>
   | ReturnType<typeof cloneWidget>
-  | ReturnType<typeof saveClonedWidget>;
+  | ReturnType<typeof saveClonedWidget>
+  | ReturnType<typeof saveImage>;
