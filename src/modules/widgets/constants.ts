@@ -19,3 +19,4 @@ export const FINISH_CHART_WIDGET_CONFIGURATION =
 export const SAVED_QUERY_UPDATED = '@widgets/SAVED_QUERY_UPDATED';
 export const SAVE_CLONED_WIDGET = '@widgets/SAVE_CLONED_WIDGET';
 export const CLONE_WIDGET = '@widgets/CLONE_WIDGET';
+export const SAVE_IMAGE = '@widgets/SAVE_IMAGE';

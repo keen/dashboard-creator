@@ -74,7 +74,6 @@ import {
   updateSaveQuery,
   SELECT_SAVED_QUERY,
   CREATE_QUERY,
-  SAVE_IMAGE,
   SavedQuery,
 } from '../queries';
 import {
@@ -98,6 +97,7 @@ import {
   INITIALIZE_CHART_WIDGET,
   SAVED_QUERY_UPDATED,
   CLONE_WIDGET,
+  SAVE_IMAGE,
 } from './constants';
 import {
   PUBSUB,
