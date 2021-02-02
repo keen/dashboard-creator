@@ -28,7 +28,7 @@ import {
   exportDashboardToHtml,
 } from './actions';
 
-import { createCodeSnippet } from './utils';
+import { createCodeSnippet, sortDashboards } from './utils';
 
 import {
   getDashboardsMetadata,
@@ -97,4 +97,5 @@ export {
   DashboardError,
   DASHBOARDS_ORDER,
   ADD_WIDGET_TO_DASHBOARD,
+  sortDashboards,
 };

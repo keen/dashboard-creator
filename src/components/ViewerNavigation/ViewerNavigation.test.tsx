@@ -6,6 +6,22 @@ import configureStore from 'redux-mock-store';
 import ViewerNavigation from './ViewerNavigation';
 
 const render = (overProps: any = {}) => {
+  const mockStore = configureStore([]);
+  const store = mockStore({
+    app: {
+      activeDashboard: '@dashboard/01',
+    },
+    dashboards: {
+      metadata: {
+        data: [
+          {
+            id: '@dashboard/01',
+          },
+        ],
+      },
+    },
+  });
+
   const props = {
     editPrivileges: false,
     onShowSettings: jest.fn(),
@@ -14,14 +30,6 @@ const render = (overProps: any = {}) => {
     title: null,
     ...overProps,
   };
-
-  const state = {
-    app: {
-      activeDashboardId: '@dashboard/01',
-    },
-  };
-  const mockStore = configureStore([]);
-  const store = mockStore(state);
 
   const wrapper = rtlRender(
     <Provider store={store}>

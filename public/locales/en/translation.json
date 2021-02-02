@@ -32,7 +32,10 @@
   "dashboard_details": {
     "untitled_dashboard": "Untitled dashboard",
     "back": "All Dashboards",
-    "public": "Public"
+    "public": "Public",
+    "new_dashboard": "New dashboard",
+    "all_dashboards": "All dashboards",
+    "empty_search": "No dashboard found with this name"
   },
   "dashboard_tile": {
     "preview_dashboard": "View Dashboard",
