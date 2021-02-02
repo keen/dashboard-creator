@@ -317,7 +317,7 @@
   "dashboard_share": {
     "modal_title": "Share dashboard",
     "make_public": "Make dashboard public",
-    "make_public_tooltip": "The public share link allows people to view the dashboard without having access to Keen.",
+    "make_public_tooltip": "The public dashboard can be viewed by people that do not have access to Keen.",
     "copy": "Copy",
     "public_dashboard_link": "Public dashboard link",
     "regenerate_link": "Regenerate link",
