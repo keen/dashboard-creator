@@ -121,7 +121,7 @@ const EmbedCode: FC<Props> = ({ dashboardId, isPublic }) => {
             marginLeft="10px"
             dangerouslySetInnerHTML={{
               __html: t('dashboard_share.embed_step_first', {
-                tag: '<strong>head</strong>',
+                tag: '<strong>&lt;head&gt;</strong>',
                 interpolation: { escapeValue: false },
               }),
             }}
@@ -158,7 +158,7 @@ const EmbedCode: FC<Props> = ({ dashboardId, isPublic }) => {
             marginLeft="10px"
             dangerouslySetInnerHTML={{
               __html: t('dashboard_share.embed_step_second', {
-                tag: '<strong>body</strong>',
+                tag: '<strong>&lt;body&gt;</strong>',
                 interpolation: { escapeValue: false },
               }),
             }}
