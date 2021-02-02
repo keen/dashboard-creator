@@ -62,12 +62,12 @@ test('renders dashboard switch with dropdown', () => {
     wrapper: { getByText },
   } = render();
 
+  const dashboardSwitch = getByText('dashboard_details.untitled_dashboard');
+  fireEvent.click(dashboardSwitch);
+
   waitFor(() => {
-    expect(
-      getByText('dashboard_management.search_input_placeholder')
-    ).toBeInTheDocument();
     expect(getByText('dashboard_details.new_dashboard')).toBeInTheDocument();
-    expect(getByText('dashboard_details.all_dashboard')).toBeInTheDocument();
+    expect(getByText('dashboard_details.all_dashboards')).toBeInTheDocument();
   });
 });
 
@@ -92,21 +92,19 @@ test('renders dashboard switch with dropdown and allows users to search dashboar
 
 test('renders dashboard switch with dropdown and renders empty search', () => {
   const {
-    wrapper: { container, getAllByTestId, getByText },
+    wrapper: { queryAllByTestId, getByText, getByRole },
   } = render();
 
   const dashboardSwitch = getByText('dashboard_details.untitled_dashboard');
   fireEvent.click(dashboardSwitch);
 
   waitFor(() => {
-    const searchInput = container.querySelector('input[type="text"]');
+    const searchInput = getByRole('textbox');
     fireEvent.change(searchInput, { target: { value: 'Empty search' } });
 
-    const dashboardItems = getAllByTestId('dashboard-item');
+    const dashboardItems = queryAllByTestId('dashboard-item');
 
-    expect(
-      getByText('dashboard_details.empty_search_results')
-    ).toBeInTheDocument();
+    expect(getByText('dashboard_details.empty_search')).toBeInTheDocument();
     expect(dashboardItems.length).toEqual(0);
   });
 });

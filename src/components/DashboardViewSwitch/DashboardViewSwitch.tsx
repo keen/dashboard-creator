@@ -58,6 +58,7 @@ const DashboardViewSwitch: FC<Props> = ({ title }) => {
   const [searchPhrase, setSearchPhrase] = useState('');
   const [selected, setSelected] = useState(dashboardId);
   const [offsetTop, setOffsetTop] = useState(0);
+  const [dropdownWidth, setDropdownWidth] = useState(0);
 
   const filteredDashboards = useMemo(() => {
     let dashboardsList = sortDashboards([...dashboards], 'az');
@@ -104,7 +105,10 @@ const DashboardViewSwitch: FC<Props> = ({ title }) => {
   }, [isOpen]);
 
   useEffect(() => {
-    listRef.current && setOffsetTop(listRef.current.offsetTop);
+    if (listRef.current) {
+      setOffsetTop(listRef.current.offsetTop);
+      setDropdownWidth(listRef.current.clientWidth);
+    }
   }, [isOpen, listRef]);
 
   return (
@@ -141,6 +145,7 @@ const DashboardViewSwitch: FC<Props> = ({ title }) => {
                       key={id}
                       isActive={id === selected}
                       offsetTop={offsetTop}
+                      dropdownWidth={dropdownWidth}
                       onClick={() => {
                         dispatch(viewDashboard(id));
                         setOpen(false);
