@@ -8,7 +8,7 @@ export const Container = styled.li<{
   isActive: boolean;
   isUntitled?: boolean;
 }>`
-  padding: 10px 16px;
+  padding: 10px 20px;
   cursor: pointer;
   text-overflow: ellipsis;
   white-space: nowrap;
