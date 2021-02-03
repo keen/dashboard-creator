@@ -6,6 +6,9 @@ export const widget: WidgetItem = {
   isConfigured: false,
   isInitialized: false,
   isLoading: false,
+  isHighlighted: false,
+  isFadeOut: false,
+  isTitleCover: false,
   widget: {
     id: '@widget/id',
     position: { x: 3, y: 2, w: 6, h: 2 },

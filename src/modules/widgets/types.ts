@@ -59,6 +59,9 @@ export type WidgetItem = {
   isConfigured: boolean;
   isInitialized: boolean;
   isLoading: boolean;
+  isHighlighted: boolean;
+  isFadeOut: boolean;
+  isTitleCover: boolean;
   error: WidgetError | null;
   data: Record<string, any>;
 };

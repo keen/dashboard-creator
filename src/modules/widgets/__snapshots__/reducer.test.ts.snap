@@ -6,8 +6,11 @@ Object {
     "data": null,
     "error": null,
     "isConfigured": false,
+    "isFadeOut": false,
+    "isHighlighted": false,
     "isInitialized": false,
     "isLoading": false,
+    "isTitleCover": false,
     "widget": Object {
       "id": "@widget/id",
       "position": Object {
@@ -33,8 +36,11 @@ Object {
   "data": null,
   "error": null,
   "isConfigured": true,
+  "isFadeOut": false,
+  "isHighlighted": false,
   "isInitialized": false,
   "isLoading": false,
+  "isTitleCover": false,
   "widget": Object {
     "id": "@widget/id",
     "position": Object {
@@ -62,8 +68,11 @@ Object {
     "data": null,
     "error": null,
     "isConfigured": false,
+    "isFadeOut": false,
+    "isHighlighted": false,
     "isInitialized": false,
     "isLoading": false,
+    "isTitleCover": false,
     "widget": Object {
       "id": "@widget/id",
       "position": Object {
