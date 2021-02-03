@@ -28,6 +28,7 @@ import { EditorContext } from '../../contexts';
 
 import EditorNavigation from '../EditorNavigation';
 import QueryPickerModal from '../QueryPickerModal';
+import DatePickerModal from '../DatePickerModal';
 import ImagePickerModal from '../ImagePickerModal';
 import ChartWidgetEditor from '../ChartWidgetEditor';
 import TextWidgetEditor from '../TextWidgetEditor';
@@ -59,6 +60,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
     isOpen: chartWidgetEditorOpen,
     changeQueryConfirmation,
   } = useSelector(getChartEditor);
+
   const {
     isOpen: textWidgetEditorOpen,
     content: textEditorContent,
@@ -191,6 +193,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
       <ConfirmQueryChange isOpen={changeQueryConfirmation} />
       <DashboardDeleteConfirmation />
       <QueryPickerModal />
+      <DatePickerModal />
       <ImagePickerModal />
     </EditorContext.Provider>
   );

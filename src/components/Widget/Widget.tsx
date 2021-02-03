@@ -2,15 +2,17 @@ import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
-import { Container, TextManagementContainer } from './Widget.styles';
+import { Container, TextManagementContainer, DatePickerContainer } from './Widget.styles';
 
 import ChartWidget from '../ChartWidget';
 import TextWidget from '../TextWidget';
 import ImageWidget from '../ImageWidget';
+import DatePickerWidget from '../DatePickerWidget';
 
 import ImageManagement from '../ImageManagement';
 import ChartManagement from '../ChartManagement';
 import TextManagement from '../TextManagement';
+import DatePickerManagement from '../DatePickerManagement';
 
 import WidgetCover from './components/WidgetCover';
 
@@ -44,6 +46,19 @@ const renderWidget = ({
 }: RenderOptions) => {
   const enableHover = isHoverActive && !isHighlighted && !isFadeOut && !title;
   switch (widgetType) {
+    case 'date-picker':
+      return (
+        <DatePickerContainer>
+          <DatePickerWidget id={widgetId} disableInteractions={isEditorMode} />
+          {isEditorMode && (
+            <DatePickerManagement
+              id={widgetId}
+              isHoverActive={isHoverActive}
+              onRemoveWidget={onRemoveWidget}
+            />
+          )}
+        </DatePickerContainer>
+      );
     case 'text':
       if (isEditorMode) {
         return (
@@ -62,6 +77,7 @@ const renderWidget = ({
       return (
         <Container>
           <ChartWidget id={widgetId} disableInteractions={isEditorMode} />
+          {isEditorMode && (
           <ChartManagement
             widgetId={widgetId}
             isHoverActive={enableHover}
@@ -76,11 +92,13 @@ const renderWidget = ({
       return (
         <Container isFadeOut={isFadeOut}>
           <ImageWidget id={widgetId} />
-          <ImageManagement
-            widgetId={widgetId}
-            isHoverActive={enableHover}
-            onRemoveWidget={onRemoveWidget}
-          />
+          {isEditorMode && (
+            <ImageManagement
+              widgetId={widgetId}
+              isHoverActive={enableHover}
+              onRemoveWidget={onRemoveWidget}
+            />
+          )}
         </Container>
       );
     default:

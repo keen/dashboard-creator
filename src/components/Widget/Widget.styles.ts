@@ -21,3 +21,10 @@ export const Container = styled.div<{ isFadeOut?: boolean }>`
 export const TextManagementContainer = styled.div<{ isFadeOut?: boolean }>`
   ${(props) => props.isFadeOut && getFadeOutStyles()}
 `;
+
+export const DatePickerContainer = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: ${colors.white[500]};
+`;

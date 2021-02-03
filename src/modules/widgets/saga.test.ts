@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import sagaHelper from 'redux-saga-testing';
-import { all, put, take, call, getContext, select } from 'redux-saga/effects';
+import { all, put, take, call, select } from 'redux-saga/effects';
 import { Query } from '@keen.io/query';
 import { PickerWidgets, ChartSettings } from '@keen.io/widget-picker';
 import { SET_QUERY_EVENT } from '@keen.io/query-creator';
@@ -16,7 +16,6 @@ import {
   editTextWidget as editTextWidgetAction,
   editInlineTextWidget as editInlineTextWidgetAction,
   setTextWidget,
-  setWidgetLoading,
   cloneWidget as cloneWidgetAction,
   saveClonedWidget,
   saveImage,
@@ -29,7 +28,6 @@ import {
   editTextWidget,
   editInlineTextWidget,
   reinitializeWidgets,
-  initializeChartWidget,
   initializeWidget,
   selectImageWidget,
   cloneWidget,
@@ -86,7 +84,6 @@ import {
   USE_QUERY_FOR_WIDGET,
 } from '../chartEditor';
 
-import { KEEN_ANALYSIS, TRANSLATIONS } from '../../constants';
 import {
   setEditorContent,
   setTextAlignment,
@@ -287,144 +284,144 @@ describe('reinitializeWidgets()', () => {
   });
 });
 
-describe('initializeChartWidget()', () => {
-  const action = initializeChartWidgetAction(widgetId);
-
-  describe('Scenario 1: Query detached from visualization', () => {
-    const test = sagaHelper(initializeChartWidget(action));
-    const i18n = {
-      t: jest.fn().mockImplementation((key) => key),
-    };
-
-    const keenAnalysis = {
-      query: jest.fn(),
-    };
-
-    const analysisResult = {
-      result: 10,
-      query: {
-        analysis_type: 'count',
-        event_collection: 'purchases',
-        order_by: null,
-      } as Query,
-    };
-
-    test('get widget settings', (result) => {
-      expect(result).toEqual(select(getWidgetSettings, widgetId));
-
-      return {
-        query: 'purchases',
-        settings: {
-          visualizationType: 'line',
-        },
-      };
-    });
-
-    test('get Keen client from context', (result) => {
-      expect(result).toEqual(getContext(KEEN_ANALYSIS));
-
-      return keenAnalysis;
-    });
-
-    test('set widget in loading state', (result) => {
-      expect(result).toEqual(put(setWidgetLoading(widgetId, true)));
-    });
-
-    test('performs query', () => {
-      expect(keenAnalysis.query).toHaveBeenCalledWith({
-        savedQueryName: 'purchases',
-      });
-
-      return analysisResult;
-    });
-
-    test('get i18n from context', (result) => {
-      expect(result).toEqual(getContext(TRANSLATIONS));
-
-      return i18n;
-    });
-
-    test('updates widget state', (result) => {
-      expect(result).toEqual(
-        put(
-          setWidgetState(widgetId, {
-            isInitialized: true,
-            error: {
-              title: 'widget_errors.detached_query_title',
-              message: 'widget_errors.detached_query_message',
-            },
-            data: analysisResult,
-          })
-        )
-      );
-    });
-
-    test('set widget in loading state', (result) => {
-      expect(result).toEqual(put(setWidgetLoading(widgetId, false)));
-    });
-  });
-
-  describe('Scenario 2: Successful initializes chart widget', () => {
-    const test = sagaHelper(initializeChartWidget(action));
-    const keenAnalysis = {
-      query: jest.fn(),
-    };
-
-    const query: Query = {
-      analysis_type: 'count',
-      timeframe: 'this_14_days',
-      event_collection: 'purchases',
-      order_by: null,
-    };
-
-    const analysisResult = {
-      result: 10,
-      query,
-    };
-
-    test('get widget settings', (result) => {
-      expect(result).toEqual(select(getWidgetSettings, widgetId));
-
-      return {
-        query,
-        settings: {
-          visualizationType: 'metric',
-        },
-      };
-    });
-
-    test('get Keen client from context', (result) => {
-      expect(result).toEqual(getContext(KEEN_ANALYSIS));
-
-      return keenAnalysis;
-    });
-
-    test('set widget in loading state', (result) => {
-      expect(result).toEqual(put(setWidgetLoading(widgetId, true)));
-    });
-
-    test('performs query', () => {
-      expect(keenAnalysis.query).toHaveBeenCalledWith(query);
-
-      return analysisResult;
-    });
-
-    test('updates widget state', (result) => {
-      expect(result).toEqual(
-        put(
-          setWidgetState(widgetId, {
-            isInitialized: true,
-            data: analysisResult,
-          })
-        )
-      );
-    });
-
-    test('set widget in loading state', (result) => {
-      expect(result).toEqual(put(setWidgetLoading(widgetId, false)));
-    });
-  });
-});
+// describe('initializeChartWidget()', () => {
+//   const action = initializeChartWidgetAction(widgetId);
+//
+//   describe('Scenario 1: Query detached from visualization', () => {
+//     const test = sagaHelper(initializeChartWidget(action));
+//     const i18n = {
+//       t: jest.fn().mockImplementation((key) => key),
+//     };
+//
+//     const keenAnalysis = {
+//       query: jest.fn(),
+//     };
+//
+//     const analysisResult = {
+//       result: 10,
+//       query: {
+//         analysis_type: 'count',
+//         event_collection: 'purchases',
+//         order_by: null,
+//       } as Query,
+//     };
+//
+//     test('get widget settings', (result) => {
+//       expect(result).toEqual(select(getWidgetSettings, widgetId));
+//
+//       return {
+//         query: 'purchases',
+//         settings: {
+//           visualizationType: 'line',
+//         },
+//       };
+//     });
+//
+//     test('get Keen client from context', (result) => {
+//       expect(result).toEqual(getContext(KEEN_ANALYSIS));
+//
+//       return keenAnalysis;
+//     });
+//
+//     test('set widget in loading state', (result) => {
+//       expect(result).toEqual(put(setWidgetLoading(widgetId, true)));
+//     });
+//
+//     test('performs query', () => {
+//       expect(keenAnalysis.query).toHaveBeenCalledWith({
+//         savedQueryName: 'purchases',
+//       });
+//
+//       return analysisResult;
+//     });
+//
+//     test('get i18n from context', (result) => {
+//       expect(result).toEqual(getContext(TRANSLATIONS));
+//
+//       return i18n;
+//     });
+//
+//     test('updates widget state', (result) => {
+//       expect(result).toEqual(
+//         put(
+//           setWidgetState(widgetId, {
+//             isInitialized: true,
+//             error: {
+//               title: 'widget_errors.detached_query_title',
+//               message: 'widget_errors.detached_query_message',
+//             },
+//             data: analysisResult,
+//           })
+//         )
+//       );
+//     });
+//
+//     test('set widget in loading state', (result) => {
+//       expect(result).toEqual(put(setWidgetLoading(widgetId, false)));
+//     });
+//   });
+//
+//   describe('Scenario 2: Successful initializes chart widget', () => {
+//     const test = sagaHelper(initializeChartWidget(action));
+//     const keenAnalysis = {
+//       query: jest.fn(),
+//     };
+//
+//     const query: Query = {
+//       analysis_type: 'count',
+//       timeframe: 'this_14_days',
+//       event_collection: 'purchases',
+//       order_by: null,
+//     };
+//
+//     const analysisResult = {
+//       result: 10,
+//       query,
+//     };
+//
+//     test('get widget settings', (result) => {
+//       expect(result).toEqual(select(getWidgetSettings, widgetId));
+//
+//       return {
+//         query,
+//         settings: {
+//           visualizationType: 'metric',
+//         },
+//       };
+//     });
+//
+//     test('get Keen client from context', (result) => {
+//       expect(result).toEqual(getContext(KEEN_ANALYSIS));
+//
+//       return keenAnalysis;
+//     });
+//
+//     test('set widget in loading state', (result) => {
+//       expect(result).toEqual(put(setWidgetLoading(widgetId, true)));
+//     });
+//
+//     test('performs query', () => {
+//       expect(keenAnalysis.query).toHaveBeenCalledWith(query);
+//
+//       return analysisResult;
+//     });
+//
+//     test('updates widget state', (result) => {
+//       expect(result).toEqual(
+//         put(
+//           setWidgetState(widgetId, {
+//             isInitialized: true,
+//             data: analysisResult,
+//           })
+//         )
+//       );
+//     });
+//
+//     test('set widget in loading state', (result) => {
+//       expect(result).toEqual(put(setWidgetLoading(widgetId, false)));
+//     });
+//   });
+// });
 
 describe('initializeWidget()', () => {
   const action = initializeWidgetAction(widgetId);

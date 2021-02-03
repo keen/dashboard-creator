@@ -58,6 +58,7 @@ import {
 import { getBaseTheme, getActiveDashboardTheme } from '../theme/selectors';
 
 import { setActiveDashboard, getActiveDashboard } from '../app';
+
 import {
   initializeWidget,
   registerWidgets,
@@ -65,6 +66,10 @@ import {
   getWidget,
   getWidgetSettings,
 } from '../widgets';
+
+import { removeConnectionFromDatePicker } from '../widgets/saga/datePicker';
+
+import { removeDatePickerConnections } from '../widgets/saga/datePicker';
 
 import { removeDashboardTheme, setDashboardTheme } from '../theme';
 import {
@@ -155,7 +160,7 @@ export function* saveDashboardMetadata({
   }
 }
 
-function* generateAccessKeyOptions(dashboardId) {
+function* generateAccessKeyOptions(dashboardId: string) {
   const state: RootState = yield select();
   const dashboard = yield getDashboard(state, dashboardId);
   const queries = new Set();
@@ -376,11 +381,21 @@ export function* deleteDashboard({
 export function* removeWidgetFromDashboard({
   payload,
 }: ReturnType<typeof removeWidgetFromDashboardAction>) {
-  const { widgetId } = payload;
+  const { dashboardId, widgetId } = payload;
 
-  const { type, query } = yield select(getWidgetSettings, widgetId);
+  const { type, query, datePickerId } = yield select(
+    getWidgetSettings,
+    widgetId
+  );
   if (type === 'visualization' && query && typeof query === 'string') {
     yield call(updateAccessKeyOptions);
+    if (datePickerId) {
+      yield call(removeConnectionFromDatePicker, datePickerId, widgetId);
+    }
+  }
+
+  if (type === 'date-picker') {
+    yield call(removeDatePickerConnections, dashboardId, widgetId);
   }
 
   yield put(removeWidget(widgetId));

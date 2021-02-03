@@ -4,6 +4,8 @@ const getDroppingItemSize = (widgetType: WidgetType) => {
   const i = 'dropping-item';
 
   switch (widgetType) {
+    case 'date-picker':
+      return { i, w: 4, h: 2, minW: 4, minH: 2 };
     case 'visualization':
       return { i, w: 4, h: 7, minW: 2, minH: 6 };
     case 'image':
