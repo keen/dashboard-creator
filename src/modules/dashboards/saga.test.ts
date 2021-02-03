@@ -34,6 +34,9 @@ import {
   addClonedDashboard,
   initializeDashboardWidgets as initializeDashboardWidgetsAction,
   exportDashboardToHtml as exportDashboardToHtmlAction,
+  saveDashboard as saveDashboardAction,
+  updateDashboardMeta,
+  saveDashboardSuccess,
 } from './actions';
 import { removeDashboardTheme } from '../theme/actions';
 import {
@@ -46,11 +49,12 @@ import {
   viewPublicDashboard,
   cloneDashboard,
   exportDashboardToHtml,
+  saveDashboard,
 } from './saga';
 
 import { removeWidget, registerWidgets, getWidgetSettings } from '../widgets';
 
-import { setDashboardTheme } from '../theme';
+import { getActiveDashboardTheme, setDashboardTheme } from '../theme';
 import { setActiveDashboard, getActiveDashboard } from '../app';
 
 import { serializeDashboard } from './serializers';
@@ -71,7 +75,11 @@ import {
   ROUTES,
   KEEN_ANALYSIS,
 } from '../../constants';
-import { getDashboardMeta } from './selectors';
+import {
+  getDashboardMeta,
+  getDashboardSettings,
+  getDashboardsMetadata,
+} from './selectors';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
@@ -795,5 +803,96 @@ describe('exportDashboardToHtml()', () => {
       data: snippet,
       fileName: dashboardId,
     });
+  });
+});
+
+describe('saveDashboard()', () => {
+  const dashboardId = '@dashboard/01';
+  const dashboard: DashboardModel = {
+    baseTheme: {},
+    version: '0.0.1',
+    widgets: [],
+  };
+  const state = {
+    rootReducer,
+    app: {
+      activeDashboardId: dashboardId,
+    },
+    dashboards: {
+      items: {
+        [dashboardId]: dashboard,
+      },
+    },
+    theme: {
+      dashboards: {},
+    },
+  };
+
+  const blobApiMock = {
+    saveDashboard: jest.fn(),
+  };
+
+  const updatedMetadata: DashboardMetaData = {
+    id: dashboardId,
+    widgets: 0,
+    queries: 0,
+    title: 'Dashboard',
+    tags: [],
+    lastModificationDate: 0,
+    isPublic: true,
+    publicAccessKey: 'public-access-key',
+  };
+
+  const action = saveDashboardAction(dashboardId);
+  const test = sagaHelper(saveDashboard(action));
+
+  test('prepare state activeDashboardId', (result) => {
+    expect(result).toEqual(select());
+
+    return state;
+  });
+
+  test('get dashboard settings', (result) => {
+    expect(result).toEqual(select(getDashboardSettings, dashboardId));
+
+    return dashboard;
+  });
+
+  test('get dashboard theme', (result) => {
+    expect(result).toEqual(select(getActiveDashboardTheme));
+
+    return {};
+  });
+
+  test('get dashboards meta data', (result) => {
+    expect(result).toEqual(select(getDashboardsMetadata));
+
+    return [updatedMetadata];
+  });
+
+  test('gets BlobAPI instance from context', (result) => {
+    expect(result).toEqual(getContext(BLOB_API));
+
+    return blobApiMock;
+  });
+
+  test('calls saveDashboard', () => {
+    const serializedDashboard = serializeDashboard(dashboard);
+
+    expect(blobApiMock.saveDashboard).toHaveBeenCalledWith(
+      dashboardId,
+      serializedDashboard,
+      updatedMetadata
+    );
+  });
+
+  test('updates dashboard metadata', (result) => {
+    expect(result).toEqual(
+      put(updateDashboardMeta(dashboardId, updatedMetadata))
+    );
+  });
+
+  test('notifies about save success', (result) => {
+    expect(result).toEqual(put(saveDashboardSuccess(dashboardId)));
   });
 });
