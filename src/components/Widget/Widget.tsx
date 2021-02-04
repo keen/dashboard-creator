@@ -102,17 +102,15 @@ const Widget: FC<Props> = ({
     isTitleCover,
   } = useSelector((rootState: RootState) => getWidget(rootState, id));
 
-  const getWidgetTitle = () => {
+  const widgetTitle = useSelector((state: RootState) => {
     if (!isTitleCover) return;
 
-    const activeDashboard = useSelector(getActiveDashboard);
-    const { widgets } = useSelector((rootState: RootState) =>
-      getDashboardSettings(rootState, activeDashboard)
-    );
+    const activeDashboard = getActiveDashboard(state);
+    const { widgets } = getDashboardSettings(state, activeDashboard);
     const index = widgets.findIndex((item) => item === id);
 
     return `${t('widget_item.chart')} ${index + 1}`;
-  };
+  });
 
   return renderWidget({
     widgetType,
@@ -121,7 +119,7 @@ const Widget: FC<Props> = ({
     isHoverActive,
     isHighlighted,
     isFadeOut,
-    title: getWidgetTitle(),
+    title: widgetTitle,
     onRemoveWidget,
   });
 };
