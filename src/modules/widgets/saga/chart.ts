@@ -1,5 +1,6 @@
 import { put, select, getContext } from 'redux-saga/effects';
 import { getAvailableWidgets } from '@keen.io/widget-picker';
+import { Query } from '@keen.io/query';
 
 import {
   initializeChartWidget as initializeChartWidgetAction,
@@ -16,7 +17,7 @@ import { KEEN_ANALYSIS, TRANSLATIONS } from '../../../constants';
 import { WidgetItem, ChartWidget } from '../types';
 
 /**
- * Modifies query with date picker and filters modifiers.
+ * Creates ad-hoc query with date picker and filters modifiers.
  *
  * @param query - query settings
  * @param datePickerId - date picker widget id
@@ -49,11 +50,21 @@ export function* prepareChartWidgetQuery(chartWidget: WidgetItem) {
   }
 
   if (hasQueryModifiers) {
-    const { query: querySettings } = chartData;
-    query = {
-      ...querySettings,
-      ...queryModifiers,
-    };
+    const { query: querySettings } = chartData as { query: Query };
+    if ('steps' in querySettings) {
+      query = {
+        ...querySettings,
+        steps: querySettings.steps.map((step) => ({
+          ...step,
+          ...queryModifiers,
+        })),
+      };
+    } else {
+      query = {
+        ...querySettings,
+        ...queryModifiers,
+      };
+    }
   }
 
   return {

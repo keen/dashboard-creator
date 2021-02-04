@@ -27,4 +27,5 @@ export const DatePickerContainer = styled.div`
   width: 100%;
   height: 100%;
   background: ${colors.white[500]};
+  border-radius: 4px;
 `;

@@ -4,6 +4,7 @@ import {
   editDatePickerWidget as editDatePickerWidgetAction,
   setDatePickerModifiers as setDatePickerModifiersAction,
   applyDatePickerModifiers as applyDatePickerModifiersAction,
+  resetDatePickerWidgets as resetDatePickerWidgetsAction,
   setDatePickerWidget,
   updateChartWidgetDatePickerConnection,
   setWidgetState,
@@ -29,12 +30,6 @@ import {
 import { getActiveDashboard } from '../../app';
 
 import { ChartWidget } from '../types';
-
-/*
-  TODO: Remove date picker widget and clean connections
-  Update single connection
-  Remove connection -=> reinit chart
-*/
 
 /**
  * Apply date picker connections updates to connected widgets
@@ -254,4 +249,28 @@ export function* setupDatePicker(widgetId: string) {
   } else {
     yield put(removeWidgetFromDashboard(dashboardId, widgetId));
   }
+}
+
+/**
+ * Reset date pickers to initial state for specified dashboard
+ *
+ * @param dashboardId - Dashboard identifer
+ * @return void
+ *
+ */
+export function* resetDatePickerWidgets({
+  payload,
+}: ReturnType<typeof resetDatePickerWidgetsAction>) {
+  const { dashboardId } = payload;
+  const state = yield select();
+  const {
+    settings: { widgets: widgetsIds },
+  } = getDashboard(state, dashboardId);
+
+  const datePickersUpdate = widgetsIds
+    .map((widgetId) => getWidgetSettings(state, widgetId))
+    .filter(({ type }) => type === 'date-picker')
+    .map(({ id }) => put(setWidgetState(id, { isActive: false, data: null })));
+
+  yield all(datePickersUpdate);
 }

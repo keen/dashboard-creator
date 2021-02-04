@@ -70,6 +70,7 @@ import {
 
 import {
   setupDatePicker,
+  resetDatePickerWidgets,
   setDatePickerModifiers,
   applyDatePickerModifiers,
   editDatePickerWidget,
@@ -104,6 +105,7 @@ import {
   INITIALIZE_CHART_WIDGET,
   APPLY_DATE_PICKER_MODIFIERS,
   SET_DATE_PICKER_WIDGET_MODIFIERS,
+  RESET_DATE_PICKER_WIDGETS,
   SAVED_QUERY_UPDATED,
   CLONE_WIDGET,
   SAVE_IMAGE,
@@ -625,6 +627,7 @@ export function* widgetsSaga() {
   yield takeLatest(APPLY_DATE_PICKER_MODIFIERS, applyDatePickerModifiers);
   yield takeLatest(EDIT_INLINE_TEXT_WIDGET, editInlineTextWidget);
   yield takeLatest(CLONE_WIDGET, cloneWidget);
+  yield takeEvery(RESET_DATE_PICKER_WIDGETS, resetDatePickerWidgets);
   yield takeEvery(INITIALIZE_WIDGET, initializeWidget);
   yield takeEvery(INITIALIZE_CHART_WIDGET, initializeChartWidget);
 }

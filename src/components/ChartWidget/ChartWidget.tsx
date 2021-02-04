@@ -81,7 +81,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
     });
 
     return () => dispose();
-  }, [error, editorPubSub]);
+  }, [error, chartData, editorPubSub]);
 
   useEffect(() => {
     if (loaderRef.current) {

@@ -16,6 +16,7 @@ import {
   INITIALIZE_CHART_WIDGET,
   EDIT_CHART_WIDGET,
   EDIT_IMAGE_WIDGET,
+  RESET_DATE_PICKER_WIDGETS,
   APPLY_DATE_PICKER_MODIFIERS,
   SET_DATE_PICKER_WIDGET_MODIFIERS,
   EDIT_DATE_PICKER_WIDGET,
@@ -269,6 +270,15 @@ export const setDatePickerModifiers = createAction(
   })
 );
 
+export const resetDatePickerWidgets = createAction(
+  RESET_DATE_PICKER_WIDGETS,
+  (dashboardId: string) => ({
+    payload: {
+      dashboardId,
+    },
+  })
+);
+
 export type WidgetsActions =
   | ReturnType<typeof createWidget>
   | ReturnType<typeof removeWidget>
@@ -288,6 +298,7 @@ export type WidgetsActions =
   | ReturnType<typeof setDatePickerWidget>
   | ReturnType<typeof finishChartWidgetConfiguration>
   | ReturnType<typeof updateChartWidgetDatePickerConnection>
+  | ReturnType<typeof resetDatePickerWidgets>
   | ReturnType<typeof setDatePickerModifiers>
   | ReturnType<typeof applyDatePickerModifiers>
   | ReturnType<typeof savedQueryUpdated>

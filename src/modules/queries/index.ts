@@ -1,6 +1,11 @@
 import { serializeSavedQuery } from './serializers';
 import queriesReducer from './reducer';
-import { selectSavedQuery, createQuery, addInterimQuery } from './actions';
+import {
+  selectSavedQuery,
+  createQuery,
+  addInterimQuery,
+  removeInterimQueries,
+} from './actions';
 import { getInterimQuery } from './selectors';
 import { SELECT_SAVED_QUERY, CREATE_QUERY } from './constants';
 import { getVisualizationIcon } from './utils';
@@ -13,6 +18,7 @@ export {
   selectSavedQuery,
   createQuery,
   addInterimQuery,
+  removeInterimQueries,
   updateSaveQuery,
   queriesReducer,
   getInterimQuery,
