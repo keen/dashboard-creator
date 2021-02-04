@@ -15,12 +15,13 @@ const DatePickerSettings: FC<{}> = () => {
   return (
     <div>
       DatePicker
-      {widgetConnections.map(({ widgetId, isConnected }) => (
+      {widgetConnections.map(({ positionIndex, widgetId, isConnected }) => (
         <div
           key={widgetId}
           onClick={() => dispatch(updateConnection(widgetId, !isConnected))}
         >
           {widgetId} {isConnected ? 'Tak' : 'nie'}
+          Chart {positionIndex}
         </div>
       ))}
       <Button onClick={() => dispatch(applySettings())}>Apply</Button>

@@ -2,7 +2,11 @@ import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
-import { Container, TextManagementContainer, DatePickerContainer } from './Widget.styles';
+import {
+  Container,
+  TextManagementContainer,
+  DatePickerContainer,
+} from './Widget.styles';
 
 import ChartWidget from '../ChartWidget';
 import TextWidget from '../TextWidget';
@@ -48,7 +52,7 @@ const renderWidget = ({
   switch (widgetType) {
     case 'date-picker':
       return (
-        <DatePickerContainer>
+        <DatePickerContainer isFadeOut={isFadeOut}>
           <DatePickerWidget id={widgetId} disableInteractions={isEditorMode} />
           {isEditorMode && (
             <DatePickerManagement
@@ -75,14 +79,15 @@ const renderWidget = ({
       }
     case 'visualization':
       return (
-        <Container>
+        <Container isFadeOut={isFadeOut}>
           <ChartWidget id={widgetId} disableInteractions={isEditorMode} />
           {isEditorMode && (
-          <ChartManagement
-            widgetId={widgetId}
-            isHoverActive={enableHover}
-            onRemoveWidget={onRemoveWidget}
-          />
+            <ChartManagement
+              widgetId={widgetId}
+              isHoverActive={enableHover}
+              onRemoveWidget={onRemoveWidget}
+            />
+          )}
           {(isHighlighted || title) && (
             <WidgetCover isHighlighted={isHighlighted} title={title} />
           )}

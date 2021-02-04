@@ -7,6 +7,7 @@ import {
 } from './actions';
 import datePickerReducer from './reducer';
 import { getDatePickerSettings } from './selectors';
+import { datePickerSaga } from './saga';
 
 import { APPLY_EDITOR_SETTINGS, CLOSE_EDITOR } from './constants';
 
@@ -20,6 +21,7 @@ export {
   applySettings,
   updateConnection,
   setEditorConnections,
+  datePickerSaga,
   APPLY_EDITOR_SETTINGS,
   CLOSE_EDITOR,
   ReducerState,

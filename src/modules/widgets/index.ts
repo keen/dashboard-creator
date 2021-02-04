@@ -16,6 +16,7 @@ import {
   updateChartWidgetDatePickerConnection,
   updateWidgetsPosition,
   cloneWidget,
+  setWidgetState,
   saveImage,
 } from './actions';
 import { getWidgetsPosition, getWidgetSettings, getWidget } from './selectors';
@@ -43,6 +44,7 @@ export {
   widgetsSaga,
   createWidget,
   removeWidget,
+  setWidgetState,
   registerWidgets,
   initializeWidget,
   editChartWidget,

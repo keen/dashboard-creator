@@ -26,6 +26,7 @@ import {
   getDashboard,
   saveDashboard,
   removeWidgetFromDashboard,
+  ADD_WIDGET_TO_DASHBOARD,
 } from '../../dashboards';
 import { getActiveDashboard } from '../../app';
 
@@ -85,12 +86,14 @@ export function* setDatePickerModifiers({
  *
  * @param dashboardId - Dashboard identifer
  * @param widgetId - Widget identifer
+ * @param connectByDefault - Connects all widgets by default
  * @return void
  *
  */
 export function* getDatePickerWidgetConnections(
   dashboardId: string,
-  widgetId: string
+  widgetId: string,
+  connectByDefault?: boolean
 ) {
   const state = yield select();
   const {
@@ -103,9 +106,11 @@ export function* getDatePickerWidgetConnections(
       ({ type, datePickerId }: ChartWidget) =>
         type === 'visualization' && (datePickerId === widgetId || !datePickerId)
     )
-    .map(({ id, datePickerId }: ChartWidget) => ({
+    .map(({ id, datePickerId, settings: { widgetSettings } }: ChartWidget) => ({
       widgetId: id,
-      isConnected: !!datePickerId,
+      isConnected: connectByDefault ? true : !!datePickerId,
+      title: 'title' in widgetSettings ? widgetSettings.title : null,
+      positionIndex: widgetsIds.indexOf(id) + 1,
     }));
 
   return widgets;
@@ -210,9 +215,49 @@ export function* editDatePickerWidget({
   );
 
   yield put(setEditorConnections(widgetConnections));
+
+  const {
+    settings: { widgets: dashboardWidgetsIds },
+  } = yield select(getDashboard, dashboardId);
+  const widgetsConnectionsPool = widgetConnections.map(
+    ({ widgetId }) => widgetId
+  );
+
+  const fadeOutWidgets = dashboardWidgetsIds
+    .filter(
+      (id: string) =>
+        !widgetsConnectionsPool.includes(id) && id !== datePickerWidgetId
+    )
+    .map((id: string) => put(setWidgetState(id, { isFadeOut: true })));
+
+  const titleCoverWidgets = widgetConnections
+    .filter(({ title }) => !title)
+    .map(({ widgetId }) =>
+      put(setWidgetState(widgetId, { isTitleCover: true }))
+    );
+
+  const highlightWidgets = widgetConnections
+    .filter(({ isConnected }) => isConnected)
+    .map(({ widgetId }) =>
+      put(setWidgetState(widgetId, { isHighlighted: true }))
+    );
+
+  yield all([...fadeOutWidgets, ...titleCoverWidgets, ...highlightWidgets]);
   yield put(openEditor());
 
   const action = yield take([APPLY_EDITOR_SETTINGS, CLOSE_EDITOR]);
+
+  yield all(
+    dashboardWidgetsIds.map((widgetId: string) =>
+      put(
+        setWidgetState(widgetId, {
+          isHighlighted: false,
+          isFadeOut: false,
+          isTitleCover: false,
+        })
+      )
+    )
+  );
 
   if (action.type === APPLY_EDITOR_SETTINGS) {
     yield* applyDatePickerUpdates(datePickerWidgetId);
@@ -232,15 +277,60 @@ export function* editDatePickerWidget({
 export function* setupDatePicker(widgetId: string) {
   const datePickerWidgetId = widgetId;
   const dashboardId = yield select(getActiveDashboard);
+
+  yield take(ADD_WIDGET_TO_DASHBOARD);
+
+  const {
+    settings: { widgets: dashboardWidgetsIds },
+  } = yield select(getDashboard, dashboardId);
+
   const widgetConnections = yield* getDatePickerWidgetConnections(
     dashboardId,
-    datePickerWidgetId
+    datePickerWidgetId,
+    true
+  );
+  const widgetsConnectionsPool = widgetConnections.map(
+    ({ widgetId }) => widgetId
   );
 
   yield put(setEditorConnections(widgetConnections));
   yield put(openEditor());
 
+  const fadeOutWidgets = dashboardWidgetsIds
+    .filter(
+      (id: string) =>
+        !widgetsConnectionsPool.includes(id) && id !== datePickerWidgetId
+    )
+    .map((id: string) => put(setWidgetState(id, { isFadeOut: true })));
+
+  const titleCoverWidgets = widgetConnections
+    .filter(({ title }) => !title)
+    .map(({ widgetId }) =>
+      put(setWidgetState(widgetId, { isTitleCover: true }))
+    );
+
+  const highlightWidgets = widgetConnections
+    .filter(({ isConnected }) => isConnected)
+    .map(({ widgetId }) =>
+      put(setWidgetState(widgetId, { isHighlighted: true }))
+    );
+
+  yield all([...fadeOutWidgets, ...titleCoverWidgets, ...highlightWidgets]);
+
   const action = yield take([APPLY_EDITOR_SETTINGS, CLOSE_EDITOR]);
+
+  yield all(
+    dashboardWidgetsIds.map((widgetId: string) =>
+      put(
+        setWidgetState(widgetId, {
+          isHighlighted: false,
+          isFadeOut: false,
+          isTitleCover: false,
+        })
+      )
+    )
+  );
+
   if (action.type === APPLY_EDITOR_SETTINGS) {
     yield* applyDatePickerUpdates(datePickerWidgetId);
 
