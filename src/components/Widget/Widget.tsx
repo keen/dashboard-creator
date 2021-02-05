@@ -47,6 +47,7 @@ const renderWidget = ({
   isHighlighted,
   isFadeOut,
   title,
+  datePickerData,
   onRemoveWidget,
 }: RenderOptions) => {
   const enableHover = isHoverActive && !isHighlighted && !isFadeOut && !title;
@@ -92,7 +93,9 @@ const renderWidget = ({
           {(isHighlighted || title) && (
             <WidgetCover isHighlighted={isHighlighted} title={title} />
           )}
-          {!isEditorMode && <ChartWidgetFilter />}
+          {!isEditorMode && datePickerData && (
+            <ChartWidgetFilter timeframe={datePickerData.timeframe} />
+          )}
         </Container>
       );
     case 'image':
@@ -122,6 +125,7 @@ const Widget: FC<Props> = ({
   const { t } = useTranslation();
   const {
     widget: { id: widgetId, type: widgetType },
+    widget,
     isHighlighted,
     isFadeOut,
     isTitleCover,
@@ -137,6 +141,13 @@ const Widget: FC<Props> = ({
     return `${t('widget_item.chart')} ${index + 1}`;
   });
 
+  const datePickerData = useSelector((state: RootState) => {
+    if (!widget['datePickerId']) return;
+
+    const { data } = getWidget(state, widget['datePickerId']);
+    return data;
+  });
+
   return renderWidget({
     widgetType,
     widgetId,
@@ -145,6 +156,7 @@ const Widget: FC<Props> = ({
     isHighlighted,
     isFadeOut,
     title: widgetTitle,
+    datePickerData,
     onRemoveWidget,
   });
 };

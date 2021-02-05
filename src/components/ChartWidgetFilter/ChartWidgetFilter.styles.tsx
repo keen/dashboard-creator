@@ -22,8 +22,30 @@ export const IconContainer = styled.div`
 `;
 
 export const Title = styled.div`
+  margin-bottom: 10px;
   font-family: 'Lato Bold', sans-serif;
   font-size: 14px;
   line-height: 17px;
   color: ${colors.black[100]};
+`;
+
+export const Timeframe = styled.div`
+  font-family: 'Lato Regular', sans-serif;
+  font-size: 14px;
+  line-height: 17px;
+  color: ${colors.blue[500]};
+`;
+
+export const TimeframeWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const Separator = styled.div`
+  margin-top: 4px;
+  margin-bottom: 4px;
+  font-family: 'Lato Regular', sans-serif;
+  font-size: 13px;
+  line-height: 17px;
+  color: ${colors.blue[100]};
 `;

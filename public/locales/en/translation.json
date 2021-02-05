@@ -378,6 +378,7 @@
     "clear_properties": "Clear to extract all."
   },
   "dashboard_timepicker": {
-    "separator": "to"
+    "separator": "to",
+    "timeframe_modified": "Timeframe modified"
   }
 }

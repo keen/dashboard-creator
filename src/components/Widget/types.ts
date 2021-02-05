@@ -8,5 +8,6 @@ export type RenderOptions = {
   isHighlighted: boolean;
   isFadeOut: boolean;
   title?: string;
+  datePickerData?: null | Record<string, any>;
   onRemoveWidget: () => void;
 };

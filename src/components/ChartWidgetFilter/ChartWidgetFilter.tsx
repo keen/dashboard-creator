@@ -1,19 +1,32 @@
-import React, { FC, useState, useRef, useContext } from 'react';
+import React, { FC, useState, useRef, useContext, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Portal, Tooltip, UI_LAYERS } from '@keen.io/ui-core';
 import { Icon, IconType } from '@keen.io/icons';
 import { colors } from '@keen.io/colors';
+import { Timeframe as TimeframeType } from '@keen.io/query';
 
 import { AppContext } from '../../contexts';
 import { TOOLTIP_MOTION } from '../../constants';
 
-import { Container, IconContainer, Title } from './ChartWidgetFilter.styles';
+import {
+  Container,
+  IconContainer,
+  Title,
+  Timeframe,
+  Separator,
+  TimeframeWrapper,
+} from './ChartWidgetFilter.styles';
 
 type Props = {
   icon?: IconType;
+  timeframe: string | TimeframeType;
 };
 
-const ChartWidgetFilter: FC<Props> = ({ icon = 'date-picker' }) => {
+const TOOLTIP_OFFSET = 10;
+
+const ChartWidgetFilter: FC<Props> = ({ icon = 'date-picker', timeframe }) => {
+  const { t } = useTranslation();
   const { modalContainer } = useContext(AppContext);
 
   const [tooltip, setTooltip] = useState({
@@ -23,6 +36,22 @@ const ChartWidgetFilter: FC<Props> = ({ icon = 'date-picker' }) => {
   });
 
   const containerRef = useRef(null);
+  const tooltipRef = useRef(null);
+
+  useEffect(() => {
+    if (!tooltipRef.current) return;
+    const {
+      right,
+      width,
+    }: ClientRect = tooltipRef.current.getBoundingClientRect();
+
+    if (right > document.body.offsetWidth) {
+      setTooltip((state) => ({
+        ...state,
+        x: document.body.offsetWidth - width - TOOLTIP_OFFSET,
+      }));
+    }
+  }, [tooltip.visible]);
 
   const handleMouseEnter = () => {
     const {
@@ -80,9 +109,19 @@ const ChartWidgetFilter: FC<Props> = ({ icon = 'date-picker' }) => {
                 pointerEvents: 'none',
                 zIndex: UI_LAYERS.dropdown,
               }}
+              ref={tooltipRef}
             >
               <Tooltip mode="light" hasArrow={false}>
-                <Title>Timeframe modified</Title>
+                <Title>{t('dashboard_timepicker.timeframe_modified')}</Title>
+                {typeof timeframe === 'string' ? (
+                  <Timeframe>{timeframe}</Timeframe>
+                ) : (
+                  <TimeframeWrapper>
+                    <Timeframe>{timeframe.start}</Timeframe>
+                    <Separator>{t('dashboard_timepicker.separator')}</Separator>
+                    <Timeframe>{timeframe.end}</Timeframe>
+                  </TimeframeWrapper>
+                )}
               </Tooltip>
             </motion.div>
           )}
