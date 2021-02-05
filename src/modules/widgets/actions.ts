@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 import { RawDraftContentState } from 'draft-js';
-import { Query } from '@keen.io/query';
+import { Query, Timeframe } from '@keen.io/query';
 
 import { WidgetType } from '../../types';
 import { Widget, WidgetItem, GridPosition, WidgetsPosition } from './types';
@@ -10,15 +10,21 @@ import {
   CREATE_WIDGET,
   REMOVE_WIDGET,
   UPDATE_WIDGETS_POSITION,
+  UPDATE_CHART_WIDGET_DATE_PICKER_CONNECTION,
   FINISH_CHART_WIDGET_CONFIGURATION,
   INITIALIZE_WIDGET,
   INITIALIZE_CHART_WIDGET,
   EDIT_CHART_WIDGET,
   EDIT_IMAGE_WIDGET,
+  RESET_DATE_PICKER_WIDGETS,
+  APPLY_DATE_PICKER_MODIFIERS,
+  SET_DATE_PICKER_WIDGET_MODIFIERS,
+  EDIT_DATE_PICKER_WIDGET,
   SET_IMAGE_WIDGET,
   SET_TEXT_WIDGET,
   EDIT_TEXT_WIDGET,
   EDIT_INLINE_TEXT_WIDGET,
+  SET_DATE_PICKER_WIDGET,
   SAVE_CLONED_WIDGET,
   SET_WIDGET_LOADING,
   SET_WIDGET_INITIALIZATION,
@@ -215,6 +221,64 @@ export const saveImage = createAction(SAVE_IMAGE, (link: string) => ({
   },
 }));
 
+export const updateChartWidgetDatePickerConnection = createAction(
+  UPDATE_CHART_WIDGET_DATE_PICKER_CONNECTION,
+  (id: string, datePickerId: string | null) => ({
+    payload: {
+      id,
+      datePickerId,
+    },
+  })
+);
+
+export const setDatePickerWidget = createAction(
+  SET_DATE_PICKER_WIDGET,
+  (id: string, widgetConnections: string[]) => ({
+    payload: {
+      id,
+      widgetConnections,
+    },
+  })
+);
+
+export const editDatePickerWidget = createAction(
+  EDIT_DATE_PICKER_WIDGET,
+  (id: string) => ({
+    payload: {
+      id,
+    },
+  })
+);
+
+export const applyDatePickerModifiers = createAction(
+  APPLY_DATE_PICKER_MODIFIERS,
+  (id: string) => ({
+    payload: {
+      id,
+    },
+  })
+);
+
+export const setDatePickerModifiers = createAction(
+  SET_DATE_PICKER_WIDGET_MODIFIERS,
+  (widgetId: string, timeframe: Timeframe, timezone: string) => ({
+    payload: {
+      widgetId,
+      timeframe,
+      timezone,
+    },
+  })
+);
+
+export const resetDatePickerWidgets = createAction(
+  RESET_DATE_PICKER_WIDGETS,
+  (dashboardId: string) => ({
+    payload: {
+      dashboardId,
+    },
+  })
+);
+
 export type WidgetsActions =
   | ReturnType<typeof createWidget>
   | ReturnType<typeof removeWidget>
@@ -229,8 +293,14 @@ export type WidgetsActions =
   | ReturnType<typeof setTextWidget>
   | ReturnType<typeof editTextWidget>
   | ReturnType<typeof editInlineTextWidget>
+  | ReturnType<typeof editDatePickerWidget>
   | ReturnType<typeof setImageWidget>
+  | ReturnType<typeof setDatePickerWidget>
   | ReturnType<typeof finishChartWidgetConfiguration>
+  | ReturnType<typeof updateChartWidgetDatePickerConnection>
+  | ReturnType<typeof resetDatePickerWidgets>
+  | ReturnType<typeof setDatePickerModifiers>
+  | ReturnType<typeof applyDatePickerModifiers>
   | ReturnType<typeof savedQueryUpdated>
   | ReturnType<typeof cloneWidget>
   | ReturnType<typeof saveClonedWidget>

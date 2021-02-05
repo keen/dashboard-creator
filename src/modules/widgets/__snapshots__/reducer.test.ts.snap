@@ -5,6 +5,7 @@ Object {
   "@widget/id": Object {
     "data": null,
     "error": null,
+    "isActive": false,
     "isConfigured": false,
     "isFadeOut": false,
     "isHighlighted": false,
@@ -12,6 +13,7 @@ Object {
     "isLoading": false,
     "isTitleCover": false,
     "widget": Object {
+      "datePickerId": null,
       "id": "@widget/id",
       "position": Object {
         "h": 2,
@@ -35,6 +37,7 @@ exports[`finishes visualization widget configuration 1`] = `
 Object {
   "data": null,
   "error": null,
+  "isActive": false,
   "isConfigured": true,
   "isFadeOut": false,
   "isHighlighted": false,
@@ -67,6 +70,7 @@ Object {
   "@widget/id": Object {
     "data": null,
     "error": null,
+    "isActive": false,
     "isConfigured": false,
     "isFadeOut": false,
     "isHighlighted": false,

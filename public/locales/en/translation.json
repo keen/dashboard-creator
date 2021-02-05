@@ -25,6 +25,13 @@
     "placeholder": "Enter text",
     "delete_confirmation": "Are you sure you want to delete this text?"
   },
+  "date_picker_management": {
+    "edit_text": "Edit",
+    "delete_confirmation": "Are you sure you want to delete this widget?"
+  },
+  "date_picker_widget": {
+    "name": "Date Picker"
+  },
   "widget_errors": {
     "detached_query_title": "Unable to present result in {{chart}} chart",
     "detached_query_message": "Please check if query structure has changed or select other visualization"

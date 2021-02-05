@@ -2,15 +2,21 @@ import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
-import { Container, TextManagementContainer } from './Widget.styles';
+import {
+  Container,
+  TextManagementContainer,
+  DatePickerContainer,
+} from './Widget.styles';
 
 import ChartWidget from '../ChartWidget';
 import TextWidget from '../TextWidget';
 import ImageWidget from '../ImageWidget';
+import DatePickerWidget from '../DatePickerWidget';
 
 import ImageManagement from '../ImageManagement';
 import ChartManagement from '../ChartManagement';
 import TextManagement from '../TextManagement';
+import DatePickerManagement from '../DatePickerManagement';
 
 import WidgetCover from './components/WidgetCover';
 
@@ -45,6 +51,19 @@ const renderWidget = ({
 }: RenderOptions) => {
   const enableHover = isHoverActive && !isHighlighted && !isFadeOut && !title;
   switch (widgetType) {
+    case 'date-picker':
+      return (
+        <DatePickerContainer isFadeOut={isFadeOut}>
+          <DatePickerWidget id={widgetId} disableInteractions={isEditorMode} />
+          {isEditorMode && (
+            <DatePickerManagement
+              id={widgetId}
+              isHoverActive={isHoverActive}
+              onRemoveWidget={onRemoveWidget}
+            />
+          )}
+        </DatePickerContainer>
+      );
     case 'text':
       if (isEditorMode) {
         return (
@@ -61,13 +80,15 @@ const renderWidget = ({
       }
     case 'visualization':
       return (
-        <Container>
+        <Container isFadeOut={isFadeOut}>
           <ChartWidget id={widgetId} disableInteractions={isEditorMode} />
-          <ChartManagement
-            widgetId={widgetId}
-            isHoverActive={enableHover}
-            onRemoveWidget={onRemoveWidget}
-          />
+          {isEditorMode && (
+            <ChartManagement
+              widgetId={widgetId}
+              isHoverActive={enableHover}
+              onRemoveWidget={onRemoveWidget}
+            />
+          )}
           {(isHighlighted || title) && (
             <WidgetCover isHighlighted={isHighlighted} title={title} />
           )}
@@ -78,11 +99,13 @@ const renderWidget = ({
       return (
         <Container isFadeOut={isFadeOut}>
           <ImageWidget id={widgetId} />
-          <ImageManagement
-            widgetId={widgetId}
-            isHoverActive={enableHover}
-            onRemoveWidget={onRemoveWidget}
-          />
+          {isEditorMode && (
+            <ImageManagement
+              widgetId={widgetId}
+              isHoverActive={enableHover}
+              onRemoveWidget={onRemoveWidget}
+            />
+          )}
         </Container>
       );
     default:

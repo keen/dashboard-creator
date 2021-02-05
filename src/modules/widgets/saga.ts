@@ -10,7 +10,6 @@ import {
   getContext,
 } from 'redux-saga/effects';
 import { SET_QUERY_EVENT, SET_CHART_SETTINGS } from '@keen.io/query-creator';
-import { getAvailableWidgets } from '@keen.io/widget-picker';
 
 import {
   createWidget as createWidgetAction,
@@ -21,7 +20,6 @@ import {
   editInlineTextWidget as editInlineTextWidgetAction,
   editTextWidget as editTextWidgetAction,
   cloneWidget as cloneWidgetAction,
-  setWidgetLoading,
   setWidgetState,
   finishChartWidgetConfiguration,
   setImageWidget,
@@ -71,6 +69,15 @@ import {
 } from '../textEditor';
 
 import {
+  setupDatePicker,
+  resetDatePickerWidgets,
+  setDatePickerModifiers,
+  applyDatePickerModifiers,
+  editDatePickerWidget,
+} from './saga/datePicker';
+import { initializeChartWidget } from './saga/chart';
+
+import {
   updateSaveQuery,
   SELECT_SAVED_QUERY,
   CREATE_QUERY,
@@ -93,87 +100,19 @@ import {
   EDIT_TEXT_WIDGET,
   EDIT_CHART_WIDGET,
   EDIT_IMAGE_WIDGET,
+  EDIT_DATE_PICKER_WIDGET,
   INITIALIZE_WIDGET,
   INITIALIZE_CHART_WIDGET,
+  APPLY_DATE_PICKER_MODIFIERS,
+  SET_DATE_PICKER_WIDGET_MODIFIERS,
+  RESET_DATE_PICKER_WIDGETS,
   SAVED_QUERY_UPDATED,
   CLONE_WIDGET,
   SAVE_IMAGE,
 } from './constants';
-import {
-  PUBSUB,
-  KEEN_ANALYSIS,
-  NOTIFICATION_MANAGER,
-  TRANSLATIONS,
-} from '../../constants';
+import { PUBSUB, NOTIFICATION_MANAGER } from '../../constants';
 
 import { ChartWidget, WidgetItem } from './types';
-
-export function* initializeChartWidget({
-  payload,
-}: ReturnType<typeof initializeChartWidgetAction>) {
-  const { id } = payload;
-  const {
-    query,
-    settings: { visualizationType },
-  } = yield select(getWidgetSettings, id);
-
-  try {
-    const requestBody =
-      typeof query === 'string' ? { savedQueryName: query } : query;
-    const keenAnalysis = yield getContext(KEEN_ANALYSIS);
-
-    yield put(setWidgetLoading(id, true));
-
-    let analysisResult = yield keenAnalysis.query(requestBody);
-
-    /** Funnel analysis do not return query settings in response */
-    if (query !== 'string' && query.analysis_type === 'funnel') {
-      analysisResult = {
-        ...analysisResult,
-        query,
-      };
-    }
-
-    const { query: querySettings } = analysisResult;
-
-    const isDetachedQuery = !getAvailableWidgets(querySettings).includes(
-      visualizationType
-    );
-    let widgetState: Partial<WidgetItem> = {
-      isInitialized: true,
-      data: analysisResult,
-    };
-
-    if (isDetachedQuery) {
-      const i18n = yield getContext(TRANSLATIONS);
-      const error = {
-        title: i18n.t('widget_errors.detached_query_title', {
-          chart: visualizationType,
-        }),
-        message: i18n.t('widget_errors.detached_query_message'),
-      };
-
-      widgetState = {
-        ...widgetState,
-        error,
-      };
-    }
-
-    yield put(setWidgetState(id, widgetState));
-  } catch (err) {
-    const { body } = err;
-    yield put(
-      setWidgetState(id, {
-        isInitialized: true,
-        error: {
-          message: body,
-        },
-      })
-    );
-  } finally {
-    yield put(setWidgetLoading(id, false));
-  }
-}
 
 /**
  * Flow responsible for re-initializing widgets after updating saved query.
@@ -646,6 +585,8 @@ export function* createWidget({
   const { id, widgetType } = payload;
   if (widgetType === 'image') {
     yield fork(selectImageWidget, id);
+  } else if (widgetType === 'date-picker') {
+    yield fork(setupDatePicker, id);
   } else if (widgetType === 'text') {
     yield fork(createTextWidget, id);
     yield take(ADD_WIDGET_TO_DASHBOARD);
@@ -681,8 +622,12 @@ export function* widgetsSaga() {
   yield takeLatest(EDIT_CHART_WIDGET, editChartWidget);
   yield takeLatest(EDIT_IMAGE_WIDGET, editImageWidget);
   yield takeLatest(EDIT_TEXT_WIDGET, editTextWidget);
+  yield takeLatest(EDIT_DATE_PICKER_WIDGET, editDatePickerWidget);
+  yield takeLatest(SET_DATE_PICKER_WIDGET_MODIFIERS, setDatePickerModifiers);
+  yield takeLatest(APPLY_DATE_PICKER_MODIFIERS, applyDatePickerModifiers);
   yield takeLatest(EDIT_INLINE_TEXT_WIDGET, editInlineTextWidget);
   yield takeLatest(CLONE_WIDGET, cloneWidget);
+  yield takeEvery(RESET_DATE_PICKER_WIDGETS, resetDatePickerWidgets);
   yield takeEvery(INITIALIZE_WIDGET, initializeWidget);
   yield takeEvery(INITIALIZE_CHART_WIDGET, initializeChartWidget);
 }

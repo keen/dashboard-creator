@@ -9,9 +9,11 @@ import {
   REGISTER_WIDGETS,
   REMOVE_WIDGET,
   UPDATE_WIDGETS_POSITION,
+  UPDATE_CHART_WIDGET_DATE_PICKER_CONNECTION,
   FINISH_CHART_WIDGET_CONFIGURATION,
   SET_IMAGE_WIDGET,
   SET_TEXT_WIDGET,
+  SET_DATE_PICKER_WIDGET,
   SET_WIDGET_LOADING,
   SET_WIDGET_STATE,
   CREATE_WIDGET,
@@ -38,6 +40,20 @@ const widgetsReducer = (
       return {
         ...state,
         items: restItems,
+      };
+    case UPDATE_CHART_WIDGET_DATE_PICKER_CONNECTION:
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          [action.payload.id]: {
+            ...state.items[action.payload.id],
+            widget: {
+              ...state.items[action.payload.id].widget,
+              datePickerId: action.payload.datePickerId,
+            },
+          },
+        },
       };
     case FINISH_CHART_WIDGET_CONFIGURATION:
       return {
@@ -125,6 +141,22 @@ const widgetsReducer = (
               settings: {
                 ...state.items[action.payload.id].widget.settings,
                 ...action.payload.settings,
+              },
+            },
+          },
+        },
+      };
+    case SET_DATE_PICKER_WIDGET:
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          [action.payload.id]: {
+            ...state.items[action.payload.id],
+            widget: {
+              ...state.items[action.payload.id].widget,
+              settings: {
+                widgets: action.payload.widgetConnections,
               },
             },
           },

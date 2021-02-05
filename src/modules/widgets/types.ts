@@ -25,6 +25,7 @@ export interface BaseWidget {
 export interface ChartWidget extends BaseWidget {
   type: 'visualization';
   query: string | Query;
+  datePickerId?: string;
   settings: {
     visualizationType: PickerWidgets;
     chartSettings: Record<string, any>;
@@ -47,7 +48,14 @@ export interface ImageWidget extends BaseWidget {
   };
 }
 
-export type Widget = ChartWidget | TextWidget | ImageWidget;
+export interface DatePickerWidget extends BaseWidget {
+  type: 'date-picker';
+  settings: {
+    widgets: string[];
+  };
+}
+
+export type Widget = ChartWidget | TextWidget | ImageWidget | DatePickerWidget;
 
 export type WidgetError = {
   title?: string;
@@ -56,6 +64,7 @@ export type WidgetError = {
 
 export type WidgetItem = {
   widget: Widget;
+  isActive: boolean;
   isConfigured: boolean;
   isInitialized: boolean;
   isLoading: boolean;

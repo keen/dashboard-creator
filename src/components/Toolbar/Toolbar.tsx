@@ -97,6 +97,15 @@ const Toolbar: FC<Props> = ({ onWidgetDrag, onAddWidget }) => {
         dragEndHandler={dragEndHandler}
         key="image"
       />
+      <DraggableItem
+        type="date-picker"
+        icon="date-picker"
+        onClick={() => onAddWidget('date-picker')}
+        text={t('widget_item.date_picker')}
+        dragStartHandler={dragStartHandler}
+        dragEndHandler={dragEndHandler}
+        key="date-picker"
+      />
     </Container>
   );
 };
