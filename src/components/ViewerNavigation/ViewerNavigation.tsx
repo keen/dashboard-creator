@@ -21,6 +21,7 @@ import { showDashboardShareModal } from '../../modules/dashboards';
 
 import ActionsMenu from './components/ActionsMenu';
 import { TOOLTIP_MOTION } from '../../constants';
+import TimeframeLabel from '../TimeframeLabel';
 
 type Props = {
   /** Dashboard Id */
@@ -94,6 +95,11 @@ const ViewerNavigation: FC<Props> = ({
         onBack={onBack}
       />
       <Aside>
+        <TimeframeLabel
+          start="2020-07-11  12:00"
+          end="2020-08-11  12:00"
+          onRemove={() => console.log('remove')}
+        />
         {editPrivileges && (
           <>
             <ButtonWrapper

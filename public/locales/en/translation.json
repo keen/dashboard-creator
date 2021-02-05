@@ -369,5 +369,8 @@
     "full_extraction": "Select properties to extract. All will be extracted by default.",
     "filtered_extraction": " Extracting only selected properties.",
     "clear_properties": "Clear to extract all."
+  },
+  "dashboard_timepicker": {
+    "separator": "to"
   }
 }
