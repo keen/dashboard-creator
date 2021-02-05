@@ -12,7 +12,7 @@ import {
   getDatePickerWidgetConnections,
   resetDatePickerWidgets,
   clearDatePickerModifiers,
-} from './datePicker';
+} from './datePickerWidget';
 
 import {
   setWidgetState,

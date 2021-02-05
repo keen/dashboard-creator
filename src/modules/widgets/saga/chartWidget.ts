@@ -1,4 +1,4 @@
-import { put, select, getContext } from 'redux-saga/effects';
+import { put, select, call, getContext } from 'redux-saga/effects';
 import { getAvailableWidgets } from '@keen.io/widget-picker';
 import { Query } from '@keen.io/query';
 
@@ -78,10 +78,10 @@ export function* prepareChartWidgetQuery(chartWidget: WidgetItem) {
 }
 
 /**
- * Modifies query with date picker and filters modifiers.
+ * Setup chart widget state for query detached from visualization settings
  *
- * @param query - query settings
- * @param datePickerId - date picker widget id
+ * @param widgetId - Widget identifier
+ * @param visualizationType - Type of visualization
  * @return void
  *
  */
@@ -89,12 +89,12 @@ export function* handleDetachedQuery(
   widgetId: string,
   visualizationType: string
 ) {
-  const i18n = yield getContext(TRANSLATIONS);
+  const { t } = yield getContext(TRANSLATIONS);
   const error = {
-    title: i18n.t('widget_errors.detached_query_title', {
+    title: t('widget_errors.detached_query_title', {
       chart: visualizationType,
     }),
-    message: i18n.t('widget_errors.detached_query_message'),
+    message: t('widget_errors.detached_query_message'),
   };
 
   const widgetState: Partial<WidgetItem> = {
@@ -119,7 +119,8 @@ export function* initializeChartWidget({
   } = chartWidget;
 
   try {
-    const { query, hasQueryModifiers } = yield* prepareChartWidgetQuery(
+    const { query, hasQueryModifiers } = yield call(
+      prepareChartWidgetQuery,
       chartWidget
     );
     yield put(setWidgetLoading(id, true));
@@ -144,7 +145,7 @@ export function* initializeChartWidget({
     );
 
     if (isDetachedQuery) {
-      yield* handleDetachedQuery(id, visualizationType);
+      yield call(handleDetachedQuery, id, visualizationType);
     } else {
       if (hasQueryModifiers) {
         yield put(addInterimQuery(id, analysisResult));

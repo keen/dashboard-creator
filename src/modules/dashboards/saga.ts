@@ -67,9 +67,10 @@ import {
   getWidgetSettings,
 } from '../widgets';
 
-import { removeConnectionFromDatePicker } from '../widgets/saga/datePicker';
-
-import { removeDatePickerConnections } from '../widgets/saga/datePicker';
+import {
+  removeDatePickerConnections,
+  removeConnectionFromDatePicker,
+} from '../widgets/saga/datePickerWidget';
 
 import { removeDashboardTheme, setDashboardTheme } from '../theme';
 import {
