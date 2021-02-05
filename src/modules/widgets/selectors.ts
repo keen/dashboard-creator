@@ -6,6 +6,7 @@ export const getWidgetsPosition = (
 ) =>
   widgetsId.map((id: string) => ({
     id,
+    type: widgets.items[id].widget.type,
     position: widgets.items[id].widget.position,
   }));
 
