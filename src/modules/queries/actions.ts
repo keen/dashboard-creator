@@ -6,6 +6,7 @@ import {
   SELECT_SAVED_QUERY,
   CREATE_QUERY,
   ADD_INTERIM_QUERY,
+  REMOVE_INTERIM_QUERY,
   REMOVE_INTERIM_QUERIES,
 } from './constants';
 
@@ -30,10 +31,20 @@ export const addInterimQuery = createAction(
   })
 );
 
+export const removeInterimQuery = createAction(
+  REMOVE_INTERIM_QUERY,
+  (widgetId: string) => ({
+    payload: {
+      widgetId,
+    },
+  })
+);
+
 export const removeInterimQueries = createAction(REMOVE_INTERIM_QUERIES);
 
 export type QueriesActions =
   | ReturnType<typeof selectSavedQuery>
   | ReturnType<typeof addInterimQuery>
+  | ReturnType<typeof removeInterimQuery>
   | ReturnType<typeof removeInterimQueries>
   | ReturnType<typeof createQuery>;

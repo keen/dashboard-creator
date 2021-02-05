@@ -72,6 +72,7 @@ import {
   setupDatePicker,
   resetDatePickerWidgets,
   setDatePickerModifiers,
+  clearDatePickerModifiers,
   applyDatePickerModifiers,
   editDatePickerWidget,
 } from './saga/datePicker';
@@ -104,6 +105,7 @@ import {
   INITIALIZE_WIDGET,
   INITIALIZE_CHART_WIDGET,
   APPLY_DATE_PICKER_MODIFIERS,
+  CLEAR_DATE_PICKER_MODIFIERS,
   SET_DATE_PICKER_WIDGET_MODIFIERS,
   RESET_DATE_PICKER_WIDGETS,
   SAVED_QUERY_UPDATED,
@@ -602,14 +604,22 @@ export function* cloneWidget({
 }: ReturnType<typeof cloneWidgetAction>) {
   const { widgetId } = payload;
   const clonedWidgetId = createWidgetId();
-  const widgetItem = yield select(getWidget, widgetId);
+  const widgetItem: WidgetItem = yield select(getWidget, widgetId);
+
+  const {
+    widget: { type },
+  } = widgetItem;
+  let widgetSettings = widgetItem.widget;
+
+  if (type === 'visualization') {
+    widgetSettings = {
+      ...widgetSettings,
+      datePickerId: null,
+    } as ChartWidget;
+  }
 
   yield put(
-    saveClonedWidget(
-      clonedWidgetId,
-      widgetItem.widget,
-      widgetItem as WidgetItem
-    )
+    saveClonedWidget(clonedWidgetId, widgetSettings, widgetItem as WidgetItem)
   );
   const dashboardId = yield select(getActiveDashboard);
   yield put(addWidgetToDashboard(dashboardId, clonedWidgetId));
@@ -627,6 +637,7 @@ export function* widgetsSaga() {
   yield takeLatest(APPLY_DATE_PICKER_MODIFIERS, applyDatePickerModifiers);
   yield takeLatest(EDIT_INLINE_TEXT_WIDGET, editInlineTextWidget);
   yield takeLatest(CLONE_WIDGET, cloneWidget);
+  yield takeLatest(CLEAR_DATE_PICKER_MODIFIERS, clearDatePickerModifiers);
   yield takeEvery(RESET_DATE_PICKER_WIDGETS, resetDatePickerWidgets);
   yield takeEvery(INITIALIZE_WIDGET, initializeWidget);
   yield takeEvery(INITIALIZE_CHART_WIDGET, initializeChartWidget);

@@ -45,6 +45,7 @@ Object {
   "isLoading": false,
   "isTitleCover": false,
   "widget": Object {
+    "datePickerId": null,
     "id": "@widget/id",
     "position": Object {
       "h": 2,
@@ -78,6 +79,7 @@ Object {
     "isLoading": false,
     "isTitleCover": false,
     "widget": Object {
+      "datePickerId": null,
       "id": "@widget/id",
       "position": Object {
         "h": 2,

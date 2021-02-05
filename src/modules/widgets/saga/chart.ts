@@ -10,7 +10,11 @@ import {
 
 import { getWidget } from '../selectors';
 
-import { addInterimQuery } from '../../../modules/queries';
+import {
+  addInterimQuery,
+  removeInterimQuery,
+  getInterimQuery,
+} from '../../../modules/queries';
 
 import { KEEN_ANALYSIS, TRANSLATIONS } from '../../../constants';
 
@@ -146,6 +150,10 @@ export function* initializeChartWidget({
         yield put(addInterimQuery(id, analysisResult));
         yield put(setWidgetState(id, { isInitialized: true }));
       } else {
+        const interimQuery = yield select(getInterimQuery, id);
+        if (interimQuery) {
+          yield put(removeInterimQuery(id));
+        }
         const widgetState: Partial<WidgetItem> = {
           isInitialized: true,
           data: analysisResult,

@@ -18,6 +18,7 @@ import {
   EDIT_IMAGE_WIDGET,
   RESET_DATE_PICKER_WIDGETS,
   APPLY_DATE_PICKER_MODIFIERS,
+  CLEAR_DATE_PICKER_MODIFIERS,
   SET_DATE_PICKER_WIDGET_MODIFIERS,
   EDIT_DATE_PICKER_WIDGET,
   SET_IMAGE_WIDGET,
@@ -259,6 +260,15 @@ export const applyDatePickerModifiers = createAction(
   })
 );
 
+export const clearDatePickerModifiers = createAction(
+  CLEAR_DATE_PICKER_MODIFIERS,
+  (id: string) => ({
+    payload: {
+      id,
+    },
+  })
+);
+
 export const setDatePickerModifiers = createAction(
   SET_DATE_PICKER_WIDGET_MODIFIERS,
   (widgetId: string, timeframe: Timeframe, timezone: string) => ({
@@ -301,6 +311,7 @@ export type WidgetsActions =
   | ReturnType<typeof resetDatePickerWidgets>
   | ReturnType<typeof setDatePickerModifiers>
   | ReturnType<typeof applyDatePickerModifiers>
+  | ReturnType<typeof clearDatePickerModifiers>
   | ReturnType<typeof savedQueryUpdated>
   | ReturnType<typeof cloneWidget>
   | ReturnType<typeof saveClonedWidget>
