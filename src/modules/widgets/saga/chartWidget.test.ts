@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import sagaHelper from 'redux-saga-testing';
 import { put, call, getContext, select } from 'redux-saga/effects';
+import { Query } from '@keen.io/query';
 
 import {
   initializeChartWidget,
@@ -17,7 +18,163 @@ import { getWidget } from '../selectors';
 
 import { addInterimQuery, getInterimQuery } from '../../queries';
 
+import { widget as widgetFixture } from '../fixtures';
+
 import { KEEN_ANALYSIS } from '../../../constants';
+
+import { WidgetItem } from '../types';
+
+describe('prepareChartWidgetQuery()', () => {
+  function* wrapper(widget: WidgetItem) {
+    const result = yield* prepareChartWidgetQuery(widget);
+    return result;
+  }
+
+  describe('Scenario 1: Prepares save query without modifiers', () => {
+    const chartWidget = {
+      ...widgetFixture,
+      widget: {
+        ...widgetFixture.widget,
+        query: 'purchases',
+      },
+    };
+
+    const test = sagaHelper(wrapper(chartWidget));
+
+    test('returns saved query without modifiers', (result) => {
+      expect(result).toEqual({ query: 'purchases', hasQueryModifiers: false });
+    });
+  });
+
+  describe('Scenario 2: Prepares query with date and timezone modifiers', () => {
+    const query = {
+      analysis_type: 'count',
+      event_collection: 'logins',
+    } as Query;
+
+    const chartWidget = {
+      ...widgetFixture,
+      data: {
+        query,
+      },
+      widget: {
+        ...widgetFixture.widget,
+        datePickerId: '@date-picker/01',
+        query,
+      },
+    };
+
+    const test = sagaHelper(wrapper(chartWidget));
+
+    test('get date picker widget settings', (result) => {
+      expect(result).toEqual(select(getWidget, '@date-picker/01'));
+
+      return {
+        isActive: true,
+        data: { timeframe: 'this_30_days', timezone: 'US/Central' },
+      };
+    });
+
+    test('returns query modifiers', (result) => {
+      expect(result).toEqual({
+        query: {
+          analysis_type: 'count',
+          event_collection: 'logins',
+          timeframe: 'this_30_days',
+          timezone: 'US/Central',
+        },
+        hasQueryModifiers: true,
+      });
+    });
+  });
+
+  describe('Scenario 3: Returns initial query for non-active modifiers', () => {
+    const query = {
+      analysis_type: 'count',
+      event_collection: 'logins',
+    } as Query;
+
+    const chartWidget = {
+      ...widgetFixture,
+      widget: {
+        ...widgetFixture.widget,
+        datePickerId: '@date-picker/01',
+        query,
+      },
+    };
+
+    const test = sagaHelper(wrapper(chartWidget));
+
+    test('get date picker widget settings', (result) => {
+      expect(result).toEqual(select(getWidget, '@date-picker/01'));
+
+      return {
+        isActive: false,
+        data: { timeframe: 'this_30_days', timezone: 'US/Central' },
+      };
+    });
+
+    test('returns query without modifiers', (result) => {
+      expect(result).toEqual({ query, hasQueryModifiers: false });
+    });
+  });
+
+  describe('Scenario 4: Prepares funnel steps with date and timezone modifiers', () => {
+    const query = {
+      analysis_type: 'funnel',
+    } as Query;
+
+    const steps = [
+      {
+        event_collection: 'logins',
+        timeframe: 'this_14_days',
+        timezone: 'UTC',
+      },
+    ];
+
+    const chartWidget = {
+      ...widgetFixture,
+      data: {
+        query: {
+          analysis_type: 'funnel',
+          steps,
+        },
+      },
+      widget: {
+        ...widgetFixture.widget,
+        datePickerId: '@date-picker/01',
+        query,
+      },
+    };
+
+    const test = sagaHelper(wrapper(chartWidget));
+
+    test('get date picker widget settings', (result) => {
+      expect(result).toEqual(select(getWidget, '@date-picker/01'));
+
+      return {
+        isActive: true,
+        data: { timeframe: 'this_30_days', timezone: 'US/Central' },
+      };
+    });
+
+    test('applies modifiers on funnel steps', (result) => {
+      expect(result).toEqual({
+        hasQueryModifiers: true,
+        query: {
+          analysis_type: 'funnel',
+          steps: [
+            {
+              event_collection: 'logins',
+              timeframe: 'this_30_days',
+              timezone: 'US/Central',
+            },
+          ],
+        },
+      });
+    });
+  });
+});
 
 describe('initializeChartWidget()', () => {
   const widgetId = '@widget/01';
