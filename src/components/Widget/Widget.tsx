@@ -27,7 +27,6 @@ import { getDashboardSettings } from '../../modules/dashboards';
 import { RootState } from '../../rootReducer';
 import { RenderOptions } from './types';
 import ChartWidgetFilter from '../ChartWidgetFilter';
-import { getInterimQuery } from '../../modules/queries';
 
 type Props = {
   /** Widget identifier */
@@ -48,8 +47,6 @@ const renderWidget = ({
   isHighlighted,
   isFadeOut,
   title,
-  datePickerData,
-  hasInterimQuery,
   onRemoveWidget,
 }: RenderOptions) => {
   const enableHover = isHoverActive && !isHighlighted && !isFadeOut && !title;
@@ -95,9 +92,7 @@ const renderWidget = ({
           {(isHighlighted || title) && (
             <WidgetCover isHighlighted={isHighlighted} title={title} />
           )}
-          {!isEditorMode && hasInterimQuery && datePickerData && (
-            <ChartWidgetFilter timeframe={datePickerData.timeframe} />
-          )}
+          {!isEditorMode && <ChartWidgetFilter widgetId={widgetId} />}
         </Container>
       );
     case 'image':
@@ -127,7 +122,6 @@ const Widget: FC<Props> = ({
   const { t } = useTranslation();
   const {
     widget: { id: widgetId, type: widgetType },
-    widget,
     isHighlighted,
     isFadeOut,
     isTitleCover,
@@ -143,18 +137,6 @@ const Widget: FC<Props> = ({
     return `${t('widget_item.chart')} ${index + 1}`;
   });
 
-  const datePickerData = useSelector((state: RootState) => {
-    if (!widget['datePickerId']) return;
-
-    const { data } = getWidget(state, widget['datePickerId']);
-    return data;
-  });
-
-  const hasInterimQuery = useSelector((state: RootState) => {
-    const interimQuery = getInterimQuery(state, widgetId);
-    return !!interimQuery;
-  });
-
   return renderWidget({
     widgetType,
     widgetId,
@@ -163,8 +145,6 @@ const Widget: FC<Props> = ({
     isHighlighted,
     isFadeOut,
     title: widgetTitle,
-    datePickerData,
-    hasInterimQuery,
     onRemoveWidget,
   });
 };
