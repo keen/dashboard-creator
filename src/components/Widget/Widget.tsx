@@ -26,6 +26,7 @@ import { getDashboardSettings } from '../../modules/dashboards';
 
 import { RootState } from '../../rootReducer';
 import { RenderOptions } from './types';
+import ChartWidgetFilter from '../ChartWidgetFilter';
 
 type Props = {
   /** Widget identifier */
@@ -91,6 +92,7 @@ const renderWidget = ({
           {(isHighlighted || title) && (
             <WidgetCover isHighlighted={isHighlighted} title={title} />
           )}
+          {!isEditorMode && <ChartWidgetFilter widgetId={widgetId} />}
         </Container>
       );
     case 'image':
