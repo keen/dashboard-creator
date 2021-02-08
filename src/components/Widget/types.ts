@@ -9,5 +9,6 @@ export type RenderOptions = {
   isFadeOut: boolean;
   title?: string;
   datePickerData?: null | Record<string, any>;
+  hasInterimQuery: boolean;
   onRemoveWidget: () => void;
 };
