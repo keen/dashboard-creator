@@ -14,6 +14,7 @@ export const widget: WidgetItem = {
     id: '@widget/id',
     position: { x: 3, y: 2, w: 6, h: 2 },
     query: null,
+    datePickerId: null,
     settings: {
       chartSettings: {},
       visualizationType: null,

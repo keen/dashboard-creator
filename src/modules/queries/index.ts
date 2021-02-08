@@ -4,6 +4,7 @@ import {
   selectSavedQuery,
   createQuery,
   addInterimQuery,
+  removeInterimQuery,
   removeInterimQueries,
 } from './actions';
 import { getInterimQuery } from './selectors';
@@ -18,6 +19,7 @@ export {
   selectSavedQuery,
   createQuery,
   addInterimQuery,
+  removeInterimQuery,
   removeInterimQueries,
   updateSaveQuery,
   queriesReducer,

@@ -29,6 +29,12 @@
     "edit_text": "Edit",
     "delete_confirmation": "Are you sure you want to delete this widget?"
   },
+  "date_picker_settings": {
+    "untitled_chart": "Untitled Chart",
+    "title": "Date Picker configuration",
+    "description": "Which charts should be associated with the Date Picker?",
+    "tooltip_hint": "Date Picker will affect only timeframes of associated charts."
+  },
   "date_picker_widget": {
     "name": "Date Picker"
   },

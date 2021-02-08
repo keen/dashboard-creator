@@ -9,6 +9,7 @@ import { Container, Title } from './DatePickerWidget.styles';
 
 import {
   setDatePickerModifiers,
+  clearDatePickerModifiers,
   applyDatePickerModifiers,
   getWidget,
 } from '../../modules/widgets';
@@ -51,6 +52,9 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
           </button>
           <button onClick={() => dispatch(applyDatePickerModifiers(id))}>
             Apply
+          </button>
+          <button onClick={() => dispatch(clearDatePickerModifiers(id))}>
+            Clear
           </button>
         </>
       )}

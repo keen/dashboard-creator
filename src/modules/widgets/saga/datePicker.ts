@@ -1,10 +1,11 @@
-import { put, all, select, take } from 'redux-saga/effects';
+import { put, all, call, select, take } from 'redux-saga/effects';
 
 import {
   editDatePickerWidget as editDatePickerWidgetAction,
   setDatePickerModifiers as setDatePickerModifiersAction,
   applyDatePickerModifiers as applyDatePickerModifiersAction,
   resetDatePickerWidgets as resetDatePickerWidgetsAction,
+  clearDatePickerModifiers as clearDatePickerModifiersAction,
   setDatePickerWidget,
   updateChartWidgetDatePickerConnection,
   setWidgetState,
@@ -102,6 +103,7 @@ export function* getDatePickerWidgetConnections(
 
   const widgets: DatePickerConnection[] = widgetsIds
     .map((widgetId) => getWidgetSettings(state, widgetId))
+    .sort((widgetA, widgetB) => widgetA.position.y - widgetB.position.y)
     .filter(
       ({ type, datePickerId }: ChartWidget) =>
         type === 'visualization' && (datePickerId === widgetId || !datePickerId)
@@ -209,7 +211,8 @@ export function* editDatePickerWidget({
   const { id: datePickerWidgetId } = payload;
 
   const dashboardId = yield select(getActiveDashboard);
-  const widgetConnections = yield* getDatePickerWidgetConnections(
+  const widgetConnections = yield call(
+    getDatePickerWidgetConnections,
     dashboardId,
     datePickerWidgetId
   );
@@ -260,7 +263,7 @@ export function* editDatePickerWidget({
   );
 
   if (action.type === APPLY_EDITOR_SETTINGS) {
-    yield* applyDatePickerUpdates(datePickerWidgetId);
+    yield call(applyDatePickerUpdates, datePickerWidgetId);
 
     yield put(closeEditor());
     yield put(saveDashboard(dashboardId));
@@ -284,7 +287,8 @@ export function* setupDatePicker(widgetId: string) {
     settings: { widgets: dashboardWidgetsIds },
   } = yield select(getDashboard, dashboardId);
 
-  const widgetConnections = yield* getDatePickerWidgetConnections(
+  const widgetConnections = yield call(
+    getDatePickerWidgetConnections,
     dashboardId,
     datePickerWidgetId,
     true
@@ -332,7 +336,7 @@ export function* setupDatePicker(widgetId: string) {
   );
 
   if (action.type === APPLY_EDITOR_SETTINGS) {
-    yield* applyDatePickerUpdates(datePickerWidgetId);
+    yield call(applyDatePickerUpdates, datePickerWidgetId);
 
     yield put(closeEditor());
     yield put(saveDashboard(dashboardId));
@@ -363,4 +367,31 @@ export function* resetDatePickerWidgets({
     .map(({ id }) => put(setWidgetState(id, { isActive: false, data: null })));
 
   yield all(datePickersUpdate);
+}
+
+/**
+ * Reset date pickers to initial state and update connected widgets
+ *
+ * @param dashboardId - Dashboard identifer
+ * @return void
+ *
+ */
+export function* clearDatePickerModifiers({
+  payload,
+}: ReturnType<typeof clearDatePickerModifiersAction>) {
+  const { id } = payload;
+
+  yield put(setWidgetState(id, { isActive: false, data: null }));
+  const {
+    settings: { widgets },
+  } = yield select(getWidgetSettings, id);
+
+  yield all(
+    widgets.map((widgetId: string) =>
+      put(setWidgetState(widgetId, { isInitialized: false, error: null }))
+    )
+  );
+  yield all(
+    widgets.map((widgetId: string) => put(initializeChartWidget(widgetId)))
+  );
 }

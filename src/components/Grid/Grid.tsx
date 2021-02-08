@@ -28,6 +28,7 @@ import {
   GRID_BREAKPOINTS,
   GRID_COLS,
   GRID_CONTAINER_PADDING,
+  DISABLED_WIDGET_RESIZE,
 } from './constants';
 
 type Props = {
@@ -120,10 +121,16 @@ const Grid: FC<Props> = ({
         }
         measureBeforeMount
       >
-        {widgets.map(({ id, position }) => (
+        {widgets.map(({ id, type, position }) => (
           <div
             key={id}
-            data-grid={{ ...position, i: id, static: false }}
+            data-grid={{
+              ...position,
+              i: id,
+              static: false,
+              isResizable:
+                isEditorMode && !DISABLED_WIDGET_RESIZE.includes(type),
+            }}
             onMouseEnter={() => !isResize && setActiveWidget(id)}
             onMouseLeave={() => setActiveWidget(null)}
             style={getGridItemStyles(position)}
