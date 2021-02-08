@@ -51,19 +51,12 @@ test('allows user to filter dashboards based on public criteria', async () => {
   fireEvent.click(element);
 
   await waitFor(() => {
+    store.clearActions();
     const publicFilter = getByText('tags_filters.show_only_public_dashboards');
     fireEvent.click(publicFilter);
 
     expect(store.getActions()).toMatchInlineSnapshot(`
       Array [
-        Object {
-          "payload": undefined,
-          "type": "@dashboard/CLEAR_TAGS_POOL",
-        },
-        Object {
-          "payload": undefined,
-          "type": "@dashboard/PREPARE_TAGS_POOL",
-        },
         Object {
           "payload": Object {
             "filterPublic": true,
@@ -93,19 +86,12 @@ test('allows user to filter dashboards based on selected tags', async () => {
   fireEvent.click(element);
 
   await waitFor(() => {
+    store.clearActions();
     const tagElement = getByText('marketing');
     fireEvent.click(tagElement);
 
     expect(store.getActions()).toMatchInlineSnapshot(`
       Array [
-        Object {
-          "payload": undefined,
-          "type": "@dashboard/CLEAR_TAGS_POOL",
-        },
-        Object {
-          "payload": undefined,
-          "type": "@dashboard/PREPARE_TAGS_POOL",
-        },
         Object {
           "payload": Object {
             "tags": Array [
@@ -129,19 +115,12 @@ test('allows user to clear filters', async () => {
   fireEvent.click(element);
 
   await waitFor(() => {
+    store.clearActions();
     const element = getByText('tags_filters.clear');
     fireEvent.click(element);
 
     expect(store.getActions()).toMatchInlineSnapshot(`
       Array [
-        Object {
-          "payload": undefined,
-          "type": "@dashboard/CLEAR_TAGS_POOL",
-        },
-        Object {
-          "payload": undefined,
-          "type": "@dashboard/PREPARE_TAGS_POOL",
-        },
         Object {
           "payload": Object {
             "filterPublic": false,
