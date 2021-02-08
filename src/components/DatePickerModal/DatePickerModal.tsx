@@ -20,7 +20,7 @@ const DatePickerModal: FC<{}> = () => {
           <ModalHeader onClose={closeHandler}>
             {t('date_picker_settings.title')}
           </ModalHeader>
-          <DatePickerSettings />
+          <DatePickerSettings onCancel={closeHandler} />
         </>
       )}
     </Modal>

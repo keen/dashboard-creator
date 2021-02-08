@@ -32,6 +32,9 @@
   "date_picker_settings": {
     "untitled_chart": "Untitled Chart",
     "title": "Date Picker configuration",
+    "confirm_button": "Create",
+    "cancel_button": "Cancel",
+    "empty_connections": "Add charts to the dashboard and then configure Date Picker",
     "description": "Which charts should be associated with the Date Picker?",
     "tooltip_hint": "Date Picker will affect only timeframes of associated charts."
   },
