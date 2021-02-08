@@ -58,6 +58,10 @@ export type ReducerState = {
     dashboardId: string | null;
   };
   tagsPool: string[];
+  tagsFilters: {
+    showOnlyPublicDashboards: boolean;
+    tags: string[];
+  };
   items: Record<string, DashboardItem>;
   dashboardListOrder: DashboardListOrder;
 };

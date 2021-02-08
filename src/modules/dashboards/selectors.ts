@@ -33,3 +33,6 @@ export const getDashboardMetaSaving = ({ dashboards }: RootState) =>
 
 export const getDashboardListOrder = ({ dashboards }: RootState) =>
   dashboards.dashboardListOrder;
+
+export const getTagsFilter = ({ dashboards }: RootState) =>
+  dashboards.tagsFilters;

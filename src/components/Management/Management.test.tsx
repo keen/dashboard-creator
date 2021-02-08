@@ -51,6 +51,11 @@ const render = (storeState: any = {}, overProps: any = {}) => {
         error: null,
         data: [],
       },
+      tagsPool: [],
+      tagsFilters: {
+        showOnlyPublicDashboards: false,
+        tags: [],
+      },
     },
     ...storeState,
   };
@@ -87,6 +92,11 @@ test('renders notification about creating first dashboard in project', async () 
         error: null,
         data: [],
       },
+      tagsPool: [],
+      tagsFilters: {
+        showOnlyPublicDashboards: false,
+        tags: [],
+      },
     },
   };
   const {
@@ -118,6 +128,11 @@ test('renders dashboards grid', () => {
         error: null,
         data: dashboardsMeta,
       },
+      tagsPool: [],
+      tagsFilters: {
+        showOnlyPublicDashboards: false,
+        tags: [],
+      },
     },
   };
   const {
@@ -138,6 +153,11 @@ test('allows user to search dashboards based on phrase', () => {
         isInitiallyLoaded: true,
         error: null,
         data: dashboardsMeta,
+      },
+      tagsPool: [],
+      tagsFilters: {
+        showOnlyPublicDashboards: false,
+        tags: [],
       },
     },
   };
@@ -166,6 +186,11 @@ test('renders empty search results message', () => {
         isInitiallyLoaded: true,
         error: null,
         data: dashboardsMeta,
+      },
+      tagsPool: [],
+      tagsFilters: {
+        showOnlyPublicDashboards: false,
+        tags: [],
       },
     },
   };

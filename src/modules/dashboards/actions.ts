@@ -39,7 +39,6 @@ import {
   CONFIRM_DASHBOARD_DELETE,
   SHOW_DASHBOARD_SETTINGS_MODAL,
   HIDE_DASHBOARD_SETTINGS_MODAL,
-  SET_TAGS_POOL,
   SHOW_DASHBOARD_SHARE_MODAL,
   HIDE_DASHBOARD_SHARE_MODAL,
   SET_DASHBOARD_LIST_ORDER,
@@ -48,6 +47,10 @@ import {
   REGENERATE_ACCESS_KEY,
   ADD_CLONED_DASHBOARD,
   EXPORT_DASHBOARD_TO_HTML,
+  PREPARE_TAGS_POOL,
+  CLEAR_TAGS_POOL,
+  SET_TAGS_FILTERS,
+  SET_TAGS_FILTERS_PUBLIC,
 } from './constants';
 
 export const fetchDashboardList = createAction(FETCH_DASHBOARDS_LIST);
@@ -291,13 +294,6 @@ export const hideDashboardSettingsModal = createAction(
   HIDE_DASHBOARD_SETTINGS_MODAL
 );
 
-export const setTagsPool = createAction(
-  SET_TAGS_POOL,
-  (tagsPool: string[]) => ({
-    payload: { tagsPool },
-  })
-);
-
 export const showDashboardShareModal = createAction(
   SHOW_DASHBOARD_SHARE_MODAL,
   (dashboardId: string) => ({
@@ -354,6 +350,28 @@ export const exportDashboardToHtml = createAction(
   })
 );
 
+export const prepareTagsPool = createAction(PREPARE_TAGS_POOL);
+
+export const clearTagsPool = createAction(CLEAR_TAGS_POOL);
+
+export const setTagsFilters = createAction(
+  SET_TAGS_FILTERS,
+  (tags: string[]) => ({
+    payload: {
+      tags,
+    },
+  })
+);
+
+export const setTagsFiltersPublic = createAction(
+  SET_TAGS_FILTERS_PUBLIC,
+  (filterPublic: boolean) => ({
+    payload: {
+      filterPublic,
+    },
+  })
+);
+
 export type DashboardsActions =
   | ReturnType<typeof fetchDashboardList>
   | ReturnType<typeof fetchDashboardListSuccess>
@@ -383,7 +401,6 @@ export type DashboardsActions =
   | ReturnType<typeof confirmDashboardDelete>
   | ReturnType<typeof showDashboardSettingsModal>
   | ReturnType<typeof hideDashboardSettingsModal>
-  | ReturnType<typeof setTagsPool>
   | ReturnType<typeof saveDashboardMeta>
   | ReturnType<typeof saveDashboardMetaSuccess>
   | ReturnType<typeof saveDashboardMetaError>
@@ -395,4 +412,8 @@ export type DashboardsActions =
   | ReturnType<typeof regenerateAccessKey>
   | ReturnType<typeof setDashboardListOrder>
   | ReturnType<typeof addClonedDashboard>
-  | ReturnType<typeof exportDashboardToHtml>;
+  | ReturnType<typeof exportDashboardToHtml>
+  | ReturnType<typeof prepareTagsPool>
+  | ReturnType<typeof clearTagsPool>
+  | ReturnType<typeof setTagsFilters>
+  | ReturnType<typeof setTagsFiltersPublic>;

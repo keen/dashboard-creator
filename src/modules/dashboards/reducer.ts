@@ -4,6 +4,7 @@ import {
   createDashboardMeta,
   reduceWidgetsCount,
   sortDashboards,
+  createTagsPool,
 } from './utils';
 
 import {
@@ -27,12 +28,15 @@ import {
   HIDE_DELETE_CONFIRMATION,
   SHOW_DASHBOARD_SETTINGS_MODAL,
   HIDE_DASHBOARD_SETTINGS_MODAL,
-  SET_TAGS_POOL,
   SHOW_DASHBOARD_SHARE_MODAL,
   HIDE_DASHBOARD_SHARE_MODAL,
   SET_DASHBOARD_LIST_ORDER,
   SET_DASHBOARD_PUBLIC_ACCESS,
   ADD_CLONED_DASHBOARD,
+  PREPARE_TAGS_POOL,
+  CLEAR_TAGS_POOL,
+  SET_TAGS_FILTERS,
+  SET_TAGS_FILTERS_PUBLIC,
 } from './constants';
 
 import { ReducerState } from './types';
@@ -57,6 +61,10 @@ export const initialState: ReducerState = {
     dashboardId: null,
   },
   tagsPool: [],
+  tagsFilters: {
+    showOnlyPublicDashboards: false,
+    tags: [],
+  },
   items: {},
   dashboardListOrder: 'recent',
 };
@@ -300,11 +308,6 @@ const dashboardsReducer = (
           ),
         },
       };
-    case SET_TAGS_POOL:
-      return {
-        ...state,
-        tagsPool: action.payload.tagsPool,
-      };
     case SAVE_DASHBOARD_METADATA:
       return {
         ...state,
@@ -357,6 +360,32 @@ const dashboardsReducer = (
             [...state.metadata.data, action.payload.dashboardMeta],
             state.dashboardListOrder
           ),
+        },
+      };
+    case PREPARE_TAGS_POOL:
+      return {
+        ...state,
+        tagsPool: createTagsPool(state.metadata.data),
+      };
+    case CLEAR_TAGS_POOL:
+      return {
+        ...state,
+        tagsPool: [],
+      };
+    case SET_TAGS_FILTERS:
+      return {
+        ...state,
+        tagsFilters: {
+          ...state.tagsFilters,
+          tags: action.payload.tags,
+        },
+      };
+    case SET_TAGS_FILTERS_PUBLIC:
+      return {
+        ...state,
+        tagsFilters: {
+          ...state.tagsFilters,
+          showOnlyPublicDashboards: action.payload.filterPublic,
         },
       };
     default:

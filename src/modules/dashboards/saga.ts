@@ -41,7 +41,6 @@ import {
   hideDeleteConfirmation,
   saveDashboardMetaSuccess,
   saveDashboardMetaError,
-  setTagsPool,
   setDashboardList,
   setDashboardError,
   setDashboardListOrder,
@@ -67,11 +66,7 @@ import {
 } from '../widgets';
 
 import { removeDashboardTheme, setDashboardTheme } from '../theme';
-import {
-  createTagsPool,
-  createPublicDashboardKeyName,
-  createCodeSnippet,
-} from './utils';
+import { createPublicDashboardKeyName, createCodeSnippet } from './utils';
 import { createWidgetId } from '../widgets/utils';
 
 import { APIError } from '../../api';
@@ -96,8 +91,6 @@ import {
   SHOW_DELETE_CONFIRMATION,
   CONFIRM_DASHBOARD_DELETE,
   HIDE_DELETE_CONFIRMATION,
-  SHOW_DASHBOARD_SETTINGS_MODAL,
-  HIDE_DASHBOARD_SETTINGS_MODAL,
   SET_DASHBOARD_LIST_ORDER,
   DASHBOARD_LIST_ORDER_KEY,
   SET_DASHBOARD_PUBLIC_ACCESS,
@@ -554,16 +547,6 @@ export function* initializeDashboardWidgets({
   yield all(widgetsId.map((widgetId) => put(initializeWidget(widgetId))));
 }
 
-export function* showDashboardSettings() {
-  const dashboards = yield select(getDashboardsMetadata);
-  const tagsPool = createTagsPool(dashboards);
-  yield put(setTagsPool(tagsPool));
-}
-
-export function* hideDashboardSettings() {
-  yield put(setTagsPool([]));
-}
-
 export function* rehydrateDashboardsOrder() {
   try {
     const settings = localStorage.getItem(DASHBOARD_LIST_ORDER_KEY);
@@ -753,8 +736,6 @@ export function* dashboardsSaga() {
   yield takeLatest(REMOVE_WIDGET_FROM_DASHBOARD, removeWidgetFromDashboard);
   yield takeLatest(INITIALIZE_DASHBOARD_WIDGETS, initializeDashboardWidgets);
   yield takeLatest(SHOW_DELETE_CONFIRMATION, showDashboardDeleteConfirmation);
-  yield takeLatest(SHOW_DASHBOARD_SETTINGS_MODAL, showDashboardSettings);
-  yield takeLatest(HIDE_DASHBOARD_SETTINGS_MODAL, hideDashboardSettings);
   yield takeLatest(SET_DASHBOARD_PUBLIC_ACCESS, setAccessKey);
   yield takeLatest(UPDATE_ACCESS_KEY_OPTIONS, updateAccessKeyOptions);
   yield takeLatest(REGENERATE_ACCESS_KEY, regenerateAccessKey);
