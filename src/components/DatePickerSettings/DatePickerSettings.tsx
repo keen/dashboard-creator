@@ -46,6 +46,7 @@ const DatePickerSettings: FC<Props> = ({ onCancel }) => {
         <Description>
           {t('date_picker_settings.description')}
           <Hint
+            role="dialog"
             onMouseEnter={() => setHintVisibility(true)}
             onMouseLeave={() => setHintVisibility(false)}
           >
