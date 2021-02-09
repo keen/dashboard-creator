@@ -10,8 +10,7 @@ export const Filter = styled.div`
   border-radius: 4px;
   font-size: 14px;
   color: ${colors.black[100]};
-  font-family: Lato Regular, sans-serif;
-  font-weight: bold;
+  font-family: Lato Bold, sans-serif;
   background: ${colors.white[500]};
   padding: 10px 14px;
 `;
