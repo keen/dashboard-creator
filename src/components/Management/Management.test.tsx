@@ -209,3 +209,33 @@ test('renders empty search results message', () => {
   ).toBeInTheDocument();
   expect(dashboardItems.length).toEqual(0);
 });
+
+test('do not show filters and new dashboards button when dashboards are not loaded', () => {
+  const storeState = {
+    dashboards: {
+      deleteConfirmation: {
+        isVisible: false,
+        dashboardId: null,
+      },
+      metadata: {
+        isInitiallyLoaded: false,
+        error: null,
+        data: dashboardsMeta,
+      },
+      tagsPool: [],
+      tagsFilters: {
+        showOnlyPublicDashboards: false,
+        tags: [],
+      },
+    },
+  };
+
+  const {
+    wrapper: { queryByText },
+  } = render(storeState);
+
+  expect(
+    queryByText('dashboard_management.create_dashboard')
+  ).not.toBeInTheDocument();
+  expect(queryByText('tags_filters.title')).not.toBeInTheDocument();
+});
