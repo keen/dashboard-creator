@@ -38,7 +38,6 @@ export const SHOW_DASHBOARD_SETTINGS_MODAL =
   '@dashboards/SHOW_DASHBOARD_SETTINGS_MODAL';
 export const HIDE_DASHBOARD_SETTINGS_MODAL =
   '@dashboards/HIDE_DASHBOARD_SETTINGS_MODAL';
-export const SET_TAGS_POOL = '@dashboards/SET_TAGS_POOL';
 export const SHOW_DASHBOARD_SHARE_MODAL =
   '@dashboards/SHOW_DASHBOARD_SHARE_MODAL';
 export const HIDE_DASHBOARD_SHARE_MODAL =
@@ -51,6 +50,10 @@ export const UPDATE_ACCESS_KEY_OPTIONS =
 export const REGENERATE_ACCESS_KEY = '@dashboards/REGENERATE_ACCESS_KEY';
 export const ADD_CLONED_DASHBOARD = '@dashboard/ADD_CLONED_DASHBOARD';
 export const EXPORT_DASHBOARD_TO_HTML = '@dashboard/EXPORT_DASHBOARD_TO_HTML';
+export const PREPARE_TAGS_POOL = '@dashboard/PREPARE_TAGS_POOL';
+export const CLEAR_TAGS_POOL = '@dashboard/CLEAR_TAGS_POOL';
+export const SET_TAGS_FILTERS = '@dashboard/SET_TAGS_FILTERS';
+export const SET_TAGS_FILTERS_PUBLIC = '@dashboard/SET_TAGS_FILTERS_PUBLIC';
 
 export const DASHBOARD_LIST_ORDER_KEY =
   '@keen-dashboard-creator/dashboard-list-order';

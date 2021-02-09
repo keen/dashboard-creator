@@ -1,4 +1,4 @@
-import React, { FC, useContext, useCallback } from 'react';
+import React, { FC, useContext, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Portal, Modal, ModalHeader } from '@keen.io/ui-core';
@@ -7,6 +7,8 @@ import {
   getDashboardSettingsModal,
   hideDashboardSettingsModal,
   DashboardMetaData,
+  prepareTagsPool,
+  clearTagsPool,
 } from '../../modules/dashboards';
 
 import DashboardSettings from '../DashboardSettings';
@@ -28,6 +30,10 @@ const DashboardSettingsModal: FC<Props> = ({ onSaveDashboard }) => {
   const closeHandler = useCallback(() => {
     dispatch(hideDashboardSettingsModal());
   }, []);
+
+  useEffect(() => {
+    isVisible ? dispatch(prepareTagsPool()) : dispatch(clearTagsPool());
+  }, [isVisible]);
 
   return (
     <Portal modalContainer={modalContainer}>

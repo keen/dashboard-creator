@@ -46,6 +46,10 @@ Object {
     "isLoaded": true,
     "isSavingMetadata": false,
   },
+  "tagsFilters": Object {
+    "showOnlyPublicDashboards": false,
+    "tags": Array [],
+  },
   "tagsPool": Array [],
 }
 `;
@@ -93,6 +97,10 @@ Object {
     "isInitiallyLoaded": false,
     "isLoaded": true,
     "isSavingMetadata": false,
+  },
+  "tagsFilters": Object {
+    "showOnlyPublicDashboards": false,
+    "tags": Array [],
   },
   "tagsPool": Array [],
 }

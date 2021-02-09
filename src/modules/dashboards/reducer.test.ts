@@ -12,7 +12,6 @@ import {
   hideDashboardSettingsModal,
   showDashboardShareModal,
   hideDashboardShareModal,
-  setTagsPool,
   setDashboardError,
   saveDashboardMeta,
   saveDashboardMetaSuccess,
@@ -21,6 +20,10 @@ import {
   setDashboardPublicAccess,
   regenerateAccessKey,
   addClonedDashboard,
+  prepareTagsPool,
+  clearTagsPool,
+  setTagsFiltersPublic,
+  setTagsFilters,
 } from './actions';
 
 import { dashboardsMeta } from './fixtures';
@@ -385,20 +388,6 @@ test('closes dashboard share modal', () => {
   `);
 });
 
-test('sets tags pool for dashboard', () => {
-  const tags = ['tag1', 'tag2', 'tag3'];
-  const action = setTagsPool(tags);
-  const { tagsPool } = dashboardsReducer(initialState, action);
-
-  expect(tagsPool).toMatchInlineSnapshot(`
-    Array [
-      "tag1",
-      "tag2",
-      "tag3",
-    ]
-  `);
-});
-
 test('return state for saving dashboard metadata', () => {
   const action = saveDashboardMeta('@dashboardId', dashboardsMeta[0]);
   const { metadata } = dashboardsReducer(initialState, action);
@@ -515,4 +504,76 @@ test('add cloned dashboard to the list', () => {
       },
     ]
   `);
+});
+
+test('prepare tagsPool', () => {
+  const state = {
+    ...initialState,
+    metadata: {
+      ...initialState.metadata,
+      isLoaded: true,
+      data: [
+        {
+          id: '@dashboard/01',
+          widgets: 1,
+          queries: 0,
+          title: null,
+          lastModificationDate: 0,
+          tags: ['marketing'],
+          isPublic: false,
+          publicAccessKey: null,
+        },
+        {
+          id: '@dashboard/02',
+          widgets: 1,
+          queries: 0,
+          title: null,
+          lastModificationDate: 0,
+          tags: ['sales'],
+          isPublic: false,
+          publicAccessKey: null,
+        },
+      ],
+    },
+  };
+
+  const action = prepareTagsPool();
+  const { tagsPool } = dashboardsReducer(state, action);
+
+  expect(tagsPool).toMatchInlineSnapshot(`
+    Array [
+      "marketing",
+      "sales",
+    ]
+  `);
+});
+
+test('clear tagsPool', () => {
+  const action = clearTagsPool();
+  const { tagsPool } = dashboardsReducer(initialState, action);
+
+  expect(tagsPool).toMatchInlineSnapshot(`Array []`);
+});
+
+test('set tagsFilters tags', () => {
+  const action = setTagsFilters(['sales', 'marketing']);
+  const {
+    tagsFilters: { tags },
+  } = dashboardsReducer(initialState, action);
+
+  expect(tags).toMatchInlineSnapshot(`
+    Array [
+      "sales",
+      "marketing",
+    ]
+  `);
+});
+
+test('set tagsFilters showOnlyPublicDashboards', () => {
+  const action = setTagsFiltersPublic(true);
+  const {
+    tagsFilters: { showOnlyPublicDashboards },
+  } = dashboardsReducer(initialState, action);
+
+  expect(showOnlyPublicDashboards).toBeTruthy();
 });

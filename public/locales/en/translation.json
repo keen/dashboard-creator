@@ -81,6 +81,14 @@
     "search_input_placeholder": "Search name",
     "empty_search_results": "No dashboards found with this criteria."
   },
+  "tags_filters": {
+    "title": "Filters",
+    "show_only_public_dashboards": "Public dashboards",
+    "search_tags_input_placeholder": "Search tag",
+    "search_label": "Tags",
+    "empty_search_message": "No tags found with this name",
+    "clear": "Clear filters"
+  },
   "viewer": {
     "edit_dashboard_button": "Edit",
     "delete_dashboard": "Delete Dashboard",

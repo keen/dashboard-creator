@@ -17,8 +17,15 @@ export const Filters = styled.div`
   justify-content: space-between;
 `;
 
-export const Search = styled.div`
+export const SearchInputContainer = styled.div`
   width: 300px;
+  margin-right: 20px;
+`;
+
+export const Search = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 `;
 
 export const EmptySearch = styled.div`
