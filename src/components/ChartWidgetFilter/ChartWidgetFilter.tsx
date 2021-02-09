@@ -1,6 +1,7 @@
 import React, { FC, useState, useRef, useContext, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import moment from 'moment-timezone';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Portal, Tooltip, UI_LAYERS } from '@keen.io/ui-core';
 import { Icon, IconType } from '@keen.io/icons';
@@ -12,7 +13,8 @@ import { getWidget } from '../../modules/widgets';
 import { RootState } from '../../rootReducer';
 
 import { AppContext } from '../../contexts';
-import { TOOLTIP_MOTION } from '../../constants';
+import { TOOLTIP_MOTION, TIMEFRAME_FORMAT } from '../../constants';
+import { getCustomTimeframe } from '../../utils';
 
 import {
   Container,
@@ -139,14 +141,23 @@ const ChartWidgetFilter: FC<Props> = ({ icon = 'date-picker', widgetId }) => {
                 <Tooltip mode="light" hasArrow={false}>
                   <Title>{t('dashboard_timepicker.timeframe_modified')}</Title>
                   {typeof timeframe === 'string' ? (
-                    <Timeframe>{timeframe}</Timeframe>
+                    <Timeframe>
+                      {getCustomTimeframe(
+                        timeframe,
+                        t('query_creator_relative_time_label.label')
+                      )}
+                    </Timeframe>
                   ) : (
                     <TimeframeWrapper>
-                      <Timeframe>{timeframe.start}</Timeframe>
+                      <Timeframe>
+                        {moment(timeframe.start).format(TIMEFRAME_FORMAT)}
+                      </Timeframe>
                       <Separator>
                         {t('dashboard_timepicker.separator')}
                       </Separator>
-                      <Timeframe>{timeframe.end}</Timeframe>
+                      <Timeframe>
+                        {moment(timeframe.end).format(TIMEFRAME_FORMAT)}
+                      </Timeframe>
                     </TimeframeWrapper>
                   )}
                 </Tooltip>

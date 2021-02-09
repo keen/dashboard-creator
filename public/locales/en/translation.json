@@ -36,7 +36,9 @@
     "tooltip_hint": "Date Picker will affect only timeframes of associated charts."
   },
   "date_picker_widget": {
-    "name": "Date Picker"
+    "name": "Date Picker",
+    "apply": "Apply",
+    "clear": "Clear"
   },
   "widget_errors": {
     "detached_query_title": "Unable to present result in {{chart}} chart",

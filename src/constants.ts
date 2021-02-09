@@ -21,3 +21,5 @@ export const TOOLTIP_MOTION = {
 };
 
 export const GRID_MAX_VALUE = 999999;
+
+export const TIMEFRAME_FORMAT = 'YYYY-MM-DD HH:mm';
