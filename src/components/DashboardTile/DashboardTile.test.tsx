@@ -56,44 +56,69 @@ test('renders Dashboard tags', () => {
   tags.forEach((tag) => expect(getByText(tag)).toBeInTheDocument());
 });
 
-test('renders queries count', () => {
+test('renders count for many queries', () => {
   const {
-    wrapper: { getByText, container },
+    wrapper: { getByText, getByRole },
     props: { queriesCount },
   } = render();
 
-  fireEvent.mouseEnter(container.querySelector('article'));
+  const element = getByRole('article');
+  fireEvent.mouseEnter(element);
+
   expect(
-    getByText(`dashboard_tile.queries ${queriesCount}`)
+    getByText(`${queriesCount} dashboard_tile.queries`)
   ).toBeInTheDocument();
+});
+
+test('renders count for one query', () => {
+  const {
+    wrapper: { getByRole, getByText },
+  } = render({ queriesCount: 1 });
+  const element = getByRole('article');
+  fireEvent.mouseEnter(element);
+
+  expect(getByText(/1 dashboard_tile.query/i)).toBeInTheDocument();
+});
+
+test('renders count for no query', () => {
+  const {
+    wrapper: { getByRole, getByText },
+  } = render({ queriesCount: 0 });
+  const element = getByRole('article');
+  fireEvent.mouseEnter(element);
+
+  expect(getByText(/dashboard_tile.no_queries/i)).toBeInTheDocument();
 });
 
 test('renders actions buttons for user with edit privileges', () => {
   const {
-    wrapper: { getByTestId, container },
+    wrapper: { getByTestId, getByRole },
   } = render();
-  fireEvent.mouseEnter(container.querySelector('article'));
+  const element = getByRole('article');
+  fireEvent.mouseEnter(element);
 
   expect(getByTestId('dashboard-actions')).toBeInTheDocument();
 });
 
 test('do not renders actions buttons for user without edit privileges', () => {
   const {
-    wrapper: { queryByTestId, container },
+    wrapper: { queryByTestId, getByRole },
   } = render({
     editPrivileges: false,
   });
-  fireEvent.mouseEnter(container.querySelector('article'));
+  const element = getByRole('article');
+  fireEvent.mouseEnter(element);
 
   expect(queryByTestId('dashboard-actions')).not.toBeInTheDocument();
 });
 
 test('should call onShowSettings when settings button is clicked', () => {
   const {
-    wrapper: { getByTestId, container },
+    wrapper: { getByTestId, getByRole },
     props: { onShowSettings },
   } = render();
-  fireEvent.mouseEnter(container.querySelector('article'));
+  const element = getByRole('article');
+  fireEvent.mouseEnter(element);
 
   const button = getByTestId('dashboard-actions').querySelector('button');
   fireEvent.click(button);
@@ -103,19 +128,21 @@ test('should call onShowSettings when settings button is clicked', () => {
 
 test('renders preview button on hover', () => {
   const {
-    wrapper: { getByText, container },
+    wrapper: { getByText, getByRole },
   } = render();
-  fireEvent.mouseEnter(container.querySelector('article'));
+  const element = getByRole('article');
+  fireEvent.mouseEnter(element);
 
   expect(getByText('dashboard_tile.preview_dashboard')).toBeInTheDocument();
 });
 
 test('should call onPreview when preview button is clicked', () => {
   const {
-    wrapper: { getByText, container },
+    wrapper: { getByText, getByRole },
     props: { onPreview },
   } = render();
-  fireEvent.mouseEnter(container.querySelector('article'));
+  const element = getByRole('article');
+  fireEvent.mouseEnter(element);
 
   const button = getByText('dashboard_tile.preview_dashboard');
   fireEvent.click(button);
