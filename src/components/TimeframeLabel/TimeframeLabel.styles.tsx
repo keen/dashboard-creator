@@ -2,10 +2,8 @@ import styled from 'styled-components';
 import { colors } from '@keen.io/colors';
 
 export const Container = styled.div`
-  /* padding: 0 14px; */
   display: flex;
   width: 100%;
-  /* align-items: center; */
   background-color: ${colors.white[500]};
 `;
 

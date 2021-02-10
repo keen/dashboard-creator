@@ -4,9 +4,6 @@ import { UI_LAYERS } from '@keen.io/ui-core';
 import { colors } from '@keen.io/colors';
 
 export const Container = styled.div`
-  /* display: flex;
-  align-items: center;
-  justify-content: center; */
   height: 100%;
   display: flex;
 `;
@@ -15,7 +12,6 @@ export const TitleContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  /* align-self: center; */
   flex: 1;
 `;
 

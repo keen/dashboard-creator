@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import moment from 'moment-timezone';
 import { transparentize } from 'polished';
 import { Timeframe as TimeframeType } from '@keen.io/query';
@@ -23,8 +24,10 @@ type Props = {
   onRemove: (e: React.MouseEvent<HTMLDivElement>) => void;
 };
 
-const TimeframeLabel: FC<Props> = ({ timeframe, onRemove }) =>
-  typeof timeframe === 'string' ? (
+const TimeframeLabel: FC<Props> = ({ timeframe, onRemove }) => {
+  const { t } = useTranslation();
+
+  return typeof timeframe === 'string' ? (
     <Container>
       <TimeframeWrapper>
         <RelativeTimeLabel timeframe={timeframe} />
@@ -45,7 +48,7 @@ const TimeframeLabel: FC<Props> = ({ timeframe, onRemove }) =>
         <Timeframe>
           {moment(timeframe.start).format(TIMEFRAME_FORMAT)}
         </Timeframe>
-        <Separator>to</Separator>
+        <Separator>{t('dashboard_timepicker.separator')}</Separator>
         <Timeframe>{moment(timeframe.end).format(TIMEFRAME_FORMAT)}</Timeframe>
       </TimeframeWrapper>
       <IconContainer onClick={onRemove} data-testid="remove-handler">
@@ -53,5 +56,6 @@ const TimeframeLabel: FC<Props> = ({ timeframe, onRemove }) =>
       </IconContainer>
     </Container>
   );
+};
 
 export default TimeframeLabel;
