@@ -82,7 +82,7 @@ const Management: FC<Props> = () => {
       <Navigation>
         <ManagementNavigation
           attractCreateDashboardButton={isEmptyProject}
-          showCreateDashboardButton={editPrivileges}
+          showCreateDashboardButton={editPrivileges && dashboardsLoaded}
           onCreateDashboard={createDashbord}
         />
         <Filters>
@@ -95,7 +95,7 @@ const Management: FC<Props> = () => {
                 onClearSearch={() => setSearchPhrase('')}
               />
             </SearchInputContainer>
-            <FilterDashboards />
+            {dashboardsLoaded && <FilterDashboards />}
           </Search>
           <DashboardListOrder />
         </Filters>
