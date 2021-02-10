@@ -1,11 +1,10 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import { getInterval, convertRelativeTime } from '@keen.io/ui-core';
 
 import { Container, IncludesToday } from './RelativeTimeLabel.styles';
 
 import { getCustomTimeframe } from '../../utils';
-import { getInterval } from '../DatePickerWidget/utils/getInterval'; // keen/packages/ui-core/src/components/relative-time/utils/getInterval.ts
-import { convertRelativeTime } from '../DatePickerWidget/utils';
 
 type Props = {
   /** Relative timeframe */

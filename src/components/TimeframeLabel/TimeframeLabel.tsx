@@ -29,7 +29,7 @@ const TimeframeLabel: FC<Props> = ({ timeframe, onRemove }) =>
       <TimeframeWrapper>
         <RelativeTimeLabel timeframe={timeframe} />
       </TimeframeWrapper>
-      <IconContainer onClick={onRemove}>
+      <IconContainer onClick={onRemove} data-testid="remove-handler">
         <Icon type="close" width={10} height={10} fill={colors.red[200]} />
       </IconContainer>
     </Container>
@@ -48,7 +48,7 @@ const TimeframeLabel: FC<Props> = ({ timeframe, onRemove }) =>
         <Separator>to</Separator>
         <Timeframe>{moment(timeframe.end).format(TIMEFRAME_FORMAT)}</Timeframe>
       </TimeframeWrapper>
-      <IconContainer onClick={onRemove}>
+      <IconContainer onClick={onRemove} data-testid="remove-handler">
         <Icon type="close" width={10} height={10} fill={colors.red[200]} />
       </IconContainer>
     </Container>

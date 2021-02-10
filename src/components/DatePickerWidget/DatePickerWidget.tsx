@@ -20,6 +20,8 @@ import {
   RelativeTime,
   AbsoluteTime,
   Timezone,
+  convertRelativeTime,
+  getDefaultAbsoluteTime,
   TIME_PICKER_CLASS,
 } from '@keen.io/ui-core';
 
@@ -43,11 +45,7 @@ import {
 import { RootState } from '../../rootReducer';
 import { AppContext } from '../../contexts';
 
-import {
-  convertRelativeTime,
-  getDefaultAbsoluteTime,
-  getEventPath,
-} from './utils';
+import { getEventPath } from './utils';
 
 import {
   DEFAULT_TIMEFRAME,
@@ -65,8 +63,8 @@ type Props = {
 
 const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
   const { t } = useTranslation();
-  const { modalContainer } = useContext(AppContext);
   const dispatch = useDispatch();
+  const { modalContainer } = useContext(AppContext);
   const { isActive, data } = useSelector((state: RootState) =>
     getWidget(state, id)
   );
@@ -117,9 +115,6 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
     return () => document.removeEventListener('click', outsideClick);
   }, [isOpen, containerRef]);
 
-  // const timeframe = data?.timeframe || DEFAULT_TIMEFRAME;
-  // const timezone = data?.timezone || DEFAULT_TIMEZONE;
-
   const { timeframe, timezone } = localData;
 
   const TABS_SETTINGS = [
@@ -139,7 +134,6 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
         ref={containerRef}
         onClick={() => {
           if (!disableInteractions) {
-            // dispatch(setDatePickerModifiers(id, timeframe, timezone));
             setOpen(!isOpen);
           }
         }}
@@ -184,18 +178,12 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
                     typeof timeframe === 'string'
                       ? timeframe
                       : DEFAULT_TIMEFRAME;
-                  // dispatch(
-                  //   setDatePickerModifiers(id, customTimeframe, timezone)
-                  // );
                   setLocalData((state) => ({
                     ...state,
                     timeframe: customTimeframe,
                   }));
                 } else {
                   const customTimeframe = getDefaultAbsoluteTime(timezone);
-                  // dispatch(
-                  //   setDatePickerModifiers(id, customTimeframe, timezone)
-                  // );
                   setLocalData((state) => ({
                     ...state,
                     timeframe: customTimeframe,
@@ -208,7 +196,6 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
               {typeof timeframe === 'string' ? (
                 <RelativeTime
                   onChange={(timeframe) =>
-                    // dispatch(setDatePickerModifiers(id, timeframe, timezone))
                     setLocalData((state) => ({
                       ...state,
                       timeframe,
@@ -226,7 +213,6 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
                   {...timeframe}
                   timezone={timezone}
                   onChange={(timeframe) =>
-                    // dispatch(setDatePickerModifiers(id, timeframe, timezone))
                     setLocalData((state) => ({
                       ...state,
                       timeframe,
@@ -240,7 +226,6 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
             <Timezone
               timezone={timezone}
               onChange={(timezone) =>
-                // dispatch(setDatePickerModifiers(id, timeframe, timezone))
                 setLocalData((state) => ({
                   ...state,
                   timezone,
