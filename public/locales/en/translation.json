@@ -41,6 +41,8 @@
     "preview_dashboard": "View Dashboard",
     "add_widgets": "Add widgets",
     "queries": "Queries",
+    "query": "Query",
+    "no_queries": "No Queries",
     "public": "Public",
     "untitled_dashboard": "Untitled dashboard"
   },
