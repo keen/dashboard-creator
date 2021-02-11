@@ -119,11 +119,11 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
 
   const TABS_SETTINGS = [
     {
-      label: t('query_creator_timeframe.relative'),
+      label: t('date_picker_widget.relative'),
       id: RELATIVE_TAB,
     },
     {
-      label: t('query_creator_timeframe.absolute'),
+      label: t('date_picker_widget.absolute'),
       id: ABSOLUTE_TAB,
     },
   ];
@@ -195,16 +195,23 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
             <SettingsContainer>
               {typeof timeframe === 'string' ? (
                 <RelativeTime
+                  disableAutoFocus
                   onChange={(timeframe) =>
                     setLocalData((state) => ({
                       ...state,
                       timeframe,
                     }))
                   }
-                  timeLabel="Last"
-                  unitsPlaceholderLabel="Select"
-                  relativityTitleLabel="Include current"
-                  relativityTitleForTodayLabel="Include Today"
+                  timeLabel={t('date_picker_widget.time')}
+                  unitsPlaceholderLabel={t(
+                    'date_picker_widget.units_placeholder'
+                  )}
+                  relativityTitleLabel={t(
+                    'date_picker_widget.relativity_title'
+                  )}
+                  relativityTitleForTodayLabel={t(
+                    'date_picker_widget.relativity_title_today'
+                  )}
                   {...convertRelativeTime(timeframe)}
                 />
               ) : (

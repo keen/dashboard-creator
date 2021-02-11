@@ -71,12 +71,8 @@ test('should render timeframe for active widget', () => {
     wrapper: { getByText },
   } = render();
 
-  expect(
-    getByText('query_creator_relative_time_label.label 14 days')
-  ).toBeInTheDocument();
-  expect(
-    getByText('query_creator_relative_time_label.today_includes')
-  ).toBeInTheDocument();
+  expect(getByText('relative_time_label.label 14 days')).toBeInTheDocument();
+  expect(getByText('relative_time_label.today_includes')).toBeInTheDocument();
 });
 
 test('should render widget title for inactive widget', () => {

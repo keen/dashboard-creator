@@ -13,6 +13,7 @@ export const TitleContainer = styled.div`
   align-items: center;
   justify-content: center;
   flex: 1;
+  cursor: pointer;
 `;
 
 export const Title = styled.div`

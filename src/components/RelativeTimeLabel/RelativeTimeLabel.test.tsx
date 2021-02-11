@@ -22,9 +22,7 @@ test('shows message about including current day in timeframe', () => {
     wrapper: { getByText },
   } = render();
 
-  expect(
-    getByText('query_creator_relative_time_label.today_includes')
-  ).toBeInTheDocument();
+  expect(getByText('relative_time_label.today_includes')).toBeInTheDocument();
 });
 
 test('shows message about including current interval in timeframe', () => {
@@ -33,7 +31,7 @@ test('shows message about including current interval in timeframe', () => {
   } = render({ timeframe: 'this_14_years' });
 
   expect(
-    getByText('(query_creator_relative_time_label.relativity_title year)')
+    getByText('(relative_time_label.relativity_title year)')
   ).toBeInTheDocument();
 });
 
@@ -42,9 +40,7 @@ test('shows timeframe settings', () => {
     wrapper: { getByText },
   } = render({ timeframe: 'this_14_weeks' });
 
-  expect(
-    getByText('query_creator_relative_time_label.label 14 weeks')
-  ).toBeInTheDocument();
+  expect(getByText('relative_time_label.label 14 weeks')).toBeInTheDocument();
 });
 
 test('do not shows message about including current day in timeframe', () => {
@@ -53,6 +49,6 @@ test('do not shows message about including current day in timeframe', () => {
   } = render({ timeframe: 'previous_14_days' });
 
   expect(
-    queryByText('query_creator_relative_time_label.today_includes')
+    queryByText('relative_time_label.today_includes')
   ).not.toBeInTheDocument();
 });

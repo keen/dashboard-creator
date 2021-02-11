@@ -26,9 +26,7 @@ test('should render relative timeframe', () => {
     wrapper: { getByText },
   } = render();
 
-  expect(
-    getByText('query_creator_relative_time_label.label 14 days')
-  ).toBeInTheDocument();
+  expect(getByText('relative_time_label.label 14 days')).toBeInTheDocument();
 });
 
 test('should call onRemove handler', () => {

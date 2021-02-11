@@ -1705,9 +1705,9 @@
     webfontloader "^1.6.28"
 
 "@keen.io/ui-core@^2.5.20":
-  version "2.11.1"
-  resolved "https://registry.yarnpkg.com/@keen.io/ui-core/-/ui-core-2.11.1.tgz#0a696b004815382a2b08f56d44a9a5fdfc310266"
-  integrity sha512-RP8hvnufxBFwUu372oYBQeGLoW3ym8eabhT/Ab4/5H3iwtd2aYu9LwJx4GikETHuWW3M6rAuLJic1MuDZEbN3w==
+  version "2.12.0"
+  resolved "https://registry.yarnpkg.com/@keen.io/ui-core/-/ui-core-2.12.0.tgz#4f4d38671a12b73ba2612446d7026ec5b34e9dc0"
+  integrity sha512-ECfHhfwNKaSxGysQ1074PuBtn+8fLkdFp1GRh3DanBfFAAkY/kCW3cLlHDcYU6YUZTwTlMs9zK14AhvM+upv1w==
   dependencies:
     "@keen.io/colors" "^1.1.0"
     "@keen.io/icons" "^1.4.0"

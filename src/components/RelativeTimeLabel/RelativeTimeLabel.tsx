@@ -18,18 +18,13 @@ const RelativeTimeLabel: FC<Props> = ({ timeframe }) => {
   return (
     <Container>
       <span>
-        {getCustomTimeframe(
-          timeframe,
-          t('query_creator_relative_time_label.label')
-        )}
+        {getCustomTimeframe(timeframe, t('relative_time_label.label'))}
       </span>{' '}
       {relativity === 'this' && (
         <IncludesToday>
           {interval === 'day'
-            ? t('query_creator_relative_time_label.today_includes')
-            : `(${t(
-                'query_creator_relative_time_label.relativity_title'
-              )} ${interval})`}
+            ? t('relative_time_label.today_includes')
+            : `(${t('relative_time_label.relativity_title')} ${interval})`}
         </IncludesToday>
       )}
     </Container>
