@@ -39,7 +39,15 @@
     "tooltip_hint": "Date Picker will affect only timeframes of associated charts."
   },
   "date_picker_widget": {
-    "name": "Date Picker"
+    "name": "Date Picker",
+    "apply": "Apply",
+    "clear": "Clear",
+    "time": "Last",
+    "units_placeholder": "Select",
+    "relativity_title": "Include current",
+    "relativity_title_today": "Include Today",
+    "relative": "Relative",
+    "absolute": "Absolute"
   },
   "widget_errors": {
     "detached_query_title": "Unable to present result in {{chart}} chart",
@@ -389,5 +397,10 @@
   "dashboard_timepicker": {
     "separator": "to",
     "timeframe_modified": "Timeframe modified"
+  },
+  "relative_time_label": {
+    "label": "Last",
+    "today_includes": "(Includes today)",
+    "relativity_title": "Includes current"
   }
 }
