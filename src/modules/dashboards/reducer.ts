@@ -79,16 +79,19 @@ const dashboardsReducer = (
         ...state,
         metadata: {
           ...state.metadata,
-          data: state.metadata.data.map((dashboardMeta) => {
-            if (action.payload.dashboardId === dashboardMeta.id) {
-              return {
-                ...dashboardMeta,
-                ...action.payload.metadata,
-              };
-            }
+          data: sortDashboards(
+            state.metadata.data.map((dashboardMeta) => {
+              if (action.payload.dashboardId === dashboardMeta.id) {
+                return {
+                  ...dashboardMeta,
+                  ...action.payload.metadata,
+                };
+              }
 
-            return dashboardMeta;
-          }),
+              return dashboardMeta;
+            }),
+            state.dashboardListOrder
+          ),
         },
       };
     case SHOW_DELETE_CONFIRMATION:
