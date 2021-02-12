@@ -15,3 +15,8 @@ export const IncludesToday = styled.span`
   margin-left: 4px;
   color: ${transparentize(0.4, colors.blue[500])};
 `;
+
+export const IconContainer = styled.div`
+  display: flex;
+  margin-right: 10px;
+`;

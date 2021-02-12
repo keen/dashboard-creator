@@ -30,7 +30,7 @@ const TimeframeLabel: FC<Props> = ({ timeframe, onRemove }) => {
   return typeof timeframe === 'string' ? (
     <Container>
       <TimeframeWrapper>
-        <RelativeTimeLabel timeframe={timeframe} />
+        <RelativeTimeLabel timeframe={timeframe} showIcon />
       </TimeframeWrapper>
       <IconContainer onClick={onRemove} data-testid="remove-handler">
         <Icon type="close" width={10} height={10} fill={colors.red[200]} />
