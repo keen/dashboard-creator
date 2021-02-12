@@ -10,6 +10,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Dropdown, Portal } from '@keen.io/ui-core';
 
+import { getEventPath } from '../../utils';
+
 import { AppContext } from '../../contexts';
 
 import { FilterItem, SearchTags } from './components';
@@ -59,12 +61,10 @@ const FilterDashboards = () => {
 
   const outsideClick = useCallback(
     (e) => {
+      const path = getEventPath(e);
       if (
-        isOpen &&
-        containerRef.current &&
-        !containerRef.current.contains(e.target) &&
-        dropdownContainerRef.current &&
-        !dropdownContainerRef.current.contains(e.target)
+        !path?.includes(containerRef.current) &&
+        !path?.includes(dropdownContainerRef.current)
       ) {
         setOpen(false);
         setSearchPhrase('');
@@ -99,7 +99,9 @@ const FilterDashboards = () => {
         width,
       }));
     }
+  }, [isOpen, containerRef, tags, showOnlyPublicDashboards]);
 
+  useEffect(() => {
     document.addEventListener('click', outsideClick);
     return () => document.removeEventListener('click', outsideClick);
   }, [isOpen, containerRef]);
@@ -110,11 +112,13 @@ const FilterDashboards = () => {
   const { modalContainer } = useContext(AppContext);
 
   return (
-    <Container ref={containerRef}>
-      <Filter onClick={() => setOpen(!isOpen)}>
-        {t('tags_filters.title')}
-        {filtersCount ? ` (${filtersCount})` : null}
-      </Filter>
+    <>
+      <Container ref={containerRef} onClick={() => setOpen(!isOpen)}>
+        <Filter>
+          {t('tags_filters.title')}
+          {filtersCount ? ` (${filtersCount})` : null}
+        </Filter>
+      </Container>
       <Portal modalContainer={modalContainer}>
         <DropdownContainer
           ref={dropdownContainerRef}
@@ -173,7 +177,7 @@ const FilterDashboards = () => {
           </Dropdown>
         </DropdownContainer>
       </Portal>
-    </Container>
+    </>
   );
 };
 
