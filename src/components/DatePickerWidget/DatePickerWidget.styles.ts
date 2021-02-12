@@ -1,11 +1,18 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import { transparentize } from 'polished';
 import { layout, LayoutProps, system } from 'styled-system';
 import { UI_LAYERS } from '@keen.io/ui-core';
 import { colors } from '@keen.io/colors';
 
-export const Container = styled.div`
+export const Container = styled.div<{ isOpen?: boolean }>`
   height: 100%;
   display: flex;
+
+  ${(props) =>
+    props.isOpen &&
+    css`
+      box-shadow: ${transparentize(0.85, colors.black[500])} 0 0 3px 1px;
+    `}
 `;
 
 export const TitleContainer = styled.div`
