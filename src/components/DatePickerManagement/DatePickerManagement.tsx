@@ -10,9 +10,12 @@ import {
   DragHandle,
   RemoveContainer,
   ManagementContainer,
+  ButtonsContainer,
 } from './DatePickerManagement.styles';
 
 import RemoveWidget from '../RemoveWidget';
+import PreventDragPropagation from '../PreventDragPropagation';
+
 import { editDatePickerWidget } from '../../modules/widgets';
 
 import { DRAG_HANDLE_ELEMENT } from '../Widget';
@@ -62,8 +65,11 @@ const DatePickerManagement: FC<Props> = ({
       </AnimatePresence>
       <AnimatePresence>
         {showManagementSettings && (
-          <ManagementContainer {...settingsMotion}>
-            <DragHandle className={DRAG_HANDLE_ELEMENT}>
+          <ManagementContainer
+            className={DRAG_HANDLE_ELEMENT}
+            {...settingsMotion}
+          >
+            <DragHandle>
               <Icon
                 type="drag"
                 width={15}
@@ -71,19 +77,25 @@ const DatePickerManagement: FC<Props> = ({
                 fill={colors.white[500]}
               />
             </DragHandle>
-            <Button
-              variant="blank"
-              onClick={() => dispatch(editDatePickerWidget(id))}
-            >
-              {t('date_picker_management.edit_text')}
-            </Button>
-            <div data-testid="remove-date-picker-widget">
-              <CircleButton
-                variant="blank"
-                onClick={() => setRemoveConfirmation(true)}
-                icon={<Icon type="delete" fill={colors.red[500]} />}
-              />
-            </div>
+            <ButtonsContainer>
+              <PreventDragPropagation>
+                <Button
+                  variant="blank"
+                  onClick={() => dispatch(editDatePickerWidget(id))}
+                >
+                  {t('date_picker_management.edit_text')}
+                </Button>
+              </PreventDragPropagation>
+              <PreventDragPropagation>
+                <div data-testid="remove-date-picker-widget">
+                  <CircleButton
+                    variant="blank"
+                    onClick={() => setRemoveConfirmation(true)}
+                    icon={<Icon type="delete" fill={colors.red[500]} />}
+                  />
+                </div>
+              </PreventDragPropagation>
+            </ButtonsContainer>
           </ManagementContainer>
         )}
       </AnimatePresence>
