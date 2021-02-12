@@ -33,6 +33,7 @@ import {
   DropdownContainer,
   SettingsContainer,
   TitleContainer,
+  TimezoneContainer,
 } from './DatePickerWidget.styles';
 
 import {
@@ -230,17 +231,19 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
                 />
               )}
             </SettingsContainer>
-            <Timezone
-              timezone={timezone}
-              onChange={(timezone) =>
-                setLocalData((state) => ({
-                  ...state,
-                  timezone,
-                }))
-              }
-              timezoneLabel="Timezone"
-              timezonePlaceholderLabel="Select timezone"
-            />
+            <TimezoneContainer>
+              <Timezone
+                timezone={timezone}
+                onChange={(timezone) =>
+                  setLocalData((state) => ({
+                    ...state,
+                    timezone,
+                  }))
+                }
+                timezoneLabel="Timezone"
+                timezonePlaceholderLabel="Select timezone"
+              />
+            </TimezoneContainer>
             <Bar>
               <Button
                 onClick={() => {
