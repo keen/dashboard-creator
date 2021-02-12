@@ -52,3 +52,11 @@ test('do not shows message about including current day in timeframe', () => {
     queryByText('relative_time_label.today_includes')
   ).not.toBeInTheDocument();
 });
+
+test('shows icon within relative time label', () => {
+  const {
+    wrapper: { getByTestId },
+  } = render({ showIcon: true });
+
+  expect(getByTestId('relative-time-icon')).toBeInTheDocument();
+});
