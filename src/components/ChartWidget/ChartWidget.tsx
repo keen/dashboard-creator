@@ -8,6 +8,7 @@ import { Container, LoaderWrapper } from './ChartWidget.styles';
 
 import { EditorContext } from '../../contexts';
 import { getWidget, ChartWidget } from '../../modules/widgets';
+import { getInterimQuery } from '../../modules/queries';
 import { getActiveDashboardTheme } from '../../modules/theme';
 import { RootState } from '../../rootReducer';
 
@@ -39,11 +40,15 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
     data,
     widget,
   } = useSelector((state: RootState) => getWidget(state, id));
+  const interimQuery = useSelector((state: RootState) =>
+    getInterimQuery(state, id)
+  );
   const theme = useSelector((state: RootState) =>
     getActiveDashboardTheme(state)
   );
 
   const showVisualization = isConfigured && isInitialized && !isLoading;
+  const chartData = interimQuery ? interimQuery : data;
 
   useEffect(() => {
     if (showVisualization) {
@@ -56,7 +61,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
       if (error) {
         datavizRef.current.error(error.message, error.title);
       } else {
-        datavizRef.current.render(getChartInput(data));
+        datavizRef.current.render(getChartInput(chartData));
       }
     }
   }, [showVisualization, error]);
@@ -69,14 +74,14 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
           const { id: widgetId } = meta;
           if (datavizRef.current && widgetId === id && !error) {
             datavizRef.current.destroy();
-            datavizRef.current.render(getChartInput(data));
+            datavizRef.current.render(getChartInput(chartData));
           }
           break;
       }
     });
 
     return () => dispose();
-  }, [error, data, editorPubSub]);
+  }, [error, chartData, editorPubSub]);
 
   useEffect(() => {
     if (loaderRef.current) {

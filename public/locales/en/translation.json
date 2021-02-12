@@ -25,6 +25,30 @@
     "placeholder": "Enter text",
     "delete_confirmation": "Are you sure you want to delete this text?"
   },
+  "date_picker_management": {
+    "edit_text": "Edit",
+    "delete_confirmation": "Are you sure you want to delete this widget?"
+  },
+  "date_picker_settings": {
+    "untitled_chart": "Untitled Chart",
+    "title": "Date Picker configuration",
+    "confirm_button": "Create",
+    "cancel_button": "Cancel",
+    "empty_connections": "Add charts to the dashboard and then configure Date Picker",
+    "description": "Which charts should be associated with the Date Picker?",
+    "tooltip_hint": "Date Picker will affect only timeframes of associated charts."
+  },
+  "date_picker_widget": {
+    "name": "Date Picker",
+    "apply": "Apply",
+    "clear": "Clear",
+    "time": "Last",
+    "units_placeholder": "Select",
+    "relativity_title": "Include current",
+    "relativity_title_today": "Include Today",
+    "relative": "Relative",
+    "absolute": "Absolute"
+  },
   "widget_errors": {
     "detached_query_title": "Unable to present result in {{chart}} chart",
     "detached_query_message": "Please check if query structure has changed or select other visualization"
@@ -379,5 +403,14 @@
     "full_extraction": "Select properties to extract. All will be extracted by default.",
     "filtered_extraction": " Extracting only selected properties.",
     "clear_properties": "Clear to extract all."
+  },
+  "dashboard_timepicker": {
+    "separator": "to",
+    "timeframe_modified": "Timeframe modified"
+  },
+  "relative_time_label": {
+    "label": "Last",
+    "today_includes": "(Includes today)",
+    "relativity_title": "Includes current"
   }
 }

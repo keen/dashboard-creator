@@ -1,20 +1,32 @@
 import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
-import { Container } from './Widget.styles';
+import {
+  Container,
+  TextManagementContainer,
+  DatePickerContainer,
+} from './Widget.styles';
 
 import ChartWidget from '../ChartWidget';
 import TextWidget from '../TextWidget';
 import ImageWidget from '../ImageWidget';
+import DatePickerWidget from '../DatePickerWidget';
 
 import ImageManagement from '../ImageManagement';
 import ChartManagement from '../ChartManagement';
 import TextManagement from '../TextManagement';
+import DatePickerManagement from '../DatePickerManagement';
+
+import WidgetCover from './components/WidgetCover';
 
 import { getWidget } from '../../modules/widgets';
+import { getActiveDashboard } from '../../modules/app';
+import { getDashboardSettings } from '../../modules/dashboards';
 
 import { RootState } from '../../rootReducer';
 import { RenderOptions } from './types';
+import ChartWidgetFilter from '../ChartWidgetFilter';
 
 type Props = {
   /** Widget identifier */
@@ -32,41 +44,68 @@ const renderWidget = ({
   widgetId,
   isEditorMode,
   isHoverActive,
+  isHighlighted,
+  isFadeOut,
+  title,
   onRemoveWidget,
 }: RenderOptions) => {
+  const enableHover = isHoverActive && !isHighlighted && !isFadeOut && !title;
   switch (widgetType) {
+    case 'date-picker':
+      return (
+        <DatePickerContainer isFadeOut={isFadeOut}>
+          <DatePickerWidget id={widgetId} disableInteractions={isEditorMode} />
+          {isEditorMode && (
+            <DatePickerManagement
+              id={widgetId}
+              isHoverActive={isHoverActive}
+              onRemoveWidget={onRemoveWidget}
+            />
+          )}
+        </DatePickerContainer>
+      );
     case 'text':
       if (isEditorMode) {
         return (
-          <TextManagement
-            id={widgetId}
-            isHoverActive={isHoverActive}
-            onRemoveWidget={onRemoveWidget}
-          />
+          <TextManagementContainer isFadeOut={isFadeOut}>
+            <TextManagement
+              id={widgetId}
+              isHoverActive={enableHover}
+              onRemoveWidget={onRemoveWidget}
+            />
+          </TextManagementContainer>
         );
       } else {
         return <TextWidget id={widgetId} />;
       }
     case 'visualization':
       return (
-        <Container>
+        <Container isFadeOut={isFadeOut}>
           <ChartWidget id={widgetId} disableInteractions={isEditorMode} />
-          <ChartManagement
-            widgetId={widgetId}
-            isHoverActive={isHoverActive}
-            onRemoveWidget={onRemoveWidget}
-          />
+          {isEditorMode && (
+            <ChartManagement
+              widgetId={widgetId}
+              isHoverActive={enableHover}
+              onRemoveWidget={onRemoveWidget}
+            />
+          )}
+          {(isHighlighted || title) && (
+            <WidgetCover isHighlighted={isHighlighted} title={title} />
+          )}
+          {!isEditorMode && <ChartWidgetFilter widgetId={widgetId} />}
         </Container>
       );
     case 'image':
       return (
-        <Container>
+        <Container isFadeOut={isFadeOut}>
           <ImageWidget id={widgetId} />
-          <ImageManagement
-            widgetId={widgetId}
-            isHoverActive={isHoverActive}
-            onRemoveWidget={onRemoveWidget}
-          />
+          {isEditorMode && (
+            <ImageManagement
+              widgetId={widgetId}
+              isHoverActive={enableHover}
+              onRemoveWidget={onRemoveWidget}
+            />
+          )}
         </Container>
       );
     default:
@@ -80,15 +119,32 @@ const Widget: FC<Props> = ({
   onRemoveWidget,
   isEditorMode = false,
 }) => {
+  const { t } = useTranslation();
   const {
     widget: { id: widgetId, type: widgetType },
+    isHighlighted,
+    isFadeOut,
+    isTitleCover,
   } = useSelector((rootState: RootState) => getWidget(rootState, id));
+
+  const widgetTitle = useSelector((state: RootState) => {
+    if (!isTitleCover) return;
+
+    const activeDashboard = getActiveDashboard(state);
+    const { widgets } = getDashboardSettings(state, activeDashboard);
+    const index = widgets.findIndex((item) => item === id);
+
+    return `${t('widget_item.chart')} ${index + 1}`;
+  });
 
   return renderWidget({
     widgetType,
     widgetId,
     isEditorMode,
     isHoverActive,
+    isHighlighted,
+    isFadeOut,
+    title: widgetTitle,
     onRemoveWidget,
   });
 };

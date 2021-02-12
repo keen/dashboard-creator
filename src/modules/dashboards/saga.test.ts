@@ -2,17 +2,10 @@
 import sagaHelper from 'redux-saga-testing';
 import { put, take, select, getContext, call } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
-import { exportToHtml } from '@keen.io/ui-core';
 
 jest.mock('uuid', () => {
   return {
     v4: () => '@dashboard/01',
-  };
-});
-
-jest.mock('@keen.io/ui-core', () => {
-  return {
-    exportToHtml: jest.fn().mockImplementation(() => ''),
   };
 });
 
@@ -796,13 +789,6 @@ describe('exportDashboardToHtml()', () => {
       createCodeSnippet({ projectId, userKey, dashboardId })
     );
     return snippet;
-  });
-
-  test('exports created snippet', () => {
-    expect(exportToHtml).toHaveBeenCalledWith({
-      data: snippet,
-      fileName: dashboardId,
-    });
   });
 });
 

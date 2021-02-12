@@ -38,4 +38,4 @@ export type TranslationsSettings = {
   };
 };
 
-export type WidgetType = 'visualization' | 'text' | 'image';
+export type WidgetType = 'visualization' | 'text' | 'image' | 'date-picker';

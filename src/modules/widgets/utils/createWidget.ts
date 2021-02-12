@@ -1,7 +1,13 @@
 import { serializeWidget } from '../serializers';
 
 import { WidgetType } from '../../../types';
-import { GridPosition, TextWidget, ChartWidget, ImageWidget } from '../types';
+import {
+  GridPosition,
+  TextWidget,
+  ChartWidget,
+  ImageWidget,
+  DatePickerWidget,
+} from '../types';
 
 type Options = {
   id: string;
@@ -30,6 +36,7 @@ export const createWidget = (
         {
           ...baseWidget,
           query: null,
+          datePickerId: null,
           settings,
         } as ChartWidget,
         isConfigured
@@ -46,6 +53,16 @@ export const createWidget = (
             },
           },
         } as TextWidget,
+        isConfigured
+      );
+    case 'date-picker':
+      return serializeWidget(
+        {
+          ...baseWidget,
+          settings: {
+            widgets: [],
+          },
+        } as DatePickerWidget,
         isConfigured
       );
     case 'image':

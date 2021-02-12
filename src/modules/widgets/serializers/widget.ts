@@ -6,8 +6,12 @@ export const serializeWidget = (
 ): WidgetItem => ({
   widget,
   isConfigured,
+  isActive: false,
   isInitialized: false,
   isLoading: false,
+  isHighlighted: false,
+  isFadeOut: false,
+  isTitleCover: false,
   error: null,
   data: null,
 });

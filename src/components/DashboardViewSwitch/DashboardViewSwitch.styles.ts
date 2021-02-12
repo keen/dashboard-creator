@@ -49,7 +49,7 @@ export const DropdownContainer = styled.div`
   bottom: 0;
   left: 0;
   width: 300px;
-  zindex: ${UI_LAYERS.dropdown};
+  z-index: ${UI_LAYERS.dropdown};
 `;
 
 export const Search = styled.div`
