@@ -133,6 +133,7 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
     <>
       <Container
         ref={containerRef}
+        isOpen={isOpen}
         onClick={() => {
           if (!disableInteractions) {
             setOpen(!isOpen);
