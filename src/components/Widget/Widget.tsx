@@ -80,7 +80,7 @@ const renderWidget = ({
       }
     case 'visualization':
       return (
-        <Container isFadeOut={isFadeOut}>
+        <Container isFadeOut={isFadeOut} isHighlighted={isHighlighted}>
           <ChartWidget id={widgetId} disableInteractions={isEditorMode} />
           {isEditorMode && (
             <ChartManagement

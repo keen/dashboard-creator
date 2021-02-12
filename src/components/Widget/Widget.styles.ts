@@ -6,7 +6,10 @@ const getFadeOutStyles = () => css`
   opacity: 0.3;
 `;
 
-export const Container = styled.div<{ isFadeOut?: boolean }>`
+export const Container = styled.div<{
+  isFadeOut?: boolean;
+  isHighlighted?: boolean;
+}>`
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -15,6 +18,11 @@ export const Container = styled.div<{ isFadeOut?: boolean }>`
   overflow: hidden;
   background: ${colors.white[500]};
 
+  ${(props) =>
+    props.isHighlighted &&
+    css`
+      border-radius: 4px;
+    `}
   ${(props) => props.isFadeOut && getFadeOutStyles()}
 `;
 
