@@ -8,7 +8,7 @@ import {
 } from './actions';
 
 test('set user edit privileges', () => {
-  const action = appStart({}, true);
+  const action = appStart({}, true, 3);
   const {
     user: { editPrivileges },
   } = appReducer(initialState, action);

@@ -51,6 +51,8 @@ import {
   CLEAR_TAGS_POOL,
   SET_TAGS_FILTERS,
   SET_TAGS_FILTERS_PUBLIC,
+  UPDATE_CACHED_DASHBOARD_IDS,
+  UNREGISTER_DASHBOARD,
 } from './constants';
 
 export const fetchDashboardList = createAction(FETCH_DASHBOARDS_LIST);
@@ -372,6 +374,24 @@ export const setTagsFiltersPublic = createAction(
   })
 );
 
+export const updateCachedDashboardIds = createAction(
+  UPDATE_CACHED_DASHBOARD_IDS,
+  (dashboardIds: string[]) => ({
+    payload: {
+      dashboardIds,
+    },
+  })
+);
+
+export const unregisterDashboard = createAction(
+  UNREGISTER_DASHBOARD,
+  (dashboardId: string) => ({
+    payload: {
+      dashboardId,
+    },
+  })
+);
+
 export type DashboardsActions =
   | ReturnType<typeof fetchDashboardList>
   | ReturnType<typeof fetchDashboardListSuccess>
@@ -416,4 +436,6 @@ export type DashboardsActions =
   | ReturnType<typeof prepareTagsPool>
   | ReturnType<typeof clearTagsPool>
   | ReturnType<typeof setTagsFilters>
-  | ReturnType<typeof setTagsFiltersPublic>;
+  | ReturnType<typeof setTagsFiltersPublic>
+  | ReturnType<typeof updateCachedDashboardIds>
+  | ReturnType<typeof unregisterDashboard>;
