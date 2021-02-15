@@ -1,6 +1,6 @@
 import { useContext, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useToasts } from '@keen.io/toast-notifications';
+import { useToasts, ToastOptions } from '@keen.io/toast-notifications';
 
 import { AppContext } from '../../contexts';
 
@@ -20,7 +20,7 @@ const ToastNotifications = () => {
         appearance: type,
         autoDismiss,
         showDismissButton,
-      });
+      } as ToastOptions);
     },
     []
   );

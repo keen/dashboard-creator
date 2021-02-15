@@ -6,6 +6,7 @@ import { colors } from '@keen.io/colors';
 
 export const Container = styled.div`
   position: relative;
+  cursor: pointer;
 `;
 
 export const Filter = styled.div`
