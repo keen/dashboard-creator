@@ -4,16 +4,22 @@ import React, {
   useMemo,
   useCallback,
   useRef,
+  useContext,
 } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { Dropdown } from '@keen.io/ui-core';
+import { Dropdown, Portal } from '@keen.io/ui-core';
+
+import { getEventPath } from '../../utils';
+
+import { AppContext } from '../../contexts';
 
 import { FilterItem, SearchTags } from './components';
 import {
   Container,
   Filter,
   TagsContainer,
+  DropdownContainer,
   DropdownContent,
   EmptySearch,
   ClearFilters,
@@ -32,9 +38,11 @@ const FilterDashboards = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const containerRef = useRef(null);
+  const dropdownContainerRef = useRef(null);
   const [isOpen, setOpen] = useState(false);
   const [searchMode, setSearchMode] = useState(false);
   const [searchPhrase, setSearchPhrase] = useState('');
+  const [dropdown, setDropdown] = useState({ x: 0, y: 0, width: 0 });
 
   useEffect(() => {
     isOpen ? dispatch(prepareTagsPool()) : dispatch(clearTagsPool());
@@ -53,17 +61,17 @@ const FilterDashboards = () => {
 
   const outsideClick = useCallback(
     (e) => {
+      const path = getEventPath(e);
       if (
-        isOpen &&
-        containerRef.current &&
-        !containerRef.current.contains(e.target)
+        !path?.includes(containerRef.current) &&
+        !path?.includes(dropdownContainerRef.current)
       ) {
         setOpen(false);
         setSearchPhrase('');
         setSearchMode(false);
       }
     },
-    [isOpen, containerRef]
+    [isOpen, containerRef, dropdownContainerRef]
   );
 
   const updateTags = useCallback(
@@ -77,6 +85,23 @@ const FilterDashboards = () => {
   );
 
   useEffect(() => {
+    if (isOpen && containerRef.current) {
+      const {
+        left,
+        bottom,
+        width,
+      }: ClientRect = containerRef.current.getBoundingClientRect();
+
+      setDropdown((state) => ({
+        ...state,
+        x: left,
+        y: bottom - document.body.offsetHeight + window.scrollY,
+        width,
+      }));
+    }
+  }, [isOpen, containerRef, tags, showOnlyPublicDashboards]);
+
+  useEffect(() => {
     document.addEventListener('click', outsideClick);
     return () => document.removeEventListener('click', outsideClick);
   }, [isOpen, containerRef]);
@@ -84,57 +109,75 @@ const FilterDashboards = () => {
   const isEmptySearch = searchPhrase && !filteredTags.length;
   const filtersCount = tags.length + (showOnlyPublicDashboards ? 1 : 0);
 
+  const { modalContainer } = useContext(AppContext);
+
   return (
-    <Container ref={containerRef}>
-      <Filter onClick={() => setOpen(!isOpen)}>
-        {t('tags_filters.title')}
-        {filtersCount ? ` (${filtersCount})` : null}
-      </Filter>
-      <Dropdown isOpen={isOpen} fullWidth={false}>
-        <DropdownContent>
-          <FilterItem
-            id="cached"
-            label={t('tags_filters.show_only_public_dashboards')}
-            isActive={showOnlyPublicDashboards}
-            onChange={(isActive) => dispatch(setTagsFiltersPublic(isActive))}
-          />
-          <SearchTags
-            isActive={searchMode}
-            searchPhrase={searchPhrase}
-            inputPlaceholder={t('tags_filters.search_tags_input_placeholder')}
-            searchLabel={t('tags_filters.search_label')}
-            onChangePhrase={(phrase) => setSearchPhrase(phrase)}
-            onClearPhrase={() => {
-              setSearchPhrase('');
-              setSearchMode(false);
-            }}
-            onActiveSearch={() => setSearchMode(true)}
-          />
-          <TagsContainer>
-            {filteredTags.map((tag) => (
-              <FilterItem
-                key={tag}
-                id={tag}
-                isActive={tags.includes(tag)}
-                label={tag}
-                onChange={(isActive) => updateTags(isActive, tag)}
-              />
-            ))}
-          </TagsContainer>
-          {isEmptySearch && (
-            <EmptySearch>{t('tags_filters.empty_search_message')}</EmptySearch>
-          )}
-        </DropdownContent>
-        <ClearFilters
-          onClick={() => {
-            dispatch(setTagsFiltersPublic(false));
-            dispatch(setTagsFilters([]));
-          }}
+    <>
+      <Container ref={containerRef} onClick={() => setOpen(!isOpen)}>
+        <Filter>
+          {t('tags_filters.title')}
+          {filtersCount ? ` (${filtersCount})` : null}
+        </Filter>
+      </Container>
+      <Portal modalContainer={modalContainer}>
+        <DropdownContainer
+          ref={dropdownContainerRef}
+          customTransform={`translate(${dropdown.x}px, ${dropdown.y}px)`}
+          width={dropdown.width}
         >
-          {t('tags_filters.clear')}
-        </ClearFilters>
-      </Dropdown>
-    </Container>
+          <Dropdown isOpen={isOpen} fullWidth={false}>
+            <DropdownContent>
+              <FilterItem
+                id="cached"
+                label={t('tags_filters.show_only_public_dashboards')}
+                isActive={showOnlyPublicDashboards}
+                onChange={(isActive) =>
+                  dispatch(setTagsFiltersPublic(isActive))
+                }
+              />
+              <SearchTags
+                isActive={searchMode}
+                searchPhrase={searchPhrase}
+                inputPlaceholder={t(
+                  'tags_filters.search_tags_input_placeholder'
+                )}
+                searchLabel={t('tags_filters.search_label')}
+                onChangePhrase={(phrase) => setSearchPhrase(phrase)}
+                onClearPhrase={() => {
+                  setSearchPhrase('');
+                  setSearchMode(false);
+                }}
+                onActiveSearch={() => setSearchMode(true)}
+              />
+              <TagsContainer>
+                {filteredTags.map((tag) => (
+                  <FilterItem
+                    key={tag}
+                    id={tag}
+                    isActive={tags.includes(tag)}
+                    label={tag}
+                    onChange={(isActive) => updateTags(isActive, tag)}
+                  />
+                ))}
+              </TagsContainer>
+              {isEmptySearch && (
+                <EmptySearch>
+                  {t('tags_filters.empty_search_message')}
+                </EmptySearch>
+              )}
+            </DropdownContent>
+            <ClearFilters
+              onClick={() => {
+                dispatch(setTagsFiltersPublic(false));
+                dispatch(setTagsFilters([]));
+              }}
+            >
+              {t('tags_filters.clear')}
+            </ClearFilters>
+          </Dropdown>
+        </DropdownContainer>
+      </Portal>
+    </>
   );
 };
 

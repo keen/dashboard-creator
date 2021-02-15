@@ -46,7 +46,7 @@ import {
 import { RootState } from '../../rootReducer';
 import { AppContext } from '../../contexts';
 
-import { getEventPath } from './utils';
+import { getEventPath } from '../../utils';
 
 import {
   DEFAULT_TIMEFRAME,

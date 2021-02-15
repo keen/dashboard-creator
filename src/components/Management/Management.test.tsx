@@ -4,9 +4,12 @@ import {
   render as rtlRender,
   waitFor,
   fireEvent,
+  cleanup,
 } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
+
+import { AppContext } from '../../contexts';
 
 import Management from './Management';
 import { dashboardsMeta } from '../../modules/dashboards/fixtures';
@@ -65,7 +68,15 @@ const render = (storeState: any = {}, overProps: any = {}) => {
 
   const wrapper = rtlRender(
     <Provider store={store}>
-      <Management {...props} />
+      <AppContext.Provider
+        value={
+          {
+            modalContainer: '#modal-root',
+          } as any
+        }
+      >
+        <Management {...props} />
+      </AppContext.Provider>
     </Provider>
   );
 
@@ -74,6 +85,19 @@ const render = (storeState: any = {}, overProps: any = {}) => {
     wrapper,
   };
 };
+
+afterEach(() => {
+  cleanup();
+});
+
+beforeEach(() => {
+  let modalRoot = document.getElementById('modal-root');
+  if (!modalRoot) {
+    modalRoot = document.createElement('div');
+    modalRoot.setAttribute('id', 'modal-root');
+    document.body.appendChild(modalRoot);
+  }
+});
 
 test('renders notification about creating first dashboard in project', async () => {
   const storeState = {
