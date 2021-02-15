@@ -70,7 +70,7 @@ export class DashboardCreator {
   ) => string;
 
   /** Cached dashboards number */
-  private cachedDashboardsNumber: number;
+  private cachedDashboardsNumber = 3;
 
   constructor(config: DashboardCreatorOptions) {
     const {
@@ -86,7 +86,6 @@ export class DashboardCreator {
     } = config;
 
     const { id, masterKey, accessKey } = project;
-
     if (backend?.analyticsApiUrl)
       this.analyticsApiUrl = backend.analyticsApiUrl;
     if (backend?.dashboardsApiUrl)
@@ -101,7 +100,9 @@ export class DashboardCreator {
     this.translationsSettings = translations || {};
     this.themeSettings = theme || {};
     this.createSharedDashboardUrl = createSharedDashboardUrl;
-    this.cachedDashboardsNumber = cachedDashboardsNumber || 3;
+    if (cachedDashboardsNumber) {
+      this.cachedDashboardsNumber = cachedDashboardsNumber;
+    }
   }
 
   render() {
