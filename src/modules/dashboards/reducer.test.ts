@@ -89,7 +89,7 @@ test('updates dashboard save indicator', () => {
   `);
 });
 
-test('updates dashboard metadata', () => {
+test('updates dashboard metadata and sort it by recent', () => {
   const action = updateDashboardMeta('@dashboard/01', {
     title: 'Title',
     queries: 30,
@@ -110,6 +110,16 @@ test('updates dashboard metadata', () => {
           isPublic: false,
           publicAccessKey: null,
         },
+        {
+          id: '@dashboard/02',
+          widgets: 1,
+          queries: 0,
+          title: null,
+          lastModificationDate: 1,
+          tags: [],
+          isPublic: false,
+          publicAccessKey: null,
+        },
       ],
     },
   };
@@ -119,6 +129,16 @@ test('updates dashboard metadata', () => {
   expect(metadata).toMatchInlineSnapshot(`
     Object {
       "data": Array [
+        Object {
+          "id": "@dashboard/02",
+          "isPublic": false,
+          "lastModificationDate": 1,
+          "publicAccessKey": null,
+          "queries": 0,
+          "tags": Array [],
+          "title": null,
+          "widgets": 1,
+        },
         Object {
           "id": "@dashboard/01",
           "isPublic": false,
