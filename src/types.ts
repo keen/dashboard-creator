@@ -18,6 +18,7 @@ export type DashboardCreatorOptions = {
   translations?: TranslationsSettings;
   theme?: Partial<Theme>;
   createSharedDashboardUrl: (accessKey: string, dashboardId: string) => string;
+  cachedDashboardsNumber: number;
 };
 
 export type PublicDashboardOptions = {

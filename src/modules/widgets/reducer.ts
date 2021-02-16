@@ -18,6 +18,7 @@ import {
   SET_WIDGET_STATE,
   CREATE_WIDGET,
   SAVE_CLONED_WIDGET,
+  UNREGISTER_WIDGET,
 } from './constants';
 
 import { ReducerState } from './types';
@@ -196,6 +197,13 @@ const widgetsReducer = (
             },
           },
         },
+      };
+    case UNREGISTER_WIDGET:
+      const items = { ...state.items };
+      delete items[action.payload.widgetId];
+      return {
+        ...state,
+        items,
       };
     default:
       return state;

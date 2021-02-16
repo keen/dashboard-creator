@@ -14,6 +14,7 @@ import { ReducerState } from './types';
 export const initialState: ReducerState = {
   view: 'management',
   activeDashboardId: null,
+  cachedDashboardsNumber: null,
   user: {
     editPrivileges: false,
   },
@@ -33,6 +34,7 @@ const appReducer = (state: ReducerState = initialState, action: AppActions) => {
     case APP_START:
       return {
         ...state,
+        cachedDashboardsNumber: action.payload.cachedDashboardsNumber,
         user: {
           editPrivileges: action.payload.user.editPrivileges,
         },

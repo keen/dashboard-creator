@@ -33,6 +33,7 @@ import {
   SAVED_QUERY_UPDATED,
   CLONE_WIDGET,
   SAVE_IMAGE,
+  UNREGISTER_WIDGET,
 } from './constants';
 
 export const registerWidgets = createAction(
@@ -210,6 +211,15 @@ export const savedQueryUpdated = createAction(
   })
 );
 
+export const unregisterWidget = createAction(
+  UNREGISTER_WIDGET,
+  (widgetId: string) => ({
+    payload: {
+      widgetId,
+    },
+  })
+);
+
 export const cloneWidget = createAction(CLONE_WIDGET, (widgetId: string) => ({
   payload: {
     widgetId,
@@ -315,4 +325,5 @@ export type WidgetsActions =
   | ReturnType<typeof savedQueryUpdated>
   | ReturnType<typeof cloneWidget>
   | ReturnType<typeof saveClonedWidget>
-  | ReturnType<typeof saveImage>;
+  | ReturnType<typeof saveImage>
+  | ReturnType<typeof unregisterWidget>;
