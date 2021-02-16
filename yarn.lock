@@ -1704,10 +1704,10 @@
     styled-system "^5.1.5"
     webfontloader "^1.6.28"
 
-"@keen.io/ui-core@^2.5.20":
-  version "2.12.0"
-  resolved "https://registry.yarnpkg.com/@keen.io/ui-core/-/ui-core-2.12.0.tgz#4f4d38671a12b73ba2612446d7026ec5b34e9dc0"
-  integrity sha512-ECfHhfwNKaSxGysQ1074PuBtn+8fLkdFp1GRh3DanBfFAAkY/kCW3cLlHDcYU6YUZTwTlMs9zK14AhvM+upv1w==
+"@keen.io/ui-core@^2.12.3":
+  version "2.12.3"
+  resolved "https://registry.yarnpkg.com/@keen.io/ui-core/-/ui-core-2.12.3.tgz#05d8070887830a670e3983ea0635cf5b6563aa1b"
+  integrity sha512-BghxtSlOdjA+QW+x0rgpct6qhnzST0UMGEIgkAdanOK23q0Bvv4FLof2su1VcWxrXbjtZYnukLxzYbc5QpZjyA==
   dependencies:
     "@keen.io/colors" "^1.1.0"
     "@keen.io/icons" "^1.4.0"
