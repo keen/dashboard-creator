@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -19,7 +19,7 @@ import TextManagement from '../TextManagement';
 
 import WidgetCover from './components/WidgetCover';
 
-import { getWidget } from '../../modules/widgets';
+import { editDatePickerWidget, getWidget } from '../../modules/widgets';
 import { getActiveDashboard } from '../../modules/app';
 import { getDashboardSettings } from '../../modules/dashboards';
 
@@ -28,6 +28,7 @@ import { RenderOptions } from './types';
 import ChartWidgetFilter from '../ChartWidgetFilter';
 import FilterWidget from '../FilterWidget/FilterWidget';
 import FilterManagement from '../FilterManagement';
+import { editFilterWidget } from '../../modules/widgets/actions';
 
 type Props = {
   /** Widget identifier */
@@ -38,6 +39,8 @@ type Props = {
   isEditorMode?: boolean;
   /** Remove widget event handler */
   onRemoveWidget: () => void;
+  /** Edit widget event handler */
+  onEditWidget?: () => void;
 };
 
 const renderWidget = ({
@@ -49,6 +52,7 @@ const renderWidget = ({
   isFadeOut,
   title,
   onRemoveWidget,
+  onEditWidget,
 }: RenderOptions) => {
   const enableHover = isHoverActive && !isHighlighted && !isFadeOut && !title;
   switch (widgetType) {
@@ -61,9 +65,7 @@ const renderWidget = ({
               id={widgetId}
               isHoverActive={isHoverActive}
               onRemoveWidget={onRemoveWidget}
-              onEditWidget={() => {
-                console.log('test');
-              }}
+              onEditWidget={onEditWidget}
             />
           )}
         </FilterContainer>
@@ -121,9 +123,7 @@ const renderWidget = ({
               id={widgetId}
               isHoverActive={isHoverActive}
               onRemoveWidget={onRemoveWidget}
-              onEditWidget={() => {
-                console.log('test');
-              }}
+              onEditWidget={onEditWidget}
             />
           )}
         </FilterContainer>
@@ -140,6 +140,7 @@ const Widget: FC<Props> = ({
   isEditorMode = false,
 }) => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const {
     widget: { id: widgetId, type: widgetType },
     isHighlighted,
@@ -157,6 +158,14 @@ const Widget: FC<Props> = ({
     return `${t('widget_item.chart')} ${index + 1}`;
   });
 
+  let onEditWidget = null;
+  if (widgetType === 'filter') {
+    onEditWidget = () => dispatch(editFilterWidget(id));
+  }
+  if (widgetType === 'date-picker') {
+    onEditWidget = () => dispatch(editDatePickerWidget(id));
+  }
+
   return renderWidget({
     widgetType,
     widgetId,
@@ -166,6 +175,7 @@ const Widget: FC<Props> = ({
     isFadeOut,
     title: widgetTitle,
     onRemoveWidget,
+    onEditWidget,
   });
 };
 

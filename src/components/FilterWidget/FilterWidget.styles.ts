@@ -24,7 +24,7 @@ export const TitleContainer = styled.div`
 `;
 
 export const Title = styled.div`
-  margin: 2px 0 0 10px;
+  //margin: 2px 0 0 10px;
   font-size: 14px;
   font-family: 'Lato Bold', sans-serif;
   color: ${colors.blue[500]};

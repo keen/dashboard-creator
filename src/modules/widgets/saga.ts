@@ -290,6 +290,7 @@ export function* widgetsSaga() {
   yield takeLatest(EDIT_INLINE_TEXT_WIDGET, editInlineTextWidget);
   yield takeLatest(CLONE_WIDGET, cloneWidget);
   yield takeLatest(CLEAR_DATE_PICKER_MODIFIERS, clearDatePickerModifiers);
+  // yield takeLatest(EDIT_FILTER_WIDGET, editFilterWidget);
   yield takeEvery(RESET_DATE_PICKER_WIDGETS, resetDatePickerWidgets);
   yield takeEvery(INITIALIZE_WIDGET, initializeWidget);
   yield takeEvery(INITIALIZE_CHART_WIDGET, initializeChartWidget);

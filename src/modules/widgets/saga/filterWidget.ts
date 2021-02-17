@@ -15,8 +15,9 @@ import {
 } from '../../dashboards';
 import { getWidget } from '../selectors';
 
-import { FilterConnection } from '../../filter/types';
+import { FilterConnection, ReducerState } from '../../filter/types';
 import { getActiveDashboard } from '../../app';
+import { ChartWidget } from '../types';
 
 import {
   openEditor,
@@ -25,41 +26,61 @@ import {
   setupDashboardEventStreams,
   getFilterWidgetConnections,
   SET_EVENT_STREAM,
+  getFilterSettings,
 } from '../../filter';
 
-import { setWidgetState } from '../actions';
+import {
+  setFilterWidget,
+  setWidgetState,
+  updateChartWidgetFiltersConnections,
+} from '../actions';
 import { APPLY_EDITOR_SETTINGS, CLOSE_EDITOR } from '../../filter/constants';
 
-// /**
-//  * Apply filter connections updates to connected widgets
-//  *
-//  * @param filterWidgetId - Filter widget identifer
-//  * @return void
-//  *
-//  */
-// export function* applyFilterUpdates(filterWidgetId: string) {
-//     const {
-//         widgetConnections: updatedConnections,
-//     }: { widgetConnections: FilterConnection[] } = yield select(
-//         getFilterSettings
-//     );
-//
-//     const widgetFilterConnections = updatedConnections
-//         .filter(({ isConnected }) => isConnected)
-//         .map(({ widgetId }) => widgetId);
-//
-//     const chartFiltersUpdates = updatedConnections.map(
-//         ({ widgetId, isConnected }) => {
-//             const filterId = isConnected ? filterWidgetId : null;
-//
-//             // updateChartWidgetFilterConnection
-//             // return put(updateChartWidgetFilterConnection(widgetId, filterId));
-//         }
-//     );
-//
-//     // yield all(chartFiltersUpdates);
-//     // yield put(setFilterWidget(datePickerWidgetId, widgetPickerConnections));
-// }
+/**
+ * Apply filter connections updates to connected widgets
+ *
+ * @param filterWidgetId - Filter widget identifer
+ * @return void
+ *
+ */
+export function* applyFilterUpdates(filterWidgetId: string) {
+  const {
+    widgetConnections: updatedConnections,
+    eventStream,
+    targetProperty,
+  }: ReducerState = yield select(getFilterSettings);
+
+  const connectedCharts = updatedConnections
+    .filter(({ isConnected }) => isConnected)
+    .map(({ widgetId }) => widgetId);
+
+  const state = yield select();
+  const availableCharts = updatedConnections.map((connection) =>
+    getWidget(state, connection.widgetId)
+  );
+
+  const chartsWidgetUpdates = availableCharts.map(({ widget }) => {
+    const { id, filterIds } = widget as ChartWidget;
+
+    const chartFilterIds = new Set<string>(filterIds);
+    if (connectedCharts.includes(id)) {
+      chartFilterIds.add(filterWidgetId);
+    } else {
+      chartFilterIds.delete(id);
+    }
+    return put(updateChartWidgetFiltersConnections(id, [...chartFilterIds]));
+  });
+
+  yield all(chartsWidgetUpdates);
+  yield put(
+    setFilterWidget(
+      filterWidgetId,
+      connectedCharts,
+      eventStream,
+      targetProperty
+    )
+  );
+}
 
 /**
  * Synchronize widget connections based on selected event stream
@@ -171,7 +192,7 @@ export function* setupFilterWidget(widgetId: string) {
   yield cancel(synchronizeConnectionsTask);
 
   if (action.type === APPLY_EDITOR_SETTINGS) {
-    // yield call(applyFilterUpdates, filterWidgetId);
+    yield call(applyFilterUpdates, filterWidgetId);
 
     yield put(closeEditor());
     yield put(saveDashboard(dashboardId));

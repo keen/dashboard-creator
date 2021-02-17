@@ -40,8 +40,6 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
 
   const widget = useSelector((state: RootState) => getWidget(state, id));
 
-  console.log('widget =', widget.data);
-
   const [isOpen, setOpen] = useState(false);
   const [dropdown, setDropdown] = useState({ x: 0, y: 0, width: 0 });
 
@@ -94,8 +92,6 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
         }}
       >
         {widget.isActive ? (
-          <p>Label !</p>
-        ) : (
           <TitleContainer>
             <Icon
               type="date-picker"
@@ -104,6 +100,10 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
               height={15}
             />
             <Title role="heading">FILTER WIDGET</Title>
+          </TitleContainer>
+        ) : (
+          <TitleContainer>
+            <Title role="heading">FILTER</Title>
           </TitleContainer>
         )}
       </Container>

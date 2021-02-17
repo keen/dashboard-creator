@@ -19,6 +19,7 @@ import {
   CREATE_WIDGET,
   SAVE_CLONED_WIDGET,
   SET_FILTER_WIDGET,
+  UPDATE_CHART_WIDGET_FILTERS_CONNECTIONS,
 } from './constants';
 
 import { ReducerState } from './types';
@@ -52,6 +53,20 @@ const widgetsReducer = (
             widget: {
               ...state.items[action.payload.id].widget,
               datePickerId: action.payload.datePickerId,
+            },
+          },
+        },
+      };
+    case UPDATE_CHART_WIDGET_FILTERS_CONNECTIONS:
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          [action.payload.id]: {
+            ...state.items[action.payload.id],
+            widget: {
+              ...state.items[action.payload.id].widget,
+              filterIds: action.payload.filterIds,
             },
           },
         },
@@ -191,6 +206,8 @@ const widgetsReducer = (
               ...state.items[action.payload.id].widget,
               settings: {
                 widgets: action.payload.widgetConnections,
+                eventStream: action.payload.eventStream,
+                targetProperty: action.payload.targetProperty,
               },
             },
           },

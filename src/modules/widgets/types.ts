@@ -60,6 +60,8 @@ export interface FilterWidget extends BaseWidget {
   type: 'filter';
   settings: {
     widgets: string[];
+    eventStream: string | null;
+    targetProperty: string | null;
   };
 }
 

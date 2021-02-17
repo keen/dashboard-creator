@@ -9,4 +9,5 @@ export type RenderOptions = {
   isFadeOut: boolean;
   title?: string;
   onRemoveWidget: () => void;
+  onEditWidget: () => void;
 };

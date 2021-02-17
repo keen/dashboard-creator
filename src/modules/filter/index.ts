@@ -10,6 +10,8 @@ import {
   setEditorConnections,
   setupDashboardEventStreams,
 } from './actions';
+import { ReducerState } from './types';
+
 import { getFilterWidgetConnections } from './saga';
 import { SET_EVENT_STREAM } from './constants';
 import { getFilterSettings } from './selectors';
@@ -28,4 +30,5 @@ export {
   filterSaga,
   getFilterWidgetConnections,
   SET_EVENT_STREAM,
+  ReducerState,
 };

@@ -73,6 +73,8 @@ export const createWidget = (
           ...baseWidget,
           settings: {
             widgets: [],
+            eventStream: null,
+            targetProperty: null,
           },
         } as FilterWidget,
         isConfigured

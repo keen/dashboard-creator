@@ -34,6 +34,8 @@ import {
   CLONE_WIDGET,
   SAVE_IMAGE,
   SET_FILTER_WIDGET,
+  EDIT_FILTER_WIDGET,
+  UPDATE_CHART_WIDGET_FILTERS_CONNECTIONS,
 } from './constants';
 
 export const registerWidgets = createAction(
@@ -292,23 +294,39 @@ export const resetDatePickerWidgets = createAction(
 
 export const setFilterWidget = createAction(
   SET_FILTER_WIDGET,
-  (id: string, widgetConnections: string[]) => ({
+  (
+    id: string,
+    widgetConnections: string[],
+    eventStream: string,
+    targetProperty: string
+  ) => ({
     payload: {
       id,
       widgetConnections,
+      eventStream,
+      targetProperty,
     },
   })
 );
 
-// export const updateChartWidgetFilerConnection = createAction(
-//     UPDATE_CHART_WIDGET_FILTERS_CONNECTION,
-//     (id: string, filterId: string | null) => ({
-//         payload: {
-//             id,
-//             filterId,
-//         },
-//     })
-// );
+export const editFilterWidget = createAction(
+  EDIT_FILTER_WIDGET,
+  (id: string) => ({
+    payload: {
+      id,
+    },
+  })
+);
+
+export const updateChartWidgetFiltersConnections = createAction(
+  UPDATE_CHART_WIDGET_FILTERS_CONNECTIONS,
+  (id: string, filterIds: string[]) => ({
+    payload: {
+      id,
+      filterIds,
+    },
+  })
+);
 
 export type WidgetsActions =
   | ReturnType<typeof createWidget>
@@ -337,4 +355,6 @@ export type WidgetsActions =
   | ReturnType<typeof cloneWidget>
   | ReturnType<typeof saveClonedWidget>
   | ReturnType<typeof saveImage>
-  | ReturnType<typeof setFilterWidget>;
+  | ReturnType<typeof setFilterWidget>
+  | ReturnType<typeof editDatePickerWidget>
+  | ReturnType<typeof updateChartWidgetFiltersConnections>;
