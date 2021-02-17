@@ -1,71 +1,34 @@
-import { all, call, put, select, take } from 'redux-saga/effects';
+import {
+  all,
+  call,
+  put,
+  select,
+  take,
+  cancel,
+  fork,
+  cancelled,
+} from 'redux-saga/effects';
 import {
   ADD_WIDGET_TO_DASHBOARD,
   getDashboard,
   saveDashboard,
 } from '../../dashboards';
 import { getWidget } from '../selectors';
-import { ChartWidget } from '../types';
+
 import { FilterConnection } from '../../filter/types';
 import { getActiveDashboard } from '../../app';
-// import {getFilterSettings} from "../../filter/selectors";
+
 import {
-  closeEditor,
   openEditor,
+  closeEditor,
   setEditorConnections,
-} from '../../filter/actions';
+  setupDashboardEventStreams,
+  getFilterWidgetConnections,
+  SET_EVENT_STREAM,
+} from '../../filter';
 
 import { setWidgetState } from '../actions';
 import { APPLY_EDITOR_SETTINGS, CLOSE_EDITOR } from '../../filter/constants';
-
-/**
- * Get possible filter widget connections.
- *
- * @param dashboardId - Dashboard identifer
- * @param widgetId - Widget identifer
- * @param connectByDefault - Connects all widgets by default
- * @param eventCollection - Event collection to filter
- * @return void
- *
- */
-export function* getFilterWidgetConnections(
-  dashboardId: string,
-  widgetId: string,
-  connectByDefault?: boolean,
-  eventCollection?: string
-) {
-  const state = yield select();
-  const {
-    settings: { widgets: widgetsIds },
-  } = getDashboard(state, dashboardId);
-
-  const widgets: FilterConnection[] = widgetsIds
-    .map((widgetId) => getWidget(state, widgetId))
-    .sort(
-      (widgetA, widgetB) =>
-        widgetA.widget.position.y - widgetB.widget.position.y
-    )
-    .filter(
-      ({ widget, data }) =>
-        widget.type === 'visualization' &&
-        data.query.analysis_type !== 'funnel' &&
-        (data.query.event_collection === eventCollection || !eventCollection)
-    )
-    .map(({ widget }) => {
-      const {
-        id,
-        filterIds,
-        settings: { widgetSettings },
-      } = widget as ChartWidget;
-      return {
-        widgetId: id,
-        isConnected: connectByDefault ? true : !!filterIds,
-        title: 'title' in widgetSettings ? widgetSettings.title : null,
-        positionIndex: widgetsIds.indexOf(id) + 1,
-      };
-    });
-  return widgets;
-}
 
 // /**
 //  * Apply filter connections updates to connected widgets
@@ -99,6 +62,89 @@ export function* getFilterWidgetConnections(
 // }
 
 /**
+ * Synchronize widget connections based on selected event stream
+ *
+ * @param dashboardId - Dashboard identifer
+ * @param filterWidgetId - Filter widget identifier
+ * @param connectByDefault - Connected widgets by default
+ * @return void
+ *
+ */
+function* synchronizeFilterConnections(
+  dashboardId: string,
+  filterWidgetId: string,
+  connectByDefault?: boolean
+) {
+  try {
+    while (true) {
+      const action = yield take(SET_EVENT_STREAM);
+      const {
+        payload: { eventStream },
+      } = action;
+
+      const state = yield select();
+
+      const {
+        settings: { widgets: dashboardWidgetsIds },
+      } = getDashboard(state, dashboardId);
+
+      const widgetConnections: FilterConnection[] = yield call(
+        getFilterWidgetConnections,
+        dashboardId,
+        filterWidgetId,
+        eventStream,
+        connectByDefault
+      );
+
+      yield put(setEditorConnections(widgetConnections));
+
+      const widgetConnectionIds = widgetConnections.map(
+        ({ widgetId }) => widgetId
+      );
+      const dashboardWidgets = dashboardWidgetsIds.map((widgetId) =>
+        getWidget(state, widgetId)
+      );
+
+      const fadeOutWidgets = dashboardWidgetsIds
+        .map((widgetId) => getWidget(state, widgetId))
+        .filter(({ widget: { id, type } }) => {
+          if (filterWidgetId === id) return false;
+          return type !== 'visualization';
+        })
+        .map(({ widget: { id } }) =>
+          put(setWidgetState(id, { isFadeOut: true }))
+        );
+
+      const updateChartWidgets = dashboardWidgets
+        .filter(({ widget: { type } }) => type === 'visualization')
+        .map(({ widget: { id } }) => {
+          let isHighlighted = false;
+          let isTitleCover = false;
+          let isFadeOut = true;
+
+          const inConnectionsPool = widgetConnectionIds.includes(id);
+          if (inConnectionsPool) {
+            const { isConnected, title } = widgetConnections.find(
+              ({ widgetId }) => widgetId === id
+            );
+            isHighlighted = isConnected;
+            isTitleCover = !title;
+            isFadeOut = false;
+          }
+
+          return put(
+            setWidgetState(id, { isHighlighted, isFadeOut, isTitleCover })
+          );
+        });
+
+      yield all([...fadeOutWidgets, ...updateChartWidgets]);
+    }
+  } finally {
+    if (yield cancelled()) console.log('cancel');
+  }
+}
+
+/**
  * Flow responsible for setup filter widget.
  *
  * @param widgetId - Widget identifer
@@ -109,48 +155,31 @@ export function* setupFilterWidget(widgetId: string) {
   const filterWidgetId = widgetId;
   const dashboardId = yield select(getActiveDashboard);
 
+  yield put(setupDashboardEventStreams(dashboardId));
   yield take(ADD_WIDGET_TO_DASHBOARD);
+
+  yield put(openEditor());
+
+  const synchronizeConnectionsTask = yield fork(
+    synchronizeFilterConnections,
+    dashboardId,
+    filterWidgetId,
+    true
+  );
+
+  const action = yield take([APPLY_EDITOR_SETTINGS, CLOSE_EDITOR]);
+  yield cancel(synchronizeConnectionsTask);
+
+  if (action.type === APPLY_EDITOR_SETTINGS) {
+    // yield call(applyFilterUpdates, filterWidgetId);
+
+    yield put(closeEditor());
+    yield put(saveDashboard(dashboardId));
+  }
 
   const {
     settings: { widgets: dashboardWidgetsIds },
   } = yield select(getDashboard, dashboardId);
-
-  const widgetConnections = yield call(
-    getFilterWidgetConnections,
-    dashboardId,
-    filterWidgetId
-  );
-
-  yield put(setEditorConnections(widgetConnections));
-
-  const widgetsConnectionsPool = widgetConnections.map(
-    ({ widgetId }) => widgetId
-  );
-
-  const fadeOutWidgets = dashboardWidgetsIds
-    .filter(
-      (id: string) =>
-        !widgetsConnectionsPool.includes(id) && id !== filterWidgetId
-    )
-    .map((id: string) => put(setWidgetState(id, { isFadeOut: true })));
-
-  const titleCoverWidgets = widgetConnections
-    .filter(({ title }) => !title)
-    .map(({ widgetId }) =>
-      put(setWidgetState(widgetId, { isTitleCover: true }))
-    );
-
-  const highlightWidgets = widgetConnections
-    .filter(({ isConnected }) => isConnected)
-    .map(({ widgetId }) =>
-      put(setWidgetState(widgetId, { isHighlighted: true }))
-    );
-
-  yield all([...fadeOutWidgets, ...titleCoverWidgets, ...highlightWidgets]);
-
-  yield put(openEditor());
-
-  const action = yield take([APPLY_EDITOR_SETTINGS, CLOSE_EDITOR]);
 
   yield all(
     dashboardWidgetsIds.map((widgetId: string) =>
@@ -163,11 +192,4 @@ export function* setupFilterWidget(widgetId: string) {
       )
     )
   );
-
-  if (action.type === APPLY_EDITOR_SETTINGS) {
-    // yield call(applyFilterUpdates, filterWidgetId);
-
-    yield put(closeEditor());
-    yield put(saveDashboard(dashboardId));
-  }
 }

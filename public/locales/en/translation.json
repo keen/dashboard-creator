@@ -25,6 +25,14 @@
     "placeholder": "Enter text",
     "delete_confirmation": "Are you sure you want to delete this text?"
   },
+  "filter_settings": {
+    "title": "Create Filter",
+    "create_button": "Create Filter",
+    "edit_button": "Edit Filter",
+    "cancel_button": "Cancel",
+    "event_stream_placeholder": "Select event stream",
+    "untitled_chart": "Untitled Chart"
+  },
   "date_picker_management": {
     "edit_text": "Edit",
     "delete_confirmation": "Are you sure you want to delete this widget?"

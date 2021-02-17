@@ -30,6 +30,7 @@ import EditorNavigation from '../EditorNavigation';
 import QueryPickerModal from '../QueryPickerModal';
 import DatePickerModal from '../DatePickerModal';
 import ImagePickerModal from '../ImagePickerModal';
+import FilterModal from '../FilterModal';
 import ChartWidgetEditor from '../ChartWidgetEditor';
 import TextWidgetEditor from '../TextWidgetEditor';
 import ConfirmQueryChange from '../ConfirmQueryChange';
@@ -195,7 +196,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
       <QueryPickerModal />
       <DatePickerModal />
       <ImagePickerModal />
-      {/*todo add filter modal*/}
+      <FilterModal />
     </EditorContext.Provider>
   );
 };

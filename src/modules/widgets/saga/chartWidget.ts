@@ -125,19 +125,20 @@ export function* prepareChartWidgetQuery(chartWidget: WidgetItem) {
  */
 export function* handleDetachedQuery(
   widgetId: string,
-  visualizationType: string
+  visualizationType: string,
+  analysisResult: Record<string, any>
 ) {
-  const { t } = yield getContext(TRANSLATIONS);
+  const i18n = yield getContext(TRANSLATIONS);
   const error = {
-    title: t('widget_errors.detached_query_title', {
+    title: i18n.t('widget_errors.detached_query_title', {
       chart: visualizationType,
     }),
-    message: t('widget_errors.detached_query_message'),
+    message: i18n.t('widget_errors.detached_query_message'),
   };
 
   const widgetState: Partial<WidgetItem> = {
     isInitialized: true,
-    data: null,
+    data: analysisResult,
     error,
   };
 
@@ -190,7 +191,7 @@ export function* initializeChartWidget({
     );
 
     if (isDetachedQuery) {
-      yield call(handleDetachedQuery, id, visualizationType);
+      yield call(handleDetachedQuery, id, visualizationType, analysisResult);
     } else {
       if (hasQueryModifiers) {
         yield put(addInterimQuery(id, analysisResult));
@@ -209,6 +210,7 @@ export function* initializeChartWidget({
       }
     }
   } catch (err) {
+    console.log('error', err);
     const { body } = err;
     yield put(
       setWidgetState(id, {

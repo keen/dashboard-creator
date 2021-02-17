@@ -1,8 +1,14 @@
 export type ReducerState = {
   isEditorOpen: boolean;
   widgetConnections: FilterConnection[];
-  eventStream: string;
-  targetProperty: string;
+  eventStream: string | null;
+  eventStreamSchema: Record<string, string>;
+  eventStreamsPool: string[];
+  targetProperty: string | null;
+  schemaProcessing: {
+    inProgress: boolean;
+    error: boolean;
+  };
 };
 
 export type FilterConnection = {

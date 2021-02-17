@@ -10,6 +10,11 @@ import {
   UPDATE_CONNECTION,
   SET_TARGET_PROPERTY,
   SET_EVENT_STREAM,
+  SET_EVENT_STREAM_SCHEMA,
+  SET_EVENT_STREAMS_POOL,
+  SETUP_DASHBOARD_EVENT_STREAMS,
+  SET_SCHEMA_PROCESSING,
+  SET_SCHEMA_PROCESSING_ERROR,
 } from './constants';
 
 export const openEditor = createAction(OPEN_EDITOR);
@@ -53,6 +58,51 @@ export const updateConnection = createAction(
   })
 );
 
+export const setupDashboardEventStreams = createAction(
+  SETUP_DASHBOARD_EVENT_STREAMS,
+  (dashboardId: string) => ({
+    payload: {
+      dashboardId,
+    },
+  })
+);
+
+export const setEventStreamSchema = createAction(
+  SET_EVENT_STREAM_SCHEMA,
+  (schema: Record<string, string>) => ({
+    payload: {
+      schema,
+    },
+  })
+);
+
+export const setEventStreamsPool = createAction(
+  SET_EVENT_STREAMS_POOL,
+  (eventStreams: string[]) => ({
+    payload: {
+      eventStreams,
+    },
+  })
+);
+
+export const setSchemaProcessing = createAction(
+  SET_SCHEMA_PROCESSING,
+  (isProcessingSchema: boolean) => ({
+    payload: {
+      isProcessingSchema,
+    },
+  })
+);
+
+export const setSchemaProcessingError = createAction(
+  SET_SCHEMA_PROCESSING_ERROR,
+  (processingError: boolean) => ({
+    payload: {
+      processingError,
+    },
+  })
+);
+
 export type FilterActions =
   | ReturnType<typeof openEditor>
   | ReturnType<typeof closeEditor>
@@ -60,4 +110,9 @@ export type FilterActions =
   | ReturnType<typeof setEditorConnections>
   | ReturnType<typeof updateConnection>
   | ReturnType<typeof setTargetProperty>
-  | ReturnType<typeof setEventStream>;
+  | ReturnType<typeof setEventStream>
+  | ReturnType<typeof setEventStreamSchema>
+  | ReturnType<typeof setEventStreamsPool>
+  | ReturnType<typeof setupDashboardEventStreams>
+  | ReturnType<typeof setSchemaProcessingError>
+  | ReturnType<typeof setSchemaProcessing>;
