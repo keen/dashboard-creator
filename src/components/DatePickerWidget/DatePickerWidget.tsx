@@ -30,7 +30,6 @@ import {
   Container,
   Title,
   Bar,
-  DropdownContainer,
   SettingsContainer,
   TitleContainer,
   TimezoneContainer,
@@ -76,7 +75,7 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
   };
 
   const [isOpen, setOpen] = useState(false);
-  const [dropdown, setDropdown] = useState({ x: 0, y: 0, width: 0 });
+  const [dropdown, setDropdown] = useState({ top: 0, left: 0, width: 0 });
   const [localData, setLocalData] = useState(initialData);
 
   const containerRef = useRef(null);
@@ -106,8 +105,8 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
 
       setDropdown((state) => ({
         ...state,
-        x: left,
-        y: bottom - document.body.offsetHeight + window.scrollY,
+        left,
+        top: bottom + window.scrollY,
         width,
       }));
     }
@@ -163,14 +162,33 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
         )}
       </Container>
       <Portal modalContainer={modalContainer}>
-        <DropdownContainer
-          ref={dropdownContainerRef}
-          customTransform={`translate(${dropdown.x}px, ${dropdown.y}px)`}
-          width={dropdown.width}
-        >
-          <Dropdown isOpen={isOpen}>
+        <div ref={dropdownContainerRef}>
+          <Dropdown
+            key={`${id} - ${dropdown.width}`}
+            isOpen={isOpen}
+            positionRelativeToDocument
+            motion={{
+              initial: {
+                opacity: 0,
+                top: dropdown.top,
+                left: dropdown.left,
+                width: dropdown.width,
+              },
+              animate: {
+                opacity: 1,
+                top: dropdown.top,
+                left: dropdown.left,
+                width: dropdown.width,
+              },
+              exit: {
+                opacity: 0,
+                top: dropdown.top,
+                left: dropdown.left,
+                width: dropdown.width,
+              },
+            }}
+          >
             <Tabs
-              key={`${id} - ${dropdown.x}`}
               activeTab={
                 typeof timeframe === 'string' ? RELATIVE_TAB : ABSOLUTE_TAB
               }
@@ -268,7 +286,7 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
               </Anchor>
             </Bar>
           </Dropdown>
-        </DropdownContainer>
+        </div>
       </Portal>
     </>
   );
