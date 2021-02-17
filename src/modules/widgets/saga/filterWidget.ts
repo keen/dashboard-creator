@@ -13,7 +13,7 @@ import {
   getDashboard,
   saveDashboard,
 } from '../../dashboards';
-import { getWidget } from '../selectors';
+import { getWidget, getWidgetSettings } from '../selectors';
 
 import { FilterConnection, ReducerState } from '../../filter/types';
 import { getActiveDashboard } from '../../app';
@@ -35,6 +35,62 @@ import {
   updateChartWidgetFiltersConnections,
 } from '../actions';
 import { APPLY_EDITOR_SETTINGS, CLOSE_EDITOR } from '../../filter/constants';
+
+/**
+ * Release connection from filter after chart widget is removed.
+ *
+ * @param filterId - Filter identifier
+ * @param widgetId - Widget identifier
+ * @return void
+ *
+ */
+export function* removeConnectionFromFilter(
+  filterId: string,
+  widgetId: string
+) {
+  const {
+    settings: { widgets, eventStream, targetProperty },
+  } = yield select(getWidgetSettings, filterId);
+
+  const updatedConnections = widgets.filter((id: string) => id !== widgetId);
+  yield put(
+    setFilterWidget(filterId, updatedConnections, eventStream, targetProperty)
+  );
+}
+
+/**
+ * Release connections after date picker widget is removed.
+ *
+ * @param deletedFilterId - Widget identifer
+ * @return void
+ *
+ */
+export function* removeFilterConnections(
+  dashboardId: string,
+  deletedFilterId: string
+) {
+  const state = yield select();
+  const {
+    settings: { widgets: widgetsIds },
+  } = getDashboard(state, dashboardId);
+
+  const connections = widgetsIds
+    .map((widgetId) => getWidgetSettings(state, widgetId))
+    .filter(
+      ({ type, filterIds }: ChartWidget) =>
+        type === 'visualization' && filterIds.includes(deletedFilterId)
+    );
+  const chartWidgetsUpdates = connections.map((chart: ChartWidget) =>
+    put(
+      updateChartWidgetFiltersConnections(
+        chart.id,
+        chart.filterIds.filter((id) => id !== deletedFilterId)
+      )
+    )
+  );
+
+  yield all(chartWidgetsUpdates);
+}
 
 /**
  * Apply filter connections updates to connected widgets

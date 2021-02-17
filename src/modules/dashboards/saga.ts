@@ -113,6 +113,10 @@ import {
   DashboardMetaData,
   DashboardError,
 } from './types';
+import {
+  removeConnectionFromFilter,
+  removeFilterConnections,
+} from '../widgets/saga/filterWidget';
 
 export function* fetchDashboardList() {
   const blobApi = yield getContext(BLOB_API);
@@ -394,19 +398,30 @@ export function* removeWidgetFromDashboard({
 }: ReturnType<typeof removeWidgetFromDashboardAction>) {
   const { dashboardId, widgetId } = payload;
 
-  const { type, query, datePickerId } = yield select(
+  const { type, query, datePickerId, filterIds } = yield select(
     getWidgetSettings,
     widgetId
   );
+
   if (type === 'visualization' && query && typeof query === 'string') {
     yield call(updateAccessKeyOptions);
     if (datePickerId) {
       yield call(removeConnectionFromDatePicker, datePickerId, widgetId);
     }
+
+    yield all(
+      filterIds.map((filterId: string) =>
+        call(removeConnectionFromFilter, filterId, widgetId)
+      )
+    );
   }
 
   if (type === 'date-picker') {
     yield call(removeDatePickerConnections, dashboardId, widgetId);
+  }
+
+  if (type === 'filter') {
+    yield call(removeFilterConnections, dashboardId, widgetId);
   }
 
   yield put(removeWidget(widgetId));
