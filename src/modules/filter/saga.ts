@@ -10,7 +10,6 @@ import {
 import {
   setEventStreamsPool,
   setEventStream,
-  setTargetProperty,
   setSchemaProcessing,
   setEventStreamSchema,
   setSchemaProcessingError,
@@ -97,7 +96,6 @@ export function* prepareFilterTargetProperties({
   const { eventStream } = payload;
 
   yield put(setSchemaProcessing(true));
-  yield put(setTargetProperty(null));
   const client = yield getContext(KEEN_ANALYSIS);
 
   try {
