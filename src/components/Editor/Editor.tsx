@@ -195,6 +195,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
       <QueryPickerModal />
       <DatePickerModal />
       <ImagePickerModal />
+      {/*todo add filter modal*/}
     </EditorContext.Provider>
   );
 };

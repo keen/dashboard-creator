@@ -33,6 +33,7 @@ import {
   SAVED_QUERY_UPDATED,
   CLONE_WIDGET,
   SAVE_IMAGE,
+  SET_FILTER_WIDGET,
 } from './constants';
 
 export const registerWidgets = createAction(
@@ -289,6 +290,26 @@ export const resetDatePickerWidgets = createAction(
   })
 );
 
+export const setFilterWidget = createAction(
+  SET_FILTER_WIDGET,
+  (id: string, widgetConnections: string[]) => ({
+    payload: {
+      id,
+      widgetConnections,
+    },
+  })
+);
+
+// export const updateChartWidgetFilerConnection = createAction(
+//     UPDATE_CHART_WIDGET_FILTERS_CONNECTION,
+//     (id: string, filterId: string | null) => ({
+//         payload: {
+//             id,
+//             filterId,
+//         },
+//     })
+// );
+
 export type WidgetsActions =
   | ReturnType<typeof createWidget>
   | ReturnType<typeof removeWidget>
@@ -315,4 +336,5 @@ export type WidgetsActions =
   | ReturnType<typeof savedQueryUpdated>
   | ReturnType<typeof cloneWidget>
   | ReturnType<typeof saveClonedWidget>
-  | ReturnType<typeof saveImage>;
+  | ReturnType<typeof saveImage>
+  | ReturnType<typeof setFilterWidget>;

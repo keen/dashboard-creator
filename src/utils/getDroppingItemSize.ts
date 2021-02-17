@@ -12,6 +12,8 @@ const getDroppingItemSize = (widgetType: WidgetType) => {
       return { i, w: 4, h: 9, minW: 2, minH: 4 };
     case 'text':
       return { i, w: 2, h: 2, minW: 2, minH: 1 };
+    case 'filter':
+      return { i, w: 2, h: 2, minW: 2, minH: 1 };
     default:
       return { i, w: 3, h: 3, minW: 2, minH: 1 };
   }

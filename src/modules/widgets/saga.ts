@@ -84,6 +84,7 @@ import {
 } from './constants';
 
 import { ChartWidget, WidgetItem } from './types';
+import { setupFilterWidget } from './saga/filterWidget';
 
 /**
  * Flow responsible for re-initializing widgets after updating saved query.
@@ -243,6 +244,8 @@ export function* createWidget({
     yield take(ADD_WIDGET_TO_DASHBOARD);
     const dashboardId = yield select(getActiveDashboard);
     yield put(saveDashboard(dashboardId));
+  } else if (widgetType === 'filter') {
+    yield fork(setupFilterWidget, id);
   } else {
     yield fork(selectQueryForWidget, id);
   }

@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import {
   Container,
   TextManagementContainer,
-  DatePickerContainer,
+  FilterContainer,
 } from './Widget.styles';
 
 import ChartWidget from '../ChartWidget';
@@ -16,7 +16,7 @@ import DatePickerWidget from '../DatePickerWidget';
 import ImageManagement from '../ImageManagement';
 import ChartManagement from '../ChartManagement';
 import TextManagement from '../TextManagement';
-import DatePickerManagement from '../DatePickerManagement';
+import DatePickerManagement from '../FilterManagement';
 
 import WidgetCover from './components/WidgetCover';
 
@@ -27,6 +27,7 @@ import { getDashboardSettings } from '../../modules/dashboards';
 import { RootState } from '../../rootReducer';
 import { RenderOptions } from './types';
 import ChartWidgetFilter from '../ChartWidgetFilter';
+import FilterWidget from '../FilterWidget/FilterWidget';
 
 type Props = {
   /** Widget identifier */
@@ -53,7 +54,7 @@ const renderWidget = ({
   switch (widgetType) {
     case 'date-picker':
       return (
-        <DatePickerContainer isFadeOut={isFadeOut}>
+        <FilterContainer isFadeOut={isFadeOut}>
           <DatePickerWidget id={widgetId} disableInteractions={isEditorMode} />
           {isEditorMode && (
             <DatePickerManagement
@@ -62,7 +63,7 @@ const renderWidget = ({
               onRemoveWidget={onRemoveWidget}
             />
           )}
-        </DatePickerContainer>
+        </FilterContainer>
       );
     case 'text':
       if (isEditorMode) {
@@ -107,6 +108,19 @@ const renderWidget = ({
             />
           )}
         </Container>
+      );
+    case 'filter':
+      return (
+        <FilterContainer isFadeOut={isFadeOut}>
+          <FilterWidget id={widgetId} disableInteractions={isEditorMode} />
+          {/*{isEditorMode && (*/}
+          {/*    <FilterManagement*/}
+          {/*        id={widgetId}*/}
+          {/*        isHoverActive={isHoverActive}*/}
+          {/*        onRemoveWidget={onRemoveWidget}*/}
+          {/*    />*/}
+          {/*)}*/}
+        </FilterContainer>
       );
     default:
       return null;

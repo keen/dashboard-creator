@@ -31,7 +31,7 @@ export const TextManagementContainer = styled.div<{ isFadeOut?: boolean }>`
   height: 100%;
 `;
 
-export const DatePickerContainer = styled.div<{ isFadeOut?: boolean }>`
+export const FilterContainer = styled.div<{ isFadeOut?: boolean }>`
   position: relative;
   width: 100%;
   height: 100%;

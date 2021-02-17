@@ -18,6 +18,7 @@ import {
   SET_WIDGET_STATE,
   CREATE_WIDGET,
   SAVE_CLONED_WIDGET,
+  SET_FILTER_WIDGET,
 } from './constants';
 
 import { ReducerState } from './types';
@@ -174,6 +175,22 @@ const widgetsReducer = (
               ...state.items[action.payload.id].widget,
               settings: {
                 link: action.payload.link,
+              },
+            },
+          },
+        },
+      };
+    case SET_FILTER_WIDGET:
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          [action.payload.id]: {
+            ...state.items[action.payload.id],
+            widget: {
+              ...state.items[action.payload.id].widget,
+              settings: {
+                widgets: action.payload.widgetConnections,
               },
             },
           },
