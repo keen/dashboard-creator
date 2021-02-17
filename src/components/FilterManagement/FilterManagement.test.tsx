@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { render as rtlRender, fireEvent } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 
-import DatePickerManagement from './DatePickerManagement';
+import FilterManagement from './FilterManagement';
 
 import { DRAG_HANDLE_ELEMENT } from '../Widget';
 
@@ -21,7 +21,7 @@ const render = (overProps: any = {}) => {
 
   const wrapper = rtlRender(
     <Provider store={store}>
-      <DatePickerManagement {...props} />
+      <FilterManagement {...props} />
     </Provider>
   );
 

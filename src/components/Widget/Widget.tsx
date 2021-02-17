@@ -16,7 +16,6 @@ import DatePickerWidget from '../DatePickerWidget';
 import ImageManagement from '../ImageManagement';
 import ChartManagement from '../ChartManagement';
 import TextManagement from '../TextManagement';
-import DatePickerManagement from '../FilterManagement';
 
 import WidgetCover from './components/WidgetCover';
 
@@ -28,6 +27,7 @@ import { RootState } from '../../rootReducer';
 import { RenderOptions } from './types';
 import ChartWidgetFilter from '../ChartWidgetFilter';
 import FilterWidget from '../FilterWidget/FilterWidget';
+import FilterManagement from '../FilterManagement';
 
 type Props = {
   /** Widget identifier */
@@ -57,10 +57,13 @@ const renderWidget = ({
         <FilterContainer isFadeOut={isFadeOut}>
           <DatePickerWidget id={widgetId} disableInteractions={isEditorMode} />
           {isEditorMode && (
-            <DatePickerManagement
+            <FilterManagement
               id={widgetId}
               isHoverActive={isHoverActive}
               onRemoveWidget={onRemoveWidget}
+              onEditWidget={() => {
+                console.log('test');
+              }}
             />
           )}
         </FilterContainer>
@@ -113,13 +116,16 @@ const renderWidget = ({
       return (
         <FilterContainer isFadeOut={isFadeOut}>
           <FilterWidget id={widgetId} disableInteractions={isEditorMode} />
-          {/*{isEditorMode && (*/}
-          {/*    <FilterManagement*/}
-          {/*        id={widgetId}*/}
-          {/*        isHoverActive={isHoverActive}*/}
-          {/*        onRemoveWidget={onRemoveWidget}*/}
-          {/*    />*/}
-          {/*)}*/}
+          {isEditorMode && (
+            <FilterManagement
+              id={widgetId}
+              isHoverActive={isHoverActive}
+              onRemoveWidget={onRemoveWidget}
+              onEditWidget={() => {
+                console.log('test');
+              }}
+            />
+          )}
         </FilterContainer>
       );
     default:

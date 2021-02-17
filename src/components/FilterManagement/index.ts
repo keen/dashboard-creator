@@ -1,3 +1,3 @@
-import DatePickerManagement from './DatePickerManagement';
+import FilterManagement from './FilterManagement';
 
-export default DatePickerManagement;
+export default FilterManagement;

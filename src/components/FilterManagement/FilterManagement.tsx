@@ -1,7 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
 import { colors } from '@keen.io/colors';
 import { Button, CircleButton } from '@keen.io/ui-core';
 import { Icon } from '@keen.io/icons';
@@ -11,13 +10,10 @@ import {
   RemoveContainer,
   ManagementContainer,
   ButtonsContainer,
-} from './DatePickerManagement.styles';
+} from './FilterManagement.styles';
 
 import RemoveWidget from '../RemoveWidget';
 import PreventDragPropagation from '../PreventDragPropagation';
-
-import { editDatePickerWidget } from '../../modules/widgets';
-
 import { DRAG_HANDLE_ELEMENT } from '../Widget';
 
 import { settingsMotion } from './motions';
@@ -29,15 +25,17 @@ type Props = {
   isHoverActive: boolean;
   /** Remove widget event handler */
   onRemoveWidget: () => void;
+  /** Edit widget event handler */
+  onEditWidget: () => void;
 };
 
-const DatePickerManagement: FC<Props> = ({
-  id,
+const FilterManagement: FC<Props> = ({
   isHoverActive,
   onRemoveWidget,
+  onEditWidget,
 }) => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const [removeConfirmation, setRemoveConfirmation] = useState(false);
 
   useEffect(() => {
@@ -79,10 +77,7 @@ const DatePickerManagement: FC<Props> = ({
             </DragHandle>
             <ButtonsContainer>
               <PreventDragPropagation>
-                <Button
-                  variant="blank"
-                  onClick={() => dispatch(editDatePickerWidget(id))}
-                >
+                <Button variant="blank" onClick={onEditWidget}>
                   {t('date_picker_management.edit_text')}
                 </Button>
               </PreventDragPropagation>
@@ -103,4 +98,4 @@ const DatePickerManagement: FC<Props> = ({
   );
 };
 
-export default DatePickerManagement;
+export default FilterManagement;
