@@ -57,7 +57,7 @@ test('renders dashboard title', () => {
   expect(getByText(props.title)).toBeInTheDocument();
 });
 
-test('render "Public" marker', () => {
+test('renders "public" tag', () => {
   const {
     wrapper: { getByText },
   } = render({ isPublic: true });
@@ -89,4 +89,12 @@ test('allows user to back to dashboards list', () => {
   fireEvent.click(element);
 
   expect(props.onBack).toHaveBeenCalled();
+});
+
+test('renders public dashboard title', () => {
+  const {
+    wrapper: { getByTestId },
+  } = render({ useDashboardSwitcher: false });
+
+  expect(getByTestId('public-title')).toBeInTheDocument();
 });
