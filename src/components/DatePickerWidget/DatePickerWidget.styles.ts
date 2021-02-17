@@ -1,11 +1,18 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import { transparentize } from 'polished';
 import { layout, LayoutProps, system } from 'styled-system';
 import { UI_LAYERS } from '@keen.io/ui-core';
 import { colors } from '@keen.io/colors';
 
-export const Container = styled.div`
+export const Container = styled.div<{ isOpen?: boolean }>`
   height: 100%;
   display: flex;
+
+  ${(props) =>
+    props.isOpen &&
+    css`
+      box-shadow: ${transparentize(0.85, colors.black[500])} 0 0 3px 1px;
+    `}
 `;
 
 export const TitleContainer = styled.div`
@@ -24,7 +31,7 @@ export const Title = styled.div`
 `;
 
 export const Bar = styled.div`
-  padding: 15px 10px;
+  padding: 10px 20px;
   border-top: solid 1px ${colors.white[300]};
   background-color: ${colors.white[500]};
   display: flex;
@@ -52,7 +59,7 @@ export const DropdownContainer = styled.div<
 `;
 
 export const SettingsContainer = styled.div`
-  padding: 15px 10px;
+  padding: 20px;
   border-top: solid 1px ${colors.white[300]};
   border-bottom: solid 1px ${colors.white[300]};
 `;
@@ -75,4 +82,8 @@ export const Separator = styled.div`
   font-size: 13px;
   line-height: 17px;
   color: ${colors.blue[100]};
+`;
+
+export const TimezoneContainer = styled.div`
+  margin: 0 5px;
 `;

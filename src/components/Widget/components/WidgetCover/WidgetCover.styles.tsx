@@ -16,6 +16,7 @@ export const Cover = styled.div<{ isHighlighted?: boolean }>`
     props.isHighlighted &&
     css`
       border: 1px solid ${colors.green[100]};
+      border-radius: 4px;
       background-color: ${transparentize(0.5, '#F0F6F1')};
       pointer-events: none;
     `}

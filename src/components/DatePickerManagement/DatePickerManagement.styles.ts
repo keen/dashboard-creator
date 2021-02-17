@@ -8,7 +8,6 @@ export const DragHandle = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  cursor: grab;
 `;
 
 export const RemoveContainer = styled(motion.div)`
@@ -25,8 +24,11 @@ export const RemoveContainer = styled(motion.div)`
 export const ManagementContainer = styled(motion.div)`
   position: absolute;
   background: ${transparentize(0.4, colors.black[300])};
+  left: 0;
+  right: 0;
 
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr;
   grid-column-gap: 10px;
   align-items: center;
 
@@ -34,4 +36,15 @@ export const ManagementContainer = styled(motion.div)`
   height: 47px;
   min-width: 200px;
   z-index: ${UI_LAYERS.dropdown};
+
+  cursor: grab;
+`;
+
+export const ButtonsContainer = styled.div`
+  display: grid;
+  justify-content: center;
+
+  grid-auto-columns: auto;
+  grid-auto-flow: column;
+  grid-column-gap: 10px;
 `;

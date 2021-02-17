@@ -69,6 +69,9 @@ export class DashboardCreator {
     dashboardId: string
   ) => string;
 
+  /** Cached dashboards number */
+  private cachedDashboardsNumber = 3;
+
   constructor(config: DashboardCreatorOptions) {
     const {
       container,
@@ -79,10 +82,10 @@ export class DashboardCreator {
       translations,
       theme,
       createSharedDashboardUrl,
+      cachedDashboardsNumber,
     } = config;
 
     const { id, masterKey, accessKey } = project;
-
     if (backend?.analyticsApiUrl)
       this.analyticsApiUrl = backend.analyticsApiUrl;
     if (backend?.dashboardsApiUrl)
@@ -97,6 +100,9 @@ export class DashboardCreator {
     this.translationsSettings = translations || {};
     this.themeSettings = theme || {};
     this.createSharedDashboardUrl = createSharedDashboardUrl;
+    if (cachedDashboardsNumber) {
+      this.cachedDashboardsNumber = cachedDashboardsNumber;
+    }
   }
 
   render() {
@@ -136,7 +142,13 @@ export class DashboardCreator {
     const rootSaga = createRootSaga(this.editPrivileges);
 
     sagaMiddleware.run(rootSaga);
-    store.dispatch(appStart(this.themeSettings, this.editPrivileges));
+    store.dispatch(
+      appStart(
+        this.themeSettings,
+        this.editPrivileges,
+        this.cachedDashboardsNumber
+      )
+    );
 
     const projectSettings = {
       id: this.projectId,

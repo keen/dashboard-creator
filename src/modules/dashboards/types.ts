@@ -64,4 +64,5 @@ export type ReducerState = {
   };
   items: Record<string, DashboardItem>;
   dashboardListOrder: DashboardListOrder;
+  cachedDashboardIds: string[];
 };
