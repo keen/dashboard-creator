@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import { transparentize } from 'polished';
-import { UI_LAYERS } from '@keen.io/ui-core';
 import { colors } from '@keen.io/colors';
 
 export const Container = styled.div`
@@ -14,10 +13,6 @@ export const Filter = styled.div`
   font-family: Lato Bold, sans-serif;
   background: ${colors.white[500]};
   padding: 10px 14px;
-`;
-
-export const DropdownContainer = styled.div`
-  z-index: ${UI_LAYERS.dropdown};
 `;
 
 export const DropdownContent = styled.div`

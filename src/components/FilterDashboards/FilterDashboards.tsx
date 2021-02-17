@@ -19,7 +19,6 @@ import {
   Container,
   Filter,
   TagsContainer,
-  DropdownContainer,
   DropdownContent,
   EmptySearch,
   ClearFilters,
@@ -116,7 +115,7 @@ const FilterDashboards = () => {
         </Filter>
       </Container>
       <Portal modalContainer={modalContainer}>
-        <DropdownContainer ref={dropdownContainerRef}>
+        <div ref={dropdownContainerRef}>
           <Dropdown
             isOpen={isOpen}
             fullWidth={false}
@@ -180,7 +179,7 @@ const FilterDashboards = () => {
               {t('tags_filters.clear')}
             </ClearFilters>
           </Dropdown>
-        </DropdownContainer>
+        </div>
       </Portal>
     </>
   );
