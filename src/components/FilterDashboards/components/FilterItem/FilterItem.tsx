@@ -11,17 +11,16 @@ type Props = {
   /** Active state indicator */
   isActive?: boolean;
   /** Change event handler */
-  onChange: (isActive: boolean) => void;
+  onChange: (e: React.MouseEvent, isActive: boolean) => void;
 };
 
 const FilterItem: FC<Props> = ({ label, id, onChange, isActive }) => (
-  <Container htmlFor={id}>
-    <Checkbox
-      id={id}
-      type="secondary"
-      checked={isActive}
-      onChange={() => onChange(!isActive)}
-    />
+  <Container
+    onClick={(e) => {
+      onChange(e, !isActive);
+    }}
+  >
+    <Checkbox id={id} type="secondary" checked={isActive} />
     <Label>{label}</Label>
   </Container>
 );
