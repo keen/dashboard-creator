@@ -6,11 +6,11 @@ import {
   select,
   getContext,
 } from 'redux-saga/effects';
+import { createTree } from '@keen.io/ui-core';
 
 import {
   setEventStreamsPool,
   setEventStream,
-  setTargetProperty,
   setSchemaProcessing,
   setEventStreamSchema,
   setSchemaProcessingError,
@@ -97,7 +97,6 @@ export function* prepareFilterTargetProperties({
   const { eventStream } = payload;
 
   yield put(setSchemaProcessing(true));
-  yield put(setTargetProperty(null));
   const client = yield getContext(KEEN_ANALYSIS);
 
   try {
@@ -117,8 +116,13 @@ export function* prepareFilterTargetProperties({
           (filteredProperties[propertyName] = FILTER_SCHEMA_PROPERTY_TYPE)
       );
 
-    // TODO: Create tree strucutre and update action
-    yield put(setEventStreamSchema(filteredProperties));
+    const schemaTree = yield createTree(filteredProperties);
+    const schemaList = Object.keys(filteredProperties).map((key: string) => ({
+      path: key,
+      type: filteredProperties[key],
+    }));
+
+    yield put(setEventStreamSchema(filteredProperties, schemaTree, schemaList));
   } catch (err) {
     console.log(err);
     yield put(setSchemaProcessingError(true));

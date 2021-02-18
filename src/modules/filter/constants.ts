@@ -1,5 +1,6 @@
 export const OPEN_EDITOR = '@filter/OPEN_EDITOR';
 export const CLOSE_EDITOR = '@filter/CLOSE_EDITOR';
+export const RESET_EDITOR = '@filter/RESET_EDITOR';
 export const APPLY_EDITOR_SETTINGS = '@filter/APPLY_SETTINGS';
 export const SET_EDITOR_CONNECTIONS = '@filter/SET_EDITOR_CONNECTIONS';
 export const UPDATE_CONNECTION = '@filter/UPDATE_CONNECTION';
