@@ -265,7 +265,9 @@ describe('initializeChartWidget()', () => {
     });
 
     test('performs detached query flow', (result) => {
-      expect(result).toEqual(call(handleDetachedQuery, widgetId, 'line'));
+      expect(result).toEqual(
+        call(handleDetachedQuery, widgetId, 'line', analysisResult)
+      );
     });
   });
 

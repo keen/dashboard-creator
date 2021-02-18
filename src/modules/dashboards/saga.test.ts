@@ -73,6 +73,7 @@ import {
   getDashboardSettings,
   getDashboardsMetadata,
 } from './selectors';
+import { removeConnectionFromFilter } from '../widgets/saga/filterWidget';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
@@ -214,11 +215,20 @@ describe('removeWidgetFromDashboard()', () => {
       return {
         query: 'purchases',
         type: 'visualization',
+        filterIds: [],
       };
     });
 
     test('select state', (result) => {
       expect(result).toEqual(call(updateAccessKeyOptions));
+    });
+
+    test('removes connections from filter', (result) => {
+      [].map((filterId) => {
+        expect(result).toEqual(
+          call(removeConnectionFromFilter, filterId, widgetId)
+        );
+      });
     });
 
     test('triggers remove widget', (result) => {

@@ -51,16 +51,7 @@ test('allows user to edit date picker widget', () => {
   const button = getByText('date_picker_management.edit_text');
   fireEvent.click(button);
 
-  expect(store.getActions()).toMatchInlineSnapshot(`
-    Array [
-      Object {
-        "payload": Object {
-          "id": "@widget/01",
-        },
-        "type": "@widgets/EDIT_DATE_PICKER_WIDGET",
-      },
-    ]
-  `);
+  expect(store.getActions()).toMatchInlineSnapshot(`Array []`);
 });
 
 test('allows user to remove date picker widget', async () => {
