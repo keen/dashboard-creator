@@ -43,7 +43,7 @@ test('renders grid drag handle element', () => {
   expect(element).toBeInTheDocument();
 });
 
-test('allows user to edit filter widget', () => {
+test('allows user to edit widget', () => {
   const {
     wrapper: { getByText },
     props,
@@ -55,7 +55,7 @@ test('allows user to edit filter widget', () => {
   expect(props.onEditWidget).toHaveBeenCalled();
 });
 
-test('allows user to remove filter widget', async () => {
+test('allows user to remove widget', async () => {
   const {
     props,
     wrapper: { container, getByText },

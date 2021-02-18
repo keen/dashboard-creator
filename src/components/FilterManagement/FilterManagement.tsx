@@ -29,13 +29,13 @@ type Props = {
   onEditWidget: () => void;
 };
 
+// TODO: Handle labels
 const FilterManagement: FC<Props> = ({
   isHoverActive,
   onRemoveWidget,
   onEditWidget,
 }) => {
   const { t } = useTranslation();
-  // const dispatch = useDispatch();
   const [removeConfirmation, setRemoveConfirmation] = useState(false);
 
   useEffect(() => {
