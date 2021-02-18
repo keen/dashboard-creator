@@ -69,7 +69,7 @@ export function* applyFilterUpdates(filterWidgetId: string) {
     if (connectedCharts.includes(id)) {
       chartFilterIds.add(filterWidgetId);
     } else {
-      chartFilterIds.delete(id);
+      chartFilterIds.delete(filterWidgetId);
     }
     return put(updateChartWidgetFiltersConnections(id, [...chartFilterIds]));
   });
@@ -223,10 +223,23 @@ export function* editFilterWidget({
       getFilterSettings
     );
 
-    console.log(updatedStream, eventStream, 'COMPARE!');
-
     if (eventStream !== updatedStream) {
-      console.log('Stream Changed');
+      const state = yield select();
+      const availableCharts = widgetConnections.map((connection) =>
+        getWidget(state, connection.widgetId)
+      );
+
+      const resetChartWidgetConnections = availableCharts.map(({ widget }) => {
+        const { id, filterIds } = widget as ChartWidget;
+        const chartFilterIds = new Set<string>(filterIds);
+        chartFilterIds.delete(filterWidgetId);
+
+        return put(
+          updateChartWidgetFiltersConnections(id, [...chartFilterIds])
+        );
+      });
+
+      yield all(resetChartWidgetConnections);
     }
 
     yield call(applyFilterUpdates, filterWidgetId);

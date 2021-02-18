@@ -29,13 +29,13 @@ type Props = {
   onEditWidget: () => void;
 };
 
+// TODO: Handle labels
 const FilterManagement: FC<Props> = ({
   isHoverActive,
   onRemoveWidget,
   onEditWidget,
 }) => {
   const { t } = useTranslation();
-  // const dispatch = useDispatch();
   const [removeConfirmation, setRemoveConfirmation] = useState(false);
 
   useEffect(() => {
@@ -82,7 +82,7 @@ const FilterManagement: FC<Props> = ({
                 </Button>
               </PreventDragPropagation>
               <PreventDragPropagation>
-                <div data-testid="remove-date-picker-widget">
+                <div data-testid="remove-filter-widget">
                   <CircleButton
                     variant="blank"
                     onClick={() => setRemoveConfirmation(true)}
