@@ -122,7 +122,7 @@ export function* applyFilterUpdates(filterWidgetId: string) {
     if (connectedCharts.includes(id)) {
       chartFilterIds.add(filterWidgetId);
     } else {
-      chartFilterIds.delete(id);
+      chartFilterIds.delete(filterWidgetId);
     }
     return put(updateChartWidgetFiltersConnections(id, [...chartFilterIds]));
   });

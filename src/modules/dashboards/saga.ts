@@ -409,11 +409,13 @@ export function* removeWidgetFromDashboard({
       yield call(removeConnectionFromDatePicker, datePickerId, widgetId);
     }
 
-    yield all(
-      filterIds.map((filterId: string) =>
-        call(removeConnectionFromFilter, filterId, widgetId)
-      )
-    );
+    if (filterIds.length > 0) {
+      yield all(
+        filterIds.map((filterId: string) =>
+          call(removeConnectionFromFilter, filterId, widgetId)
+        )
+      );
+    }
   }
 
   if (type === 'date-picker') {

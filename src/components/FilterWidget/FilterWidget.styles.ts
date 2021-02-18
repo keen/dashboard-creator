@@ -50,3 +50,12 @@ export const Label = styled.div`
   align-items: center;
   background-color: ${colors.white[500]};
 `;
+
+export const ClearFilter = styled.div`
+  padding: 10px 14px;
+  border-top: solid 1px ${colors.gray[300]};
+  color: ${colors.blue[200]};
+  font-size: 14px;
+  font-family: 'Lato Bold', sans-serif;
+  cursor: pointer;
+`;

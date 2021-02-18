@@ -16,6 +16,7 @@ const render = (overProps: any = {}) => {
     id: '@widget/01',
     isHoverActive: true,
     onRemoveWidget: jest.fn(),
+    onEditWidget: jest.fn(),
     ...overProps,
   };
 
@@ -42,35 +43,26 @@ test('renders grid drag handle element', () => {
   expect(element).toBeInTheDocument();
 });
 
-test('allows user to edit date picker widget', () => {
+test('allows user to edit filter widget', () => {
   const {
     wrapper: { getByText },
-    store,
+    props,
   } = render();
 
-  const button = getByText('date_picker_management.edit_text');
+  const button = getByText('filter_management.edit_text');
   fireEvent.click(button);
 
-  expect(store.getActions()).toMatchInlineSnapshot(`
-    Array [
-      Object {
-        "payload": Object {
-          "id": "@widget/01",
-        },
-        "type": "@widgets/EDIT_DATE_PICKER_WIDGET",
-      },
-    ]
-  `);
+  expect(props.onEditWidget).toHaveBeenCalled();
 });
 
-test('allows user to remove date picker widget', async () => {
+test('allows user to remove filter widget', async () => {
   const {
     props,
     wrapper: { container, getByText },
   } = render();
 
   const button = container.querySelector(
-    '[data-testid="remove-date-picker-widget"] button'
+    '[data-testid="remove-filter-widget"] button'
   );
   fireEvent.click(button);
 

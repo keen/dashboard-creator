@@ -56,7 +56,7 @@ const FilterManagement: FC<Props> = ({
               onConfirm={onRemoveWidget}
               onDismiss={() => setRemoveConfirmation(false)}
             >
-              {t('date_picker_management.delete_confirmation')}
+              {t('filter_management.delete_confirmation')}
             </RemoveWidget>
           </RemoveContainer>
         )}
@@ -78,11 +78,11 @@ const FilterManagement: FC<Props> = ({
             <ButtonsContainer>
               <PreventDragPropagation>
                 <Button variant="blank" onClick={onEditWidget}>
-                  {t('date_picker_management.edit_text')}
+                  {t('filter_management.edit_text')}
                 </Button>
               </PreventDragPropagation>
               <PreventDragPropagation>
-                <div data-testid="remove-date-picker-widget">
+                <div data-testid="remove-filter-widget">
                   <CircleButton
                     variant="blank"
                     onClick={() => setRemoveConfirmation(true)}

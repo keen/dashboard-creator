@@ -260,7 +260,6 @@ describe('initializeChartWidget()', () => {
 
     test('performs query', () => {
       expect(keenAnalysis.query).toHaveBeenCalledWith(query);
-
       return analysisResult;
     });
 

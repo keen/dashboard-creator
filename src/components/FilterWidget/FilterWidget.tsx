@@ -11,13 +11,14 @@ import { useSelector } from 'react-redux';
 import { transparentize } from 'polished';
 import { Icon } from '@keen.io/icons';
 import { colors } from '@keen.io/colors';
-import { Dropdown, Portal, TIME_PICKER_CLASS } from '@keen.io/ui-core';
+import { Dropdown, Portal, TIME_PICKER_CLASS, Button } from '@keen.io/ui-core';
 
 import {
   Container,
   Title,
   DropdownContainer,
   TitleContainer,
+  ClearFilter,
 } from './FilterWidget.styles';
 
 import { getWidget } from '../../modules/widgets';
@@ -26,6 +27,7 @@ import { RootState } from '../../rootReducer';
 import { AppContext } from '../../contexts';
 
 import { getEventPath } from '../../utils';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   /** Widget identifier */
@@ -35,7 +37,7 @@ type Props = {
 };
 
 const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
-  // const { t } = useTranslation();
+  const { t } = useTranslation();
   const { modalContainer } = useContext(AppContext);
 
   const widget = useSelector((state: RootState) => getWidget(state, id));
@@ -113,7 +115,61 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
           customTransform={`translate(${dropdown.x}px, ${dropdown.y}px)`}
           width={dropdown.width}
         >
-          <Dropdown isOpen={isOpen}>Lorem ipsum</Dropdown>
+          <Dropdown isOpen={isOpen}>
+            {/*<DropdownContent>*/}
+            {/*<FilterItem*/}
+            {/*    id="cached"*/}
+            {/*    label={t('tags_filters.show_only_public_dashboards')}*/}
+            {/*    isActive={showOnlyPublicDashboards}*/}
+            {/*    onChange={(isActive) =>*/}
+            {/*        dispatch(setTagsFiltersPublic(isActive))*/}
+            {/*    }*/}
+            {/*/>*/}
+            {/*<SearchTags*/}
+            {/*    isActive={searchMode}*/}
+            {/*    searchPhrase={searchPhrase}*/}
+            {/*    inputPlaceholder={t(*/}
+            {/*        'tags_filters.search_tags_input_placeholder'*/}
+            {/*    )}*/}
+            {/*    searchLabel={t('tags_filters.search_label')}*/}
+            {/*    onChangePhrase={(phrase) => setSearchPhrase(phrase)}*/}
+            {/*    onClearPhrase={() => {*/}
+            {/*      setSearchPhrase('');*/}
+            {/*      setSearchMode(false);*/}
+            {/*    }}*/}
+            {/*    onActiveSearch={() => setSearchMode(true)}*/}
+            {/*/>*/}
+            {/*<TagsContainer>*/}
+            {/*  {filteredTags.map((tag) => (*/}
+            {/*      <FilterItem*/}
+            {/*          key={tag}*/}
+            {/*          id={tag}*/}
+            {/*          isActive={tags.includes(tag)}*/}
+            {/*          label={tag}*/}
+            {/*          onChange={(isActive) => updateTags(isActive, tag)}*/}
+            {/*      />*/}
+            {/*  ))}*/}
+            {/*</TagsContainer>*/}
+            {/*{isEmptySearch && (*/}
+            {/*    <EmptySearch>*/}
+            {/*      {t('tags_filters.empty_search_message')}*/}
+            {/*    </EmptySearch>*/}
+            {/*)}*/}
+            {/*</DropdownContent>*/}
+            <div>
+              <Button onClick={() => console.log('click')} variant="secondary">
+                Button
+              </Button>
+              <ClearFilter
+              // onClick={() => {
+              //   dispatch(setTagsFiltersPublic(false));
+              //   dispatch(setTagsFilters([]));
+              // }}
+              >
+                {t('filter.clear')}
+              </ClearFilter>
+            </div>
+          </Dropdown>
         </DropdownContainer>
       </Portal>
     </>

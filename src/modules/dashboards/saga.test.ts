@@ -214,6 +214,7 @@ describe('removeWidgetFromDashboard()', () => {
       return {
         query: 'purchases',
         type: 'visualization',
+        filterIds: [],
       };
     });
 
@@ -222,6 +223,7 @@ describe('removeWidgetFromDashboard()', () => {
     });
 
     test('triggers remove widget', (result) => {
+      console.log('finish');
       expect(result).toEqual(put(removeWidget(widgetId)));
     });
   });
