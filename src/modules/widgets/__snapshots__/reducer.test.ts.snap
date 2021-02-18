@@ -14,6 +14,7 @@ Object {
     "isTitleCover": false,
     "widget": Object {
       "datePickerId": null,
+      "filterIds": Array [],
       "id": "@widget/id",
       "position": Object {
         "h": 2,

@@ -56,6 +56,7 @@ import {
 } from './saga/textWidget';
 
 import { initializeChartWidget, editChartWidget } from './saga/chartWidget';
+import { editFilterWidget, setupFilterWidget } from './saga/filterWidget';
 
 import { SELECT_SAVED_QUERY, CREATE_QUERY, SavedQuery } from '../queries';
 import {
@@ -80,11 +81,11 @@ import {
   SET_DATE_PICKER_WIDGET_MODIFIERS,
   RESET_DATE_PICKER_WIDGETS,
   SAVED_QUERY_UPDATED,
+  EDIT_FILTER_WIDGET,
   CLONE_WIDGET,
 } from './constants';
 
 import { ChartWidget, WidgetItem } from './types';
-import { setupFilterWidget } from './saga/filterWidget';
 
 /**
  * Flow responsible for re-initializing widgets after updating saved query.
@@ -290,7 +291,7 @@ export function* widgetsSaga() {
   yield takeLatest(EDIT_INLINE_TEXT_WIDGET, editInlineTextWidget);
   yield takeLatest(CLONE_WIDGET, cloneWidget);
   yield takeLatest(CLEAR_DATE_PICKER_MODIFIERS, clearDatePickerModifiers);
-  // yield takeLatest(EDIT_FILTER_WIDGET, editFilterWidget);
+  yield takeLatest(EDIT_FILTER_WIDGET, editFilterWidget);
   yield takeEvery(RESET_DATE_PICKER_WIDGETS, resetDatePickerWidgets);
   yield takeEvery(INITIALIZE_WIDGET, initializeWidget);
   yield takeEvery(INITIALIZE_CHART_WIDGET, initializeChartWidget);
