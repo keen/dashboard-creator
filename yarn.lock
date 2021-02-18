@@ -1684,7 +1684,7 @@
     react-toast-notifications "^2.4.0"
     styled-system "^5.1.5"
 
-"@keen.io/ui-core@^2.12.4", "@keen.io/ui-core@^2.5.10", "@keen.io/ui-core@^2.5.20":
+"@keen.io/ui-core@^2.12.4", "@keen.io/ui-core@^2.5.10":
   version "2.12.4"
   resolved "https://registry.yarnpkg.com/@keen.io/ui-core/-/ui-core-2.12.4.tgz#01d42720027f69b1fb4dc205f97298060210981d"
   integrity sha512-zNgSoqCtFNPvkFlZKbcbsxsVpxbZOu3Slri7Dr4bUjHmaOUjqS+aTVp5GWGYNNdhl1Oer+/PC5KTh9wCWiZJSA==
@@ -1701,6 +1701,28 @@
     react-column-resizer "^1.1.9"
     react-dates "^21.8.0"
     react-select "^3.1.0"
+    styled-system "^5.1.5"
+    webfontloader "^1.6.28"
+
+"@keen.io/ui-core@^2.5.20":
+  version "2.13.0"
+  resolved "https://registry.yarnpkg.com/@keen.io/ui-core/-/ui-core-2.13.0.tgz#0d561776639b0c9ef2ad6a903d58c454c676652d"
+  integrity sha512-8GLrnqMKLLA8tVXYVv6d6w0zYJCUBbxCIND8m7qX/qo6ND3s71zWof99eQimx37V7grnbbntw9t7Hp9lsDiCYg==
+  dependencies:
+    "@keen.io/colors" "^1.1.0"
+    "@keen.io/icons" "^1.4.0"
+    "@keen.io/query" "^1.0.3"
+    color "^3.1.2"
+    framer-motion "^1.11.1"
+    fuse.js "^6.4.1"
+    moment-timezone "^0.5.32"
+    polished "^3.4.4"
+    rc-time-picker "^3.7.3"
+    react-column-resizer "^1.1.9"
+    react-dates "^21.8.0"
+    react-select "^3.1.0"
+    react-vtree "2.0.4"
+    react-window "^1.8.6"
     styled-system "^5.1.5"
     webfontloader "^1.6.28"
 
@@ -1826,11 +1848,6 @@
     redux "^4.0.0"
     redux-thunk "^2.3.0"
     reselect "^4.0.0"
-
-"@scarf/scarf@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@scarf/scarf/-/scarf-1.1.0.tgz#b84b4a91cd938a688d36245b7a7db6fbc476a499"
-  integrity sha512-b2iE8kjjzzUo2WZ0xuE2N77kfnTds7ClrDxcz3Atz7h2XrNVoAPUoT75i7CY0st5x++70V91Y+c6RpBX9MX7Jg==
 
 "@sinonjs/commons@^1.7.0":
   version "1.8.1"
@@ -9930,12 +9947,11 @@ please-upgrade-node@^3.2.0:
     semver-compare "^1.0.0"
 
 polished@^3.4.4:
-  version "3.7.0"
-  resolved "https://registry.yarnpkg.com/polished/-/polished-3.7.0.tgz#ece3368df30d33082bc8a957aa212d3f98119278"
-  integrity sha512-1tnvQ2wsxfR/DyPE2Xu9sRbnLAwXAarCWiZJ8Hfirw59bTigqjbzEWSAmzYizT6ocQW995V8n7RP48jq50DjJA==
+  version "3.7.1"
+  resolved "https://registry.yarnpkg.com/polished/-/polished-3.7.1.tgz#d1addc87ee16eb5b413c6165eda37600cccb9c11"
+  integrity sha512-/QgHrNGYwIA4mwxJ/7FSvalUJsm7KNfnXiScVSEG2Xa5qxDeBn4nmdjN2pW00mkM2Tts64ktc47U8F7Ed1BRAA==
   dependencies:
     "@babel/runtime" "^7.12.5"
-    "@scarf/scarf" "^1.1.0"
 
 polished@^4.0.4:
   version "4.0.5"
@@ -10570,14 +10586,14 @@ react-transition-group@^4.3.0, react-transition-group@^4.4.1:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
-react-vtree@^2.0.2:
+react-vtree@2.0.4, react-vtree@^2.0.2:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/react-vtree/-/react-vtree-2.0.4.tgz#340e64255f5f4ec6f4c35dc44a7036f7fcd98bc5"
   integrity sha512-UOld0VqyAZrryF06K753X4bcEVN6/wW831exvVlMZeZAVHk9KXnlHs4rpqDAeoiBgUwJqoW/rtn0hwsokRRxPA==
   dependencies:
     "@babel/runtime" "^7.11.0"
 
-react-window@^1.8.5:
+react-window@^1.8.5, react-window@^1.8.6:
   version "1.8.6"
   resolved "https://registry.yarnpkg.com/react-window/-/react-window-1.8.6.tgz#d011950ac643a994118632665aad0c6382e2a112"
   integrity sha512-8VwEEYyjz6DCnGBsd+MgkD0KJ2/OXFULyDtorIiTz+QzwoP94tBoA7CnbtyXMm+cCeAUER5KJcPtWl9cpKbOBg==

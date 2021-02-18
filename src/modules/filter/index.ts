@@ -3,6 +3,7 @@ import { filterSaga } from './saga';
 import {
   openEditor,
   closeEditor,
+  resetEditor,
   applySettings,
   updateConnection,
   setEventStream,
@@ -10,7 +11,7 @@ import {
   setEditorConnections,
   setupDashboardEventStreams,
 } from './actions';
-import { ReducerState } from './types';
+import { ReducerState, SchemaPropertiesList } from './types';
 
 import { getFilterWidgetConnections } from './saga';
 import { SET_EVENT_STREAM } from './constants';
@@ -26,9 +27,11 @@ export {
   setEditorConnections,
   updateConnection,
   openEditor,
+  resetEditor,
   closeEditor,
   filterSaga,
   getFilterWidgetConnections,
   SET_EVENT_STREAM,
   ReducerState,
+  SchemaPropertiesList,
 };

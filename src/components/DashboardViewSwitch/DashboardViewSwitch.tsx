@@ -15,6 +15,7 @@ import { Dropdown, Button } from '@keen.io/ui-core';
 import { colors } from '@keen.io/colors';
 
 import SearchInput from '../SearchInput';
+import EmptySearch from '../EmptySearch';
 
 import { setActiveDashboard, getActiveDashboard } from '../../modules/app';
 import {
@@ -24,7 +25,7 @@ import {
   createDashboard as createDashboardAction,
 } from '../../modules/dashboards';
 
-import { EmptySearch, ListItem } from './components';
+import { ListItem } from './components';
 
 import {
   Container,
