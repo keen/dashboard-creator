@@ -1,10 +1,11 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { FilterConnection } from './types';
+import { FilterConnection, SchemaPropertiesList } from './types';
 
 import {
   OPEN_EDITOR,
   CLOSE_EDITOR,
+  RESET_EDITOR,
   APPLY_EDITOR_SETTINGS,
   SET_EDITOR_CONNECTIONS,
   UPDATE_CONNECTION,
@@ -19,6 +20,7 @@ import {
 
 export const openEditor = createAction(OPEN_EDITOR);
 export const closeEditor = createAction(CLOSE_EDITOR);
+export const resetEditor = createAction(RESET_EDITOR);
 export const applySettings = createAction(APPLY_EDITOR_SETTINGS);
 
 export const setTargetProperty = createAction(
@@ -69,9 +71,15 @@ export const setupDashboardEventStreams = createAction(
 
 export const setEventStreamSchema = createAction(
   SET_EVENT_STREAM_SCHEMA,
-  (schema: Record<string, string>) => ({
+  (
+    schema: Record<string, string>,
+    schemaTree: Record<string, any>,
+    schemaList: SchemaPropertiesList
+  ) => ({
     payload: {
       schema,
+      schemaTree,
+      schemaList,
     },
   })
 );
@@ -106,6 +114,7 @@ export const setSchemaProcessingError = createAction(
 export type FilterActions =
   | ReturnType<typeof openEditor>
   | ReturnType<typeof closeEditor>
+  | ReturnType<typeof resetEditor>
   | ReturnType<typeof applySettings>
   | ReturnType<typeof setEditorConnections>
   | ReturnType<typeof updateConnection>

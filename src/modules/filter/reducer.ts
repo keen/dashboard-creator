@@ -4,6 +4,7 @@ import { FilterActions } from './actions';
 import {
   OPEN_EDITOR,
   CLOSE_EDITOR,
+  RESET_EDITOR,
   SET_EDITOR_CONNECTIONS,
   UPDATE_CONNECTION,
   SET_TARGET_PROPERTY,
@@ -23,7 +24,11 @@ export const initialState: ReducerState = {
   widgetConnections: [],
   eventStreamsPool: [],
   eventStream: null,
-  eventStreamSchema: {},
+  eventStreamSchema: {
+    schema: {},
+    tree: {},
+    list: [],
+  },
   targetProperty: null,
 };
 
@@ -32,6 +37,8 @@ const filterReducer = (
   action: FilterActions
 ) => {
   switch (action.type) {
+    case RESET_EDITOR:
+      return initialState;
     case UPDATE_CONNECTION:
       return {
         ...state,
@@ -76,7 +83,11 @@ const filterReducer = (
     case SET_EVENT_STREAM_SCHEMA:
       return {
         ...state,
-        eventStreamSchema: action.payload.schema,
+        eventStreamSchema: {
+          schema: action.payload.schema,
+          tree: action.payload.schemaTree,
+          list: action.payload.schemaList,
+        },
       };
     case SET_EVENT_STREAMS_POOL:
       return {
