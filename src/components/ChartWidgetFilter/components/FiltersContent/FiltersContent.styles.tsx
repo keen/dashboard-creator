@@ -2,6 +2,10 @@ import styled from 'styled-components';
 import { transparentize } from 'polished';
 import { colors } from '@keen.io/colors';
 
+export const Container = styled.div`
+  max-width: 270px;
+`;
+
 export const Connector = styled.div`
   display: inline-block;
   background-color: ${transparentize(0.3, colors.blue[100])};

@@ -19,4 +19,10 @@ export const IconContainer = styled.div`
   justify-content: center;
 
   cursor: pointer;
+
+  transition: background-color 150ms ease-in-out;
+
+  &:hover {
+    background-color: ${transparentize(0.6, colors.blue[100])};
+  }
 `;

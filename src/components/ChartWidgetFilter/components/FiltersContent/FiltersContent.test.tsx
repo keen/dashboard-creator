@@ -27,7 +27,7 @@ test('renders title', () => {
     wrapper: { getByText },
   } = render();
 
-  expect(getByText(filter.propertyName)).toBeInTheDocument();
+  expect(getByText('PropertyName:')).toBeInTheDocument();
 });
 
 test('not renders connector for single filter value', () => {
@@ -54,6 +54,8 @@ test('renders titles and connector for multiple filters', () => {
     wrapper: { getByText },
   } = render({ data });
 
-  data.forEach((el) => expect(getByText(el.propertyName)).toBeInTheDocument());
+  ['PropertyName1:', 'PropertyName2:'].forEach((name) =>
+    expect(getByText(name)).toBeInTheDocument()
+  );
   expect(getByText('dashboard_timepicker.connector')).toBeInTheDocument();
 });

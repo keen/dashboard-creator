@@ -6,4 +6,6 @@ export const Option = styled.div`
   font-size: 14px;
   line-height: 17px;
   color: ${colors.black[100]};
+
+  white-space: nowrap;
 `;

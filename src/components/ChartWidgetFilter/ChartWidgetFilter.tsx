@@ -42,13 +42,13 @@ const ChartWidgetFilter: FC<Props> = ({ widgetId }) => {
     if (!widget['filterIds']) return;
 
     const filters = widget['filterIds'].reduce((acc, id) => {
-      const {
-        data: { propertyName, propertyValue },
-      } = getWidget(state, id);
-      acc.push({
-        propertyName,
-        propertyValue,
-      });
+      const { data } = getWidget(state, id);
+      if (data) {
+        acc.push({
+          propertyName: data['propertyName'],
+          propertyValue: data['propertyValue'],
+        });
+      }
       return acc;
     }, []);
 
