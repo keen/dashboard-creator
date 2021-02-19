@@ -3,6 +3,7 @@ import { transparentize } from 'polished';
 import { colors } from '@keen.io/colors';
 
 export const Connector = styled.div`
+  display: inline-block;
   background-color: ${transparentize(0.3, colors.blue[100])};
   border-radius: 4px;
   padding: 4px;

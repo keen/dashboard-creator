@@ -41,9 +41,15 @@ const ChartWidgetFilter: FC<Props> = ({ widgetId }) => {
   const filtersData = useSelector((state: RootState) => {
     if (!widget['filterIds']) return;
 
-    const filters = widget['filterIds'].reduce((acc, item) => {
-      const { data } = getWidget(state, item);
-      acc.push(data);
+    const filters = widget['filterIds'].reduce((acc, id) => {
+      const {
+        data: { propertyName, propertyValue },
+      } = getWidget(state, id);
+      acc.push({
+        propertyName,
+        propertyValue,
+      });
+      return acc;
     }, []);
 
     return filters;
@@ -184,7 +190,7 @@ const ChartWidgetFilter: FC<Props> = ({ widgetId }) => {
                   ref={tooltipRef}
                 >
                   <Tooltip mode="light" hasArrow={false}>
-                    <FiltersContent />
+                    <FiltersContent data={filtersData} />
                   </Tooltip>
                 </motion.div>
               )}
@@ -195,94 +201,7 @@ const ChartWidgetFilter: FC<Props> = ({ widgetId }) => {
     }
   }
 
-  return (
-    <Container ref={containerRef}>
-      <IconContainer
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
-        <Icon
-          type="funnel-widget-vertical"
-          fill={colors.black[500]}
-          width={15}
-          height={15}
-          opacity={0.5}
-        />
-      </IconContainer>
-      <Portal modalContainer={modalContainer}>
-        <AnimatePresence>
-          {tooltip.visible && (
-            <motion.div
-              {...TOOLTIP_MOTION}
-              initial={{ opacity: 0, x: tooltip.x, y: tooltip.y }}
-              animate={{
-                x: tooltip.x,
-                y: tooltip.y,
-                opacity: 1,
-              }}
-              style={{
-                position: 'absolute',
-                pointerEvents: 'none',
-                zIndex: UI_LAYERS.dropdown,
-              }}
-              ref={tooltipRef}
-            >
-              <Tooltip mode="light" hasArrow={false}>
-                <FiltersContent />
-              </Tooltip>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </Portal>
-    </Container>
-  );
-
   return null;
-
-  // if (hasInterimQuery && datePickerData) {
-  //   const { timeframe } = datePickerData;
-  //   return (
-  //     <Container ref={containerRef}>
-  //       <IconContainer
-  //         onMouseEnter={handleMouseEnter}
-  //         onMouseLeave={handleMouseLeave}
-  //       >
-  //         <Icon
-  //           type={icon}
-  //           fill={colors.black[500]}
-  //           width={15}
-  //           height={15}
-  //           opacity={0.5}
-  //         />
-  //       </IconContainer>
-  //       <Portal modalContainer={modalContainer}>
-  //         <AnimatePresence>
-  //           {tooltip.visible && (
-  //             <motion.div
-  //               {...TOOLTIP_MOTION}
-  //               initial={{ opacity: 0, x: tooltip.x, y: tooltip.y }}
-  //               animate={{
-  //                 x: tooltip.x,
-  //                 y: tooltip.y,
-  //                 opacity: 1,
-  //               }}
-  //               style={{
-  //                 position: 'absolute',
-  //                 pointerEvents: 'none',
-  //                 zIndex: UI_LAYERS.dropdown,
-  //               }}
-  //               ref={tooltipRef}
-  //             >
-  //               <Tooltip mode="light" hasArrow={false}>
-  //                 <DatePickerData timeframe={timeframe} />
-  //               </Tooltip>
-  //             </motion.div>
-  //           )}
-  //         </AnimatePresence>
-  //       </Portal>
-  //     </Container>
-  //   );
-  // }
 };
 
 export default ChartWidgetFilter;
