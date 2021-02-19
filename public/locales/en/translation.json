@@ -31,7 +31,15 @@
     "edit_button": "Edit Filter",
     "cancel_button": "Cancel",
     "event_stream_placeholder": "Select event stream",
-    "untitled_chart": "Untitled Chart"
+    "target_property_placeholder": "Select property",
+    "target_property_search_placeholder": "Search",
+    "target_property_empty_search_results": "No property found with this name",
+    "untitled_chart": "Untitled Chart",
+    "description": "What do you want to filter by? Select property to use it as a filter.",
+    "connections_description": "Which charts should be associated with this filter?",
+    "settings_error": "Please, finish filter widget configuration",
+    "schema_processing_error": "There was an issue with processing schema",
+    "empty_schema_error": "No strings properties in schema"
   },
   "date_picker_management": {
     "edit_text": "Edit",

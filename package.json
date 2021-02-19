@@ -49,6 +49,7 @@
     "@keen.io/pubsub": "^1.1.1",
     "@keen.io/query": "^1.0.1",
     "@keen.io/query-creator": "^1.1.6",
+    "@keen.io/react-hooks": "^1.0.7",
     "@keen.io/toast-notifications": "^1.1.12",
     "@keen.io/ui-core": "^2.5.20",
     "@keen.io/widget-picker": "^1.2.42",

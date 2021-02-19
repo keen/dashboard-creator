@@ -1,8 +1,14 @@
+export type SchemaPropertiesList = { path: string; type: string }[];
+
 export type ReducerState = {
   isEditorOpen: boolean;
   widgetConnections: FilterConnection[];
   eventStream: string | null;
-  eventStreamSchema: Record<string, string>;
+  eventStreamSchema: {
+    schema: Record<string, string>;
+    tree: Record<string, any>;
+    list: SchemaPropertiesList;
+  };
   eventStreamsPool: string[];
   targetProperty: string | null;
   schemaProcessing: {

@@ -13,6 +13,7 @@ import {
   ADD_WIDGET_TO_DASHBOARD,
   getDashboard,
   saveDashboard,
+  removeWidgetFromDashboard,
 } from '../../dashboards';
 import { getWidget, getWidgetSettings } from '../selectors';
 
@@ -23,6 +24,7 @@ import { ChartWidget, FilterWidget } from '../types';
 import {
   openEditor,
   closeEditor,
+  resetEditor,
   setEditorConnections,
   setEventStream,
   setTargetProperty,
@@ -196,6 +198,15 @@ export function* applyFilterUpdates(filterWidgetId: string) {
   );
 }
 
+/**
+ * Highlights and fade outs widgets based on connections state
+ *
+ * @param dashboardId - Dashboard identifer
+ * @param filterWidgetId - Filter widget identifier
+ * @param widgetConnections - Connections between widgets
+ * @return void
+ *
+ */
 export function* updateWidgetsDistinction(
   dashboardId: string,
   filterWidgetId: string,
@@ -374,6 +385,8 @@ export function* editFilterWidget({
       )
     )
   );
+
+  yield put(resetEditor());
 }
 
 /**
@@ -407,6 +420,8 @@ export function* setupFilterWidget(widgetId: string) {
 
     yield put(closeEditor());
     yield put(saveDashboard(dashboardId));
+  } else {
+    yield put(removeWidgetFromDashboard(dashboardId, filterWidgetId));
   }
 
   const {
@@ -424,4 +439,6 @@ export function* setupFilterWidget(widgetId: string) {
       )
     )
   );
+
+  yield put(resetEditor());
 }
