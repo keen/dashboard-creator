@@ -12,10 +12,12 @@ import {
   Description,
   DetachedConnections,
   DetachedConnectionItem,
+  EmptyConnections,
   ErrorContainer,
   FieldGroup,
   Field,
   FooterContent,
+  NormalMessage,
 } from './FilterSettings.styles';
 
 import { EventStream, TargetProperty, TooltipHint } from './components';
@@ -28,6 +30,7 @@ import {
   getFilterSettings,
   updateConnection,
 } from '../../modules/filter';
+import { getCurrentDashboardChartsCount } from '../../modules/dashboards';
 
 import { ERRORS } from './constants';
 
@@ -52,6 +55,7 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
     eventStreamSchema,
     schemaProcessing,
   } = useSelector(getFilterSettings);
+  const chartWidgetsCount = useSelector(getCurrentDashboardChartsCount);
 
   const [isEditMode] = useState(!!targetProperty);
 
@@ -67,6 +71,8 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
   const availableConnections = widgetConnections.length > 0;
   const detachedConnections = detachedWidgetConnections.length > 0;
 
+  const isDashboardWithoutCharts = chartWidgetsCount === 0;
+
   const emptyConnections =
     eventStreamsPool.length === 0 ||
     (widgetConnections.length === 0 && eventStream && targetProperty);
@@ -75,6 +81,13 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
     <>
       <Container>
         <Content>
+          {isDashboardWithoutCharts && (
+            <ErrorContainer>
+              <Alert type="info">
+                {t('filter_settings.dashboard_without_charts')}
+              </Alert>
+            </ErrorContainer>
+          )}
           {error && (
             <ErrorContainer>
               <Alert type="error">{t(ERRORS[error])}</Alert>
@@ -82,30 +95,29 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
           )}
           <Description marginBottom={15}>
             {t('filter_settings.description')}
-            <TooltipHint
-              marginLeft="5px"
-              renderMessage={() => (
-                <>
-                  <div style={{ marginBottom: 10 }}>
-                    {t('filter_settings.first_hint')}
-                  </div>
-                  {t('filter_settings.second_hint')}
-                </>
-              )}
-            />
+            {isDashboardWithoutCharts && (
+              <>
+                <NormalMessage marginLeft="3px">
+                  {t('filter_settings.description_property_types')}
+                </NormalMessage>
+              </>
+            )}
           </Description>
           <FieldGroup>
             <Field width={200} marginRight={15}>
               <EventStream
                 currentEventStream={eventStream}
                 eventStreams={eventStreamsPool}
+                isDisabled={isDashboardWithoutCharts}
                 onChange={(stream) => dispatch(setEventStream(stream))}
               />
             </Field>
             <Field width={235}>
               <TargetProperty
                 targetProperty={targetProperty}
-                isDisabled={!eventStream || inProgress}
+                isDisabled={
+                  !eventStream || inProgress || isDashboardWithoutCharts
+                }
                 schema={schema}
                 schemaList={schemaList}
                 schemaTree={schemaTree}
@@ -113,18 +125,27 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
               />
             </Field>
           </FieldGroup>
-          {emptyConnections && (
-            <ConnectionsContainer>
-              <Description>
+          <ConnectionsContainer>
+            <Description marginBottom={15}>
+              {t('filter_settings.connections_description')}
+              <TooltipHint
+                marginLeft="5px"
+                renderMessage={() => (
+                  <>
+                    <div style={{ marginBottom: 10 }}>
+                      {t('filter_settings.first_hint')}
+                    </div>
+                    {t('filter_settings.second_hint')}
+                  </>
+                )}
+              />
+            </Description>
+            {(isDashboardWithoutCharts || !!emptyConnections) && (
+              <EmptyConnections>
                 {t('filter_settings.empty_connections')}
-              </Description>
-            </ConnectionsContainer>
-          )}
-          {availableConnections && (
-            <ConnectionsContainer>
-              <Description marginBottom={15}>
-                {t('filter_settings.connections_description')}
-              </Description>
+              </EmptyConnections>
+            )}
+            {availableConnections && (
               <WidgetConnections
                 connections={widgetConnections.map(
                   ({ widgetId, isConnected, positionIndex, title }) => ({
@@ -141,8 +162,8 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
                   dispatch(updateConnection(widgetId, isConnected))
                 }
               />
-            </ConnectionsContainer>
-          )}
+            )}
+          </ConnectionsContainer>
           {detachedConnections && (
             <>
               <Description marginTop={15} marginBottom={15}>

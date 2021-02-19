@@ -25,6 +25,13 @@ export const Content = styled.div`
   padding: 30px 25px;
 `;
 
+export const EmptyConnections = styled.div`
+  font-size: 14px;
+  font-family: 'Lato Regular', sans-serif;
+  line-height: 17px;
+  color: ${transparentize(0.5, colors.black[100])};
+`;
+
 export const ErrorContainer = styled.div`
   margin-bottom: 15px;
 `;
@@ -42,6 +49,11 @@ export const DetachedConnectionItem = styled.div``;
 
 export const BoldMessage = styled.span`
   font-family: 'Lato Bold', sans-serif;
+`;
+
+export const NormalMessage = styled.span<SpaceProps>`
+  font-family: 'Lato Regular', sans-serif;
+  ${space};
 `;
 
 export const DetachedConnections = styled.div`

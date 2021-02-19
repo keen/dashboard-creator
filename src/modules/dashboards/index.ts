@@ -47,6 +47,7 @@ import {
   getDashboardMetaSaving,
   getDashboardListOrder,
   getTagsFilter,
+  getCurrentDashboardChartsCount,
 } from './selectors';
 import {
   DashboardMetaData,
@@ -96,6 +97,7 @@ export {
   getTagsPool,
   getDashboardMetaSaving,
   getDashboardListOrder,
+  getCurrentDashboardChartsCount,
   DashboardMetaData,
   DashboardModel,
   DashboardListOrder,
