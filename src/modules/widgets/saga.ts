@@ -56,7 +56,11 @@ import {
 } from './saga/textWidget';
 
 import { initializeChartWidget, editChartWidget } from './saga/chartWidget';
-import { editFilterWidget, setupFilterWidget } from './saga/filterWidget';
+import {
+  setFilterWidget,
+  editFilterWidget,
+  setupFilterWidget,
+} from './saga/filterWidget';
 
 import { SELECT_SAVED_QUERY, CREATE_QUERY, SavedQuery } from '../queries';
 import {
@@ -83,6 +87,7 @@ import {
   SAVED_QUERY_UPDATED,
   EDIT_FILTER_WIDGET,
   CLONE_WIDGET,
+  SET_FILTER_WIDGET,
 } from './constants';
 
 import { ChartWidget, WidgetItem } from './types';
@@ -295,4 +300,5 @@ export function* widgetsSaga() {
   yield takeEvery(RESET_DATE_PICKER_WIDGETS, resetDatePickerWidgets);
   yield takeEvery(INITIALIZE_WIDGET, initializeWidget);
   yield takeEvery(INITIALIZE_CHART_WIDGET, initializeChartWidget);
+  yield takeEvery(SET_FILTER_WIDGET, setFilterWidget);
 }

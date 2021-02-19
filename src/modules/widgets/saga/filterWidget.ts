@@ -7,6 +7,7 @@ import {
   cancel,
   fork,
   cancelled,
+  getContext,
 } from 'redux-saga/effects';
 import {
   ADD_WIDGET_TO_DASHBOARD,
@@ -33,11 +34,60 @@ import {
 
 import {
   editFilterWidget as editFilterWidgetAction,
-  setFilterWidget,
+  configureFilerWidget,
   setWidgetState,
   updateChartWidgetFiltersConnections,
+  setFilterWidget as setFilterWidgetAction,
+  setFilterPropertyList,
 } from '../actions';
 import { APPLY_EDITOR_SETTINGS, CLOSE_EDITOR } from '../../filter/constants';
+import { KEEN_ANALYSIS } from '../../../constants';
+
+import { getOldestTimeframe } from '../../../utils/getOldestTimeframe';
+
+/**
+ * Apply filter widget
+ *
+ * @param widgetId - Widget identifier
+ * @return void
+ *
+ */
+export function* setFilterWidget({
+  payload,
+}: ReturnType<typeof setFilterWidgetAction>) {
+  const filter = yield select(getWidget, payload.widgetId);
+  const { widgets, eventStream, targetProperty } = filter.widget.settings;
+  const connectedWidgets = yield all(
+    widgets.map((id: string) => select(getWidget, id))
+  );
+
+  const connectedWidgetsTimeframes = connectedWidgets.map(
+    (connectedWidget) => connectedWidget.data.query.timeframe
+  );
+  const client = yield getContext(KEEN_ANALYSIS);
+
+  try {
+    const response = yield client.query({
+      analysisType: 'select_unique',
+      eventCollection: eventStream,
+      targetProperty: targetProperty,
+      timeframe: getOldestTimeframe(connectedWidgetsTimeframes),
+      filters: [
+        {
+          propertyName: targetProperty,
+          operator: 'ne',
+          propertyValue: null,
+        },
+      ],
+    });
+    yield put(setFilterPropertyList(filter.widget.id, response.result));
+  } catch (err) {
+    console.log(err);
+    // yield put(setSchemaProcessingError(true));
+  } finally {
+    // yield put(setSchemaProcessing(false));
+  }
+}
 
 /**
  * Release connection from filter after chart widget is removed.
@@ -57,7 +107,12 @@ export function* removeConnectionFromFilter(
 
   const updatedConnections = widgets.filter((id: string) => id !== widgetId);
   yield put(
-    setFilterWidget(filterId, updatedConnections, eventStream, targetProperty)
+    configureFilerWidget(
+      filterId,
+      updatedConnections,
+      eventStream,
+      targetProperty
+    )
   );
 }
 
@@ -132,7 +187,7 @@ export function* applyFilterUpdates(filterWidgetId: string) {
 
   yield all(chartsWidgetUpdates);
   yield put(
-    setFilterWidget(
+    configureFilerWidget(
       filterWidgetId,
       connectedCharts,
       eventStream,

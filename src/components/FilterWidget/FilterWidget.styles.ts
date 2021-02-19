@@ -59,3 +59,17 @@ export const ClearFilter = styled.div`
   font-family: 'Lato Bold', sans-serif;
   cursor: pointer;
 `;
+
+export const LoaderContainer = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+`;
+
+export const DropdownContent = styled.div`
+  padding: 10px 0;
+  width: 200px;
+  box-sizing: border-box;
+`;

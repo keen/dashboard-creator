@@ -33,9 +33,13 @@ import {
   SAVED_QUERY_UPDATED,
   CLONE_WIDGET,
   SAVE_IMAGE,
-  SET_FILTER_WIDGET,
+  CONFIGURE_FILTER_WIDGET,
   EDIT_FILTER_WIDGET,
   UPDATE_CHART_WIDGET_FILTERS_CONNECTIONS,
+  SET_FILTER_WIDGET,
+  SET_FILTER_PROPERTY_LIST,
+  APPLY_FILTER_WIDGET,
+  UNAPPLY_FILTER_WIDGET,
 } from './constants';
 
 export const registerWidgets = createAction(
@@ -292,8 +296,8 @@ export const resetDatePickerWidgets = createAction(
   })
 );
 
-export const setFilterWidget = createAction(
-  SET_FILTER_WIDGET,
+export const configureFilerWidget = createAction(
+  CONFIGURE_FILTER_WIDGET,
   (
     id: string,
     widgetConnections: string[],
@@ -328,6 +332,46 @@ export const updateChartWidgetFiltersConnections = createAction(
   })
 );
 
+export const setFilterWidget = createAction(
+  SET_FILTER_WIDGET,
+  (widgetId: string) => ({
+    payload: {
+      widgetId,
+    },
+  })
+);
+
+export const setFilterPropertyList = createAction(
+  SET_FILTER_PROPERTY_LIST,
+  (filterId: string, propertyList: string[]) => ({
+    payload: {
+      filterId,
+      propertyList,
+    },
+  })
+);
+
+export const applyFilterWidget = createAction(
+  APPLY_FILTER_WIDGET,
+  (filterId: string, propertyValue: string[]) => ({
+    payload: {
+      filterId,
+      propertyValue,
+    },
+  })
+);
+
+export const unapplyFilterWidget = createAction(
+  UNAPPLY_FILTER_WIDGET,
+  (filterId: string) => ({
+    payload: {
+      filterId,
+    },
+  })
+);
+
+// todo clear filter property list
+
 export type WidgetsActions =
   | ReturnType<typeof createWidget>
   | ReturnType<typeof removeWidget>
@@ -355,6 +399,10 @@ export type WidgetsActions =
   | ReturnType<typeof cloneWidget>
   | ReturnType<typeof saveClonedWidget>
   | ReturnType<typeof saveImage>
-  | ReturnType<typeof setFilterWidget>
+  | ReturnType<typeof configureFilerWidget>
   | ReturnType<typeof editDatePickerWidget>
-  | ReturnType<typeof updateChartWidgetFiltersConnections>;
+  | ReturnType<typeof updateChartWidgetFiltersConnections>
+  | ReturnType<typeof setFilterWidget>
+  | ReturnType<typeof setFilterPropertyList>
+  | ReturnType<typeof applyFilterWidget>
+  | ReturnType<typeof unapplyFilterWidget>;

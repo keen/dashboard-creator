@@ -6,23 +6,26 @@ import { reduceWidgetsPosition } from './reduceWidgetsPosition';
 import { createWidget } from './utils';
 
 import {
+  APPLY_FILTER_WIDGET,
+  UNAPPLY_FILTER_WIDGET,
+  CONFIGURE_FILTER_WIDGET,
+  CREATE_WIDGET,
+  FINISH_CHART_WIDGET_CONFIGURATION,
   REGISTER_WIDGETS,
   REMOVE_WIDGET,
-  UPDATE_WIDGETS_POSITION,
-  UPDATE_CHART_WIDGET_DATE_PICKER_CONNECTION,
-  FINISH_CHART_WIDGET_CONFIGURATION,
+  SAVE_CLONED_WIDGET,
+  SET_DATE_PICKER_WIDGET,
+  SET_FILTER_PROPERTY_LIST,
   SET_IMAGE_WIDGET,
   SET_TEXT_WIDGET,
-  SET_DATE_PICKER_WIDGET,
   SET_WIDGET_LOADING,
   SET_WIDGET_STATE,
-  CREATE_WIDGET,
-  SAVE_CLONED_WIDGET,
-  SET_FILTER_WIDGET,
+  UPDATE_CHART_WIDGET_DATE_PICKER_CONNECTION,
   UPDATE_CHART_WIDGET_FILTERS_CONNECTIONS,
+  UPDATE_WIDGETS_POSITION,
 } from './constants';
 
-import { ReducerState } from './types';
+import { FilterWidget, ReducerState } from './types';
 
 import { GRID_MAX_VALUE } from '../../constants';
 
@@ -195,7 +198,7 @@ const widgetsReducer = (
           },
         },
       };
-    case SET_FILTER_WIDGET:
+    case CONFIGURE_FILTER_WIDGET:
       return {
         ...state,
         items: {
@@ -209,6 +212,58 @@ const widgetsReducer = (
                 eventStream: action.payload.eventStream,
                 targetProperty: action.payload.targetProperty,
               },
+            },
+          },
+        },
+      };
+    case SET_FILTER_PROPERTY_LIST:
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          [action.payload.filterId]: {
+            ...state.items[action.payload.filterId],
+            data: {
+              ...state.items[action.payload.filterId].data,
+              propertyList: action.payload.propertyList,
+            },
+          },
+        },
+      };
+    case APPLY_FILTER_WIDGET:
+      const filterWidget = state.items[action.payload.filterId]
+        .widget as FilterWidget;
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          [action.payload.filterId]: {
+            ...state.items[action.payload.filterId],
+            isActive: true,
+            data: {
+              ...state.items[action.payload.filterId].data,
+              filter: {
+                propertyName: filterWidget.settings.targetProperty,
+                operator: 'in',
+                propertyValue: action.payload.propertyValue,
+              },
+            },
+          },
+        },
+      };
+    case UNAPPLY_FILTER_WIDGET:
+      const { filter, ...dataWithoutFilter } = state.items[
+        action.payload.filterId
+      ].data;
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          [action.payload.filterId]: {
+            ...state.items[action.payload.filterId],
+            isActive: false,
+            data: {
+              ...dataWithoutFilter,
             },
           },
         },

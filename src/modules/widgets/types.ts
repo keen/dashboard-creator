@@ -62,6 +62,11 @@ export interface FilterWidget extends BaseWidget {
     widgets: string[];
     eventStream: string | null;
     targetProperty: string | null;
+    filter: {
+      propertyName: string;
+      operator: string;
+      propertyValue: string | string[];
+    };
   };
 }
 
