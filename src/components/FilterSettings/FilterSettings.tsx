@@ -4,18 +4,21 @@ import { useTranslation } from 'react-i18next';
 import { Alert, Button, ModalFooter } from '@keen.io/ui-core';
 
 import {
+  BoldMessage,
   Content,
   Container,
   ConnectionsContainer,
   CancelButton,
   Description,
+  DetachedConnections,
+  DetachedConnectionItem,
   ErrorContainer,
   FieldGroup,
   Field,
   FooterContent,
 } from './FilterSettings.styles';
 
-import { EventStream, TargetProperty } from './components';
+import { EventStream, TargetProperty, TooltipHint } from './components';
 import WidgetConnections from '../WidgetConnections';
 
 import {
@@ -79,6 +82,17 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
           )}
           <Description marginBottom={15}>
             {t('filter_settings.description')}
+            <TooltipHint
+              marginLeft="5px"
+              renderMessage={() => (
+                <>
+                  <div style={{ marginBottom: 10 }}>
+                    {t('filter_settings.first_hint')}
+                  </div>
+                  {t('filter_settings.second_hint')}
+                </>
+              )}
+            />
           </Description>
           <FieldGroup>
             <Field width={200} marginRight={15}>
@@ -130,28 +144,38 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
             </ConnectionsContainer>
           )}
           {detachedConnections && (
-            <div>
+            <>
               <Description marginTop={15} marginBottom={15}>
                 {t('filter_settings.detached_widgets_description')}
+                <TooltipHint
+                  marginLeft="5px"
+                  tooltipMode="dark"
+                  renderMessage={() => (
+                    <>
+                      <div style={{ marginBottom: 10 }}>
+                        {t('filter_settings.detached_widgets_first_hint')}
+                      </div>
+                      <BoldMessage>
+                        {t('filter_settings.detached_widgets_second_hint')}
+                      </BoldMessage>
+                    </>
+                  )}
+                />
               </Description>
-
-              <WidgetConnections
-                connections={detachedWidgetConnections.map(
-                  ({ widgetId, isConnected, positionIndex, title }) => ({
-                    id: widgetId,
-                    isConnected,
-                    title: title
-                      ? title
-                      : `${t(
-                          'filter_settings.untitled_chart'
-                        )} ${positionIndex}`,
-                  })
+              <DetachedConnections>
+                {detachedWidgetConnections.map(
+                  ({ widgetId, positionIndex, title }) => (
+                    <DetachedConnectionItem key={widgetId}>
+                      {title
+                        ? title
+                        : `${t(
+                            'filter_settings.untitled_chart'
+                          )} ${positionIndex}`}
+                    </DetachedConnectionItem>
+                  )
                 )}
-                onUpdateConnection={() => {
-                  //dispatch(updateConnection(widgetId, isConnected))
-                }}
-              />
-            </div>
+              </DetachedConnections>
+            </>
           )}
         </Content>
       </Container>

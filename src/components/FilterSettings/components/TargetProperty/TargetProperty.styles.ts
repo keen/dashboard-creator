@@ -8,3 +8,7 @@ export const Container = styled.div<{ isDisabled: boolean }>`
       opacity: 0.5;
     `};
 `;
+
+export const Property = styled.div`
+  overflow: hidden;
+`;

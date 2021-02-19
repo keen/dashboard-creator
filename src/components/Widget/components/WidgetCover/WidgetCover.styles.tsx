@@ -18,11 +18,11 @@ export const Cover = styled.div<{
   ${(props) =>
     props.isDetached &&
     css`
-     border: 1px solid ${colors.red[100]};
-     border-radius: 4px;
- background-color: rgba(217,149,155,0.15)
-     pointer-events: none;
-   `};
+      border: 1px solid ${colors.gray[500]};
+      border-radius: 4px;
+      background-color: ${transparentize(0.9, colors.black[100])};
+      pointer-events: none;
+    `};
 
   ${(props) =>
     props.isHighlighted &&

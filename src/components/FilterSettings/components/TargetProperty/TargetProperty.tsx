@@ -8,8 +8,9 @@ import {
   createTree,
 } from '@keen.io/ui-core';
 
+import PropertyPath from '../PropertyPath';
 import EmptySearch from '../../../EmptySearch';
-import { Container } from './TargetProperty.styles';
+import { Container, Property } from './TargetProperty.styles';
 
 import { AppContext } from '../../../../contexts';
 import { SchemaPropertiesList } from '../../../../modules/filter';
@@ -107,7 +108,9 @@ const TargetProperty: FC<Props> = ({
           }
         }}
       >
-        {targetProperty}
+        <Property>
+          {targetProperty && <PropertyPath path={targetProperty.split('.')} />}
+        </Property>
       </DropableContainer>
       <Dropdown isOpen={isOpen}>
         {isEmptySearch ? (
