@@ -1145,13 +1145,5 @@ describe('setAccessKey()', () => {
       expect(result).toEqual(call(deleteAccessKey, publicAccessKey));
       return new Error();
     });
-
-    // test('removes access key from dashboard meta', (result) => {
-    //   expect(result).toEqual(
-    //     put(
-    //       saveDashboardMetaAction(dashboardId, { publicAccessKey: null })
-    //     )
-    //   );
-    // });
   });
 });
