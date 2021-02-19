@@ -9,11 +9,15 @@ import {
   setEventStream,
   setTargetProperty,
   setEditorConnections,
+  setEditorDetachedConnections,
   setupDashboardEventStreams,
 } from './actions';
 import { ReducerState, SchemaPropertiesList } from './types';
 
-import { getFilterWidgetConnections } from './saga';
+import {
+  getFilterWidgetConnections,
+  getDetachedFilterWidgetConnections,
+} from './saga';
 import { SET_EVENT_STREAM } from './constants';
 import { getFilterSettings } from './selectors';
 
@@ -25,12 +29,14 @@ export {
   setEventStream,
   setTargetProperty,
   setEditorConnections,
+  setEditorDetachedConnections,
   updateConnection,
   openEditor,
   resetEditor,
   closeEditor,
   filterSaga,
   getFilterWidgetConnections,
+  getDetachedFilterWidgetConnections,
   SET_EVENT_STREAM,
   ReducerState,
   SchemaPropertiesList,

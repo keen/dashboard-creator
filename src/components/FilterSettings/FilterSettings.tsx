@@ -42,6 +42,7 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
 
   const {
     widgetConnections,
+    detachedWidgetConnections,
     eventStream,
     targetProperty,
     eventStreamsPool,
@@ -61,6 +62,11 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
   }, [schemaError]);
 
   const availableConnections = widgetConnections.length > 0;
+  const detachedConnections = detachedWidgetConnections.length > 0;
+
+  const emptyConnections =
+    eventStreamsPool.length === 0 ||
+    (widgetConnections.length === 0 && eventStream && targetProperty);
 
   return (
     <>
@@ -93,6 +99,13 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
               />
             </Field>
           </FieldGroup>
+          {emptyConnections && (
+            <ConnectionsContainer>
+              <Description>
+                {t('filter_settings.empty_connections')}
+              </Description>
+            </ConnectionsContainer>
+          )}
           {availableConnections && (
             <ConnectionsContainer>
               <Description marginBottom={15}>
@@ -115,6 +128,30 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
                 }
               />
             </ConnectionsContainer>
+          )}
+          {detachedConnections && (
+            <div>
+              <Description marginTop={15} marginBottom={15}>
+                {t('filter_settings.detached_widgets_description')}
+              </Description>
+
+              <WidgetConnections
+                connections={detachedWidgetConnections.map(
+                  ({ widgetId, isConnected, positionIndex, title }) => ({
+                    id: widgetId,
+                    isConnected,
+                    title: title
+                      ? title
+                      : `${t(
+                          'filter_settings.untitled_chart'
+                        )} ${positionIndex}`,
+                  })
+                )}
+                onUpdateConnection={() => {
+                  //dispatch(updateConnection(widgetId, isConnected))
+                }}
+              />
+            </div>
           )}
         </Content>
       </Container>

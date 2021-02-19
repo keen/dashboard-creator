@@ -26,10 +26,12 @@ import {
   closeEditor,
   resetEditor,
   setEditorConnections,
+  setEditorDetachedConnections,
   setEventStream,
   setTargetProperty,
   setupDashboardEventStreams,
   getFilterWidgetConnections,
+  getDetachedFilterWidgetConnections,
   SET_EVENT_STREAM,
   getFilterSettings,
 } from '../../filter';
@@ -256,11 +258,17 @@ export function* updateWidgetsDistinction(
   widgetConnections: FilterConnection[]
 ) {
   const state = yield select();
-
   const {
     settings: { widgets: dashboardWidgetsIds },
   } = getDashboard(state, dashboardId);
+
+  const { detachedWidgetConnections } = getFilterSettings(state);
+
   const widgetConnectionIds = widgetConnections.map(({ widgetId }) => widgetId);
+  const detachedConnectionsIds = detachedWidgetConnections.map(
+    ({ widgetId }) => widgetId
+  );
+
   const dashboardWidgets = dashboardWidgetsIds.map((widgetId) =>
     getWidget(state, widgetId)
   );
@@ -273,29 +281,69 @@ export function* updateWidgetsDistinction(
     })
     .map(({ widget: { id } }) => put(setWidgetState(id, { isFadeOut: true })));
 
-  const updateChartWidgets = dashboardWidgets
-    .filter(({ widget: { type } }) => type === 'visualization')
-    .map(({ widget: { id } }) => {
-      let isHighlighted = false;
+  const updateChartsWidgets = dashboardWidgets
+    .filter(
+      ({ widget: { type, id } }) =>
+        !widgetConnectionIds.includes(id) && type === 'visualization'
+    )
+    .map(({ widget }) => {
+      const { id } = widget as ChartWidget;
+      const isHighlighted = false;
       let isTitleCover = false;
       let isFadeOut = true;
+      let isDetached = false;
 
-      const inConnectionsPool = widgetConnectionIds.includes(id);
-      if (inConnectionsPool) {
-        const { isConnected, title } = widgetConnections.find(
+      const isInDetachedPool = detachedConnectionsIds.includes(id);
+      if (isInDetachedPool) {
+        const { title } = detachedWidgetConnections.find(
           ({ widgetId }) => widgetId === id
         );
-        isHighlighted = isConnected;
-        isTitleCover = !title;
         isFadeOut = false;
+        isDetached = true;
+        isTitleCover = !title;
       }
 
       return put(
-        setWidgetState(id, { isHighlighted, isFadeOut, isTitleCover })
+        setWidgetState(id, {
+          isHighlighted,
+          isFadeOut,
+          isDetached,
+          isTitleCover,
+        })
       );
     });
 
-  yield all([...fadeOutWidgets, ...updateChartWidgets]);
+  const updateChartWidgetsFromConnectionsPool = dashboardWidgets
+    .filter(
+      ({ widget: { type, id } }) =>
+        widgetConnectionIds.includes(id) && type === 'visualization'
+    )
+    .map(({ widget }) => {
+      const { id } = widget as ChartWidget;
+
+      const { isConnected, title } = widgetConnections.find(
+        ({ widgetId }) => widgetId === id
+      );
+      const isHighlighted = isConnected;
+      const isDetached = false;
+      const isTitleCover = !title;
+      const isFadeOut = false;
+
+      return put(
+        setWidgetState(id, {
+          isHighlighted,
+          isFadeOut,
+          isDetached,
+          isTitleCover,
+        })
+      );
+    });
+
+  yield all([
+    ...fadeOutWidgets,
+    ...updateChartWidgetsFromConnectionsPool,
+    ...updateChartsWidgets,
+  ]);
 }
 
 /**
@@ -328,7 +376,16 @@ function* synchronizeFilterConnections(
         connectByDefault
       );
 
+      const detachedConnections: FilterConnection[] = yield call(
+        getDetachedFilterWidgetConnections,
+        dashboardId,
+        filterWidgetId,
+        eventStream
+      );
+
+      yield put(setEditorDetachedConnections(detachedConnections));
       yield put(setEditorConnections(widgetConnections));
+
       yield call(
         updateWidgetsDistinction,
         dashboardId,
@@ -360,6 +417,14 @@ export function* editFilterWidget({
     false
   );
 
+  const detachedConnections = yield call(
+    getDetachedFilterWidgetConnections,
+    dashboardId,
+    filterWidgetId,
+    eventStream
+  );
+
+  yield put(setEditorDetachedConnections(detachedConnections));
   yield put(setEventStream(eventStream));
   yield put(setTargetProperty(targetProperty));
   yield put(setEditorConnections(widgetConnections));
@@ -384,28 +449,22 @@ export function* editFilterWidget({
   yield cancel(synchronizeConnectionsTask);
 
   if (action.type === APPLY_EDITOR_SETTINGS) {
-    const { eventStream: updatedStream }: ReducerState = yield select(
-      getFilterSettings
+    const state = yield select();
+    const { detachedWidgetConnections } = getFilterSettings(state);
+
+    const detachedCharts = detachedWidgetConnections.map((connection) =>
+      getWidget(state, connection.widgetId)
     );
 
-    if (eventStream !== updatedStream) {
-      const state = yield select();
-      const availableCharts = widgetConnections.map((connection) =>
-        getWidget(state, connection.widgetId)
-      );
+    const resetChartWidgetConnections = detachedCharts.map(({ widget }) => {
+      const { id, filterIds } = widget as ChartWidget;
+      const chartFilterIds = new Set<string>(filterIds);
+      chartFilterIds.delete(filterWidgetId);
 
-      const resetChartWidgetConnections = availableCharts.map(({ widget }) => {
-        const { id, filterIds } = widget as ChartWidget;
-        const chartFilterIds = new Set<string>(filterIds);
-        chartFilterIds.delete(filterWidgetId);
+      return put(updateChartWidgetFiltersConnections(id, [...chartFilterIds]));
+    });
 
-        return put(
-          updateChartWidgetFiltersConnections(id, [...chartFilterIds])
-        );
-      });
-
-      yield all(resetChartWidgetConnections);
-    }
+    yield all(resetChartWidgetConnections);
 
     yield call(applyFilterUpdates, filterWidgetId);
 
@@ -423,6 +482,7 @@ export function* editFilterWidget({
         setWidgetState(widgetId, {
           isHighlighted: false,
           isFadeOut: false,
+          isDetached: false,
           isTitleCover: false,
         })
       )
@@ -477,6 +537,7 @@ export function* setupFilterWidget(widgetId: string) {
         setWidgetState(widgetId, {
           isHighlighted: false,
           isFadeOut: false,
+          isDetached: false,
           isTitleCover: false,
         })
       )

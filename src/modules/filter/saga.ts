@@ -40,7 +40,7 @@ import { FilterConnection } from './types';
  * @param filterWidgetId - Filter widget identifer
  * @param eventStream - Event collection to filter
  * @param connectByDefault - Connects all widgets by default
- * @return void
+ * @return filter connections collection
  *
  */
 export function* getFilterWidgetConnections(
@@ -81,7 +81,55 @@ export function* getFilterWidgetConnections(
         positionIndex: widgetsIds.indexOf(id) + 1,
       };
     });
+
   return widgets;
+}
+
+/**
+ * Get detached filter connections.
+ *
+ * @param dashboardId - Dashboard identifer
+ * @param filterWidgetId - Filter widget identifer
+ * @param eventStream - Event collection to filter
+ * @return detached filter connections
+ *
+ */
+export function* getDetachedFilterWidgetConnections(
+  dashboardId: string,
+  filterWidgetId: string,
+  eventStream: string
+) {
+  const state = yield select();
+  const {
+    settings: { widgets: widgetsIds },
+  } = getDashboard(state, dashboardId);
+
+  const detachedWidgets: FilterConnection[] = widgetsIds
+    .map((widgetId) => getWidget(state, widgetId))
+    .sort(
+      (widgetA, widgetB) =>
+        widgetA.widget.position.y - widgetB.widget.position.y
+    )
+    .filter(
+      ({ widget, data }) =>
+        widget.type === 'visualization' &&
+        widget.filterIds?.includes(filterWidgetId) &&
+        data.query.event_collection !== eventStream
+    )
+    .map(({ widget }) => {
+      const {
+        id,
+        settings: { widgetSettings },
+      } = widget as ChartWidget;
+      return {
+        widgetId: id,
+        isConnected: true,
+        title: 'title' in widgetSettings ? widgetSettings.title : null,
+        positionIndex: widgetsIds.indexOf(id) + 1,
+      };
+    });
+
+  return detachedWidgets;
 }
 
 /**

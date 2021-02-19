@@ -3,6 +3,7 @@ export type SchemaPropertiesList = { path: string; type: string }[];
 export type ReducerState = {
   isEditorOpen: boolean;
   widgetConnections: FilterConnection[];
+  detachedWidgetConnections: FilterConnection[];
   eventStream: string | null;
   eventStreamSchema: {
     schema: Record<string, string>;

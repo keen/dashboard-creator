@@ -8,6 +8,7 @@ import {
   RESET_EDITOR,
   APPLY_EDITOR_SETTINGS,
   SET_EDITOR_CONNECTIONS,
+  SET_EDITOR_DETACHED_CONNECTIONS,
   UPDATE_CONNECTION,
   SET_TARGET_PROPERTY,
   SET_EVENT_STREAM,
@@ -46,6 +47,15 @@ export const setEditorConnections = createAction(
   (widgetConnections: FilterConnection[]) => ({
     payload: {
       widgetConnections,
+    },
+  })
+);
+
+export const setEditorDetachedConnections = createAction(
+  SET_EDITOR_DETACHED_CONNECTIONS,
+  (detachedWidgetConnections: FilterConnection[]) => ({
+    payload: {
+      detachedWidgetConnections,
     },
   })
 );
@@ -116,6 +126,7 @@ export type FilterActions =
   | ReturnType<typeof closeEditor>
   | ReturnType<typeof resetEditor>
   | ReturnType<typeof applySettings>
+  | ReturnType<typeof setEditorDetachedConnections>
   | ReturnType<typeof setEditorConnections>
   | ReturnType<typeof updateConnection>
   | ReturnType<typeof setTargetProperty>
