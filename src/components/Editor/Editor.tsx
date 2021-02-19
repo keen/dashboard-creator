@@ -40,7 +40,7 @@ import GridLoader from '../GridLoader';
 import Grid from '../Grid';
 
 import { getDroppingItemSize } from '../../utils';
-import { ROUTES, RESIZE_WIDGET_EVENT } from '../../constants';
+import { ROUTES, RESIZE_WIDGET_EVENT, GRID_MAX_VALUE } from '../../constants';
 
 import { RootState } from '../../rootReducer';
 
@@ -145,7 +145,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
               dispatch(
                 createWidget(widgetId, widgetType, {
                   x: 0,
-                  y: Infinity,
+                  y: GRID_MAX_VALUE,
                   w,
                   h,
                   minW,
