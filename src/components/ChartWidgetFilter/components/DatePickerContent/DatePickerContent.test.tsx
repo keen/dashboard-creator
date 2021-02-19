@@ -44,7 +44,7 @@ test('renders absolute timeframe', () => {
     wrapper: { getByText },
   } = render({ timeframe: { start, end } });
 
-  expect(getByText('2021-02-10 10:42')).toBeInTheDocument();
+  expect(getByText('2021-02-10 09:42')).toBeInTheDocument();
   expect(getByText('dashboard_timepicker.separator')).toBeInTheDocument();
-  expect(getByText('2021-02-19 10:42')).toBeInTheDocument();
+  expect(getByText('2021-02-19 09:42')).toBeInTheDocument();
 });
