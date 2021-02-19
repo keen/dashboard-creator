@@ -597,12 +597,11 @@ export function* setAccessKey({
 }: ReturnType<typeof setDashboardPublicAccessAction>) {
   const { dashboardId, isPublic } = payload;
 
-  const state: RootState = yield select();
-  const metadata = yield getDashboardMeta(state, dashboardId);
+  const metadata = yield select(getDashboardMeta, dashboardId);
 
   if (isPublic) {
     try {
-      const accessKey = yield createAccessKey(dashboardId);
+      const accessKey = yield call(createAccessKey, dashboardId);
       const { key: publicAccessKey } = accessKey;
       const updatedMetadata: DashboardMetaData = {
         ...metadata,
@@ -611,7 +610,13 @@ export function* setAccessKey({
 
       yield put(saveDashboardMetaAction(dashboardId, updatedMetadata));
     } catch (error) {
-      console.error(error);
+      const notificationManager = yield getContext(NOTIFICATION_MANAGER);
+      yield notificationManager.showNotification({
+        type: 'error',
+        message: 'dashboard_share.access_key_api_error',
+        showDismissButton: true,
+        autoDismiss: false,
+      });
     }
   } else {
     const { publicAccessKey } = metadata;
@@ -653,7 +658,13 @@ export function* regenerateAccessKey({
 
       yield put(saveDashboardMetaAction(dashboardId, updatedMetadata));
     } catch (error) {
-      console.error(error);
+      const notificationManager = yield getContext(NOTIFICATION_MANAGER);
+      yield notificationManager.showNotification({
+        type: 'error',
+        message: 'dashboard_share.access_key_api_error',
+        showDismissButton: true,
+        autoDismiss: false,
+      });
     }
   }
 }
