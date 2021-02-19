@@ -193,8 +193,8 @@ const dashboardsReducer = (
             settings: {
               ...state.items[action.payload.dashboardId].settings,
               widgets: [
-                action.payload.widgetId,
                 ...state.items[action.payload.dashboardId].settings.widgets,
+                action.payload.widgetId,
               ],
             },
           },
@@ -350,6 +350,7 @@ const dashboardsReducer = (
               return {
                 ...dashboardMeta,
                 isPublic: action.payload.isPublic,
+                publicAccessKey: action.payload.accessKey,
               };
             }
 

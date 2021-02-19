@@ -15,6 +15,7 @@ const render = (overProps: any = {}) => {
   const props = {
     id: '@widget/01',
     isHoverActive: true,
+    onEditWidget: jest.fn(),
     onRemoveWidget: jest.fn(),
     onEditWidget: jest.fn(),
     ...overProps,
@@ -43,7 +44,7 @@ test('renders grid drag handle element', () => {
   expect(element).toBeInTheDocument();
 });
 
-test('allows user to edit widget', () => {
+test('allows user to edit filter widget', () => {
   const {
     wrapper: { getByText },
     props,
@@ -55,7 +56,7 @@ test('allows user to edit widget', () => {
   expect(props.onEditWidget).toHaveBeenCalled();
 });
 
-test('allows user to remove widget', async () => {
+test('allows user to remove filter widget', async () => {
   const {
     props,
     wrapper: { container, getByText },

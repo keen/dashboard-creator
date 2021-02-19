@@ -33,6 +33,7 @@ import {
   viewDashboard as viewDashboardAction,
   updateCachedDashboardIds,
   unregisterDashboard,
+  setDashboardPublicAccess,
 } from './actions';
 import { removeDashboardTheme } from '../theme/actions';
 import {
@@ -47,6 +48,7 @@ import {
   exportDashboardToHtml,
   saveDashboard,
   updateCachedDashboardsList,
+  setAccessKey,
 } from './saga';
 
 import { removeWidget, registerWidgets, getWidgetSettings } from '../widgets';
@@ -229,7 +231,7 @@ describe('removeWidgetFromDashboard()', () => {
       };
     });
 
-    test('select state', (result) => {
+    test('update access key options', (result) => {
       expect(result).toEqual(call(updateAccessKeyOptions));
     });
 
@@ -747,39 +749,85 @@ describe('cloneDashboard', () => {
 
 describe('regenerateAccessKey()', () => {
   const dashboardId = '@dashboard/01';
-  const action = regenerateAccessKeyAction(dashboardId);
-  const test = sagaHelper(regenerateAccessKey(action));
   const publicAccessKey = 'public-access-key';
   const newAccessKey = 'new-access-key';
 
-  test('selects access key for dashboard', (result) => {
-    expect(result).toEqual(select(getDashboardMeta, dashboardId));
-    return {
-      publicAccessKey,
+  describe('Scenario 1: User regenerates access key', () => {
+    const action = regenerateAccessKeyAction(dashboardId);
+    const test = sagaHelper(regenerateAccessKey(action));
+
+    test('selects access key for dashboard', (result) => {
+      expect(result).toEqual(select(getDashboardMeta, dashboardId));
+      return {
+        publicAccessKey,
+      };
+    });
+
+    test('deletes existing access key', (result) => {
+      expect(result).toEqual(call(deleteAccessKey, publicAccessKey));
+    });
+
+    test('creates new access key', (result) => {
+      expect(result).toEqual(call(createAccessKey, dashboardId));
+      return {
+        key: newAccessKey,
+      };
+    });
+
+    test('saves new access key in dashboard meta', (result) => {
+      expect(result).toEqual(
+        put(
+          saveDashboardMetaAction(dashboardId, {
+            publicAccessKey: newAccessKey,
+          })
+        )
+      );
+    });
+
+    test('terminates regenerate access key flow', (result) => {
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe('Scenario 2: User fails to regenerate access key', () => {
+    const action = regenerateAccessKeyAction(dashboardId);
+    const test = sagaHelper(regenerateAccessKey(action));
+
+    const notificationManagerMock = {
+      showNotification: jest.fn(),
     };
-  });
 
-  test('deletes existing access key', (result) => {
-    expect(result).toEqual(call(deleteAccessKey, publicAccessKey));
-  });
+    test('selects access key for dashboard', (result) => {
+      expect(result).toEqual(select(getDashboardMeta, dashboardId));
+      return {
+        publicAccessKey,
+      };
+    });
 
-  test('creates new access key', (result) => {
-    expect(result).toEqual(call(createAccessKey, dashboardId));
-    return {
-      key: newAccessKey,
-    };
-  });
+    test('deletes existing access key', (result) => {
+      expect(result).toEqual(call(deleteAccessKey, publicAccessKey));
+    });
 
-  test('saves new access key in dashboard meta', (result) => {
-    expect(result).toEqual(
-      put(
-        saveDashboardMetaAction(dashboardId, { publicAccessKey: newAccessKey })
-      )
-    );
-  });
+    test('creates new access key', (result) => {
+      expect(result).toEqual(call(createAccessKey, dashboardId));
+      return new Error();
+    });
 
-  test('terminates regenerate access key flow', (result) => {
-    expect(result).toBeUndefined();
+    test('gets NotificationManager from context', (result) => {
+      expect(result).toEqual(getContext(NOTIFICATION_MANAGER));
+      return notificationManagerMock;
+    });
+
+    test('calls show notification method', () => {
+      expect(notificationManagerMock.showNotification).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'error',
+          showDismissButton: true,
+          autoDismiss: false,
+          message: 'dashboard_share.access_key_api_error',
+        })
+      );
+    });
   });
 });
 
@@ -996,6 +1044,92 @@ describe('updateCachedDashboardsList()', () => {
             '@dashboard/01',
           ])
         )
+      );
+    });
+  });
+});
+
+describe('setAccessKey()', () => {
+  const dashboardId = '@dashboard/01';
+  const publicAccessKey = 'public-access-key';
+
+  describe('Scenario 1: User successfully sets access key for public dashboard', () => {
+    const action = setDashboardPublicAccess(dashboardId, true, null);
+    const test = sagaHelper(setAccessKey(action));
+
+    test('selects dashboard metadata', (result) => {
+      expect(result).toEqual(select(getDashboardMeta, dashboardId));
+      return {};
+    });
+
+    test('creates new access key in api', (result) => {
+      expect(result).toEqual(call(createAccessKey, dashboardId));
+      return {
+        key: publicAccessKey,
+      };
+    });
+
+    test('saves new access key in dashboard meta', (result) => {
+      expect(result).toEqual(
+        put(
+          saveDashboardMetaAction(dashboardId, {
+            isPublic: true,
+            publicAccessKey: publicAccessKey,
+          })
+        )
+      );
+    });
+  });
+
+  describe('Scenario 2: User fails to set access key for public dashboard', () => {
+    const action = setDashboardPublicAccess(dashboardId, true, null);
+    const test = sagaHelper(setAccessKey(action));
+
+    const notificationManagerMock = {
+      showNotification: jest.fn(),
+    };
+
+    test('selects dashboard metadata', (result) => {
+      expect(result).toEqual(select(getDashboardMeta, dashboardId));
+      return {};
+    });
+
+    test('creates new access key', (result) => {
+      expect(result).toEqual(call(createAccessKey, dashboardId));
+      return new Error();
+    });
+
+    test('gets NotificationManager from context', (result) => {
+      expect(result).toEqual(getContext(NOTIFICATION_MANAGER));
+      return notificationManagerMock;
+    });
+
+    test('calls show notification method', () => {
+      expect(notificationManagerMock.showNotification).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'error',
+          showDismissButton: true,
+          autoDismiss: false,
+          message: 'dashboard_share.access_key_api_error',
+        })
+      );
+    });
+  });
+
+  describe('Scenario 3: User makes dashboard public and access key exists', () => {
+    const action = setDashboardPublicAccess(dashboardId, true, publicAccessKey);
+    const test = sagaHelper(setAccessKey(action));
+
+    test('selects dashboard metadata', (result) => {
+      expect(result).toEqual(select(getDashboardMeta, dashboardId));
+      return {
+        isPublic: false,
+      };
+    });
+
+    test('saves dashboard metadata', (result) => {
+      expect(result).toEqual(
+        put(saveDashboardMetaAction(dashboardId, { isPublic: true }))
       );
     });
   });
