@@ -109,8 +109,8 @@ export function* prepareChartWidgetQuery(chartWidget: WidgetItem) {
 
   if (hasQueryModifiers) {
     const { query: querySettings } = chartData as { query: Query };
-    const filters = querySettings.filters
-      ? [...querySettings.filters, ...queryFilters]
+    const filters = querySettings['filters']
+      ? [...querySettings['filters'], ...queryFilters]
       : queryFilters;
     if ('steps' in querySettings) {
       query = {
