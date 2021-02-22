@@ -438,7 +438,8 @@
   },
   "dashboard_timepicker": {
     "separator": "to",
-    "timeframe_modified": "Timeframe modified"
+    "timeframe_modified": "Timeframe modified",
+    "connector": "and"
   },
   "relative_time_label": {
     "label": "Last",
