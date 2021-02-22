@@ -165,7 +165,7 @@ export function* removeConnectionFromFilter(
 }
 
 /**
- * Release connections after date picker widget is removed.
+ * Release connections after filter widget is removed.
  *
  * @param deletedFilterId - Widget identifer
  * @return void

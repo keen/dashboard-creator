@@ -8,12 +8,15 @@ import {
   synchronizeFilterConnections,
   editFilterWidget,
   setupFilterWidget,
+  removeConnectionFromFilter,
+  removeFilterConnections,
 } from './filterWidget';
 
 import {
   updateChartWidgetFiltersConnections,
   setWidgetState,
   editFilterWidget as editFilterWidgetAction,
+  configureFilerWidget,
 } from '../actions';
 
 import {
@@ -39,6 +42,97 @@ import {
   removeWidgetFromDashboard,
   ADD_WIDGET_TO_DASHBOARD,
 } from '../../dashboards';
+
+describe('removeFilterConnections()', () => {
+  const dashboardId = '@dashboard/01';
+  const deletedFilterId = '@filter/01';
+
+  const state = {
+    dashboards: {
+      items: {
+        [dashboardId]: {
+          settings: { widgets: ['@widget/01', '@widget/02', '@widget/03'] },
+        },
+      },
+    },
+    widgets: {
+      items: {
+        '@widget/01': {
+          widget: {
+            id: '@widget/01',
+            type: 'visualization',
+            filterIds: [deletedFilterId, '@filter/02'],
+          },
+        },
+        '@widget/02': {
+          widget: {
+            id: '@widget/02',
+            type: 'visualization',
+            filterIds: [deletedFilterId, '@filter/02'],
+          },
+        },
+        '@widget/03': {
+          widget: {
+            id: '@widget/03',
+            type: 'date-picker',
+          },
+        },
+      },
+    },
+  };
+
+  describe('Scenario 1: Removes connection from chart widget after filter is removed', () => {
+    const test = sagaHelper(
+      removeFilterConnections(dashboardId, deletedFilterId)
+    );
+
+    test('get application state', (result) => {
+      expect(result).toEqual(select());
+
+      return state;
+    });
+
+    test('removes connections from chart widgets', (result) => {
+      expect(result).toEqual(
+        all([
+          put(
+            updateChartWidgetFiltersConnections('@widget/01', ['@filter/02'])
+          ),
+          put(
+            updateChartWidgetFiltersConnections('@widget/02', ['@filter/02'])
+          ),
+        ])
+      );
+    });
+  });
+});
+
+describe('removeConnectionFromFilter()', () => {
+  describe('Scenario 1: Removes connection from filter widget after chart is removed', () => {
+    const filterId = '@filter/01';
+    const widgetId = '@widget/01';
+
+    const test = sagaHelper(removeConnectionFromFilter(filterId, widgetId));
+
+    test('get filter widget settings', (result) => {
+      expect(result).toEqual(select(getWidgetSettings, filterId));
+
+      return {
+        settings: {
+          eventStream: 'logins',
+          targetProperty: 'user.id',
+          widgets: [widgetId, '@widget/02'],
+        },
+      };
+    });
+
+    test('updates filter widget connections', (result) => {
+      expect(result).toEqual(
+        put(configureFilerWidget(filterId, ['@widget/02'], 'logins', 'user.id'))
+      );
+    });
+  });
+});
 
 describe('updateWidgetsDistinction()', () => {
   describe('Scenario 1: Updates widgets state', () => {
