@@ -33,6 +33,8 @@ import {
   getFilterWidgetConnections,
   getDetachedFilterWidgetConnections,
   SET_EVENT_STREAM,
+  APPLY_EDITOR_SETTINGS,
+  CLOSE_EDITOR,
   getFilterSettings,
 } from '../../filter';
 
@@ -46,7 +48,6 @@ import {
   initializeChartWidget,
   applyFilterModifiers as applyFilterModifiersAction,
 } from '../actions';
-import { APPLY_EDITOR_SETTINGS, CLOSE_EDITOR } from '../../filter/constants';
 import { KEEN_ANALYSIS } from '../../../constants';
 
 import { getOldestTimeframe } from '../../../utils/getOldestTimeframe';
@@ -355,7 +356,7 @@ export function* updateWidgetsDistinction(
  * @return void
  *
  */
-function* synchronizeFilterConnections(
+export function* synchronizeFilterConnections(
   dashboardId: string,
   filterWidgetId: string,
   connectByDefault?: boolean

@@ -18,7 +18,11 @@ import {
   getFilterWidgetConnections,
   getDetachedFilterWidgetConnections,
 } from './saga';
-import { SET_EVENT_STREAM } from './constants';
+import {
+  SET_EVENT_STREAM,
+  APPLY_EDITOR_SETTINGS,
+  CLOSE_EDITOR,
+} from './constants';
 import { getFilterSettings } from './selectors';
 
 export {
@@ -39,6 +43,8 @@ export {
   getFilterWidgetConnections,
   getDetachedFilterWidgetConnections,
   SET_EVENT_STREAM,
+  APPLY_EDITOR_SETTINGS,
+  CLOSE_EDITOR,
   ReducerState,
   SchemaPropertiesList,
 };
