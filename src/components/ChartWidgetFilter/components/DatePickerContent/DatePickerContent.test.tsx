@@ -1,5 +1,9 @@
 import React from 'react';
 import { render as rtlRender } from '@testing-library/react';
+import {
+  register as registerTimezone,
+  unregister as unregisterTimezone,
+} from 'timezone-mock';
 
 import DatePickerContent from './DatePickerContent';
 
@@ -16,6 +20,14 @@ const render = (overProps: any = {}) => {
     wrapper,
   };
 };
+
+beforeAll(() => {
+  registerTimezone('UTC');
+});
+
+afterAll(() => {
+  unregisterTimezone();
+});
 
 test('renders title', () => {
   const {

@@ -1,6 +1,5 @@
 import '@testing-library/jest-dom';
 import fetch from 'jest-fetch-mock';
-import moment from 'moment-timezone';
 
 fetch.enableMocks();
 
@@ -11,5 +10,3 @@ jest.mock('react-i18next', () => ({
     };
   },
 }));
-
-moment.tz.setDefault('UTC');

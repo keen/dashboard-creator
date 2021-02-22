@@ -223,6 +223,7 @@ describe('removeWidgetFromDashboard()', () => {
       expect(result).toEqual(call(updateAccessKeyOptions));
     });
 
+    // TODO: update test
     test('removes connections from filter', (result) => {
       [].map((filterId) => {
         expect(result).toEqual(
