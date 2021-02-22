@@ -29,6 +29,7 @@ import {
   setEditorConnections,
   APPLY_EDITOR_SETTINGS,
   CLOSE_EDITOR,
+  SET_EVENT_STREAM,
 } from '../../filter';
 import { getWidgetSettings } from '../../widgets';
 import { getActiveDashboard } from '../../app';
@@ -38,6 +39,175 @@ import {
   removeWidgetFromDashboard,
   ADD_WIDGET_TO_DASHBOARD,
 } from '../../dashboards';
+
+describe('updateWidgetsDistinction()', () => {
+  describe('Scenario 1: Updates widgets state', () => {
+    const dashboardId = '@dashboard/01';
+    const widgetId = '@filter/01';
+
+    const widgetConnections = [
+      {
+        widgetId: '@widget/01',
+        isConnected: true,
+        title: null,
+        positionIndex: 0,
+      },
+    ];
+
+    const detachedWidgetConnections = [
+      {
+        widgetId: '@widget/02',
+        isConnected: false,
+        title: null,
+        positionIndex: 0,
+      },
+    ];
+
+    const test = sagaHelper(
+      updateWidgetsDistinction(dashboardId, widgetId, widgetConnections)
+    );
+
+    test('get application state', (result) => {
+      expect(result).toEqual(select());
+
+      return {
+        dashboards: {
+          items: {
+            [dashboardId]: {
+              settings: { widgets: ['@widget/01', '@widget/02', '@widget/03'] },
+            },
+          },
+        },
+        widgets: {
+          items: {
+            '@widget/01': {
+              widget: {
+                id: '@widget/01',
+                type: 'visualization',
+              },
+            },
+            '@widget/02': {
+              widget: {
+                id: '@widget/02',
+                type: 'visualization',
+                filterIds: [widgetId, '@filter/02'],
+              },
+            },
+            '@widget/03': {
+              widget: {
+                id: '@widget/03',
+                type: 'date-picker',
+              },
+            },
+          },
+        },
+        filter: {
+          detachedWidgetConnections,
+        },
+      };
+    });
+
+    test('updates widgets distinction', (result) => {
+      expect(result).toEqual(
+        all([
+          put(setWidgetState('@widget/03', { isFadeOut: true })),
+          put(
+            setWidgetState('@widget/01', {
+              isFadeOut: false,
+              isHighlighted: true,
+              isTitleCover: true,
+              isDetached: false,
+            })
+          ),
+          put(
+            setWidgetState('@widget/02', {
+              isFadeOut: false,
+              isHighlighted: false,
+              isTitleCover: true,
+              isDetached: true,
+            })
+          ),
+        ])
+      );
+    });
+  });
+});
+
+describe('synchronizeFilterConnections()', () => {
+  describe('Scenario 1: Synchronize widget connections after event stream is changed', () => {
+    const dashboardId = '@dashboard/01';
+    const widgetId = '@filter/01';
+
+    const widgetConnections = [
+      {
+        widgetId: '@widget/01',
+        isConnected: false,
+        title: null,
+        positionIndex: 0,
+      },
+    ];
+
+    const detachedWidgetConnections = [
+      {
+        widgetId: '@widget/02',
+        isConnected: false,
+        title: null,
+        positionIndex: 0,
+      },
+    ];
+
+    const test = sagaHelper(
+      synchronizeFilterConnections(dashboardId, widgetId, false)
+    );
+
+    test('wait for event stream change', (result) => {
+      expect(result).toEqual(take(SET_EVENT_STREAM));
+
+      return setEventStream('logins');
+    });
+
+    test('resets target property', (result) => {
+      expect(result).toEqual(put(setTargetProperty(null)));
+    });
+
+    test('creates filter widget connections', (result) => {
+      expect(result).toEqual(
+        call(getFilterWidgetConnections, dashboardId, widgetId, 'logins', false)
+      );
+
+      return widgetConnections;
+    });
+
+    test('creates filter widget detached connections', (result) => {
+      expect(result).toEqual(
+        call(
+          getDetachedFilterWidgetConnections,
+          dashboardId,
+          widgetId,
+          'logins'
+        )
+      );
+
+      return detachedWidgetConnections;
+    });
+
+    test('set detached widget connections', (result) => {
+      expect(result).toEqual(
+        put(setEditorDetachedConnections(detachedWidgetConnections))
+      );
+    });
+
+    test('set widget connections', (result) => {
+      expect(result).toEqual(put(setEditorConnections(widgetConnections)));
+    });
+
+    test('updates widget distinction', (result) => {
+      expect(result).toEqual(
+        call(updateWidgetsDistinction, dashboardId, widgetId, widgetConnections)
+      );
+    });
+  });
+});
 
 describe('editFilterWidget()', () => {
   describe('Scenario 1: User succesfully edits filter widget', () => {
