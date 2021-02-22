@@ -23,8 +23,6 @@ const TooltipHint: FC<Props> = ({
 }) => {
   const [visibile, setVisibility] = useState(false);
 
-  console.log(tooltipMode, 'sa');
-
   return (
     <Container
       data-testid="tooltip-hint"

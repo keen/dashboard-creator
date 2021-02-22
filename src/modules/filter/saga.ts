@@ -151,6 +151,7 @@ export function* prepareFilterTargetProperties({
     const url = client.url(`/3.0/projects/{projectId}/events/${eventStream}`, {
       api_key: client.config.masterKey,
     });
+
     const { properties } = yield fetch(url).then((response) => response.json());
     const filteredProperties = {};
 
@@ -171,8 +172,8 @@ export function* prepareFilterTargetProperties({
     }));
 
     yield put(setEventStreamSchema(filteredProperties, schemaTree, schemaList));
+    yield put(setSchemaProcessingError(false));
   } catch (err) {
-    console.log(err);
     yield put(setSchemaProcessingError(true));
   } finally {
     yield put(setSchemaProcessing(false));

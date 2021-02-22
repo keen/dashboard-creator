@@ -1,5 +1,5 @@
 export enum FilterSettingsError {
-  SchemaCompute,
-  EmptySchema,
-  IncompleteSettings,
+  SchemaCompute = 'SchemaCompute',
+  EmptySchema = 'EmptySchema',
+  IncompleteSettings = 'IncompleteSettings',
 }

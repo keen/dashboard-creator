@@ -88,7 +88,7 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
               </Alert>
             </ErrorContainer>
           )}
-          {error && (
+          {error === FilterSettingsError.IncompleteSettings && (
             <ErrorContainer>
               <Alert type="error">{t(ERRORS[error])}</Alert>
             </ErrorContainer>
@@ -115,6 +115,7 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
             <Field width={235}>
               <TargetProperty
                 targetProperty={targetProperty}
+                hasError={error === FilterSettingsError.SchemaCompute}
                 isDisabled={
                   !eventStream || inProgress || isDashboardWithoutCharts
                 }

@@ -1,4 +1,4 @@
-import filterReducer from './reducer';
+import filterReducer, { initialState } from './reducer';
 import { filterSaga } from './saga';
 import {
   openEditor,
@@ -24,6 +24,7 @@ import { getFilterSettings } from './selectors';
 export {
   getFilterSettings,
   filterReducer,
+  initialState,
   applySettings,
   setupDashboardEventStreams,
   setEventStream,
