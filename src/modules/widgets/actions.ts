@@ -40,6 +40,8 @@ import {
   SET_FILTER_PROPERTY_LIST,
   APPLY_FILTER_WIDGET,
   UNAPPLY_FILTER_WIDGET,
+  APPLY_FILTER_MODIFIERS,
+  CLEAR_FILTER_DATA,
 } from './constants';
 
 export const registerWidgets = createAction(
@@ -370,7 +372,23 @@ export const unapplyFilterWidget = createAction(
   })
 );
 
-// todo clear filter property list
+export const applyFilterModifiers = createAction(
+  APPLY_FILTER_MODIFIERS,
+  (id: string) => ({
+    payload: {
+      id,
+    },
+  })
+);
+
+export const clearFilterData = createAction(
+  CLEAR_FILTER_DATA,
+  (filterId: string) => ({
+    payload: {
+      filterId,
+    },
+  })
+);
 
 export type WidgetsActions =
   | ReturnType<typeof createWidget>
@@ -405,4 +423,6 @@ export type WidgetsActions =
   | ReturnType<typeof setFilterWidget>
   | ReturnType<typeof setFilterPropertyList>
   | ReturnType<typeof applyFilterWidget>
-  | ReturnType<typeof unapplyFilterWidget>;
+  | ReturnType<typeof unapplyFilterWidget>
+  | ReturnType<typeof applyFilterModifiers>
+  | ReturnType<typeof clearFilterData>;

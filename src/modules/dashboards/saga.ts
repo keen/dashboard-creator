@@ -117,6 +117,7 @@ import {
   removeConnectionFromFilter,
   removeFilterConnections,
 } from '../widgets/saga/filterWidget';
+import { clearFilterData } from '../widgets/actions';
 
 export function* fetchDashboardList() {
   const blobApi = yield getContext(BLOB_API);
@@ -443,7 +444,6 @@ export function* editDashboard({
     yield put(push(ROUTES.EDITOR));
 
     const blobApi = yield getContext(BLOB_API);
-
     try {
       const responseBody: DashboardModel = yield blobApi.getDashboardById(
         dashboardId
@@ -466,6 +466,18 @@ export function* editDashboard({
       console.error(err);
     }
   } else {
+    const widgets = dashboard.settings.widgets;
+    if (widgets && widgets.length > 0) {
+      const connectedWidgets = yield all(
+        widgets.map((id: string) => select(getWidget, id))
+      );
+      const filtersToReset = connectedWidgets.filter(
+        (widget) => widget.widget.type === 'filter'
+      );
+      yield all(
+        filtersToReset.map((filter) => put(clearFilterData(filter.widget.id)))
+      );
+    }
     yield put(setActiveDashboard(dashboardId));
     yield put(push(ROUTES.EDITOR));
   }

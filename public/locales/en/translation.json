@@ -41,6 +41,14 @@
     "schema_processing_error": "There was an issue with processing schema",
     "empty_schema_error": "No strings properties in schema"
   },
+  "filter_widget": {
+    "search_value": "Search value",
+    "select_all": "Select all",
+    "unselect_all": "Unselect all",
+    "apply": "Apply",
+    "clear": "Clear",
+    "no_properties_found": "No properties found"
+  },
   "date_picker_management": {
     "edit_text": "Edit",
     "delete_confirmation": "Are you sure you want to delete this widget?"

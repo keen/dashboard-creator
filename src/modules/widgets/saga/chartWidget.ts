@@ -1,4 +1,4 @@
-import { put, select, call, take, getContext } from 'redux-saga/effects';
+import { put, select, call, take, getContext, all } from 'redux-saga/effects';
 import { getAvailableWidgets } from '@keen.io/widget-picker';
 import { Query } from '@keen.io/query';
 import { SET_QUERY_EVENT, SET_CHART_SETTINGS } from '@keen.io/query-creator';
@@ -68,7 +68,7 @@ import { WidgetItem, ChartWidget } from '../types';
  */
 export function* prepareChartWidgetQuery(chartWidget: WidgetItem) {
   const { widget, data: chartData } = chartWidget;
-  const { datePickerId, query: chartQuery } = widget as ChartWidget;
+  const { datePickerId, filterIds, query: chartQuery } = widget as ChartWidget;
 
   let hasQueryModifiers = false;
   let query = chartQuery;
@@ -91,8 +91,27 @@ export function* prepareChartWidgetQuery(chartWidget: WidgetItem) {
     }
   }
 
+  const queryFilters = [];
+
+  if (filterIds && filterIds.length > 0) {
+    const connectedFilters = yield all(
+      filterIds.map((widgetId: string) => select(getWidget, widgetId))
+    );
+    connectedFilters.forEach((filter) => {
+      if (filter.isActive) {
+        hasQueryModifiers = true;
+        if (filter.data) {
+          queryFilters.push(filter.data.filter);
+        }
+      }
+    });
+  }
+
   if (hasQueryModifiers) {
     const { query: querySettings } = chartData as { query: Query };
+    const filters = querySettings.filters
+      ? [...querySettings.filters, ...queryFilters]
+      : queryFilters;
     if ('steps' in querySettings) {
       query = {
         ...querySettings,
@@ -105,6 +124,7 @@ export function* prepareChartWidgetQuery(chartWidget: WidgetItem) {
       query = {
         ...querySettings,
         ...queryModifiers,
+        filters: filters,
       };
     }
   }
@@ -124,6 +144,36 @@ export function* prepareChartWidgetQuery(chartWidget: WidgetItem) {
  *
  */
 export function* handleDetachedQuery(
+  widgetId: string,
+  visualizationType: string,
+  analysisResult: Record<string, any>
+) {
+  const i18n = yield getContext(TRANSLATIONS);
+  const error = {
+    title: i18n.t('widget_errors.detached_query_title', {
+      chart: visualizationType,
+    }),
+    message: i18n.t('widget_errors.detached_query_message'),
+  };
+
+  const widgetState: Partial<WidgetItem> = {
+    isInitialized: true,
+    data: analysisResult,
+    error,
+  };
+
+  yield put(setWidgetState(widgetId, widgetState));
+}
+
+/**
+ * Setup chart widget state for query detached from visualization settings
+ *
+ * @param widgetId - Widget identifier
+ * @param visualizationType - Type of visualization
+ * @return void
+ *
+ */
+export function* handleDetachedFilters(
   widgetId: string,
   visualizationType: string,
   analysisResult: Record<string, any>

@@ -60,6 +60,7 @@ import {
   setFilterWidget,
   editFilterWidget,
   setupFilterWidget,
+  applyFilterModifiers,
 } from './saga/filterWidget';
 
 import { SELECT_SAVED_QUERY, CREATE_QUERY, SavedQuery } from '../queries';
@@ -88,6 +89,7 @@ import {
   EDIT_FILTER_WIDGET,
   CLONE_WIDGET,
   SET_FILTER_WIDGET,
+  APPLY_FILTER_MODIFIERS,
 } from './constants';
 
 import { ChartWidget, WidgetItem } from './types';
@@ -301,4 +303,5 @@ export function* widgetsSaga() {
   yield takeEvery(INITIALIZE_WIDGET, initializeWidget);
   yield takeEvery(INITIALIZE_CHART_WIDGET, initializeChartWidget);
   yield takeEvery(SET_FILTER_WIDGET, setFilterWidget);
+  yield takeEvery(APPLY_FILTER_MODIFIERS, applyFilterModifiers);
 }

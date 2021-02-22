@@ -23,6 +23,7 @@ import {
   UPDATE_CHART_WIDGET_DATE_PICKER_CONNECTION,
   UPDATE_CHART_WIDGET_FILTERS_CONNECTIONS,
   UPDATE_WIDGETS_POSITION,
+  CLEAR_FILTER_DATA,
 } from './constants';
 
 import { FilterWidget, ReducerState } from './types';
@@ -268,6 +269,19 @@ const widgetsReducer = (
           },
         },
       };
+    case CLEAR_FILTER_DATA: {
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          [action.payload.filterId]: {
+            ...state.items[action.payload.filterId],
+            data: null,
+            isActive: false,
+          },
+        },
+      };
+    }
     case SAVE_CLONED_WIDGET:
       return {
         ...state,

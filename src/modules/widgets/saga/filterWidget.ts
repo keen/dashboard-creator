@@ -41,11 +41,41 @@ import {
   updateChartWidgetFiltersConnections,
   setFilterWidget as setFilterWidgetAction,
   setFilterPropertyList,
+  initializeChartWidget,
+  applyFilterModifiers as applyFilterModifiersAction,
 } from '../actions';
 import { APPLY_EDITOR_SETTINGS, CLOSE_EDITOR } from '../../filter/constants';
 import { KEEN_ANALYSIS } from '../../../constants';
 
 import { getOldestTimeframe } from '../../../utils/getOldestTimeframe';
+
+/**
+ * Apply filter connections updates to connected widgets
+ *
+ * @param filterId - filter widget identifer
+ * @return void
+ *
+ */
+// todo reuse same date picker function
+export function* applyFilterModifiers({
+  payload,
+}: ReturnType<typeof applyFilterModifiersAction>) {
+  const { id } = payload;
+
+  yield put(setWidgetState(id, { isActive: true }));
+  const {
+    settings: { widgets },
+  } = yield select(getWidgetSettings, id);
+
+  yield all(
+    widgets.map((widgetId: string) =>
+      put(setWidgetState(widgetId, { isInitialized: false, error: null }))
+    )
+  );
+  yield all(
+    widgets.map((widgetId: string) => put(initializeChartWidget(widgetId)))
+  );
+}
 
 /**
  * Apply filter widget
@@ -68,6 +98,12 @@ export function* setFilterWidget({
   );
   const client = yield getContext(KEEN_ANALYSIS);
 
+  yield put(
+    setWidgetState(payload.widgetId, {
+      isLoading: true,
+    })
+  );
+
   try {
     const response = yield client.query({
       analysisType: 'select_unique',
@@ -84,10 +120,17 @@ export function* setFilterWidget({
     });
     yield put(setFilterPropertyList(filter.widget.id, response.result));
   } catch (err) {
-    console.log(err);
-    // yield put(setSchemaProcessingError(true));
+    yield put(
+      setWidgetState(payload.widgetId, {
+        error: err,
+      })
+    );
   } finally {
-    // yield put(setSchemaProcessing(false));
+    yield put(
+      setWidgetState(payload.widgetId, {
+        isLoading: false,
+      })
+    );
   }
 }
 
