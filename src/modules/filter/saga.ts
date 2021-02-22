@@ -9,6 +9,7 @@ import {
 import { createTree } from '@keen.io/ui-core';
 
 import {
+  updateConnection,
   setEventStreamsPool,
   setEventStream,
   setSchemaProcessing,
@@ -17,7 +18,6 @@ import {
   setupDashboardEventStreams as setupDashboardEventStreamsAction,
 } from './actions';
 
-import { updateConnection } from '../datePicker';
 import { setWidgetState, getWidget, ChartWidget } from '../widgets';
 
 import { getDashboard } from '../dashboards';
