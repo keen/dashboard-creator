@@ -49,7 +49,7 @@ const PublicLink: FC<Props> = ({ dashboardId, isPublic = true }) => {
   );
 
   return (
-    <Container isActive={isPublic}>
+    <Container isActive={isPublic && !!publicAccessKey}>
       <ModalContent paddingTop="40px">
         <TitleWrapper>
           <Title>{t('dashboard_share.public_dashboard_link')}</Title>
