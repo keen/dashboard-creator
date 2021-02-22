@@ -5,6 +5,7 @@ export const widget: WidgetItem = {
   error: null,
   isConfigured: false,
   isInitialized: false,
+  isDetached: false,
   isActive: false,
   isLoading: false,
   isHighlighted: false,

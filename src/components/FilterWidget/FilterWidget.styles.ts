@@ -24,8 +24,8 @@ export const TitleContainer = styled.div`
 `;
 
 export const Title = styled.div`
-  //margin: 2px 0 0 10px;
   font-size: 14px;
+  margin-left: 5px;
   font-family: 'Lato Bold', sans-serif;
   color: ${colors.blue[500]};
 `;
@@ -35,7 +35,7 @@ export const DropdownContainer = styled.div<
 >`
   z-index: ${UI_LAYERS.dropdown};
   position: absolute;
-
+  max-height: 200px;
   ${layout}
 
   ${system({
@@ -51,9 +51,7 @@ export const Label = styled.div`
   background-color: ${colors.white[500]};
 `;
 
-export const ClearFilter = styled.div`
-  padding: 10px 14px;
-  border-top: solid 1px ${colors.gray[300]};
+export const FilterButtonSecondary = styled.div`
   color: ${colors.blue[200]};
   font-size: 14px;
   font-family: 'Lato Bold', sans-serif;
@@ -69,7 +67,46 @@ export const LoaderContainer = styled.div`
 `;
 
 export const DropdownContent = styled.div`
-  padding: 10px 0;
-  width: 200px;
+  height: 200px;
   box-sizing: border-box;
+  border-top: 1px solid ${colors.gray[300]};
+`;
+
+export const ScrollWrapper = styled.div`
+  max-height: 150px;
+  overflow-y: scroll;
+`;
+
+export const DropdownFooter = styled.div`
+  display: flex;
+  border-top: 1px solid ${colors.gray[300]};
+  padding: 10px 14px;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const DropdownHeader = styled.div`
+  padding: 10px 14px;
+`;
+
+export const EmptySearch = styled.div`
+  margin-top: 20px;
+  width: 100%;
+  text-align: center;
+  font-family: 'Lato Regular', sans-serif;
+  font-size: 16px;
+  color: ${colors.blue[500]};
+`;
+
+export const SelectedPropertiesNumber = styled.div`
+  background: ${colors.lightBlue[400]};
+  color: ${colors.black[400]};
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  font-size: 13px;
+  margin-left: 2px;
 `;

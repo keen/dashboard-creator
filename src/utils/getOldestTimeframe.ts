@@ -7,7 +7,7 @@ type TimeframeUnit =
   | 'weeks'
   | 'months'
   | 'years';
-type TimeframeRelative = 'this' | 'last';
+type TimeframeRelation = 'this' | 'last';
 
 export const getOldestTimeframe = (
   timeframes: (string | { start: string; end: string })[]
@@ -20,13 +20,14 @@ export const getOldestTimeframe = (
         absolute: moment(timeframe.start),
       });
     }
-    const [rel, n, unit]: [
-      TimeframeRelative,
-      string,
-      TimeframeUnit
-    ] = timeframe.split('_');
-    const date = moment().subtract(parseInt(n, 10), unit);
-    if (rel === 'this') {
+
+    const timeframeArray = timeframe.split('_');
+    const relation = timeframeArray[0] as TimeframeRelation;
+    const n = parseInt(timeframeArray[1], 10);
+    const unit = timeframeArray[2] as TimeframeUnit;
+
+    const date = moment().subtract(n, unit);
+    if (relation === 'this') {
       date.add(1, unit);
     }
     absoluteTimeframes.push({

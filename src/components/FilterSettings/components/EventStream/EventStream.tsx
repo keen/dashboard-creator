@@ -16,12 +16,15 @@ type Props = {
   eventStreams: string[];
   /** Event stream change event handler */
   onChange: (eventStream: string) => void;
+  /** Disable state indicator */
+  isDisabled: boolean;
 };
 
 const EventStream: FC<Props> = ({
   onChange,
   currentEventStream,
   eventStreams,
+  isDisabled,
 }) => {
   const { t } = useTranslation();
   const [isOpen, setOpen] = useState(false);
@@ -36,11 +39,11 @@ const EventStream: FC<Props> = ({
   );
 
   return (
-    <Container>
+    <Container isDisabled={isDisabled}>
       <DropableContainer
         variant="secondary"
         placeholder={t('filter_settings.event_stream_placeholder')}
-        onClick={() => !isOpen && setOpen(true)}
+        onClick={() => !isOpen && !isDisabled && setOpen(true)}
         isActive={isOpen}
         value={currentEventStream}
         dropIndicator

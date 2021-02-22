@@ -10,6 +10,7 @@ export const serializeWidget = (
   isInitialized: false,
   isLoading: false,
   isHighlighted: false,
+  isDetached: false,
   isFadeOut: false,
   isTitleCover: false,
   error: null,

@@ -89,6 +89,7 @@ export type WidgetItem = {
   isInitialized: boolean;
   isLoading: boolean;
   isHighlighted: boolean;
+  isDetached: boolean;
   isFadeOut: boolean;
   isTitleCover: boolean;
   error: WidgetError | null;

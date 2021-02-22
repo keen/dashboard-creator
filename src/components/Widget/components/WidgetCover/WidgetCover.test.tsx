@@ -6,6 +6,7 @@ import WidgetCover from './WidgetCover';
 const render = (overProps: any = {}) => {
   const props = {
     isHighlighted: false,
+    isDetached: false,
     ...overProps,
   };
 
@@ -17,7 +18,7 @@ const render = (overProps: any = {}) => {
   };
 };
 
-test('render title on cover', () => {
+test('renders title on cover', () => {
   const title = 'Title';
   const {
     wrapper: { getByText },

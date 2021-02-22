@@ -8,8 +8,9 @@ import {
   createTree,
 } from '@keen.io/ui-core';
 
+import PropertyPath from '../PropertyPath';
 import EmptySearch from '../../../EmptySearch';
-import { Container } from './TargetProperty.styles';
+import { Container, Message, Property } from './TargetProperty.styles';
 
 import { AppContext } from '../../../../contexts';
 import { SchemaPropertiesList } from '../../../../modules/filter';
@@ -29,6 +30,8 @@ type Props = {
   schemaTree: Record<string, any>;
   /** Target property change event handler */
   onChange: (targetProperty: string) => void;
+  /* Error indicator */
+  hasError: boolean;
 };
 
 const TargetProperty: FC<Props> = ({
@@ -38,6 +41,7 @@ const TargetProperty: FC<Props> = ({
   schemaTree,
   onChange,
   isDisabled,
+  hasError,
 }) => {
   const { t } = useTranslation();
   const [isOpen, setOpen] = useState(false);
@@ -100,21 +104,27 @@ const TargetProperty: FC<Props> = ({
           'filter_settings.target_property_search_placeholder'
         )}
         onSearch={searchHandler}
-        onDefocus={() => {
+        onDefocus={(event) => {
           if (!getEventPath(event)?.includes(containerRef.current)) {
             setPropertiesTree(null);
             setOpen(false);
           }
         }}
       >
-        {targetProperty}
+        <Property>
+          {targetProperty && <PropertyPath path={targetProperty.split('.')} />}
+        </Property>
       </DropableContainer>
       <Dropdown isOpen={isOpen}>
-        {isEmptySearch ? (
+        {hasError && (
+          <Message>{t('filter_settings.schema_processing_error')}</Message>
+        )}
+        {isEmptySearch && !hasError && (
           <EmptySearch
             message={t('filter_settings.target_property_empty_search_results')}
           />
-        ) : (
+        )}
+        {!isEmptySearch && !hasError && (
           <PropertiesTree
             modalContainer={modalContainer}
             expanded={expandTree}

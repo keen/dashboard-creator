@@ -49,6 +49,7 @@ const renderWidget = ({
   isEditorMode,
   isHoverActive,
   isHighlighted,
+  isDetached,
   isFadeOut,
   title,
   onRemoveWidget,
@@ -95,8 +96,12 @@ const renderWidget = ({
               onRemoveWidget={onRemoveWidget}
             />
           )}
-          {(isHighlighted || title) && (
-            <WidgetCover isHighlighted={isHighlighted} title={title} />
+          {(isHighlighted || isDetached || title) && (
+            <WidgetCover
+              isHighlighted={isHighlighted}
+              isDetached={isDetached}
+              title={title}
+            />
           )}
           {!isEditorMode && <ChartWidgetFilter widgetId={widgetId} />}
         </Container>
@@ -145,6 +150,7 @@ const Widget: FC<Props> = ({
     widget: { id: widgetId, type: widgetType },
     isHighlighted,
     isFadeOut,
+    isDetached,
     isTitleCover,
   } = useSelector((rootState: RootState) => getWidget(rootState, id));
 
@@ -170,6 +176,7 @@ const Widget: FC<Props> = ({
     widgetType,
     widgetId,
     isEditorMode,
+    isDetached,
     isHoverActive,
     isHighlighted,
     isFadeOut,
