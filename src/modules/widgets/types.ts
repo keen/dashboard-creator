@@ -77,9 +77,15 @@ export type Widget =
   | DatePickerWidget
   | FilterWidget;
 
+export enum WidgetErrors {
+  INCONSISTENT_FILTER = 'INCONSISTENT_FILTER',
+  DETACHED_QUERY = 'DETACHED_QUERY',
+}
+
 export type WidgetError = {
   title?: string;
   message: string;
+  code?: WidgetErrors;
 };
 
 export type WidgetItem = {

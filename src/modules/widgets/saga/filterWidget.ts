@@ -43,6 +43,7 @@ import {
   setFilterPropertyList,
   initializeChartWidget,
   applyFilterModifiers as applyFilterModifiersAction,
+  unapplyFilterWidget as unapplyFilterWidgetAction,
 } from '../actions';
 import { APPLY_EDITOR_SETTINGS, CLOSE_EDITOR } from '../../filter/constants';
 import { KEEN_ANALYSIS } from '../../../constants';
@@ -56,7 +57,6 @@ import { getOldestTimeframe } from '../../../utils/getOldestTimeframe';
  * @return void
  *
  */
-// todo reuse same date picker function
 export function* applyFilterModifiers({
   payload,
 }: ReturnType<typeof applyFilterModifiersAction>) {
@@ -484,4 +484,37 @@ export function* setupFilterWidget(widgetId: string) {
   );
 
   yield put(resetEditor());
+}
+
+/**
+ * Unapply filter widget to initial state and update connected widgets
+ *
+ * @param filterId - Filter identifer
+ * @return void
+ *
+ */
+export function* unapplyFilterWidget({
+  payload,
+}: ReturnType<typeof unapplyFilterWidgetAction>) {
+  const { filterId } = payload;
+  const {
+    data,
+    widget: {
+      settings: { widgets },
+    },
+  } = yield select(getWidget, filterId);
+  const dataWithoutFilter = data;
+  delete dataWithoutFilter.filter;
+
+  yield put(
+    setWidgetState(filterId, { isActive: false, data: dataWithoutFilter })
+  );
+  yield all(
+    widgets.map((widgetId: string) =>
+      put(setWidgetState(widgetId, { isInitialized: false, error: null }))
+    )
+  );
+  yield all(
+    widgets.map((widgetId: string) => put(initializeChartWidget(widgetId)))
+  );
 }

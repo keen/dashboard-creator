@@ -56,7 +56,7 @@ import {
   TRANSLATIONS,
 } from '../../../constants';
 
-import { WidgetItem, ChartWidget } from '../types';
+import { WidgetItem, ChartWidget, WidgetErrors } from '../types';
 
 /**
  * Creates ad-hoc query with date picker and filters modifiers.
@@ -154,6 +154,7 @@ export function* handleDetachedQuery(
       chart: visualizationType,
     }),
     message: i18n.t('widget_errors.detached_query_message'),
+    code: WidgetErrors.DETACHED_QUERY,
   };
 
   const widgetState: Partial<WidgetItem> = {
@@ -166,29 +167,28 @@ export function* handleDetachedQuery(
 }
 
 /**
- * Setup chart widget state for query detached from visualization settings
+ * Setup chart widget state for query with different event collection than applied filters
  *
  * @param widgetId - Widget identifier
  * @param visualizationType - Type of visualization
  * @return void
  *
  */
-export function* handleDetachedFilters(
+export function* handleInconsistentFilters(
   widgetId: string,
-  visualizationType: string,
-  analysisResult: Record<string, any>
+  visualizationType: string
 ) {
   const i18n = yield getContext(TRANSLATIONS);
   const error = {
-    title: i18n.t('widget_errors.detached_query_title', {
+    title: i18n.t('widget_errors.inconsistent_filter_title', {
       chart: visualizationType,
     }),
-    message: i18n.t('widget_errors.detached_query_message'),
+    message: i18n.t('widget_errors.inconsistent_filter_message'),
+    code: WidgetErrors.INCONSISTENT_FILTER,
   };
 
   const widgetState: Partial<WidgetItem> = {
     isInitialized: true,
-    data: analysisResult,
     error,
   };
 
@@ -240,7 +240,24 @@ export function* initializeChartWidget({
       visualizationType
     );
 
-    if (isDetachedQuery) {
+    const connectedFilterIds = chartWidget.widget.filterIds;
+    const connectedFilters = yield all(
+      connectedFilterIds.map((filterId) => select(getWidget, filterId))
+    );
+    const connectedFiltersEventStreams = connectedFilters.map(
+      (connectedFilter) => connectedFilter.widget.settings.eventStream
+    );
+
+    if (
+      chartWidget.data &&
+      chartWidget.data.query.event_collection &&
+      connectedFiltersEventStreams.length > 0 &&
+      !connectedFiltersEventStreams.every(
+        (eventStream) => eventStream === chartWidget.data.query.event_collection
+      )
+    ) {
+      yield call(handleInconsistentFilters, id, visualizationType);
+    } else if (isDetachedQuery) {
       yield call(handleDetachedQuery, id, visualizationType, analysisResult);
     } else {
       if (hasQueryModifiers) {

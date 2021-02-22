@@ -252,23 +252,6 @@ const widgetsReducer = (
           },
         },
       };
-    case UNAPPLY_FILTER_WIDGET:
-      const { filter, ...dataWithoutFilter } = state.items[
-        action.payload.filterId
-      ].data;
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          [action.payload.filterId]: {
-            ...state.items[action.payload.filterId],
-            isActive: false,
-            data: {
-              ...dataWithoutFilter,
-            },
-          },
-        },
-      };
     case CLEAR_FILTER_DATA: {
       return {
         ...state,

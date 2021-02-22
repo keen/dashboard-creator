@@ -22,6 +22,8 @@ import DashboardDeleteConfirmation from '../DashboardDeleteConfirmation';
 import { ROUTES } from '../../constants';
 import { RootState } from '../../rootReducer';
 
+import { clearInconsistentFiltersError } from '../../modules/widgets/actions';
+
 type Props = {
   /** Dashboard identifer */
   dashboardId: string;
@@ -53,6 +55,7 @@ const Viewer: FC<Props> = ({ dashboardId }) => {
   useEffect(() => {
     return () => {
       dispatch(resetDatePickerWidgets(dashboardId));
+      dispatch(clearInconsistentFiltersError(dashboardId));
       dispatch(removeInterimQueries());
     };
   }, [dashboardId]);
