@@ -53,7 +53,7 @@ const InputGroup: FC<Props> = ({ value }) => {
         }));
       }, TOOLTIP_HIDE);
     },
-    []
+    [value]
   );
 
   return (
