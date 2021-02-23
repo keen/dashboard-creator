@@ -43,6 +43,7 @@ import {
   APPLY_FILTER_MODIFIERS,
   CLEAR_FILTER_DATA,
   CLEAR_INCONSISTENT_FILTERS_ERROR_FROM_WIDGETS,
+  UNREGISTER_WIDGET,
 } from './constants';
 
 export const registerWidgets = createAction(
@@ -216,6 +217,15 @@ export const savedQueryUpdated = createAction(
     payload: {
       widgetId,
       queryId,
+    },
+  })
+);
+
+export const unregisterWidget = createAction(
+  UNREGISTER_WIDGET,
+  (widgetId: string) => ({
+    payload: {
+      widgetId,
     },
   })
 );
@@ -436,4 +446,6 @@ export type WidgetsActions =
   | ReturnType<typeof unapplyFilterWidget>
   | ReturnType<typeof applyFilterModifiers>
   | ReturnType<typeof clearFilterData>
-  | ReturnType<typeof clearInconsistentFiltersError>;
+  | ReturnType<typeof clearInconsistentFiltersError>
+  | ReturnType<typeof saveImage>
+  | ReturnType<typeof unregisterWidget>;

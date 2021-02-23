@@ -9,11 +9,9 @@ import {
   APPLY_FILTER_WIDGET,
   UNAPPLY_FILTER_WIDGET,
   CONFIGURE_FILTER_WIDGET,
-  CREATE_WIDGET,
   FINISH_CHART_WIDGET_CONFIGURATION,
   REGISTER_WIDGETS,
   REMOVE_WIDGET,
-  SAVE_CLONED_WIDGET,
   SET_DATE_PICKER_WIDGET,
   SET_FILTER_PROPERTY_LIST,
   SET_IMAGE_WIDGET,
@@ -24,6 +22,9 @@ import {
   UPDATE_CHART_WIDGET_FILTERS_CONNECTIONS,
   UPDATE_WIDGETS_POSITION,
   CLEAR_FILTER_DATA,
+  CREATE_WIDGET,
+  SAVE_CLONED_WIDGET,
+  UNREGISTER_WIDGET,
 } from './constants';
 
 import { FilterWidget, ReducerState } from './types';
@@ -282,6 +283,13 @@ const widgetsReducer = (
             },
           },
         },
+      };
+    case UNREGISTER_WIDGET:
+      const items = { ...state.items };
+      delete items[action.payload.widgetId];
+      return {
+        ...state,
+        items,
       };
     default:
       return state;

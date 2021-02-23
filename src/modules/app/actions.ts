@@ -12,8 +12,13 @@ import {
 
 export const appStart = createAction(
   APP_START,
-  (baseTheme: Partial<Theme>, editPrivileges: boolean) => ({
+  (
+    baseTheme: Partial<Theme>,
+    editPrivileges: boolean,
+    cachedDashboardsNumber
+  ) => ({
     payload: {
+      cachedDashboardsNumber,
       dashboards: {
         baseTheme,
       },

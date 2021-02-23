@@ -8,6 +8,7 @@ import {
   getContext,
   spawn,
   call,
+  takeEvery,
 } from 'redux-saga/effects';
 import { StatusCodes } from 'http-status-codes';
 import { push } from 'connected-react-router';
@@ -45,10 +46,13 @@ import {
   setDashboardError,
   setDashboardListOrder,
   addClonedDashboard,
+  unregisterDashboard,
+  updateCachedDashboardIds,
 } from './actions';
 
 import { serializeDashboard } from './serializers';
 import {
+  getCachedDashboardIds,
   getDashboard,
   getDashboardMeta,
   getDashboardSettings,
@@ -113,6 +117,8 @@ import {
   DashboardMetaData,
   DashboardError,
 } from './types';
+import { unregisterWidget } from '../widgets/actions';
+import { getCachedDashboardsNumber } from '../app/selectors';
 import {
   removeConnectionFromFilter,
   removeFilterConnections,
@@ -767,6 +773,34 @@ export function* showDashboardDeleteConfirmation() {
   yield window.scrollTo(0, 0);
 }
 
+export function* updateCachedDashboardsList({
+  payload,
+}: ReturnType<typeof viewDashboardAction | typeof editDashboardAction>) {
+  const { dashboardId } = payload;
+  let [...cachedDashboardIds] = yield select(getCachedDashboardIds);
+  const cachedDashboardsNumber = yield select(getCachedDashboardsNumber);
+  if (cachedDashboardIds.includes(dashboardId)) {
+    cachedDashboardIds.push(
+      cachedDashboardIds.splice(cachedDashboardIds.indexOf(dashboardId), 1)[0]
+    );
+  } else if (cachedDashboardIds.length < cachedDashboardsNumber) {
+    cachedDashboardIds.push(dashboardId);
+  } else {
+    const dashboardToUnregister = yield select(
+      getDashboard,
+      cachedDashboardIds[0]
+    );
+    if (dashboardToUnregister.settings) {
+      const widgets = dashboardToUnregister.settings.widgets;
+      yield all(widgets.map((widgetId) => put(unregisterWidget(widgetId))));
+      yield put(unregisterDashboard(cachedDashboardIds[0]));
+      cachedDashboardIds.push(dashboardId);
+      cachedDashboardIds = cachedDashboardIds.splice(1, 3);
+    }
+  }
+  yield put(updateCachedDashboardIds(cachedDashboardIds));
+}
+
 export function* dashboardsSaga() {
   yield spawn(rehydrateDashboardsOrder);
   yield takeLatest(FETCH_DASHBOARDS_LIST, fetchDashboardList);
@@ -786,4 +820,5 @@ export function* dashboardsSaga() {
   yield takeLatest(REGENERATE_ACCESS_KEY, regenerateAccessKey);
   yield takeLatest(CLONE_DASHBOARD, cloneDashboard);
   yield takeLatest(EXPORT_DASHBOARD_TO_HTML, exportDashboardToHtml);
+  yield takeEvery([VIEW_DASHBOARD, EDIT_DASHBOARD], updateCachedDashboardsList);
 }

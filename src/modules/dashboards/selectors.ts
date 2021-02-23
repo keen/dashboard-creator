@@ -36,3 +36,6 @@ export const getDashboardListOrder = ({ dashboards }: RootState) =>
 
 export const getTagsFilter = ({ dashboards }: RootState) =>
   dashboards.tagsFilters;
+
+export const getCachedDashboardIds = ({ dashboards }: RootState) =>
+  dashboards.cachedDashboardIds;
