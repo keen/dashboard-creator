@@ -176,7 +176,6 @@ const dashboardsReducer = (
         },
       };
     case ADD_WIDGET_TO_DASHBOARD:
-      console.log('action', action);
       return {
         ...state,
         metadata: {

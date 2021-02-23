@@ -293,11 +293,9 @@ export function* setupDatePicker(widgetId: string) {
     true
   );
 
-  console.log('widgetConnections', widgetConnections);
   const widgetsConnectionsPool = widgetConnections.map(
     ({ widgetId }) => widgetId
   );
-  console.log('widgetsConnectionsPool', widgetsConnectionsPool);
 
   yield put(setEditorConnections(widgetConnections));
   yield put(openEditor());

@@ -25,8 +25,12 @@ const ChartWidgetFilter: FC<Props> = ({ widgetId }) => {
 
   const datePickerData = useSelector((state: RootState) => {
     if ('datePickerId' in widget && widget.datePickerId) {
-      const { data } = getWidget(state, widget.datePickerId);
-      return data;
+      const { data, isActive } = getWidget(state, widget.datePickerId);
+      if (isActive) {
+        return data;
+      }
+
+      return null;
     }
 
     return null;
