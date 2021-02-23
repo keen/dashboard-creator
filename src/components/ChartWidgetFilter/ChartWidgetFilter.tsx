@@ -61,8 +61,6 @@ const ChartWidgetFilter: FC<Props> = ({ widgetId }) => {
     return !!interimQuery;
   });
 
-  console.log(filtersData, '---@filtersData');
-
   if (hasInterimQuery) {
     return (
       <Container>
