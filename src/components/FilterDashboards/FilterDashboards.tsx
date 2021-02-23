@@ -19,7 +19,6 @@ import {
   Container,
   Filter,
   TagsContainer,
-  DropdownContainer,
   DropdownContent,
   EmptySearch,
   ClearFilters,
@@ -42,7 +41,7 @@ const FilterDashboards = () => {
   const [isOpen, setOpen] = useState(false);
   const [searchMode, setSearchMode] = useState(false);
   const [searchPhrase, setSearchPhrase] = useState('');
-  const [dropdown, setDropdown] = useState({ x: 0, y: 0, width: 0 });
+  const [dropdown, setDropdown] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     isOpen ? dispatch(prepareTagsPool()) : dispatch(clearTagsPool());
@@ -85,21 +84,17 @@ const FilterDashboards = () => {
   );
 
   useEffect(() => {
-    if (isOpen && containerRef.current) {
-      const {
-        left,
-        bottom,
-        width,
-      }: ClientRect = containerRef.current.getBoundingClientRect();
+    const {
+      left,
+      bottom,
+    }: ClientRect = containerRef.current.getBoundingClientRect();
 
-      setDropdown((state) => ({
-        ...state,
-        x: left,
-        y: bottom - document.body.offsetHeight + window.scrollY,
-        width,
-      }));
-    }
-  }, [isOpen, containerRef, tags, showOnlyPublicDashboards]);
+    setDropdown((state) => ({
+      ...state,
+      x: left,
+      y: bottom + window.scrollY,
+    }));
+  }, [isOpen]);
 
   useEffect(() => {
     document.addEventListener('click', outsideClick);
@@ -120,20 +115,26 @@ const FilterDashboards = () => {
         </Filter>
       </Container>
       <Portal modalContainer={modalContainer}>
-        <DropdownContainer
-          ref={dropdownContainerRef}
-          customTransform={`translate(${dropdown.x}px, ${dropdown.y}px)`}
-          width={dropdown.width}
-        >
-          <Dropdown isOpen={isOpen} fullWidth={false}>
+        <div ref={dropdownContainerRef}>
+          <Dropdown
+            isOpen={isOpen}
+            fullWidth={false}
+            positionRelativeToDocument={true}
+            motion={{
+              initial: { opacity: 0, top: dropdown.y, left: dropdown.x },
+              animate: { opacity: 1, top: dropdown.y, left: dropdown.x },
+              exit: { opacity: 0, top: dropdown.y, left: dropdown.x },
+            }}
+          >
             <DropdownContent>
               <FilterItem
-                id="cached"
+                id="public"
                 label={t('tags_filters.show_only_public_dashboards')}
                 isActive={showOnlyPublicDashboards}
-                onChange={(isActive) =>
-                  dispatch(setTagsFiltersPublic(isActive))
-                }
+                onChange={(e, isActive) => {
+                  e.preventDefault();
+                  dispatch(setTagsFiltersPublic(isActive));
+                }}
               />
               <SearchTags
                 isActive={searchMode}
@@ -156,7 +157,10 @@ const FilterDashboards = () => {
                     id={tag}
                     isActive={tags.includes(tag)}
                     label={tag}
-                    onChange={(isActive) => updateTags(isActive, tag)}
+                    onChange={(e, isActive) => {
+                      e.preventDefault();
+                      updateTags(isActive, tag);
+                    }}
                   />
                 ))}
               </TagsContainer>
@@ -175,7 +179,7 @@ const FilterDashboards = () => {
               {t('tags_filters.clear')}
             </ClearFilters>
           </Dropdown>
-        </DropdownContainer>
+        </div>
       </Portal>
     </>
   );

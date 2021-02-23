@@ -2,41 +2,43 @@ import { DashboardsActions } from './actions';
 
 import {
   createDashboardMeta,
+  createTagsPool,
   reduceWidgetsCount,
   sortDashboards,
-  createTagsPool,
 } from './utils';
 
 import {
-  FETCH_DASHBOARDS_LIST_SUCCESS,
-  SAVE_DASHBOARD,
-  SAVE_DASHBOARD_SUCCESS,
-  SAVE_DASHBOARD_ERROR,
-  UPDATE_DASHBOARD_METADATA,
-  SAVE_DASHBOARD_METADATA,
-  SAVE_DASHBOARD_METADATA_SUCCESS,
-  SAVE_DASHBOARD_METADATA_ERROR,
-  REGISTER_DASHBOARD,
-  DELETE_DASHBOARD_SUCCESS,
-  UPDATE_DASHBOARD,
-  CREATE_DASHBOARD,
-  SET_DASHBOARD_LIST,
-  SET_DASHBOARD_ERROR,
+  ADD_CLONED_DASHBOARD,
   ADD_WIDGET_TO_DASHBOARD,
-  REMOVE_WIDGET_FROM_DASHBOARD,
-  SHOW_DELETE_CONFIRMATION,
-  HIDE_DELETE_CONFIRMATION,
-  SHOW_DASHBOARD_SETTINGS_MODAL,
+  CLEAR_TAGS_POOL,
+  CREATE_DASHBOARD,
+  DELETE_DASHBOARD_SUCCESS,
+  FETCH_DASHBOARDS_LIST_SUCCESS,
   HIDE_DASHBOARD_SETTINGS_MODAL,
-  SHOW_DASHBOARD_SHARE_MODAL,
   HIDE_DASHBOARD_SHARE_MODAL,
+  HIDE_DELETE_CONFIRMATION,
+  PREPARE_TAGS_POOL,
+  REGISTER_DASHBOARD,
+  REMOVE_WIDGET_FROM_DASHBOARD,
+  SAVE_DASHBOARD,
+  SAVE_DASHBOARD_ERROR,
+  SAVE_DASHBOARD_METADATA,
+  SAVE_DASHBOARD_METADATA_ERROR,
+  SAVE_DASHBOARD_METADATA_SUCCESS,
+  SAVE_DASHBOARD_SUCCESS,
+  SET_DASHBOARD_ERROR,
+  SET_DASHBOARD_LIST,
   SET_DASHBOARD_LIST_ORDER,
   SET_DASHBOARD_PUBLIC_ACCESS,
-  ADD_CLONED_DASHBOARD,
-  PREPARE_TAGS_POOL,
-  CLEAR_TAGS_POOL,
   SET_TAGS_FILTERS,
   SET_TAGS_FILTERS_PUBLIC,
+  SHOW_DASHBOARD_SETTINGS_MODAL,
+  SHOW_DASHBOARD_SHARE_MODAL,
+  SHOW_DELETE_CONFIRMATION,
+  UNREGISTER_DASHBOARD,
+  UPDATE_CACHED_DASHBOARD_IDS,
+  UPDATE_DASHBOARD,
+  UPDATE_DASHBOARD_METADATA,
 } from './constants';
 
 import { ReducerState } from './types';
@@ -66,6 +68,7 @@ export const initialState: ReducerState = {
     tags: [],
   },
   items: {},
+  cachedDashboardIds: [],
   dashboardListOrder: 'recent',
 };
 
@@ -391,6 +394,18 @@ const dashboardsReducer = (
           ...state.tagsFilters,
           showOnlyPublicDashboards: action.payload.filterPublic,
         },
+      };
+    case UPDATE_CACHED_DASHBOARD_IDS:
+      return {
+        ...state,
+        cachedDashboardIds: action.payload.dashboardIds,
+      };
+    case UNREGISTER_DASHBOARD:
+      const items = { ...state.items };
+      delete items[action.payload.dashboardId];
+      return {
+        ...state,
+        items,
       };
     default:
       return state;

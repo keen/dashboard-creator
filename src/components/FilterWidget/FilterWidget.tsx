@@ -218,9 +218,10 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
                       id={property}
                       isActive={activeProperties.includes(property)}
                       label={property}
-                      onChange={(isActive) =>
-                        updateActiveProperties(isActive, property)
-                      }
+                      onChange={(e, isActive: boolean) => {
+                        e.preventDefault();
+                        updateActiveProperties(isActive, property);
+                      }}
                     />
                   ))}
                 </ScrollWrapper>

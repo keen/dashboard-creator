@@ -18,6 +18,7 @@ import {
   finishChartWidgetConfiguration,
   savedQueryUpdated,
   saveClonedWidget,
+  clearInconsistentFiltersError as clearInconsistentFiltersErrorAction,
 } from './actions';
 
 import { getWidgetSettings, getWidget } from './selectors';
@@ -61,6 +62,7 @@ import {
   editFilterWidget,
   setupFilterWidget,
   applyFilterModifiers,
+  unapplyFilterWidget,
 } from './saga/filterWidget';
 
 import { SELECT_SAVED_QUERY, CREATE_QUERY, SavedQuery } from '../queries';
@@ -90,9 +92,11 @@ import {
   CLONE_WIDGET,
   SET_FILTER_WIDGET,
   APPLY_FILTER_MODIFIERS,
+  CLEAR_INCONSISTENT_FILTERS_ERROR_FROM_WIDGETS,
+  UNAPPLY_FILTER_WIDGET,
 } from './constants';
 
-import { ChartWidget, WidgetItem } from './types';
+import { ChartWidget, WidgetErrors, WidgetItem } from './types';
 
 /**
  * Flow responsible for re-initializing widgets after updating saved query.
@@ -126,8 +130,30 @@ export function* reinitializeWidgets({
   yield all(
     widgetsToUpdate.map(({ id }) => put(setWidgetState(id, widgetState)))
   );
+
   yield all(
     widgetsToUpdate.map(({ id }) => put(initializeChartWidgetAction(id)))
+  );
+}
+
+export function* clearInconsistentFiltersErrorFromWidgets({
+  payload,
+}: ReturnType<typeof clearInconsistentFiltersErrorAction>) {
+  const { widgets: widgetIds } = yield select(
+    getDashboardSettings,
+    payload.dashboardId
+  );
+  const widgets = yield all(
+    widgetIds.map((id: string) => select(getWidget, id))
+  );
+  const widgetsWithInconsistentFilterError = widgets.filter(
+    (widget) =>
+      widget.error && widget.error.code === WidgetErrors.INCONSISTENT_FILTER
+  );
+  yield all(
+    widgetsWithInconsistentFilterError.map((widget) =>
+      put(setWidgetState(widget.widget.id, { error: null }))
+    )
   );
 }
 
@@ -304,4 +330,9 @@ export function* widgetsSaga() {
   yield takeEvery(INITIALIZE_CHART_WIDGET, initializeChartWidget);
   yield takeEvery(SET_FILTER_WIDGET, setFilterWidget);
   yield takeEvery(APPLY_FILTER_MODIFIERS, applyFilterModifiers);
+  yield takeEvery(
+    CLEAR_INCONSISTENT_FILTERS_ERROR_FROM_WIDGETS,
+    clearInconsistentFiltersErrorFromWidgets
+  );
+  yield takeEvery(UNAPPLY_FILTER_WIDGET, unapplyFilterWidget);
 }
