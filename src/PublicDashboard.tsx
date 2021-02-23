@@ -16,7 +16,7 @@ import { PubSub } from '@keen.io/pubsub';
 import { ToastProvider } from '@keen.io/toast-notifications';
 import { screenBreakpoints } from '@keen.io/ui-core';
 
-import { APIContext } from './contexts';
+import { APIContext, AppContext } from './contexts';
 import { BlobAPI } from './api';
 import { NotificationManager } from './modules/notifications';
 import { viewPublicDashboard } from './modules/dashboards';
@@ -35,6 +35,9 @@ import { PublicDashboardOptions, TranslationsSettings } from './types';
 export class PublicDashboard {
   /** Container used to mount application */
   private container: string;
+
+  /** Container used to mount application modals */
+  private modalContainer: string;
 
   /** Project identifer */
   private readonly projectId: string;
@@ -55,7 +58,14 @@ export class PublicDashboard {
   private readonly translationsSettings: TranslationsSettings;
 
   constructor(config: PublicDashboardOptions) {
-    const { container, project, dashboardId, backend, translations } = config;
+    const {
+      container,
+      modalContainer,
+      project,
+      dashboardId,
+      backend,
+      translations,
+    } = config;
 
     if (backend?.analyticsApiUrl)
       this.analyticsApiUrl = backend.analyticsApiUrl;
@@ -65,6 +75,7 @@ export class PublicDashboard {
     const { id: projectId, accessKey } = project;
 
     this.container = container;
+    this.modalContainer = modalContainer;
     this.projectId = projectId;
     this.dashboardId = dashboardId;
     this.accessKey = accessKey;
@@ -104,6 +115,11 @@ export class PublicDashboard {
     });
 
     const rootSaga = createRootSaga();
+    const projectSettings = {
+      id: this.projectId,
+      userKey: this.accessKey,
+      masterKey: '',
+    };
 
     sagaMiddleware.run(rootSaga);
     store.dispatch(viewPublicDashboard(this.dashboardId));
@@ -117,9 +133,18 @@ export class PublicDashboard {
         >
           <ConnectedRouter history={history}>
             <ToastProvider>
-              <APIContext.Provider value={{ blobApi, keenAnalysis }}>
-                <PublicDashboardViewer dashboardId={this.dashboardId} />
-              </APIContext.Provider>
+              <AppContext.Provider
+                value={{
+                  notificationPubSub,
+                  project: projectSettings,
+                  analyticsApiUrl: this.analyticsApiUrl,
+                  modalContainer: this.modalContainer,
+                }}
+              >
+                <APIContext.Provider value={{ blobApi, keenAnalysis }}>
+                  <PublicDashboardViewer dashboardId={this.dashboardId} />
+                </APIContext.Provider>
+              </AppContext.Provider>
             </ToastProvider>
           </ConnectedRouter>
         </ThemeProvider>

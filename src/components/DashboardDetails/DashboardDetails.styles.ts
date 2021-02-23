@@ -6,6 +6,13 @@ export const Header = styled.div`
   display: flex;
   align-items: center;
 `;
+
+export const Title = styled.div`
+  font-family: 'Lato Bold', sans-serif;
+  font-size: 20px;
+  color: ${colors.blue[500]};
+`;
+
 export const BackButton = styled(motion.div)`
   margin: 10px 0 0 10px;
 

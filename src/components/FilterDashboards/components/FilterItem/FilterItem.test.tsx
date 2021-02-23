@@ -12,5 +12,5 @@ test('calls "onChange" event handler', () => {
   const element = getByText('label');
   fireEvent.click(element);
 
-  expect(mockFn).toHaveBeenCalledWith(true);
+  expect(mockFn).toHaveBeenCalled();
 });
