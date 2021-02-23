@@ -33,10 +33,10 @@ const ChartWidgetFilter: FC<Props> = ({ widgetId }) => {
 
     const filters = widget['filterIds'].reduce((acc, id) => {
       const { data } = getWidget(state, id);
-      if (data) {
+      if (data?.filter) {
         acc.push({
-          propertyName: data['propertyName'],
-          propertyValue: data['propertyValue'],
+          propertyName: data.filter['propertyName'],
+          propertyValue: data.filter['propertyValue'],
         });
       }
       return acc;
@@ -58,7 +58,7 @@ const ChartWidgetFilter: FC<Props> = ({ widgetId }) => {
             <DatePickerContent timeframe={datePickerData.timeframe} />
           </WidgetFilter>
         )}
-        {filtersData && (
+        {!!filtersData?.length && (
           <WidgetFilter icon="funnel-widget-vertical">
             <FiltersContent data={filtersData} />
           </WidgetFilter>
