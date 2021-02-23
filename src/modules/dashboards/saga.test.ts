@@ -84,9 +84,6 @@ import { removeConnectionFromFilter } from '../widgets/saga/filterWidget';
 import { getCachedDashboardsNumber } from '../app/selectors';
 import { unregisterWidget } from '../widgets/actions';
 
-import { getCachedDashboardsNumber } from '../app/selectors';
-import { unregisterWidget } from '../widgets/actions';
-
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
 
