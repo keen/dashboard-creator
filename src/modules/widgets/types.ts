@@ -17,6 +17,12 @@ export type GridPosition = {
 
 export type WidgetsPosition = (GridPosition & { i: string })[];
 
+export type FilterSettings = {
+  propertyName: string;
+  operator: string;
+  propertyValue: string | string[];
+};
+
 export interface BaseWidget {
   id: string;
   position: GridPosition;
@@ -62,11 +68,7 @@ export interface FilterWidget extends BaseWidget {
     widgets: string[];
     eventStream: string | null;
     targetProperty: string | null;
-    filter: {
-      propertyName: string;
-      operator: string;
-      propertyValue: string | string[];
-    };
+    filter: FilterSettings;
   };
 }
 
