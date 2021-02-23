@@ -193,8 +193,8 @@ const dashboardsReducer = (
             settings: {
               ...state.items[action.payload.dashboardId].settings,
               widgets: [
-                action.payload.widgetId,
                 ...state.items[action.payload.dashboardId].settings.widgets,
+                action.payload.widgetId,
               ],
             },
           },
