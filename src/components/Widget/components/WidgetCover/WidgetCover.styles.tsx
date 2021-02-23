@@ -2,7 +2,10 @@ import styled, { css } from 'styled-components';
 import { transparentize } from 'polished';
 import { colors } from '@keen.io/colors';
 
-export const Cover = styled.div<{ isHighlighted?: boolean }>`
+export const Cover = styled.div<{
+  isHighlighted?: boolean;
+  isDetached?: boolean;
+}>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -13,13 +16,22 @@ export const Cover = styled.div<{ isHighlighted?: boolean }>`
   left: 0;
 
   ${(props) =>
+    props.isDetached &&
+    css`
+      border: 1px solid ${colors.gray[500]};
+      border-radius: 4px;
+      background-color: ${transparentize(0.9, colors.black[100])};
+      pointer-events: none;
+    `};
+
+  ${(props) =>
     props.isHighlighted &&
     css`
       border: 1px solid ${colors.green[100]};
       border-radius: 4px;
       background-color: ${transparentize(0.5, '#F0F6F1')};
       pointer-events: none;
-    `}
+    `};
 `;
 
 export const Title = styled.div`

@@ -6,6 +6,7 @@ import {
   CLOSE_EDITOR,
   RESET_EDITOR,
   SET_EDITOR_CONNECTIONS,
+  SET_EDITOR_DETACHED_CONNECTIONS,
   UPDATE_CONNECTION,
   SET_TARGET_PROPERTY,
   SET_EVENT_STREAM,
@@ -22,6 +23,7 @@ export const initialState: ReducerState = {
     inProgress: false,
   },
   widgetConnections: [],
+  detachedWidgetConnections: [],
   eventStreamsPool: [],
   eventStream: null,
   eventStreamSchema: {
@@ -53,6 +55,11 @@ const filterReducer = (
           return widgetConnection;
         }),
       };
+    case SET_EDITOR_DETACHED_CONNECTIONS:
+      return {
+        ...state,
+        detachedWidgetConnections: action.payload.detachedWidgetConnections,
+      };
     case SET_EDITOR_CONNECTIONS:
       return {
         ...state,
@@ -73,7 +80,6 @@ const filterReducer = (
       return {
         ...state,
         eventStream: action.payload.eventStream,
-        // todo clear target property
       };
     case SET_TARGET_PROPERTY:
       return {

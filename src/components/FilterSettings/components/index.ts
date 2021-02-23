@@ -1,4 +1,6 @@
 import EventStream from './EventStream';
 import TargetProperty from './TargetProperty';
+import TooltipHint from './TooltipHint';
+import PropertyPath from './PropertyPath';
 
-export { EventStream, TargetProperty };
+export { TooltipHint, EventStream, TargetProperty, PropertyPath };

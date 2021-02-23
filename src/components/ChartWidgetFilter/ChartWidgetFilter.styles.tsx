@@ -8,6 +8,10 @@ export const Container = styled.div`
   top: 10px;
   right: 10px;
   z-index: ${UI_LAYERS.element};
+
+  display: grid;
+  grid-auto-flow: column;
+  grid-column-gap: 10px;
 `;
 
 export const IconContainer = styled.div`
@@ -19,33 +23,10 @@ export const IconContainer = styled.div`
   justify-content: center;
 
   cursor: pointer;
-`;
 
-export const Title = styled.div`
-  margin-bottom: 10px;
-  font-family: 'Lato Bold', sans-serif;
-  font-size: 14px;
-  line-height: 17px;
-  color: ${colors.black[100]};
-`;
+  transition: background-color 150ms ease-in-out;
 
-export const Timeframe = styled.div`
-  font-family: 'Lato Regular', sans-serif;
-  font-size: 14px;
-  line-height: 17px;
-  color: ${colors.blue[500]};
-`;
-
-export const TimeframeWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-export const Separator = styled.div`
-  margin-top: 4px;
-  margin-bottom: 4px;
-  font-family: 'Lato Regular', sans-serif;
-  font-size: 13px;
-  line-height: 17px;
-  color: ${colors.blue[100]};
+  &:hover {
+    background-color: ${transparentize(0.6, colors.blue[100])};
+  }
 `;

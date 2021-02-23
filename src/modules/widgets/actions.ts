@@ -447,5 +447,6 @@ export type WidgetsActions =
   | ReturnType<typeof applyFilterModifiers>
   | ReturnType<typeof clearFilterData>
   | ReturnType<typeof clearInconsistentFiltersError>
+  | ReturnType<typeof clearFilterData>
   | ReturnType<typeof saveImage>
   | ReturnType<typeof unregisterWidget>;

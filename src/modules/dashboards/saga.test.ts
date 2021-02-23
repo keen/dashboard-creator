@@ -79,6 +79,10 @@ import {
   getDashboardSettings,
   getDashboardsMetadata,
 } from './selectors';
+import { removeConnectionFromFilter } from '../widgets/saga/filterWidget';
+
+import { getCachedDashboardsNumber } from '../app/selectors';
+import { unregisterWidget } from '../widgets/actions';
 
 import { getCachedDashboardsNumber } from '../app/selectors';
 import { unregisterWidget } from '../widgets/actions';
@@ -229,6 +233,15 @@ describe('removeWidgetFromDashboard()', () => {
 
     test('select state', (result) => {
       expect(result).toEqual(call(updateAccessKeyOptions));
+    });
+
+    // TODO: update test
+    test('removes connections from filter', (result) => {
+      [].map((filterId) => {
+        expect(result).toEqual(
+          call(removeConnectionFromFilter, filterId, widgetId)
+        );
+      });
     });
 
     test('triggers remove widget', (result) => {

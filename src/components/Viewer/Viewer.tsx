@@ -54,6 +54,7 @@ const Viewer: FC<Props> = ({ dashboardId }) => {
 
   useEffect(() => {
     return () => {
+      // @TODO: RESET
       dispatch(resetDatePickerWidgets(dashboardId));
       dispatch(clearInconsistentFiltersError(dashboardId));
       dispatch(removeInterimQueries());

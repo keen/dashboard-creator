@@ -46,8 +46,8 @@ import {
   setDashboardError,
   setDashboardListOrder,
   addClonedDashboard,
-  unregisterDashboard,
   updateCachedDashboardIds,
+  unregisterDashboard,
 } from './actions';
 
 import { serializeDashboard } from './serializers';
@@ -450,6 +450,7 @@ export function* editDashboard({
     yield put(push(ROUTES.EDITOR));
 
     const blobApi = yield getContext(BLOB_API);
+
     try {
       const responseBody: DashboardModel = yield blobApi.getDashboardById(
         dashboardId
