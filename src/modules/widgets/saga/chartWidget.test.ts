@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import sagaHelper from 'redux-saga-testing';
-import { put, call, take, getContext, select } from 'redux-saga/effects';
+import { all, put, call, take, getContext, select } from 'redux-saga/effects';
 import { PickerWidgets, ChartSettings } from '@keen.io/widget-picker';
 import { SET_QUERY_EVENT } from '@keen.io/query-creator';
 import { Query } from '@keen.io/query';
@@ -9,6 +9,7 @@ import {
   initializeChartWidget,
   prepareChartWidgetQuery,
   handleDetachedQuery,
+  handleInconsistentFilters,
   editChartWidget,
   editChartSavedQuery,
 } from './chartWidget';
@@ -49,9 +50,39 @@ import { addInterimQuery, getInterimQuery } from '../../queries';
 
 import { widget as widgetFixture } from '../fixtures';
 
-import { KEEN_ANALYSIS } from '../../../constants';
+import { KEEN_ANALYSIS, TRANSLATIONS } from '../../../constants';
 
-import { WidgetItem } from '../types';
+import { WidgetItem, WidgetErrors } from '../types';
+
+describe('handleInconsistentFilters()', () => {
+  describe('Scenario 1: Handle filter settings inconsistency', () => {
+    const widgetId = '@widget/01';
+    const test = sagaHelper(handleInconsistentFilters(widgetId));
+
+    test('gets translations from context', (result) => {
+      expect(result).toEqual(getContext(TRANSLATIONS));
+
+      return {
+        t: jest.fn().mockImplementation((value) => value),
+      };
+    });
+
+    test('updates widget state', (result) => {
+      expect(result).toEqual(
+        put(
+          setWidgetState(widgetId, {
+            isInitialized: true,
+            error: {
+              title: 'widget_errors.inconsistent_filter_title',
+              message: 'widget_errors.inconsistent_filter_message',
+              code: WidgetErrors.INCONSISTENT_FILTER,
+            },
+          })
+        )
+      );
+    });
+  });
+});
 
 describe('prepareChartWidgetQuery()', () => {
   function* wrapper(widget: WidgetItem) {
@@ -111,13 +142,141 @@ describe('prepareChartWidgetQuery()', () => {
           event_collection: 'logins',
           timeframe: 'this_30_days',
           timezone: 'US/Central',
+          filters: [],
         },
         hasQueryModifiers: true,
       });
     });
   });
 
-  describe('Scenario 3: Returns initial query for non-active modifiers', () => {
+  describe('Scenario 3: Prepares query with date and filter modifiers', () => {
+    const query = {
+      analysis_type: 'count',
+      event_collection: 'logins',
+      filters: [
+        { propertyName: 'country', operator: 'eq', propertyValue: 'USA' },
+      ],
+    } as Query;
+
+    const chartWidget = {
+      ...widgetFixture,
+      data: {
+        query,
+      },
+      widget: {
+        ...widgetFixture.widget,
+        datePickerId: '@date-picker/01',
+        filterIds: ['@filter/01', '@filter/02'],
+        query,
+      },
+    };
+
+    const test = sagaHelper(wrapper(chartWidget));
+
+    test('get date picker widget settings', (result) => {
+      expect(result).toEqual(select(getWidget, '@date-picker/01'));
+
+      return {
+        isActive: true,
+        data: { timeframe: 'this_30_days', timezone: 'US/Central' },
+      };
+    });
+
+    test('get connected filter widgets settings ', (result) => {
+      expect(result).toEqual(
+        all([select(getWidget, '@filter/01'), select(getWidget, '@filter/02')])
+      );
+
+      return [
+        {
+          isActive: true,
+          data: {
+            filter: {
+              propertyName: 'id',
+              operator: 'eq',
+              propertyValue: ['@id/01'],
+            },
+          },
+        },
+        { isActive: false },
+      ];
+    });
+
+    test('returns query with filter modifiers', (result) => {
+      expect(result).toEqual({
+        query: {
+          ...query,
+          timeframe: 'this_30_days',
+          timezone: 'US/Central',
+          filters: [
+            ...query.filters,
+            { propertyName: 'id', operator: 'eq', propertyValue: ['@id/01'] },
+          ],
+        },
+        hasQueryModifiers: true,
+      });
+    });
+  });
+
+  describe('Scenario 4: Prepares query with filter modifiers', () => {
+    const query = {
+      analysis_type: 'count',
+      event_collection: 'logins',
+      filters: [
+        { propertyName: 'country', operator: 'eq', propertyValue: 'USA' },
+      ],
+    } as Query;
+
+    const chartWidget = {
+      ...widgetFixture,
+      data: {
+        query,
+      },
+      widget: {
+        ...widgetFixture.widget,
+        datePickerId: null,
+        filterIds: ['@filter/01', '@filter/02'],
+        query,
+      },
+    };
+
+    const test = sagaHelper(wrapper(chartWidget));
+
+    test('get connected filter widgets settings ', (result) => {
+      expect(result).toEqual(
+        all([select(getWidget, '@filter/01'), select(getWidget, '@filter/02')])
+      );
+
+      return [
+        {
+          isActive: true,
+          data: {
+            filter: {
+              propertyName: 'id',
+              operator: 'eq',
+              propertyValue: ['@id/01'],
+            },
+          },
+        },
+        { isActive: false },
+      ];
+    });
+
+    test('returns query with filter modifiers', (result) => {
+      expect(result).toEqual({
+        query: {
+          ...query,
+          filters: [
+            ...query.filters,
+            { propertyName: 'id', operator: 'eq', propertyValue: ['@id/01'] },
+          ],
+        },
+        hasQueryModifiers: true,
+      });
+    });
+  });
+
+  describe('Scenario 5: Returns initial query for non-active modifiers', () => {
     const query = {
       analysis_type: 'count',
       event_collection: 'logins',
@@ -225,6 +384,7 @@ describe('initializeChartWidget()', () => {
       widget: {
         query: query,
         datePickerId: null,
+        filterIds: [],
         settings: {
           visualizationType: 'line',
         },
@@ -263,6 +423,12 @@ describe('initializeChartWidget()', () => {
       return analysisResult;
     });
 
+    test('get connected filter widgets settings ', (result) => {
+      expect(result).toEqual(all([]));
+
+      return [];
+    });
+
     test('performs detached query flow', (result) => {
       expect(result).toEqual(
         call(handleDetachedQuery, widgetId, 'line', analysisResult)
@@ -282,6 +448,7 @@ describe('initializeChartWidget()', () => {
       widget: {
         query: 'logins',
         datePickerId: null,
+        filterIds: [],
         settings: {
           visualizationType: 'metric',
         },
@@ -325,6 +492,12 @@ describe('initializeChartWidget()', () => {
       return analysisResult;
     });
 
+    test('get connected filter widgets settings ', (result) => {
+      expect(result).toEqual(all([]));
+
+      return [];
+    });
+
     test('gets interim query connected with widget', (result) => {
       expect(result).toEqual(select(getInterimQuery, widgetId));
 
@@ -359,7 +532,8 @@ describe('initializeChartWidget()', () => {
     const chartWidget: any = {
       widget: {
         query,
-        datePickerId: null,
+        datePickerId: '@datepicker/01',
+        filterIds: [],
         settings: {
           visualizationType: 'metric',
         },
@@ -397,6 +571,12 @@ describe('initializeChartWidget()', () => {
       expect(keenAnalysis.query).toHaveBeenCalledWith(query);
 
       return analysisResult;
+    });
+
+    test('get connected filter widgets settings ', (result) => {
+      expect(result).toEqual(all([]));
+
+      return [];
     });
 
     test('add interim query for chart widget', (result) => {
@@ -481,6 +661,85 @@ describe('initializeChartWidget()', () => {
           })
         )
       );
+    });
+  });
+
+  describe('Scenario 5: Active filters are inconsistent with query', () => {
+    const action = initializeChartWidgetAction(widgetId);
+    const test = sagaHelper(initializeChartWidget(action));
+
+    const keenAnalysis = {
+      query: jest.fn(),
+    };
+
+    const query = {
+      analysis_type: 'count',
+      event_collection: 'logins',
+    };
+
+    const chartWidget: any = {
+      data: {
+        query,
+      },
+      widget: {
+        query: query,
+        datePickerId: null,
+        filterIds: ['@filter/01'],
+        settings: {
+          visualizationType: 'metric',
+        },
+      },
+    };
+
+    const analysisResult = {
+      result: 10,
+      query,
+    };
+
+    test('gets widget settings', (result) => {
+      expect(result).toEqual(select(getWidget, widgetId));
+
+      return chartWidget;
+    });
+
+    test('prepares widget query', (result) => {
+      expect(result).toEqual(call(prepareChartWidgetQuery, chartWidget));
+
+      return { query, hasQueryModifiers: true };
+    });
+
+    test('set widgets loading state', (result) => {
+      expect(result).toEqual(put(setWidgetLoading(widgetId, true)));
+    });
+
+    test('gets Keen API client from context', (result) => {
+      expect(result).toEqual(getContext(KEEN_ANALYSIS));
+
+      return keenAnalysis;
+    });
+
+    test('performs query', () => {
+      expect(keenAnalysis.query).toHaveBeenCalledWith(query);
+      return analysisResult;
+    });
+
+    test('get connected filter widgets settings ', (result) => {
+      expect(result).toEqual(all([select(getWidget, '@filter/01')]));
+
+      return [
+        {
+          widget: {
+            id: '@filter/01',
+            settings: {
+              eventStream: 'purchases',
+            },
+          },
+        },
+      ];
+    });
+
+    test('performs detached query flow', (result) => {
+      expect(result).toEqual(call(handleInconsistentFilters, widgetId));
     });
   });
 });

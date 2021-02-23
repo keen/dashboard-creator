@@ -128,7 +128,7 @@ test('renders widget filter for datepicker', () => {
   expect(getByTestId('widget-filter')).toBeInTheDocument();
 });
 
-test('renders widget filter for filters', () => {
+test('renders summary of applied filters', () => {
   const state = {
     widgets: {
       items: {
@@ -169,15 +169,19 @@ test('renders widget filter for filters', () => {
         [filterId]: {
           isActive: true,
           data: {
-            propertyName: 'propertyName',
-            propertyValue: 'propertyValue',
+            filter: {
+              propertyName: 'propertyName',
+              propertyValue: 'propertyValue',
+            },
           },
         },
       },
     },
   };
+
   const {
     wrapper: { getAllByTestId },
   } = render(state);
+
   expect(getAllByTestId('widget-filter').length).toEqual(2);
 });

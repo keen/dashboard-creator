@@ -43,12 +43,15 @@ const ChartWidgetFilter: FC<Props> = ({ widgetId }) => {
           const { data, isActive } = getWidget(state, id);
           if (isActive && data?.filter) {
             const { propertyName, propertyValue } = data.filter;
-
-            activeFilters.push({
-              propertyName,
-              propertyValue,
-            });
+            return [
+              ...activeFilters,
+              {
+                propertyName,
+                propertyValue,
+              },
+            ];
           }
+
           return activeFilters;
         },
         []
