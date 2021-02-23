@@ -56,3 +56,6 @@ export const getCurrentDashboardChartsCount = ({
 
   return 0;
 };
+
+export const getCachedDashboardIds = ({ dashboards }: RootState) =>
+  dashboards.cachedDashboardIds;

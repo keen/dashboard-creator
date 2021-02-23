@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import sagaHelper from 'redux-saga-testing';
-import { put, take, select, getContext, call } from 'redux-saga/effects';
+import { put, take, select, getContext, call, all } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
 
 jest.mock('uuid', () => {
@@ -30,6 +30,9 @@ import {
   saveDashboard as saveDashboardAction,
   updateDashboardMeta,
   saveDashboardSuccess,
+  viewDashboard as viewDashboardAction,
+  updateCachedDashboardIds,
+  unregisterDashboard,
 } from './actions';
 import { removeDashboardTheme } from '../theme/actions';
 import {
@@ -43,6 +46,7 @@ import {
   cloneDashboard,
   exportDashboardToHtml,
   saveDashboard,
+  updateCachedDashboardsList,
 } from './saga';
 
 import { removeWidget, registerWidgets, getWidgetSettings } from '../widgets';
@@ -69,11 +73,16 @@ import {
   KEEN_ANALYSIS,
 } from '../../constants';
 import {
+  getCachedDashboardIds,
+  getDashboard,
   getDashboardMeta,
   getDashboardSettings,
   getDashboardsMetadata,
 } from './selectors';
 import { removeConnectionFromFilter } from '../widgets/saga/filterWidget';
+
+import { getCachedDashboardsNumber } from '../app/selectors';
+import { unregisterWidget } from '../widgets/actions';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
@@ -892,5 +901,102 @@ describe('saveDashboard()', () => {
 
   test('notifies about save success', (result) => {
     expect(result).toEqual(put(saveDashboardSuccess(dashboardId)));
+  });
+});
+
+describe('updateCachedDashboardsList()', () => {
+  const dashboardId = '@dashboard/01';
+  const action = viewDashboardAction(dashboardId);
+
+  describe('Scenario 1: Should add dashboard id to cached dashboards if total cached dashboards number is less than maximal cached dashboards number', () => {
+    const test = sagaHelper(updateCachedDashboardsList(action));
+    test('should get cached dashboard ids', (result) => {
+      expect(result).toEqual(select(getCachedDashboardIds));
+      return [];
+    });
+    test('should get maximal cached dashboards number', (result) => {
+      expect(result).toEqual(select(getCachedDashboardsNumber));
+      return 3;
+    });
+    test('should update state with the array containing the id of visited dashboard', (result) => {
+      expect(result).toEqual(put(updateCachedDashboardIds([dashboardId])));
+    });
+  });
+
+  describe('Scenario 2: Should move dashboard id position to the end of cached dashboards array if dashboard id already exists inside it', () => {
+    const test = sagaHelper(updateCachedDashboardsList(action));
+    const cachedDashboardIds = [
+      '@dashboard/01',
+      '@dashboard/03',
+      '@dashboard/04',
+    ];
+    test('should get cached dashboard ids', (result) => {
+      expect(result).toEqual(select(getCachedDashboardIds));
+      return cachedDashboardIds;
+    });
+    test('should get maximal cached dashboards number', (result) => {
+      expect(result).toEqual(select(getCachedDashboardsNumber));
+      return 3;
+    });
+    test('should update state with array containing recent dashboard id at the end', (result) => {
+      expect(result).toEqual(
+        put(
+          updateCachedDashboardIds([
+            '@dashboard/03',
+            '@dashboard/04',
+            '@dashboard/01',
+          ])
+        )
+      );
+    });
+  });
+
+  describe('Scenario 3: Should remove the oldest dashboard id from cache and its related widgets', () => {
+    const test = sagaHelper(updateCachedDashboardsList(action));
+    const cachedDashboardIds = [
+      '@dashboard/02',
+      '@dashboard/03',
+      '@dashboard/04',
+    ];
+
+    test('should get cached dashboard ids', (result) => {
+      expect(result).toEqual(select(getCachedDashboardIds));
+      return cachedDashboardIds;
+    });
+    test('should get maximal cached dashboards number', (result) => {
+      expect(result).toEqual(select(getCachedDashboardsNumber));
+      return 3;
+    });
+    test('should get dashboard to remove', (result) => {
+      expect(result).toEqual(select(getDashboard, cachedDashboardIds[0]));
+      return {
+        settings: {
+          widgets: ['@widget/01', '@widget/02', '@widget/03'],
+        },
+      };
+    });
+    test('should remove dashboard widgets from cache', (result) => {
+      expect(result).toEqual(
+        all([
+          put(unregisterWidget('@widget/01')),
+          put(unregisterWidget('@widget/02')),
+          put(unregisterWidget('@widget/03')),
+        ])
+      );
+    });
+    test('should remove dashboard from cache', (result) => {
+      expect(result).toEqual(put(unregisterDashboard(cachedDashboardIds[0])));
+    });
+    test('should update cached dashboard ids with the array which not contains removed element', (result) => {
+      expect(result).toEqual(
+        put(
+          updateCachedDashboardIds([
+            '@dashboard/03',
+            '@dashboard/04',
+            '@dashboard/01',
+          ])
+        )
+      );
+    });
   });
 });

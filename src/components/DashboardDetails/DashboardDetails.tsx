@@ -7,7 +7,13 @@ import { colors } from '@keen.io/colors';
 
 import DashboardViewSwitch from '../DashboardViewSwitch';
 
-import { Tag, Header, BackButton, BackText } from './DashboardDetails.styles';
+import {
+  Tag,
+  Title,
+  Header,
+  BackButton,
+  BackText,
+} from './DashboardDetails.styles';
 
 import { backMotion } from './motion';
 
@@ -18,6 +24,8 @@ type Props = {
   tags?: string[];
   /** Dashboard is public identifier */
   isPublic?: boolean;
+  /** Dashboard switcher available */
+  useDashboardSwitcher?: boolean;
   /** Back event handler */
   onBack?: () => void;
 };
@@ -26,6 +34,7 @@ const DashboardDetails: FC<Props> = ({
   title,
   tags = [],
   isPublic = false,
+  useDashboardSwitcher = true,
   onBack,
 }) => {
   const { t } = useTranslation();
@@ -33,7 +42,11 @@ const DashboardDetails: FC<Props> = ({
   return (
     <div>
       <Header>
-        <DashboardViewSwitch title={title} />
+        {useDashboardSwitcher ? (
+          <DashboardViewSwitch title={title} />
+        ) : (
+          <Title data-testid="public-title">{title}</Title>
+        )}
         {isPublic && (
           <Tag>
             <Badge variant="green">{t('dashboard_details.public')}</Badge>

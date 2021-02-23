@@ -42,6 +42,7 @@ import {
   UNAPPLY_FILTER_WIDGET,
   APPLY_FILTER_MODIFIERS,
   CLEAR_FILTER_DATA,
+  UNREGISTER_WIDGET,
 } from './constants';
 
 export const registerWidgets = createAction(
@@ -215,6 +216,15 @@ export const savedQueryUpdated = createAction(
     payload: {
       widgetId,
       queryId,
+    },
+  })
+);
+
+export const unregisterWidget = createAction(
+  UNREGISTER_WIDGET,
+  (widgetId: string) => ({
+    payload: {
+      widgetId,
     },
   })
 );
@@ -425,4 +435,6 @@ export type WidgetsActions =
   | ReturnType<typeof applyFilterWidget>
   | ReturnType<typeof unapplyFilterWidget>
   | ReturnType<typeof applyFilterModifiers>
-  | ReturnType<typeof clearFilterData>;
+  | ReturnType<typeof clearFilterData>
+  | ReturnType<typeof saveImage>
+  | ReturnType<typeof unregisterWidget>;

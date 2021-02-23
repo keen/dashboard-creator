@@ -2,6 +2,7 @@
 
 exports[`add widget to dashboard 1`] = `
 Object {
+  "cachedDashboardIds": Array [],
   "dashboardListOrder": "recent",
   "dashboardSettingsModal": Object {
     "dashboardId": null,
@@ -56,6 +57,7 @@ Object {
 
 exports[`removes widget from dashboard 1`] = `
 Object {
+  "cachedDashboardIds": Array [],
   "dashboardListOrder": "recent",
   "dashboardSettingsModal": Object {
     "dashboardId": null,

@@ -7,3 +7,6 @@ export const getUser = ({ app }: RootState) => app.user;
 export const getQueryPicker = ({ app }: RootState) => app.queryPicker;
 
 export const getImagePicker = ({ app }: RootState) => app.imagePicker;
+
+export const getCachedDashboardsNumber = ({ app }: RootState) =>
+  app.cachedDashboardsNumber;

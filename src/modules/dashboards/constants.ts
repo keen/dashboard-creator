@@ -54,6 +54,9 @@ export const PREPARE_TAGS_POOL = '@dashboard/PREPARE_TAGS_POOL';
 export const CLEAR_TAGS_POOL = '@dashboard/CLEAR_TAGS_POOL';
 export const SET_TAGS_FILTERS = '@dashboard/SET_TAGS_FILTERS';
 export const SET_TAGS_FILTERS_PUBLIC = '@dashboard/SET_TAGS_FILTERS_PUBLIC';
+export const UPDATE_CACHED_DASHBOARD_IDS =
+  '@dashboard/UPDATE_CACHED_DASHBOARD_IDS';
+export const UNREGISTER_DASHBOARD = '@dashboard/UNREGISTER_DASHBOARD';
 
 export const DASHBOARD_LIST_ORDER_KEY =
   '@keen-dashboard-creator/dashboard-list-order';

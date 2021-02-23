@@ -2,7 +2,7 @@
   "name": "@keen.io/dashboard-creator",
   "author": "Keen IO <team@keen.io> (https://keen.io/)",
   "description": "Dashboard Creator by Keen IO",
-  "version": "1.1.0-rc.20",
+  "version": "1.1.0-rc.24",
   "license": "MIT",
   "files": [
     "dist"
@@ -51,7 +51,7 @@
     "@keen.io/query-creator": "^1.1.6",
     "@keen.io/react-hooks": "^1.0.7",
     "@keen.io/toast-notifications": "^1.1.12",
-    "@keen.io/ui-core": "^2.5.20",
+    "@keen.io/ui-core": "^2.12.3",
     "@keen.io/widget-picker": "^1.2.42",
     "@reduxjs/toolkit": "^1.4.0",
     "camelcase-keys": "^6.2.2",

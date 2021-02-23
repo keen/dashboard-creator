@@ -24,6 +24,7 @@ import {
   UPDATE_CHART_WIDGET_FILTERS_CONNECTIONS,
   UPDATE_WIDGETS_POSITION,
   CLEAR_FILTER_DATA,
+  UNREGISTER_WIDGET,
 } from './constants';
 
 import { FilterWidget, ReducerState } from './types';
@@ -299,6 +300,13 @@ const widgetsReducer = (
             },
           },
         },
+      };
+    case UNREGISTER_WIDGET:
+      const items = { ...state.items };
+      delete items[action.payload.widgetId];
+      return {
+        ...state,
+        items,
       };
     default:
       return state;
