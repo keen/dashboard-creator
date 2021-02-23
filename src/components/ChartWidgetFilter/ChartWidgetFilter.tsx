@@ -11,6 +11,8 @@ import { RootState } from '../../rootReducer';
 import { WidgetFilter } from './components';
 import { Container } from './ChartWidgetFilter.styles';
 
+import { FilterMeta } from './types';
+
 type Props = {
   /** Widget id */
   widgetId: string;
@@ -22,27 +24,36 @@ const ChartWidgetFilter: FC<Props> = ({ widgetId }) => {
   );
 
   const datePickerData = useSelector((state: RootState) => {
-    if (!widget['datePickerId']) return;
+    if ('datePickerId' in widget && widget.datePickerId) {
+      const { data } = getWidget(state, widget.datePickerId);
+      return data;
+    }
 
-    const { data } = getWidget(state, widget['datePickerId']);
-    return data;
+    return null;
   });
 
   const filtersData = useSelector((state: RootState) => {
-    if (!widget['filterIds']) return;
+    if ('filterIds' in widget && widget.filterIds.length > 0) {
+      const filters = widget.filterIds.reduce(
+        (activeFilters: FilterMeta[], id: string) => {
+          const { data, isActive } = getWidget(state, id);
+          if (isActive && data?.filter) {
+            const { propertyName, propertyValue } = data.filter;
 
-    const filters = widget['filterIds'].reduce((acc, id) => {
-      const { data } = getWidget(state, id);
-      if (data?.filter) {
-        acc.push({
-          propertyName: data.filter['propertyName'],
-          propertyValue: data.filter['propertyValue'],
-        });
-      }
-      return acc;
-    }, []);
+            activeFilters.push({
+              propertyName,
+              propertyValue,
+            });
+          }
+          return activeFilters;
+        },
+        []
+      );
 
-    return filters;
+      return filters;
+    }
+
+    return [];
   });
 
   const hasInterimQuery = useSelector((state: RootState) => {
@@ -58,7 +69,7 @@ const ChartWidgetFilter: FC<Props> = ({ widgetId }) => {
             <DatePickerContent timeframe={datePickerData.timeframe} />
           </WidgetFilter>
         )}
-        {!!filtersData?.length && (
+        {filtersData.length > 0 && (
           <WidgetFilter icon="funnel-widget-vertical">
             <FiltersContent data={filtersData} />
           </WidgetFilter>

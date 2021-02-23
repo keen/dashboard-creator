@@ -30,7 +30,9 @@ import {
   ChartWidget,
   DatePickerWidget,
   TextWidget,
+  FilterWidget,
   ImageWidget,
+  FilterSettings,
 } from './types';
 
 export {
@@ -41,6 +43,8 @@ export {
   DatePickerWidget,
   ImageWidget,
   TextWidget,
+  FilterWidget,
+  FilterSettings,
   widgetsReducer,
   widgetsSaga,
   createWidget,

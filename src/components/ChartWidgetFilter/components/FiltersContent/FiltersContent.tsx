@@ -1,16 +1,17 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { Container, Connector } from './FiltersContent.styles';
 import Title from '../Title';
 import FilterValue from '../FilterValue';
-import { Container, Connector } from './FiltersContent.styles';
 
-import { FiltersData } from './types';
 import { capitalize, getPropertyName } from './utils';
 
+import { FilterMeta } from '../../types';
+
 type Props = {
-  /** Filters data */
-  data: FiltersData[];
+  /** Filters meta */
+  data: FilterMeta[];
 };
 
 const FiltersContent: FC<Props> = ({ data }) => {
