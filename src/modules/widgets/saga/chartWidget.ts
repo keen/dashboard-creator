@@ -174,15 +174,10 @@ export function* handleDetachedQuery(
  * @return void
  *
  */
-export function* handleInconsistentFilters(
-  widgetId: string,
-  visualizationType: string
-) {
+export function* handleInconsistentFilters(widgetId: string) {
   const i18n = yield getContext(TRANSLATIONS);
   const error = {
-    title: i18n.t('widget_errors.inconsistent_filter_title', {
-      chart: visualizationType,
-    }),
+    title: i18n.t('widget_errors.inconsistent_filter_title'),
     message: i18n.t('widget_errors.inconsistent_filter_message'),
     code: WidgetErrors.INCONSISTENT_FILTER,
   };
@@ -256,7 +251,7 @@ export function* initializeChartWidget({
         (eventStream) => eventStream === chartWidget.data.query.event_collection
       )
     ) {
-      yield call(handleInconsistentFilters, id, visualizationType);
+      yield call(handleInconsistentFilters, id);
     } else if (isDetachedQuery) {
       yield call(handleDetachedQuery, id, visualizationType, analysisResult);
     } else {
@@ -277,7 +272,6 @@ export function* initializeChartWidget({
       }
     }
   } catch (err) {
-    console.log('error', err);
     const { body } = err;
     yield put(
       setWidgetState(id, {
