@@ -1,10 +1,22 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import sagaHelper from 'redux-saga-testing';
-import { put, select, take, fork, call, cancel, all } from 'redux-saga/effects';
+import {
+  put,
+  select,
+  take,
+  fork,
+  call,
+  cancel,
+  all,
+  getContext,
+} from 'redux-saga/effects';
 
 import {
+  setFilterWidget,
   updateWidgetsDistinction,
   applyFilterUpdates,
+  applyFilterModifiers,
+  unapplyFilterWidget,
   synchronizeFilterConnections,
   editFilterWidget,
   setupFilterWidget,
@@ -16,7 +28,12 @@ import {
   updateChartWidgetFiltersConnections,
   setWidgetState,
   editFilterWidget as editFilterWidgetAction,
+  unapplyFilterWidget as unapplyFilterWidgetAction,
+  setFilterWidget as setFilterWidgetAction,
+  applyFilterModifiers as applyFilterModifiersAction,
   configureFilerWidget,
+  initializeChartWidget,
+  setFilterPropertyList,
 } from '../actions';
 
 import {
@@ -34,7 +51,7 @@ import {
   CLOSE_EDITOR,
   SET_EVENT_STREAM,
 } from '../../filter';
-import { getWidgetSettings } from '../../widgets';
+import { getWidgetSettings, getWidget } from '../../widgets';
 import { getActiveDashboard } from '../../app';
 import {
   saveDashboard,
@@ -42,6 +59,219 @@ import {
   removeWidgetFromDashboard,
   ADD_WIDGET_TO_DASHBOARD,
 } from '../../dashboards';
+
+import { KEEN_ANALYSIS } from '../../../constants';
+
+describe('applyFilterModifiers()', () => {
+  describe('Scenario 1: Apply filter widget modifiers on connected charts', () => {
+    const widgetId = '@filter/01';
+    const action = applyFilterModifiersAction(widgetId);
+
+    const test = sagaHelper(applyFilterModifiers(action));
+
+    test('set filter widget active state', (result) => {
+      expect(result).toEqual(
+        put(
+          setWidgetState(widgetId, {
+            isActive: true,
+          })
+        )
+      );
+    });
+
+    test('get filter widget settings', (result) => {
+      expect(result).toEqual(select(getWidgetSettings, widgetId));
+
+      return {
+        settings: {
+          widgets: ['@widget/01', '@widget/02'],
+        },
+      };
+    });
+
+    test('updates chart widgets state', (result) => {
+      expect(result).toEqual(
+        all([
+          put(
+            setWidgetState('@widget/01', {
+              isInitialized: false,
+              error: null,
+            })
+          ),
+          put(
+            setWidgetState('@widget/02', {
+              isInitialized: false,
+              error: null,
+            })
+          ),
+        ])
+      );
+    });
+
+    test('reinitializes chart widgets', (result) => {
+      expect(result).toEqual(
+        all([
+          put(initializeChartWidget('@widget/01')),
+          put(initializeChartWidget('@widget/02')),
+        ])
+      );
+    });
+  });
+});
+
+describe('setFilterWidget()', () => {
+  describe('Scenario 1: Succesfully set filter widget settings', () => {
+    const widgetId = '@filter/01';
+    const action = setFilterWidgetAction(widgetId);
+
+    const test = sagaHelper(setFilterWidget(action));
+
+    const client = {
+      query: jest.fn(),
+    };
+
+    test('get filter widget settings', (result) => {
+      expect(result).toEqual(select(getWidget, widgetId));
+
+      return {
+        widget: {
+          id: widgetId,
+          settings: {
+            widgets: ['@widget/01', '@widget/02'],
+            eventStream: 'logins',
+            targetProperty: 'user.id',
+          },
+        },
+      };
+    });
+
+    test('get connected chart widgets settings', (result) => {
+      expect(result).toEqual(
+        all([select(getWidget, '@widget/01'), select(getWidget, '@widget/02')])
+      );
+
+      return [
+        {
+          data: {
+            query: {
+              timeframe: 'this_30_days',
+            },
+          },
+        },
+        {
+          data: {
+            query: {
+              timeframe: 'this_3_months',
+            },
+          },
+        },
+      ];
+    });
+
+    test('get client from context', (result) => {
+      expect(result).toEqual(getContext(KEEN_ANALYSIS));
+
+      return client;
+    });
+
+    test('set filter widget loading state', (result) => {
+      expect(result).toEqual(
+        put(
+          setWidgetState(widgetId, {
+            isLoading: true,
+          })
+        )
+      );
+    });
+
+    test('calls client to fetch list of possible filter values', () => {
+      expect(client.query).toHaveBeenCalledWith(
+        expect.objectContaining({
+          analysisType: 'select_unique',
+          eventCollection: 'logins',
+          targetProperty: 'user.id',
+          timeframe: 'this_3_months',
+        })
+      );
+
+      return {
+        result: ['@id/01', '@id/02'],
+      };
+    });
+
+    test('set values for filter widget ', (result) => {
+      expect(result).toEqual(
+        put(setFilterPropertyList(widgetId, ['@id/01', '@id/02']))
+      );
+    });
+
+    test('set filter widget loading state', (result) => {
+      expect(result).toEqual(
+        put(
+          setWidgetState(widgetId, {
+            isLoading: false,
+          })
+        )
+      );
+    });
+  });
+});
+
+describe('unapplyFilterWidget()', () => {
+  describe('Scenario 1: User unapply filter widget settings', () => {
+    const widgetId = '@filter/01';
+    const action = unapplyFilterWidgetAction(widgetId);
+
+    const test = sagaHelper(unapplyFilterWidget(action));
+
+    test('get filter widget settings', (result) => {
+      expect(result).toEqual(select(getWidget, widgetId));
+
+      return {
+        data: {
+          filter: { propertyName: 'logins', propertyValue: ['user.id'] },
+        },
+        widget: {
+          settings: { widgets: ['@widget/01', '@widget/02'] },
+        },
+      };
+    });
+
+    test('removes filter data from widget', (result) => {
+      expect(result).toEqual(
+        put(setWidgetState(widgetId, { isActive: false, data: {} }))
+      );
+    });
+
+    test('updates chart widgets state', (result) => {
+      expect(result).toEqual(
+        all([
+          put(
+            setWidgetState('@widget/01', {
+              isInitialized: false,
+              error: null,
+            })
+          ),
+          put(
+            setWidgetState('@widget/02', {
+              isInitialized: false,
+              error: null,
+            })
+          ),
+        ])
+      );
+    });
+
+    test('reinitializes chart widgets', (result) => {
+      expect(result).toEqual(
+        all([
+          put(initializeChartWidget('@widget/01')),
+          put(initializeChartWidget('@widget/02')),
+        ])
+      );
+    });
+  });
+});
 
 describe('removeFilterConnections()', () => {
   const dashboardId = '@dashboard/01';

@@ -81,7 +81,7 @@ export function* applyFilterModifiers({
 }
 
 /**
- * Apply filter widget
+ * Set filter widget settings
  *
  * @param widgetId - Widget identifier
  * @return void
@@ -97,7 +97,8 @@ export function* setFilterWidget({
   );
 
   const connectedWidgetsTimeframes = connectedWidgets.map(
-    (connectedWidget) => connectedWidget.data.query.timeframe
+    (connectedWidget: Record<string, any>) =>
+      connectedWidget.data.query.timeframe
   );
   const client = yield getContext(KEEN_ANALYSIS);
 
