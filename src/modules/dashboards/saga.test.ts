@@ -214,6 +214,7 @@ describe('viewPublicDashboard()', () => {
 
 describe('removeWidgetFromDashboard()', () => {
   const action = removeWidgetFromDashboardAction(dashboardId, widgetId);
+  const filterIds = ['@filter/01', '@filter/02'];
 
   describe('Scenario 1: User removes visualization widget from dashboard', () => {
     const test = sagaHelper(removeWidgetFromDashboard(action));
@@ -224,7 +225,7 @@ describe('removeWidgetFromDashboard()', () => {
       return {
         query: 'purchases',
         type: 'visualization',
-        filterIds: [],
+        filterIds,
       };
     });
 
@@ -232,17 +233,16 @@ describe('removeWidgetFromDashboard()', () => {
       expect(result).toEqual(call(updateAccessKeyOptions));
     });
 
-    // TODO: update test
     test('removes connections from filter', (result) => {
-      [].map((filterId) => {
-        expect(result).toEqual(
-          call(removeConnectionFromFilter, filterId, widgetId)
-        );
-      });
+      expect(result).toEqual(
+        all([
+          call(removeConnectionFromFilter, '@filter/01', widgetId),
+          call(removeConnectionFromFilter, '@filter/02', widgetId),
+        ])
+      );
     });
 
     test('triggers remove widget', (result) => {
-      console.log('finish');
       expect(result).toEqual(put(removeWidget(widgetId)));
     });
   });

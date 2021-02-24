@@ -66,12 +66,14 @@ const render = (storeState: any = {}, overProps: any = {}) => {
           error: null,
         },
         [datePickerId]: {
+          isActive: true,
           data: {
             timezone: 'UTC',
             timeframe: 'this_7_days',
           },
         },
         [filterId]: {
+          isActive: false,
           data: {
             propertyName: 'propertyName',
             propertyValue: 'propertyValue',
@@ -126,7 +128,7 @@ test('renders widget filter for datepicker', () => {
   expect(getByTestId('widget-filter')).toBeInTheDocument();
 });
 
-test('renders widget filter for filters', () => {
+test('renders summary of applied filters', () => {
   const state = {
     widgets: {
       items: {
@@ -158,22 +160,28 @@ test('renders widget filter for filters', () => {
           error: null,
         },
         [datePickerId]: {
+          isActive: true,
           data: {
             timezone: 'UTC',
             timeframe: 'this_7_days',
           },
         },
         [filterId]: {
+          isActive: true,
           data: {
-            propertyName: 'propertyName',
-            propertyValue: 'propertyValue',
+            filter: {
+              propertyName: 'propertyName',
+              propertyValue: 'propertyValue',
+            },
           },
         },
       },
     },
   };
+
   const {
     wrapper: { getAllByTestId },
   } = render(state);
+
   expect(getAllByTestId('widget-filter').length).toEqual(2);
 });
