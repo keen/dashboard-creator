@@ -595,44 +595,39 @@ export function* persistDashboardsOrder({
 export function* setAccessKey({
   payload,
 }: ReturnType<typeof setDashboardPublicAccessAction>) {
-  const { dashboardId, isPublic } = payload;
-
+  const { dashboardId, isPublic, accessKey } = payload;
   const metadata = yield select(getDashboardMeta, dashboardId);
 
-  if (isPublic) {
-    try {
-      const accessKey = yield call(createAccessKey, dashboardId);
-      const { key: publicAccessKey } = accessKey;
+  if (accessKey) {
+    if (isPublic !== metadata.isPublic) {
       const updatedMetadata: DashboardMetaData = {
         ...metadata,
-        publicAccessKey,
+        isPublic,
       };
 
       yield put(saveDashboardMetaAction(dashboardId, updatedMetadata));
-    } catch (error) {
-      const notificationManager = yield getContext(NOTIFICATION_MANAGER);
-      yield notificationManager.showNotification({
-        type: 'error',
-        message: 'dashboard_share.access_key_api_error',
-        showDismissButton: true,
-        autoDismiss: false,
-      });
     }
   } else {
-    const { publicAccessKey } = metadata;
-    const updatedMetadata: DashboardMetaData = {
-      ...metadata,
-      publicAccessKey: null,
-    };
-
-    if (publicAccessKey) {
+    if (isPublic) {
       try {
-        yield call(deleteAccessKey, publicAccessKey);
+        const accessKey = yield call(createAccessKey, dashboardId);
+        const { key: publicAccessKey } = accessKey;
+
+        const updatedMetadata: DashboardMetaData = {
+          ...metadata,
+          isPublic,
+          publicAccessKey,
+        };
+
         yield put(saveDashboardMetaAction(dashboardId, updatedMetadata));
       } catch (error) {
-        console.error(error);
-        if (error.status === StatusCodes.NOT_FOUND)
-          yield put(saveDashboardMetaAction(dashboardId, updatedMetadata));
+        const notificationManager = yield getContext(NOTIFICATION_MANAGER);
+        yield notificationManager.showNotification({
+          type: 'error',
+          message: 'dashboard_share.access_key_api_error',
+          showDismissButton: true,
+          autoDismiss: false,
+        });
       }
     }
   }

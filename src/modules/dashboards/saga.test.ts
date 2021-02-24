@@ -1040,27 +1040,20 @@ describe('updateCachedDashboardsList()', () => {
 describe('setAccessKey()', () => {
   const dashboardId = '@dashboard/01';
   const publicAccessKey = 'public-access-key';
-  const newAccessKey = 'new-access-key';
-
-  const notificationManagerMock = {
-    showNotification: jest.fn(),
-  };
 
   describe('Scenario 1: User successfully sets access key for public dashboard', () => {
-    const action = setDashboardPublicAccess(dashboardId, true);
+    const action = setDashboardPublicAccess(dashboardId, true, null);
     const test = sagaHelper(setAccessKey(action));
 
-    test('selects access key for dashboard', (result) => {
+    test('selects dashboard metadata', (result) => {
       expect(result).toEqual(select(getDashboardMeta, dashboardId));
-      return {
-        publicAccessKey,
-      };
+      return {};
     });
 
-    test('creates new access key', (result) => {
+    test('creates new access key in api', (result) => {
       expect(result).toEqual(call(createAccessKey, dashboardId));
       return {
-        key: newAccessKey,
+        key: publicAccessKey,
       };
     });
 
@@ -1068,7 +1061,8 @@ describe('setAccessKey()', () => {
       expect(result).toEqual(
         put(
           saveDashboardMetaAction(dashboardId, {
-            publicAccessKey: newAccessKey,
+            isPublic: true,
+            publicAccessKey: publicAccessKey,
           })
         )
       );
@@ -1076,14 +1070,16 @@ describe('setAccessKey()', () => {
   });
 
   describe('Scenario 2: User fails to set access key for public dashboard', () => {
-    const action = setDashboardPublicAccess(dashboardId, true);
+    const action = setDashboardPublicAccess(dashboardId, true, null);
     const test = sagaHelper(setAccessKey(action));
 
-    test('selects access key for dashboard', (result) => {
+    const notificationManagerMock = {
+      showNotification: jest.fn(),
+    };
+
+    test('selects dashboard metadata', (result) => {
       expect(result).toEqual(select(getDashboardMeta, dashboardId));
-      return {
-        publicAccessKey,
-      };
+      return {};
     });
 
     test('creates new access key', (result) => {
@@ -1108,42 +1104,21 @@ describe('setAccessKey()', () => {
     });
   });
 
-  describe('Scenario 3: User deletes an access key for dashboard that is not public', () => {
-    const action = setDashboardPublicAccess(dashboardId, false);
+  describe('Scenario 3: User makes dashboard public and access key exists', () => {
+    const action = setDashboardPublicAccess(dashboardId, true, publicAccessKey);
     const test = sagaHelper(setAccessKey(action));
 
-    test('selects access key for dashboard', (result) => {
+    test('selects dashboard metadata', (result) => {
       expect(result).toEqual(select(getDashboardMeta, dashboardId));
       return {
-        publicAccessKey,
+        isPublic: false,
       };
     });
 
-    test('deletes existing access key', (result) => {
-      expect(result).toEqual(call(deleteAccessKey, publicAccessKey));
-    });
-
-    test('removes access key from dashboard meta', (result) => {
+    test('saves dashboard metadata', (result) => {
       expect(result).toEqual(
-        put(saveDashboardMetaAction(dashboardId, { publicAccessKey: null }))
+        put(saveDashboardMetaAction(dashboardId, { isPublic: true }))
       );
-    });
-  });
-
-  describe('Scenario 4: User fails to delete an access key for dashboard that is not public', () => {
-    const action = setDashboardPublicAccess(dashboardId, false);
-    const test = sagaHelper(setAccessKey(action));
-
-    test('selects access key for dashboard', (result) => {
-      expect(result).toEqual(select(getDashboardMeta, dashboardId));
-      return {
-        publicAccessKey,
-      };
-    });
-
-    test('deletes existing access key', (result) => {
-      expect(result).toEqual(call(deleteAccessKey, publicAccessKey));
-      return new Error();
     });
   });
 });
