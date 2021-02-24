@@ -48,6 +48,7 @@ import {
   initializeChartWidget,
   applyFilterModifiers as applyFilterModifiersAction,
   unapplyFilterWidget as unapplyFilterWidgetAction,
+  resetFilterWidgets as resetFilterWidgetsAction,
 } from '../actions';
 import { KEEN_ANALYSIS } from '../../../constants';
 
@@ -579,4 +580,28 @@ export function* unapplyFilterWidget({
   yield all(
     widgets.map((widgetId: string) => put(initializeChartWidget(widgetId)))
   );
+}
+
+/**
+ * Reset filters to initial state for specified dashboard
+ *
+ * @param dashboardId - Dashboard identifier
+ * @return void
+ *
+ */
+export function* resetFilterWidgets({
+  payload,
+}: ReturnType<typeof resetFilterWidgetsAction>) {
+  const { dashboardId } = payload;
+  const state = yield select();
+  const {
+    settings: { widgets: widgetsIds },
+  } = getDashboard(state, dashboardId);
+
+  const datePickersUpdate = widgetsIds
+    .map((widgetId) => getWidgetSettings(state, widgetId))
+    .filter(({ type }) => type === 'filter')
+    .map(({ id }) => put(setWidgetState(id, { isActive: false, data: null })));
+
+  yield all(datePickersUpdate);
 }

@@ -72,11 +72,6 @@ export const DropdownContent = styled.div`
   border-top: 1px solid ${colors.gray[300]};
 `;
 
-export const ScrollWrapper = styled.div`
-  max-height: 150px;
-  overflow-y: scroll;
-`;
-
 export const DropdownFooter = styled.div`
   display: flex;
   border-top: 1px solid ${colors.gray[300]};

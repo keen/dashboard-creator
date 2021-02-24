@@ -44,6 +44,7 @@ import {
   CLEAR_FILTER_DATA,
   CLEAR_INCONSISTENT_FILTERS_ERROR_FROM_WIDGETS,
   UNREGISTER_WIDGET,
+  RESET_FILTER_WIDGETS,
 } from './constants';
 
 export const registerWidgets = createAction(
@@ -410,6 +411,15 @@ export const clearInconsistentFiltersError = createAction(
   })
 );
 
+export const resetFilterWidgets = createAction(
+  RESET_FILTER_WIDGETS,
+  (dashboardId: string) => ({
+    payload: {
+      dashboardId,
+    },
+  })
+);
+
 export type WidgetsActions =
   | ReturnType<typeof createWidget>
   | ReturnType<typeof removeWidget>
@@ -447,6 +457,6 @@ export type WidgetsActions =
   | ReturnType<typeof applyFilterModifiers>
   | ReturnType<typeof clearFilterData>
   | ReturnType<typeof clearInconsistentFiltersError>
-  | ReturnType<typeof clearFilterData>
   | ReturnType<typeof saveImage>
-  | ReturnType<typeof unregisterWidget>;
+  | ReturnType<typeof unregisterWidget>
+  | ReturnType<typeof resetFilterWidgets>;

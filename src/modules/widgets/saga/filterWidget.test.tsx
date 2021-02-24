@@ -10,6 +10,7 @@ import {
   setupFilterWidget,
   removeConnectionFromFilter,
   removeFilterConnections,
+  resetFilterWidgets,
 } from './filterWidget';
 
 import {
@@ -17,6 +18,7 @@ import {
   setWidgetState,
   editFilterWidget as editFilterWidgetAction,
   configureFilerWidget,
+  resetFilterWidgets as resetFilterWidgetsAction,
 } from '../actions';
 
 import {
@@ -630,6 +632,73 @@ describe('setupFilterWidget()', () => {
     test('removes widget from dashboard', (result) => {
       expect(result).toEqual(
         put(removeWidgetFromDashboard(dashboardId, widgetId))
+      );
+    });
+  });
+});
+
+describe('resetFilterWidgets()', () => {
+  describe('Scenario 1: Resets all filter widgets state', () => {
+    const dashboardId = '@dashboard/01';
+    const action = resetFilterWidgetsAction('@dashboard/01');
+    const test = sagaHelper(resetFilterWidgets(action));
+
+    test('gets application state', (result) => {
+      expect(result).toEqual(select());
+
+      return {
+        widgets: {
+          items: {
+            '@filter/01': {
+              widget: {
+                type: 'filter',
+                id: '@filter/01',
+                data: {},
+              },
+            },
+            '@date-picker/01': {
+              widget: {
+                type: 'date-picker',
+                id: '@date-picker/01',
+              },
+            },
+            '@widget/02': {
+              widget: {
+                type: 'visualization',
+              },
+            },
+            '@filter/03': {
+              widget: {
+                type: 'filter',
+                id: '@filter/03',
+                data: {},
+              },
+            },
+          },
+        },
+        dashboards: {
+          items: {
+            [dashboardId]: {
+              settings: {
+                widgets: [
+                  '@filter/01',
+                  '@date-picker/01',
+                  '@widget/02',
+                  '@filter/03',
+                ],
+              },
+            },
+          },
+        },
+      };
+    });
+
+    test('reset filter widgets states', (result) => {
+      expect(result).toEqual(
+        all([
+          put(setWidgetState('@filter/01', { isActive: false, data: null })),
+          put(setWidgetState('@filter/03', { isActive: false, data: null })),
+        ])
       );
     });
   });
