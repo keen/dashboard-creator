@@ -142,7 +142,7 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
   };
 
   const Row = ({ index, style }) => (
-    <div style={style}>
+    <div style={style} role="filter-item">
       <FilterItem
         key={availableProperties()[index]}
         id={availableProperties()[index]}
@@ -220,17 +220,15 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
                   <Loader width={50} height={50} fill={colors.blue['500']} />
                 </LoaderContainer>
               ) : (
-                <div data-testid="scroll-wrapper">
-                  <ReactWindowList
-                    height={150}
-                    data-testid="scroll-wrapper2"
-                    itemCount={availableProperties().length}
-                    itemSize={30}
-                    width={180}
-                  >
-                    {Row}
-                  </ReactWindowList>
-                </div>
+                <ReactWindowList
+                  height={150}
+                  data-testid="scroll-wrapper2"
+                  itemCount={availableProperties().length}
+                  itemSize={30}
+                  width={180}
+                >
+                  {Row}
+                </ReactWindowList>
               )}
               {!widget.isLoading && availableProperties().length === 0 && (
                 <EmptySearch>

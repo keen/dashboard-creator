@@ -157,20 +157,18 @@ test('should not fetch property values when property list inside filter is not e
 
 test('should render property values when property list inside filter is not empty', () => {
   const {
-    wrapper: { getByTestId },
+    wrapper: { getByTestId, getAllByRole },
   } = render();
 
   const filterWidget = getByTestId('filter-widget');
   fireEvent.click(filterWidget);
-  const scrollWrapper = getByTestId('scroll-wrapper');
-  const childElementCount =
-    scrollWrapper.children[0].children[0].childElementCount;
-  expect(childElementCount).toEqual(4);
+  const scrollItems = getAllByRole('filter-item');
+  expect(scrollItems.length).toEqual(4);
 });
 
 test('should filter property values correctly', async () => {
   const {
-    wrapper: { getByTestId, getByText, findByPlaceholderText },
+    wrapper: { getByTestId, getByText, findByPlaceholderText, getAllByRole },
   } = render();
 
   const filterWidget = getByTestId('filter-widget');
@@ -182,10 +180,8 @@ test('should filter property values correctly', async () => {
   const searchInput = await findByPlaceholderText('filter_widget.search_value');
   fireEvent.change(searchInput, { target: { value: 'Be' } });
 
-  const scrollWrapper = getByTestId('scroll-wrapper');
-  const childElementCount =
-    scrollWrapper.children[0].children[0].childElementCount;
-  expect(childElementCount).toEqual(2);
+  const scrollItems = getAllByRole('filter-item');
+  expect(scrollItems.length).toEqual(2);
 });
 
 test('should apply checked values base on applied filter property values', () => {
@@ -222,4 +218,44 @@ test('should allow to unapply filter widget selected properties', () => {
     payload: { filterId: '@widget/01' },
     type: UNAPPLY_FILTER_WIDGET,
   });
+});
+
+test('should pre select checkboxes on initial load if filter has property values set', () => {
+  const widgetId = '@widget/02';
+  const state = {
+    widgets: {
+      items: {
+        [widgetId]: {
+          isActive: true,
+          data: {
+            propertyList: ['Warsaw', 'Berlin', 'Moscow', 'Beijing'],
+            filter: {
+              propertyValue: ['Warsaw'],
+            },
+          },
+          widget: {
+            id: widgetId,
+            settings: {
+              targetProperty: 'geo_info.city',
+            },
+          },
+        },
+      },
+    },
+  };
+  const {
+    wrapper: { getByTestId, getAllByRole },
+  } = render({ ...state }, { id: widgetId });
+
+  const filterWidget = getByTestId('filter-widget');
+  fireEvent.click(filterWidget);
+  const checkboxes = getAllByRole('checkbox');
+  const propertyValues =
+    state.widgets.items[widgetId].data.filter.propertyValue;
+  const checkedCheckboxes = checkboxes.filter((checkbox) =>
+    propertyValues.includes(checkbox.id)
+  );
+  expect(
+    checkedCheckboxes.every((checkbox: HTMLInputElement) => checkbox.checked)
+  ).toEqual(true);
 });
