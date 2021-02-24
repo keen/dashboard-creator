@@ -63,6 +63,7 @@ import {
   setupFilterWidget,
   applyFilterModifiers,
   unapplyFilterWidget,
+  resetFilterWidgets,
 } from './saga/filterWidget';
 
 import { SELECT_SAVED_QUERY, CREATE_QUERY, SavedQuery } from '../queries';
@@ -94,6 +95,7 @@ import {
   APPLY_FILTER_MODIFIERS,
   CLEAR_INCONSISTENT_FILTERS_ERROR_FROM_WIDGETS,
   UNAPPLY_FILTER_WIDGET,
+  RESET_FILTER_WIDGETS,
 } from './constants';
 
 import { ChartWidget, WidgetErrors, WidgetItem } from './types';
@@ -334,5 +336,6 @@ export function* widgetsSaga() {
     CLEAR_INCONSISTENT_FILTERS_ERROR_FROM_WIDGETS,
     clearInconsistentFiltersErrorFromWidgets
   );
+  yield takeEvery(RESET_FILTER_WIDGETS, resetFilterWidgets);
   yield takeEvery(UNAPPLY_FILTER_WIDGET, unapplyFilterWidget);
 }

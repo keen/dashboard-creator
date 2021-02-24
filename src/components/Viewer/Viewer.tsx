@@ -22,7 +22,10 @@ import DashboardDeleteConfirmation from '../DashboardDeleteConfirmation';
 import { ROUTES } from '../../constants';
 import { RootState } from '../../rootReducer';
 
-import { clearInconsistentFiltersError } from '../../modules/widgets/actions';
+import {
+  clearInconsistentFiltersError,
+  resetFilterWidgets,
+} from '../../modules/widgets/actions';
 
 type Props = {
   /** Dashboard identifer */
@@ -54,8 +57,8 @@ const Viewer: FC<Props> = ({ dashboardId }) => {
 
   useEffect(() => {
     return () => {
-      // @TODO: RESET
       dispatch(resetDatePickerWidgets(dashboardId));
+      dispatch(resetFilterWidgets(dashboardId));
       dispatch(clearInconsistentFiltersError(dashboardId));
       dispatch(removeInterimQueries());
     };

@@ -1,17 +1,11 @@
-import React, {
-  FC,
-  useRef,
-  useState,
-  useCallback,
-  useEffect,
-  useContext,
-} from 'react';
+import React, { FC, useRef, useState, useEffect, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { transparentize } from 'polished';
 import { Icon } from '@keen.io/icons';
 import { colors } from '@keen.io/colors';
 import { Dropdown, Portal, Loader, Button } from '@keen.io/ui-core';
+import { FixedSizeList as ReactWindowList } from 'react-window';
 
 import {
   Container,
@@ -21,7 +15,6 @@ import {
   FilterButtonSecondary,
   DropdownContent,
   LoaderContainer,
-  ScrollWrapper,
   DropdownFooter,
   EmptySearch,
   SelectedPropertiesNumber,
@@ -54,6 +47,7 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
   const { modalContainer } = useContext(AppContext);
 
   const widget = useSelector((state: RootState) => getWidget(state, id));
+
   const filterWidget = widget.widget as FilterWidget;
   const [isOpen, setOpen] = useState(false);
   const [dropdown, setDropdown] = useState({ x: 0, y: 0, width: 0 });
@@ -71,8 +65,8 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
   const containerRef = useRef(null);
   const dropdownContainerRef = useRef(null);
 
-  const outsideClick = useCallback(
-    (e) => {
+  useEffect(() => {
+    const outsideClick = (e) => {
       const path = getEventPath(e);
       if (
         !path?.includes(containerRef.current) &&
@@ -80,11 +74,8 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
       ) {
         setOpen(false);
       }
-    },
-    [isOpen, containerRef, dropdownContainerRef]
-  );
+    };
 
-  useEffect(() => {
     if (isOpen && containerRef.current) {
       const {
         left,
@@ -101,7 +92,9 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
     }
 
     document.addEventListener('click', outsideClick);
-    return () => document.removeEventListener('click', outsideClick);
+    return () => {
+      document.removeEventListener('click', outsideClick);
+    };
   }, [isOpen, containerRef]);
 
   useEffect(() => {
@@ -148,11 +141,27 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
     setOpen(false);
   };
 
+  const Row = ({ index, style }) => (
+    <div style={style} role="filter-item">
+      <FilterItem
+        key={availableProperties()[index]}
+        id={availableProperties()[index]}
+        isActive={activeProperties.includes(availableProperties()[index])}
+        label={availableProperties()[index]}
+        onChange={(e, isActive: boolean) => {
+          e.stopPropagation();
+          updateActiveProperties(isActive, availableProperties()[index]);
+        }}
+      />
+    </div>
+  );
+
   return (
     <>
       <Container
         ref={containerRef}
         isOpen={isOpen}
+        data-testid="filter-widget"
         onClick={() => {
           if (!disableInteractions) {
             setOpen(!isOpen);
@@ -168,9 +177,9 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
               height={15}
             />
             <Title role="heading">
-              {targetProperty}{' '}
+              {targetProperty}
               {widget.isActive && (
-                <SelectedPropertiesNumber>
+                <SelectedPropertiesNumber data-testid="applied-properties-number">
                   {widget.data.filter.propertyValue.length}
                 </SelectedPropertiesNumber>
               )}
@@ -193,45 +202,40 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
                   : t('filter_widget.select_all')}
               </FilterButtonSecondary>
             </DropdownHeader>
-            {widget.isLoading ? (
-              <LoaderContainer>
-                <Loader width={50} height={50} fill={colors.blue['500']} />
-              </LoaderContainer>
-            ) : (
-              <DropdownContent>
-                <SearchTags
-                  isActive={searchMode}
-                  searchPhrase={searchPhrase}
-                  inputPlaceholder={t('filter_widget.search_value')}
-                  searchLabel={t('filter_widget.search_value')}
-                  onChangePhrase={(phrase) => setSearchPhrase(phrase)}
-                  onClearPhrase={() => {
-                    setSearchPhrase('');
-                    setSearchMode(false);
-                  }}
-                  onActiveSearch={() => setSearchMode(true)}
-                />
-                <ScrollWrapper>
-                  {availableProperties().map((property) => (
-                    <FilterItem
-                      key={property}
-                      id={property}
-                      isActive={activeProperties.includes(property)}
-                      label={property}
-                      onChange={(e, isActive: boolean) => {
-                        e.preventDefault();
-                        updateActiveProperties(isActive, property);
-                      }}
-                    />
-                  ))}
-                </ScrollWrapper>
-                {!widget.isLoading && availableProperties().length === 0 && (
-                  <EmptySearch>
-                    {t('filter_widget.no_properties_found')}
-                  </EmptySearch>
-                )}
-              </DropdownContent>
-            )}
+            <DropdownContent>
+              <SearchTags
+                isActive={searchMode}
+                searchPhrase={searchPhrase}
+                inputPlaceholder={t('filter_widget.search_value')}
+                searchLabel={t('filter_widget.search_value')}
+                onChangePhrase={(phrase) => setSearchPhrase(phrase)}
+                onClearPhrase={() => {
+                  setSearchPhrase('');
+                  setSearchMode(false);
+                }}
+                onActiveSearch={() => setSearchMode(true)}
+              />
+              {widget.isLoading ? (
+                <LoaderContainer>
+                  <Loader width={50} height={50} fill={colors.blue['500']} />
+                </LoaderContainer>
+              ) : (
+                <ReactWindowList
+                  height={150}
+                  data-testid="scroll-wrapper2"
+                  itemCount={availableProperties().length}
+                  itemSize={30}
+                  width={180}
+                >
+                  {Row}
+                </ReactWindowList>
+              )}
+              {!widget.isLoading && availableProperties().length === 0 && (
+                <EmptySearch>
+                  {t('filter_widget.no_properties_found')}
+                </EmptySearch>
+              )}
+            </DropdownContent>
             <DropdownFooter>
               <Button size="small" onClick={applyFilter} variant="secondary">
                 {t('filter_widget.apply')}
