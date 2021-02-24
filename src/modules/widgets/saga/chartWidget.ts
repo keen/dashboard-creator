@@ -239,18 +239,25 @@ export function* initializeChartWidget({
     const connectedFilters = yield all(
       connectedFilterIds.map((filterId) => select(getWidget, filterId))
     );
-    const connectedFiltersEventStreams = connectedFilters.map(
-      (connectedFilter) => connectedFilter.widget.settings.eventStream
-    );
 
-    if (
+    const connectedFiltersEventStreams = connectedFilters
+      .filter((filter) => filter.isActive)
+      .map((connectedFilter) => connectedFilter.widget.settings.eventStream);
+    const widgetHasInconsistentFilters =
       chartWidget.data &&
       chartWidget.data.query.event_collection &&
       connectedFiltersEventStreams.length > 0 &&
-      !connectedFiltersEventStreams.every(
-        (eventStream) => eventStream === chartWidget.data.query.event_collection
-      )
+      connectedFiltersEventStreams.some(
+        (eventStream) => eventStream !== chartWidget.data.query.event_collection
+      );
+
+    if (
+      chartWidget.error &&
+      chartWidget.error.code === WidgetErrors.INCONSISTENT_FILTER &&
+      !widgetHasInconsistentFilters
     ) {
+      yield put(setWidgetState(id, { isInitialized: true, error: null }));
+    } else if (widgetHasInconsistentFilters) {
       yield call(handleInconsistentFilters, id);
     } else if (isDetachedQuery) {
       yield call(handleDetachedQuery, id, visualizationType, analysisResult);

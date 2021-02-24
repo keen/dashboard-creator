@@ -69,7 +69,6 @@ export const LoaderContainer = styled.div`
 export const DropdownContent = styled.div`
   height: 200px;
   box-sizing: border-box;
-  border-top: 1px solid ${colors.gray[300]};
 `;
 
 export const DropdownFooter = styled.div`
@@ -82,6 +81,7 @@ export const DropdownFooter = styled.div`
 
 export const DropdownHeader = styled.div`
   padding: 10px 14px;
+  border-bottom: 1px solid ${colors.gray[300]};
 `;
 
 export const EmptySearch = styled.div`
