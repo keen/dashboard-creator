@@ -599,14 +599,7 @@ export function* setAccessKey({
   const metadata = yield select(getDashboardMeta, dashboardId);
 
   if (accessKey) {
-    if (isPublic !== metadata.isPublic) {
-      const updatedMetadata: DashboardMetaData = {
-        ...metadata,
-        isPublic,
-      };
-
-      yield put(saveDashboardMetaAction(dashboardId, updatedMetadata));
-    }
+    yield put(saveDashboardMetaAction(dashboardId, metadata));
   } else {
     if (isPublic) {
       try {

@@ -87,9 +87,7 @@ const DashboardShare: FC<Props> = ({ dashboardId }) => {
           dispatch(setDashboardPublicAccess(dashboardId, false, null));
         }
         if (res.length) {
-          const { is_active, key } = res[0];
-          if (key)
-            dispatch(setDashboardPublicAccess(dashboardId, isPublic, key));
+          const { is_active } = res[0];
           if (isPublic && !is_active)
             setAccessKeyError(ACCESS_KEY_ERROR.REVOKE_ERROR);
         }

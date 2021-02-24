@@ -1110,15 +1110,11 @@ describe('setAccessKey()', () => {
 
     test('selects dashboard metadata', (result) => {
       expect(result).toEqual(select(getDashboardMeta, dashboardId));
-      return {
-        isPublic: false,
-      };
+      return {};
     });
 
     test('saves dashboard metadata', (result) => {
-      expect(result).toEqual(
-        put(saveDashboardMetaAction(dashboardId, { isPublic: true }))
-      );
+      expect(result).toEqual(put(saveDashboardMetaAction(dashboardId, {})));
     });
   });
 });
