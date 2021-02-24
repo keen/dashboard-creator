@@ -316,10 +316,11 @@ export const setDashboardListOrder = createAction(
 
 export const setDashboardPublicAccess = createAction(
   SET_DASHBOARD_PUBLIC_ACCESS,
-  (dashboardId: string, isPublic: boolean) => ({
+  (dashboardId: string, isPublic: boolean, accessKey: null | string) => ({
     payload: {
       dashboardId,
       isPublic,
+      accessKey,
     },
   })
 );

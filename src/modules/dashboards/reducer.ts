@@ -350,6 +350,7 @@ const dashboardsReducer = (
               return {
                 ...dashboardMeta,
                 isPublic: action.payload.isPublic,
+                publicAccessKey: action.payload.accessKey,
               };
             }
 
