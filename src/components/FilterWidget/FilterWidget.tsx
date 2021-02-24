@@ -41,6 +41,24 @@ type Props = {
   disableInteractions?: boolean;
 };
 
+const Row = ({ data, index, style }) => {
+  const { items, activeProperties, updateActiveProperties } = data;
+  return (
+    <div style={style} role="filter-item">
+      <FilterItem
+        key={items[index]}
+        id={items[index]}
+        isActive={activeProperties.includes(items[index])}
+        label={items[index]}
+        onChange={(e, isActive: boolean) => {
+          e.preventDefault();
+          updateActiveProperties(isActive, items[index]);
+        }}
+      />
+    </div>
+  );
+};
+
 const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -117,7 +135,7 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
   };
 
   const availableProperties = () => {
-    if (widget.data) {
+    if (widget.data && widget.data.propertyList) {
       return widget.data.propertyList.filter((property) =>
         property.toLowerCase().startsWith(searchPhrase.toLocaleLowerCase())
       );
@@ -136,25 +154,20 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
   };
 
   const applyFilter = () => {
-    dispatch(applyFilterWidget(widget.widget.id, activeProperties));
-    dispatch(applyFilterModifiers(widget.widget.id));
+    if (activeProperties.length === 0) {
+      dispatch(unapplyFilterWidget(widget.widget.id));
+    } else {
+      dispatch(applyFilterWidget(widget.widget.id, activeProperties));
+      dispatch(applyFilterModifiers(widget.widget.id));
+    }
     setOpen(false);
   };
 
-  const Row = ({ index, style }) => (
-    <div style={style} role="filter-item">
-      <FilterItem
-        key={availableProperties()[index]}
-        id={availableProperties()[index]}
-        isActive={activeProperties.includes(availableProperties()[index])}
-        label={availableProperties()[index]}
-        onChange={(e, isActive: boolean) => {
-          e.stopPropagation();
-          updateActiveProperties(isActive, availableProperties()[index]);
-        }}
-      />
-    </div>
-  );
+  const filterItemData = {
+    items: availableProperties(),
+    activeProperties: activeProperties,
+    updateActiveProperties,
+  };
 
   return (
     <>
@@ -194,61 +207,73 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
           width={dropdown.width}
         >
           <Dropdown isOpen={isOpen}>
-            <DropdownHeader>
-              <FilterButtonSecondary onClick={toggleSelectAll}>
-                {widget.data &&
-                widget.data.propertyList.length === activeProperties.length
-                  ? t('filter_widget.unselect_all')
-                  : t('filter_widget.select_all')}
-              </FilterButtonSecondary>
-            </DropdownHeader>
+            {(widget.isLoading ||
+              (widget.data && widget.data.propertyList)) && (
+              <DropdownHeader>
+                <FilterButtonSecondary onClick={toggleSelectAll}>
+                  {widget.data &&
+                  widget.data.propertyList &&
+                  widget.data.propertyList.length === activeProperties.length
+                    ? t('filter_widget.unselect_all')
+                    : t('filter_widget.select_all')}
+                </FilterButtonSecondary>
+              </DropdownHeader>
+            )}
+
             <DropdownContent>
-              <SearchTags
-                isActive={searchMode}
-                searchPhrase={searchPhrase}
-                inputPlaceholder={t('filter_widget.search_value')}
-                searchLabel={t('filter_widget.search_value')}
-                onChangePhrase={(phrase) => setSearchPhrase(phrase)}
-                onClearPhrase={() => {
-                  setSearchPhrase('');
-                  setSearchMode(false);
-                }}
-                onActiveSearch={() => setSearchMode(true)}
-              />
+              {(widget.isLoading ||
+                (widget.data && widget.data.propertyList)) && (
+                <SearchTags
+                  isActive={searchMode}
+                  searchPhrase={searchPhrase}
+                  inputPlaceholder={t('filter_widget.search_value')}
+                  searchLabel={t('filter_widget.search_value')}
+                  onChangePhrase={(phrase) => setSearchPhrase(phrase)}
+                  onClearPhrase={() => {
+                    setSearchPhrase('');
+                    setSearchMode(false);
+                  }}
+                  onActiveSearch={() => setSearchMode(true)}
+                />
+              )}
               {widget.isLoading ? (
                 <LoaderContainer>
                   <Loader width={50} height={50} fill={colors.blue['500']} />
                 </LoaderContainer>
-              ) : (
+              ) : availableProperties().length ? (
                 <ReactWindowList
                   height={150}
                   data-testid="scroll-wrapper2"
-                  itemCount={availableProperties().length}
+                  itemData={filterItemData}
+                  itemCount={filterItemData.items.length}
                   itemSize={30}
                   width={180}
                 >
                   {Row}
                 </ReactWindowList>
-              )}
+              ) : null}
               {!widget.isLoading && availableProperties().length === 0 && (
                 <EmptySearch>
                   {t('filter_widget.no_properties_found')}
                 </EmptySearch>
               )}
             </DropdownContent>
-            <DropdownFooter>
-              <Button size="small" onClick={applyFilter} variant="secondary">
-                {t('filter_widget.apply')}
-              </Button>
-              <FilterButtonSecondary
-                onClick={() => {
-                  dispatch(unapplyFilterWidget(widget.widget.id));
-                  setOpen(false);
-                }}
-              >
-                {t('filter_widget.clear')}
-              </FilterButtonSecondary>
-            </DropdownFooter>
+            {(widget.isLoading ||
+              (widget.data && widget.data.propertyList)) && (
+              <DropdownFooter>
+                <Button size="small" onClick={applyFilter} variant="secondary">
+                  {t('filter_widget.apply')}
+                </Button>
+                <FilterButtonSecondary
+                  onClick={() => {
+                    dispatch(unapplyFilterWidget(widget.widget.id));
+                    setOpen(false);
+                  }}
+                >
+                  {t('filter_widget.clear')}
+                </FilterButtonSecondary>
+              </DropdownFooter>
+            )}
           </Dropdown>
         </DropdownContainer>
       </Portal>
