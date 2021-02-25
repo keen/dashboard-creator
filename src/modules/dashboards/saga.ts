@@ -68,6 +68,7 @@ import {
   removeWidget,
   getWidget,
   getWidgetSettings,
+  Widget,
 } from '../widgets';
 
 import {
@@ -698,11 +699,31 @@ export function* cloneDashboard({
     const blobApi = yield getContext(BLOB_API);
 
     const model: DashboardModel = yield blobApi.getDashboardById(dashboardId);
+    const uniqueIdMap = model.widgets.reduce((acc, widget) => {
+      return {
+        ...acc,
+        [widget.id]: createWidgetId(),
+      };
+    }, {});
 
     const uniqueIdWidgets = model.widgets.map((widget) => ({
       ...widget,
-      id: createWidgetId(),
-    }));
+      ...('datePickerId' in widget && {
+        datePickerId: uniqueIdMap[widget.datePickerId],
+      }),
+      ...('filterIds' in widget &&
+        widget.filterIds.length && {
+          filterIds: widget.filterIds.map((filterId) => uniqueIdMap[filterId]),
+        }),
+      id: uniqueIdMap[widget.id],
+      settings: {
+        ...widget.settings,
+        ...('widgets' in widget.settings &&
+          widget.settings.widgets.length && {
+            widgets: widget.settings.widgets.map((id) => uniqueIdMap[id]),
+          }),
+      },
+    })) as Widget[];
 
     const newDashboardId = uuid();
     const metaData = yield blobApi.getDashboardMetadataById(dashboardId);
