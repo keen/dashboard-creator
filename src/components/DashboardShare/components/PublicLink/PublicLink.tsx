@@ -23,6 +23,7 @@ import {
 import { TOOLTIP_MOTION } from '../../../../constants';
 
 import {
+  getDashboardAccessKeyRegenerating,
   getDashboardMeta,
   regenerateAccessKey,
 } from '../../../../modules/dashboards';
@@ -40,6 +41,9 @@ const PublicLink: FC<Props> = ({ dashboardId, isPublic = true }) => {
   const { createSharedDashboardUrl } = useContext(AppContext);
   const { publicAccessKey } = useSelector((state: RootState) =>
     getDashboardMeta(state, dashboardId)
+  );
+  const isRegenerating = useSelector((state: RootState) =>
+    getDashboardAccessKeyRegenerating(state)
   );
   const dispatch = useDispatch();
 
@@ -72,7 +76,12 @@ const PublicLink: FC<Props> = ({ dashboardId, isPublic = true }) => {
               )}
             </AnimatePresence>
           </TooltipWrapper>
-          <Link onClick={() => dispatch(regenerateAccessKey(dashboardId))}>
+          <Link
+            isDisabled={isRegenerating}
+            onClick={() =>
+              isRegenerating ? null : dispatch(regenerateAccessKey(dashboardId))
+            }
+          >
             {t('dashboard_share.regenerate_link')}
           </Link>
         </TitleWrapper>

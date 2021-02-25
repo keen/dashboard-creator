@@ -34,6 +34,8 @@ import {
   updateCachedDashboardIds,
   unregisterDashboard,
   setDashboardPublicAccess,
+  regenerateAccessKeySuccess,
+  regenerateAccessKeyError,
 } from './actions';
 import { removeDashboardTheme } from '../theme/actions';
 import {
@@ -772,6 +774,10 @@ describe('regenerateAccessKey()', () => {
       );
     });
 
+    test('notifies about regenerating key success', (result) => {
+      expect(result).toEqual(put(regenerateAccessKeySuccess()));
+    });
+
     test('terminates regenerate access key flow', (result) => {
       expect(result).toBeUndefined();
     });
@@ -799,6 +805,10 @@ describe('regenerateAccessKey()', () => {
     test('creates new access key', (result) => {
       expect(result).toEqual(call(createAccessKey, dashboardId));
       return new Error();
+    });
+
+    test('notifies about regenerating key error', (result) => {
+      expect(result).toEqual(put(regenerateAccessKeyError()));
     });
 
     test('gets NotificationManager from context', (result) => {

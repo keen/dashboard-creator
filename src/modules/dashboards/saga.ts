@@ -36,6 +36,8 @@ import {
   deleteDashboard as deleteDashboardAction,
   setDashboardPublicAccess as setDashboardPublicAccessAction,
   regenerateAccessKey as regenerateAccessKeyAction,
+  regenerateAccessKeySuccess,
+  regenerateAccessKeyError,
   cloneDashboard as cloneDashboardAction,
   exportDashboardToHtml as exportDashboardToHtmlAction,
   showDeleteConfirmation,
@@ -380,14 +382,23 @@ export function* deleteDashboard({
         message: 'notifications.dashboard_delete_success',
         autoDismiss: true,
       });
+    } catch (err) {
+      yield notificationManager.showNotification({
+        type: 'error',
+        message: 'notifications.dashboard_delete_error',
+        showDismissButton: true,
+        autoDismiss: false,
+      });
+    }
 
+    try {
       if (publicAccessKey) {
         yield call(deleteAccessKey, publicAccessKey);
       }
     } catch (err) {
       yield notificationManager.showNotification({
         type: 'error',
-        message: 'notifications.dashboard_delete_error',
+        message: 'dashboard_share.access_key_api_error',
         showDismissButton: true,
         autoDismiss: false,
       });
@@ -632,7 +643,6 @@ export function* regenerateAccessKey({
   const { dashboardId } = payload;
   const metadata = yield select(getDashboardMeta, dashboardId);
   const { publicAccessKey } = metadata;
-
   if (publicAccessKey) {
     try {
       yield call(deleteAccessKey, publicAccessKey);
@@ -643,9 +653,10 @@ export function* regenerateAccessKey({
         ...metadata,
         publicAccessKey: key,
       };
-
       yield put(saveDashboardMetaAction(dashboardId, updatedMetadata));
+      yield put(regenerateAccessKeySuccess());
     } catch (error) {
+      yield put(regenerateAccessKeyError());
       const notificationManager = yield getContext(NOTIFICATION_MANAGER);
       yield notificationManager.showNotification({
         type: 'error',

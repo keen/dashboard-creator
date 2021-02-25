@@ -39,3 +39,6 @@ export const getTagsFilter = ({ dashboards }: RootState) =>
 
 export const getCachedDashboardIds = ({ dashboards }: RootState) =>
   dashboards.cachedDashboardIds;
+
+export const getDashboardAccessKeyRegenerating = ({ dashboards }: RootState) =>
+  dashboards.metadata.isRegeneratingAccessKey;
