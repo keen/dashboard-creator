@@ -68,6 +68,7 @@ import rootReducer from '../../rootReducer';
 import {
   CONFIRM_DASHBOARD_DELETE,
   HIDE_DELETE_CONFIRMATION,
+  SAVE_DASHBOARD_METADATA_SUCCESS,
 } from './constants';
 
 import {
@@ -772,6 +773,10 @@ describe('regenerateAccessKey()', () => {
           })
         )
       );
+    });
+
+    test('waits for dashboard metadata save', (result) => {
+      expect(result).toEqual(take(SAVE_DASHBOARD_METADATA_SUCCESS));
     });
 
     test('notifies about regenerating key success', (result) => {

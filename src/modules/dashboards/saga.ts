@@ -110,6 +110,7 @@ import {
   REGENERATE_ACCESS_KEY,
   CLONE_DASHBOARD,
   EXPORT_DASHBOARD_TO_HTML,
+  SAVE_DASHBOARD_METADATA_SUCCESS,
 } from './constants';
 
 import { RootState } from '../../rootReducer';
@@ -654,6 +655,7 @@ export function* regenerateAccessKey({
         publicAccessKey: key,
       };
       yield put(saveDashboardMetaAction(dashboardId, updatedMetadata));
+      yield take(SAVE_DASHBOARD_METADATA_SUCCESS);
       yield put(regenerateAccessKeySuccess());
     } catch (error) {
       yield put(regenerateAccessKeyError());
