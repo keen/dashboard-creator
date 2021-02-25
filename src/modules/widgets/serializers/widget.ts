@@ -1,10 +1,12 @@
 import { Widget, WidgetItem } from '../types';
 
+import { enhanceWidget } from '../utils';
+
 export const serializeWidget = (
   widget: Widget,
   isConfigured = false
 ): WidgetItem => ({
-  widget,
+  widget: enhanceWidget(widget),
   isConfigured,
   isActive: false,
   isInitialized: false,

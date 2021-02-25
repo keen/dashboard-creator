@@ -684,7 +684,7 @@ describe('initializeChartWidget()', () => {
       widget: {
         query: query,
         datePickerId: null,
-        filterIds: ['@filter/01'],
+        filterIds: ['@filter/01', '@filter/02'],
         settings: {
           visualizationType: 'metric',
         },
@@ -724,10 +724,22 @@ describe('initializeChartWidget()', () => {
     });
 
     test('get connected filter widgets settings ', (result) => {
-      expect(result).toEqual(all([select(getWidget, '@filter/01')]));
+      expect(result).toEqual(
+        all([select(getWidget, '@filter/01'), select(getWidget, '@filter/02')])
+      );
 
       return [
         {
+          isActive: true,
+          widget: {
+            id: '@filter/02',
+            settings: {
+              eventStream: 'logins',
+            },
+          },
+        },
+        {
+          isActive: true,
           widget: {
             id: '@filter/01',
             settings: {
