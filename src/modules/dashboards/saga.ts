@@ -46,7 +46,6 @@ import {
   setDashboardError,
   setDashboardListOrder,
   addClonedDashboard,
-  updateCachedDashboardIds,
   unregisterDashboard,
   updateCachedDashboardIds,
 } from './actions';

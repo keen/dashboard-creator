@@ -17,7 +17,6 @@ const render = (overProps: any = {}) => {
     isHoverActive: true,
     onEditWidget: jest.fn(),
     onRemoveWidget: jest.fn(),
-    onEditWidget: jest.fn(),
     ...overProps,
   };
 
