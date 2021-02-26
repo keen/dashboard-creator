@@ -4,6 +4,7 @@ import createTagsPool from './createTagsPool';
 import sortDashboards from './sortDashboards';
 import createPublicDashboardKeyName from './createPublicDashboardKeyName';
 import createCodeSnippet from './createCodeSnippet';
+import createWidgetsUniqueIds from './createWidgetsUniqueIds';
 
 export {
   createDashboardMeta,
@@ -12,4 +13,5 @@ export {
   sortDashboards,
   createPublicDashboardKeyName,
   createCodeSnippet,
+  createWidgetsUniqueIds,
 };
