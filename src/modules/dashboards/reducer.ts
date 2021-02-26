@@ -18,6 +18,9 @@ import {
   HIDE_DASHBOARD_SHARE_MODAL,
   HIDE_DELETE_CONFIRMATION,
   PREPARE_TAGS_POOL,
+  REGENERATE_ACCESS_KEY,
+  REGENERATE_ACCESS_KEY_SUCCESS,
+  REGENERATE_ACCESS_KEY_ERROR,
   REGISTER_DASHBOARD,
   REMOVE_WIDGET_FROM_DASHBOARD,
   SAVE_DASHBOARD,
@@ -49,6 +52,7 @@ export const initialState: ReducerState = {
     error: null,
     data: [],
     isSavingMetadata: false,
+    isRegeneratingAccessKey: false,
   },
   deleteConfirmation: {
     isVisible: false,
@@ -193,8 +197,8 @@ const dashboardsReducer = (
             settings: {
               ...state.items[action.payload.dashboardId].settings,
               widgets: [
-                action.payload.widgetId,
                 ...state.items[action.payload.dashboardId].settings.widgets,
+                action.payload.widgetId,
               ],
             },
           },
@@ -319,7 +323,7 @@ const dashboardsReducer = (
         ...state,
         metadata: {
           ...state.metadata,
-          isSavingMetaData: true,
+          isSavingMetadata: true,
         },
       };
     case SAVE_DASHBOARD_METADATA_SUCCESS:
@@ -328,7 +332,7 @@ const dashboardsReducer = (
         ...state,
         metadata: {
           ...state.metadata,
-          isSavingMetaData: false,
+          isSavingMetadata: false,
         },
       };
     case SET_DASHBOARD_LIST_ORDER:
@@ -350,6 +354,7 @@ const dashboardsReducer = (
               return {
                 ...dashboardMeta,
                 isPublic: action.payload.isPublic,
+                publicAccessKey: action.payload.accessKey,
               };
             }
 
@@ -405,6 +410,23 @@ const dashboardsReducer = (
       return {
         ...state,
         items,
+      };
+    case REGENERATE_ACCESS_KEY:
+      return {
+        ...state,
+        metadata: {
+          ...state.metadata,
+          isRegeneratingAccessKey: true,
+        },
+      };
+    case REGENERATE_ACCESS_KEY_SUCCESS:
+    case REGENERATE_ACCESS_KEY_ERROR:
+      return {
+        ...state,
+        metadata: {
+          ...state.metadata,
+          isRegeneratingAccessKey: false,
+        },
       };
     default:
       return state;

@@ -53,6 +53,8 @@ import {
   SET_TAGS_FILTERS_PUBLIC,
   UPDATE_CACHED_DASHBOARD_IDS,
   UNREGISTER_DASHBOARD,
+  REGENERATE_ACCESS_KEY_SUCCESS,
+  REGENERATE_ACCESS_KEY_ERROR,
 } from './constants';
 
 export const fetchDashboardList = createAction(FETCH_DASHBOARDS_LIST);
@@ -316,10 +318,11 @@ export const setDashboardListOrder = createAction(
 
 export const setDashboardPublicAccess = createAction(
   SET_DASHBOARD_PUBLIC_ACCESS,
-  (dashboardId: string, isPublic: boolean) => ({
+  (dashboardId: string, isPublic: boolean, accessKey: null | string) => ({
     payload: {
       dashboardId,
       isPublic,
+      accessKey,
     },
   })
 );
@@ -332,6 +335,14 @@ export const regenerateAccessKey = createAction(
       dashboardId,
     },
   })
+);
+
+export const regenerateAccessKeySuccess = createAction(
+  REGENERATE_ACCESS_KEY_SUCCESS
+);
+
+export const regenerateAccessKeyError = createAction(
+  REGENERATE_ACCESS_KEY_ERROR
 );
 
 export const addClonedDashboard = createAction(
@@ -430,6 +441,8 @@ export type DashboardsActions =
   | ReturnType<typeof setDashboardPublicAccess>
   | ReturnType<typeof updateAccessKeyOptions>
   | ReturnType<typeof regenerateAccessKey>
+  | ReturnType<typeof regenerateAccessKeySuccess>
+  | ReturnType<typeof regenerateAccessKeyError>
   | ReturnType<typeof setDashboardListOrder>
   | ReturnType<typeof addClonedDashboard>
   | ReturnType<typeof exportDashboardToHtml>

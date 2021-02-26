@@ -153,6 +153,7 @@ test('updates dashboard metadata and sort it by recent', () => {
       "error": null,
       "isInitiallyLoaded": false,
       "isLoaded": true,
+      "isRegeneratingAccessKey": false,
       "isSavingMetadata": false,
     }
   `);
@@ -327,6 +328,7 @@ test('serializes dashboards metadata', () => {
       ],
       "error": null,
       "isInitiallyLoaded": true,
+      "isRegeneratingAccessKey": false,
       "isSavingMetadata": false,
     }
   `);
@@ -416,8 +418,8 @@ test('return state for saving dashboard metadata', () => {
       "data": Array [],
       "error": null,
       "isInitiallyLoaded": false,
-      "isSavingMetaData": true,
-      "isSavingMetadata": false,
+      "isRegeneratingAccessKey": false,
+      "isSavingMetadata": true,
     }
   `);
 
@@ -431,7 +433,7 @@ test('return state for saving dashboard metadata', () => {
       "data": Array [],
       "error": null,
       "isInitiallyLoaded": false,
-      "isSavingMetaData": false,
+      "isRegeneratingAccessKey": false,
       "isSavingMetadata": false,
     }
   `);
@@ -446,7 +448,7 @@ test('return state for saving dashboard metadata', () => {
       "data": Array [],
       "error": null,
       "isInitiallyLoaded": false,
-      "isSavingMetaData": false,
+      "isRegeneratingAccessKey": false,
       "isSavingMetadata": false,
     }
   `);
@@ -462,6 +464,7 @@ test('set order for dashboard list', () => {
 test('set public access to the dashboard', () => {
   const dashboardId = '@dashboard/01';
   const isPublicTest = false;
+  const accessKey = 'public-access-key';
 
   const state = {
     ...initialState,
@@ -470,14 +473,17 @@ test('set public access to the dashboard', () => {
       data: dashboardsMeta,
     },
   };
-  const action = setDashboardPublicAccess(dashboardId, isPublicTest);
+  const action = setDashboardPublicAccess(dashboardId, isPublicTest, accessKey);
   const {
     metadata: { data },
   } = dashboardsReducer(state, action);
 
-  const { isPublic } = data.find((item) => item.id === dashboardId);
+  const { isPublic, publicAccessKey } = data.find(
+    (item) => item.id === dashboardId
+  );
 
   expect(isPublic).toEqual(isPublicTest);
+  expect(publicAccessKey).toEqual(accessKey);
 });
 
 test('regenerate access key for the dashboard', () => {
