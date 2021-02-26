@@ -45,6 +45,7 @@ Object {
     "error": null,
     "isInitiallyLoaded": false,
     "isLoaded": true,
+    "isRegeneratingAccessKey": false,
     "isSavingMetadata": false,
   },
   "tagsFilters": Object {
@@ -98,6 +99,7 @@ Object {
     "error": null,
     "isInitiallyLoaded": false,
     "isLoaded": true,
+    "isRegeneratingAccessKey": false,
     "isSavingMetadata": false,
   },
   "tagsFilters": Object {

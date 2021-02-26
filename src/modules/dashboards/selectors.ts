@@ -59,3 +59,6 @@ export const getCurrentDashboardChartsCount = ({
 
 export const getCachedDashboardIds = ({ dashboards }: RootState) =>
   dashboards.cachedDashboardIds;
+
+export const getDashboardAccessKeyRegenerating = ({ dashboards }: RootState) =>
+  dashboards.metadata.isRegeneratingAccessKey;

@@ -36,6 +36,8 @@ import {
   deleteDashboard as deleteDashboardAction,
   setDashboardPublicAccess as setDashboardPublicAccessAction,
   regenerateAccessKey as regenerateAccessKeyAction,
+  regenerateAccessKeySuccess,
+  regenerateAccessKeyError,
   cloneDashboard as cloneDashboardAction,
   exportDashboardToHtml as exportDashboardToHtmlAction,
   showDeleteConfirmation,
@@ -108,6 +110,7 @@ import {
   REGENERATE_ACCESS_KEY,
   CLONE_DASHBOARD,
   EXPORT_DASHBOARD_TO_HTML,
+  SAVE_DASHBOARD_METADATA_SUCCESS,
 } from './constants';
 
 import { RootState } from '../../rootReducer';
@@ -385,14 +388,23 @@ export function* deleteDashboard({
         message: 'notifications.dashboard_delete_success',
         autoDismiss: true,
       });
+    } catch (err) {
+      yield notificationManager.showNotification({
+        type: 'error',
+        message: 'notifications.dashboard_delete_error',
+        showDismissButton: true,
+        autoDismiss: false,
+      });
+    }
 
+    try {
       if (publicAccessKey) {
         yield call(deleteAccessKey, publicAccessKey);
       }
     } catch (err) {
       yield notificationManager.showNotification({
         type: 'error',
-        message: 'notifications.dashboard_delete_error',
+        message: 'dashboard_share.access_key_api_error',
         showDismissButton: true,
         autoDismiss: false,
       });
@@ -625,39 +637,32 @@ export function* persistDashboardsOrder({
 export function* setAccessKey({
   payload,
 }: ReturnType<typeof setDashboardPublicAccessAction>) {
-  const { dashboardId, isPublic } = payload;
+  const { dashboardId, isPublic, accessKey } = payload;
+  const metadata = yield select(getDashboardMeta, dashboardId);
 
-  const state: RootState = yield select();
-  const metadata = yield getDashboardMeta(state, dashboardId);
-
-  if (isPublic) {
-    try {
-      const accessKey = yield createAccessKey(dashboardId);
-      const { key: publicAccessKey } = accessKey;
-      const updatedMetadata: DashboardMetaData = {
-        ...metadata,
-        publicAccessKey,
-      };
-
-      yield put(saveDashboardMetaAction(dashboardId, updatedMetadata));
-    } catch (error) {
-      console.error(error);
-    }
+  if (accessKey) {
+    yield put(saveDashboardMetaAction(dashboardId, metadata));
   } else {
-    const { publicAccessKey } = metadata;
-    const updatedMetadata: DashboardMetaData = {
-      ...metadata,
-      publicAccessKey: null,
-    };
-
-    if (publicAccessKey) {
+    if (isPublic) {
       try {
-        yield call(deleteAccessKey, publicAccessKey);
+        const accessKey = yield call(createAccessKey, dashboardId);
+        const { key: publicAccessKey } = accessKey;
+
+        const updatedMetadata: DashboardMetaData = {
+          ...metadata,
+          isPublic,
+          publicAccessKey,
+        };
+
         yield put(saveDashboardMetaAction(dashboardId, updatedMetadata));
       } catch (error) {
-        console.error(error);
-        if (error.status === StatusCodes.NOT_FOUND)
-          yield put(saveDashboardMetaAction(dashboardId, updatedMetadata));
+        const notificationManager = yield getContext(NOTIFICATION_MANAGER);
+        yield notificationManager.showNotification({
+          type: 'error',
+          message: 'dashboard_share.access_key_api_error',
+          showDismissButton: true,
+          autoDismiss: false,
+        });
       }
     }
   }
@@ -669,7 +674,6 @@ export function* regenerateAccessKey({
   const { dashboardId } = payload;
   const metadata = yield select(getDashboardMeta, dashboardId);
   const { publicAccessKey } = metadata;
-
   if (publicAccessKey) {
     try {
       yield call(deleteAccessKey, publicAccessKey);
@@ -680,10 +684,18 @@ export function* regenerateAccessKey({
         ...metadata,
         publicAccessKey: key,
       };
-
       yield put(saveDashboardMetaAction(dashboardId, updatedMetadata));
+      yield take(SAVE_DASHBOARD_METADATA_SUCCESS);
+      yield put(regenerateAccessKeySuccess());
     } catch (error) {
-      console.error(error);
+      yield put(regenerateAccessKeyError());
+      const notificationManager = yield getContext(NOTIFICATION_MANAGER);
+      yield notificationManager.showNotification({
+        type: 'error',
+        message: 'dashboard_share.access_key_api_error',
+        showDismissButton: true,
+        autoDismiss: false,
+      });
     }
   }
 }
