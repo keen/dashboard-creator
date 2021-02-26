@@ -12,6 +12,7 @@ import {
   handleInconsistentFilters,
   editChartWidget,
   editChartSavedQuery,
+  checkIfChartWidgetHasInconsistentFilters,
 } from './chartWidget';
 
 import {
@@ -80,6 +81,142 @@ describe('handleInconsistentFilters()', () => {
           })
         )
       );
+    });
+  });
+});
+
+describe('checkIfChartWidgetHasInconsistentFilters()', () => {
+  describe('Scenario 1: Widget has filters with different event stream', () => {
+    const chartWidget = {
+      data: {
+        query: {
+          event_collection: 'purchases',
+        },
+      },
+      widget: {
+        id: '@widget/1',
+        filterIds: ['@filter/01', '@filter/02'],
+      },
+    };
+
+    const test = sagaHelper(
+      checkIfChartWidgetHasInconsistentFilters(chartWidget)
+    );
+    test('get connected filter widgets settings ', (result) => {
+      expect(result).toEqual(
+        all([select(getWidget, '@filter/01'), select(getWidget, '@filter/02')])
+      );
+      return [
+        {
+          isActive: true,
+          widget: {
+            settings: {
+              eventStream: 'logins',
+            },
+          },
+        },
+        { isActive: false },
+      ];
+    });
+
+    test('Calls handle inconsistent filters to set appropriate error', (result) => {
+      expect(result).toEqual(
+        call(handleInconsistentFilters, chartWidget.widget.id)
+      );
+    });
+
+    test('Returns true which states that widget has inconsistent filters', (result) => {
+      expect(result).toBe(true);
+    });
+  });
+
+  describe('Scenario 2: Widget has filters with the same event stream', () => {
+    const chartWidget = {
+      data: {
+        query: {
+          event_collection: 'logins',
+        },
+      },
+      widget: {
+        id: '@widget/1',
+        filterIds: ['@filter/01', '@filter/02'],
+      },
+    };
+
+    const test = sagaHelper(
+      checkIfChartWidgetHasInconsistentFilters(chartWidget)
+    );
+
+    test('get connected filter widgets settings ', (result) => {
+      expect(result).toEqual(
+        all([select(getWidget, '@filter/01'), select(getWidget, '@filter/02')])
+      );
+      return [
+        {
+          isActive: true,
+          widget: {
+            settings: {
+              eventStream: 'logins',
+            },
+          },
+        },
+        { isActive: false },
+      ];
+    });
+
+    test('Returns false which states that widget doesnt have inconsistent filters', (result) => {
+      expect(result).toBe(false);
+    });
+  });
+
+  describe('Scenario 3: Widget has filters with the same event stream but contains error with INCONSISTENT_FILTER code', () => {
+    const chartWidget = {
+      error: {
+        code: WidgetErrors.INCONSISTENT_FILTER,
+      },
+      data: {
+        query: {
+          event_collection: 'logins',
+        },
+      },
+      widget: {
+        id: '@widget/1',
+        filterIds: ['@filter/01', '@filter/02'],
+      },
+    };
+
+    const test = sagaHelper(
+      checkIfChartWidgetHasInconsistentFilters(chartWidget)
+    );
+
+    test('get connected filter widgets settings ', (result) => {
+      expect(result).toEqual(
+        all([select(getWidget, '@filter/01'), select(getWidget, '@filter/02')])
+      );
+      return [
+        {
+          isActive: true,
+          widget: {
+            settings: {
+              eventStream: 'logins',
+            },
+          },
+        },
+        { isActive: false },
+      ];
+    });
+    test('Calls set widget state to clear the error', (result) => {
+      expect(result).toEqual(
+        put(
+          setWidgetState(chartWidget.widget.id, {
+            isInitialized: true,
+            error: null,
+          })
+        )
+      );
+    });
+    test('Returns false which states that widget doesnt have inconsistent filters error', (result) => {
+      expect(result).toBe(false);
     });
   });
 });
@@ -398,13 +535,11 @@ describe('initializeChartWidget()', () => {
 
     test('gets widget settings', (result) => {
       expect(result).toEqual(select(getWidget, widgetId));
-
       return chartWidget;
     });
 
     test('prepares widget query', (result) => {
       expect(result).toEqual(call(prepareChartWidgetQuery, chartWidget));
-
       return { query, hasQueryModifiers: false };
     });
 
@@ -412,21 +547,21 @@ describe('initializeChartWidget()', () => {
       expect(result).toEqual(put(setWidgetLoading(widgetId, true)));
     });
 
+    test('check if chart widget has inconsistent filters', (result) => {
+      expect(result).toEqual(
+        call(checkIfChartWidgetHasInconsistentFilters, chartWidget)
+      );
+      return false;
+    });
+
     test('gets Keen API client from context', (result) => {
       expect(result).toEqual(getContext(KEEN_ANALYSIS));
-
       return keenAnalysis;
     });
 
     test('performs query', () => {
       expect(keenAnalysis.query).toHaveBeenCalledWith(query);
       return analysisResult;
-    });
-
-    test('get connected filter widgets settings ', (result) => {
-      expect(result).toEqual(all([]));
-
-      return [];
     });
 
     test('performs detached query flow', (result) => {
@@ -478,6 +613,13 @@ describe('initializeChartWidget()', () => {
       expect(result).toEqual(put(setWidgetLoading(widgetId, true)));
     });
 
+    test('check if chart widget has inconsistent filters', (result) => {
+      expect(result).toEqual(
+        call(checkIfChartWidgetHasInconsistentFilters, chartWidget)
+      );
+      return false;
+    });
+
     test('gets Keen API client from context', (result) => {
       expect(result).toEqual(getContext(KEEN_ANALYSIS));
 
@@ -490,12 +632,6 @@ describe('initializeChartWidget()', () => {
       });
 
       return analysisResult;
-    });
-
-    test('get connected filter widgets settings ', (result) => {
-      expect(result).toEqual(all([]));
-
-      return [];
     });
 
     test('gets interim query connected with widget', (result) => {
@@ -561,6 +697,13 @@ describe('initializeChartWidget()', () => {
       expect(result).toEqual(put(setWidgetLoading(widgetId, true)));
     });
 
+    test('check if chart widget has inconsistent filters', (result) => {
+      expect(result).toEqual(
+        call(checkIfChartWidgetHasInconsistentFilters, chartWidget)
+      );
+      return false;
+    });
+
     test('gets Keen API client from context', (result) => {
       expect(result).toEqual(getContext(KEEN_ANALYSIS));
 
@@ -571,12 +714,6 @@ describe('initializeChartWidget()', () => {
       expect(keenAnalysis.query).toHaveBeenCalledWith(query);
 
       return analysisResult;
-    });
-
-    test('get connected filter widgets settings ', (result) => {
-      expect(result).toEqual(all([]));
-
-      return [];
     });
 
     test('add interim query for chart widget', (result) => {
@@ -633,6 +770,13 @@ describe('initializeChartWidget()', () => {
       expect(result).toEqual(put(setWidgetLoading(widgetId, true)));
     });
 
+    test('check if chart widget has inconsistent filters', (result) => {
+      expect(result).toEqual(
+        call(checkIfChartWidgetHasInconsistentFilters, chartWidget)
+      );
+      return false;
+    });
+
     test('gets Keen API client from context', (result) => {
       expect(result).toEqual(getContext(KEEN_ANALYSIS));
 
@@ -668,10 +812,6 @@ describe('initializeChartWidget()', () => {
     const action = initializeChartWidgetAction(widgetId);
     const test = sagaHelper(initializeChartWidget(action));
 
-    const keenAnalysis = {
-      query: jest.fn(),
-    };
-
     const query = {
       analysis_type: 'count',
       event_collection: 'logins',
@@ -691,14 +831,8 @@ describe('initializeChartWidget()', () => {
       },
     };
 
-    const analysisResult = {
-      result: 10,
-      query,
-    };
-
     test('gets widget settings', (result) => {
       expect(result).toEqual(select(getWidget, widgetId));
-
       return chartWidget;
     });
 
@@ -712,46 +846,15 @@ describe('initializeChartWidget()', () => {
       expect(result).toEqual(put(setWidgetLoading(widgetId, true)));
     });
 
-    test('gets Keen API client from context', (result) => {
-      expect(result).toEqual(getContext(KEEN_ANALYSIS));
-
-      return keenAnalysis;
-    });
-
-    test('performs query', () => {
-      expect(keenAnalysis.query).toHaveBeenCalledWith(query);
-      return analysisResult;
-    });
-
-    test('get connected filter widgets settings ', (result) => {
+    test('check if chart widget has inconsistent filters', (result) => {
       expect(result).toEqual(
-        all([select(getWidget, '@filter/01'), select(getWidget, '@filter/02')])
+        call(checkIfChartWidgetHasInconsistentFilters, chartWidget)
       );
-
-      return [
-        {
-          isActive: true,
-          widget: {
-            id: '@filter/02',
-            settings: {
-              eventStream: 'logins',
-            },
-          },
-        },
-        {
-          isActive: true,
-          widget: {
-            id: '@filter/01',
-            settings: {
-              eventStream: 'purchases',
-            },
-          },
-        },
-      ];
+      return true;
     });
 
-    test('performs detached query flow', (result) => {
-      expect(result).toEqual(call(handleInconsistentFilters, widgetId));
+    test('set widgets loading state', (result) => {
+      expect(result).toEqual(put(setWidgetLoading(widgetId, false)));
     });
   });
 });
