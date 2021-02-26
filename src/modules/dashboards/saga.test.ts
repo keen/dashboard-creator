@@ -84,6 +84,7 @@ import {
   getDashboardSettings,
   getDashboardsMetadata,
 } from './selectors';
+import { removeConnectionFromFilter } from '../widgets/saga/filterWidget';
 
 import { getCachedDashboardsNumber } from '../app/selectors';
 import { unregisterWidget } from '../widgets/actions';
@@ -218,6 +219,7 @@ describe('viewPublicDashboard()', () => {
 
 describe('removeWidgetFromDashboard()', () => {
   const action = removeWidgetFromDashboardAction(dashboardId, widgetId);
+  const filterIds = ['@filter/01', '@filter/02'];
 
   describe('Scenario 1: User removes visualization widget from dashboard', () => {
     const test = sagaHelper(removeWidgetFromDashboard(action));
@@ -228,11 +230,21 @@ describe('removeWidgetFromDashboard()', () => {
       return {
         query: 'purchases',
         type: 'visualization',
+        filterIds,
       };
     });
 
     test('update access key options', (result) => {
       expect(result).toEqual(call(updateAccessKeyOptions));
+    });
+
+    test('removes connections from filter', (result) => {
+      expect(result).toEqual(
+        all([
+          call(removeConnectionFromFilter, '@filter/01', widgetId),
+          call(removeConnectionFromFilter, '@filter/02', widgetId),
+        ])
+      );
     });
 
     test('triggers remove widget', (result) => {

@@ -7,6 +7,7 @@ import {
   ChartWidget,
   ImageWidget,
   DatePickerWidget,
+  FilterWidget,
 } from '../types';
 
 type Options = {
@@ -37,6 +38,7 @@ export const createWidget = (
           ...baseWidget,
           query: null,
           datePickerId: null,
+          filterIds: [],
           settings,
         } as ChartWidget,
         isConfigured
@@ -63,6 +65,18 @@ export const createWidget = (
             widgets: [],
           },
         } as DatePickerWidget,
+        isConfigured
+      );
+    case 'filter':
+      return serializeWidget(
+        {
+          ...baseWidget,
+          settings: {
+            widgets: [],
+            eventStream: null,
+            targetProperty: null,
+          },
+        } as FilterWidget,
         isConfigured
       );
     case 'image':

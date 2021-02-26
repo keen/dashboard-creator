@@ -282,7 +282,6 @@ export function* setupDatePicker(widgetId: string) {
   const dashboardId = yield select(getActiveDashboard);
 
   yield take(ADD_WIDGET_TO_DASHBOARD);
-
   const {
     settings: { widgets: dashboardWidgetsIds },
   } = yield select(getDashboard, dashboardId);
@@ -293,6 +292,7 @@ export function* setupDatePicker(widgetId: string) {
     datePickerWidgetId,
     true
   );
+
   const widgetsConnectionsPool = widgetConnections.map(
     ({ widgetId }) => widgetId
   );

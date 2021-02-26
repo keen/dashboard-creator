@@ -6,7 +6,9 @@ export type RenderOptions = {
   isEditorMode: boolean;
   isHoverActive: boolean;
   isHighlighted: boolean;
+  isDetached: boolean;
   isFadeOut: boolean;
   title?: string;
   onRemoveWidget: () => void;
+  onEditWidget: () => void;
 };

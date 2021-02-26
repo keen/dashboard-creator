@@ -98,6 +98,15 @@ const Toolbar: FC<Props> = ({ onWidgetDrag, onAddWidget }) => {
         key="image"
       />
       <DraggableItem
+        type="filter"
+        icon="funnel-widget-vertical"
+        onClick={() => onAddWidget('filter')}
+        text={t('widget_item.filter')}
+        dragStartHandler={dragStartHandler}
+        dragEndHandler={dragEndHandler}
+        key="filter"
+      />
+      <DraggableItem
         type="date-picker"
         icon="date-picker"
         onClick={() => onAddWidget('date-picker')}

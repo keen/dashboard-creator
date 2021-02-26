@@ -17,6 +17,12 @@ export type GridPosition = {
 
 export type WidgetsPosition = (GridPosition & { i: string })[];
 
+export type FilterSettings = {
+  propertyName: string;
+  operator: string;
+  propertyValue: string | string[];
+};
+
 export interface BaseWidget {
   id: string;
   position: GridPosition;
@@ -26,6 +32,7 @@ export interface ChartWidget extends BaseWidget {
   type: 'visualization';
   query: string | Query;
   datePickerId?: string;
+  filterIds?: string[];
   settings: {
     visualizationType: PickerWidgets;
     chartSettings: Record<string, any>;
@@ -55,11 +62,32 @@ export interface DatePickerWidget extends BaseWidget {
   };
 }
 
-export type Widget = ChartWidget | TextWidget | ImageWidget | DatePickerWidget;
+export interface FilterWidget extends BaseWidget {
+  type: 'filter';
+  settings: {
+    widgets: string[];
+    eventStream: string | null;
+    targetProperty: string | null;
+    filter: FilterSettings;
+  };
+}
+
+export type Widget =
+  | ChartWidget
+  | TextWidget
+  | ImageWidget
+  | DatePickerWidget
+  | FilterWidget;
+
+export enum WidgetErrors {
+  INCONSISTENT_FILTER = 'INCONSISTENT_FILTER',
+  DETACHED_QUERY = 'DETACHED_QUERY',
+}
 
 export type WidgetError = {
   title?: string;
   message: string;
+  code?: WidgetErrors;
 };
 
 export type WidgetItem = {
@@ -69,6 +97,7 @@ export type WidgetItem = {
   isInitialized: boolean;
   isLoading: boolean;
   isHighlighted: boolean;
+  isDetached: boolean;
   isFadeOut: boolean;
   isTitleCover: boolean;
   error: WidgetError | null;

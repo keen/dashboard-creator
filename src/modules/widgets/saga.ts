@@ -18,6 +18,7 @@ import {
   finishChartWidgetConfiguration,
   savedQueryUpdated,
   saveClonedWidget,
+  clearInconsistentFiltersError as clearInconsistentFiltersErrorAction,
 } from './actions';
 
 import { getWidgetSettings, getWidget } from './selectors';
@@ -56,6 +57,14 @@ import {
 } from './saga/textWidget';
 
 import { initializeChartWidget, editChartWidget } from './saga/chartWidget';
+import {
+  setFilterWidget,
+  editFilterWidget,
+  setupFilterWidget,
+  applyFilterModifiers,
+  unapplyFilterWidget,
+  resetFilterWidgets,
+} from './saga/filterWidget';
 
 import { SELECT_SAVED_QUERY, CREATE_QUERY, SavedQuery } from '../queries';
 import {
@@ -80,10 +89,16 @@ import {
   SET_DATE_PICKER_WIDGET_MODIFIERS,
   RESET_DATE_PICKER_WIDGETS,
   SAVED_QUERY_UPDATED,
+  EDIT_FILTER_WIDGET,
   CLONE_WIDGET,
+  SET_FILTER_WIDGET,
+  APPLY_FILTER_MODIFIERS,
+  CLEAR_INCONSISTENT_FILTERS_ERROR_FROM_WIDGETS,
+  UNAPPLY_FILTER_WIDGET,
+  RESET_FILTER_WIDGETS,
 } from './constants';
 
-import { ChartWidget, WidgetItem } from './types';
+import { ChartWidget, WidgetErrors, WidgetItem } from './types';
 
 /**
  * Flow responsible for re-initializing widgets after updating saved query.
@@ -117,8 +132,30 @@ export function* reinitializeWidgets({
   yield all(
     widgetsToUpdate.map(({ id }) => put(setWidgetState(id, widgetState)))
   );
+
   yield all(
     widgetsToUpdate.map(({ id }) => put(initializeChartWidgetAction(id)))
+  );
+}
+
+export function* clearInconsistentFiltersErrorFromWidgets({
+  payload,
+}: ReturnType<typeof clearInconsistentFiltersErrorAction>) {
+  const { widgets: widgetIds } = yield select(
+    getDashboardSettings,
+    payload.dashboardId
+  );
+  const widgets = yield all(
+    widgetIds.map((id: string) => select(getWidget, id))
+  );
+  const widgetsWithInconsistentFilterError = widgets.filter(
+    (widget) =>
+      widget.error && widget.error.code === WidgetErrors.INCONSISTENT_FILTER
+  );
+  yield all(
+    widgetsWithInconsistentFilterError.map((widget) =>
+      put(setWidgetState(widget.widget.id, { error: null }))
+    )
   );
 }
 
@@ -243,6 +280,8 @@ export function* createWidget({
     yield take(ADD_WIDGET_TO_DASHBOARD);
     const dashboardId = yield select(getActiveDashboard);
     yield put(saveDashboard(dashboardId));
+  } else if (widgetType === 'filter') {
+    yield fork(setupFilterWidget, id);
   } else {
     yield fork(selectQueryForWidget, id);
   }
@@ -287,7 +326,16 @@ export function* widgetsSaga() {
   yield takeLatest(EDIT_INLINE_TEXT_WIDGET, editInlineTextWidget);
   yield takeLatest(CLONE_WIDGET, cloneWidget);
   yield takeLatest(CLEAR_DATE_PICKER_MODIFIERS, clearDatePickerModifiers);
+  yield takeLatest(EDIT_FILTER_WIDGET, editFilterWidget);
   yield takeEvery(RESET_DATE_PICKER_WIDGETS, resetDatePickerWidgets);
   yield takeEvery(INITIALIZE_WIDGET, initializeWidget);
   yield takeEvery(INITIALIZE_CHART_WIDGET, initializeChartWidget);
+  yield takeEvery(SET_FILTER_WIDGET, setFilterWidget);
+  yield takeEvery(APPLY_FILTER_MODIFIERS, applyFilterModifiers);
+  yield takeEvery(
+    CLEAR_INCONSISTENT_FILTERS_ERROR_FROM_WIDGETS,
+    clearInconsistentFiltersErrorFromWidgets
+  );
+  yield takeEvery(RESET_FILTER_WIDGETS, resetFilterWidgets);
+  yield takeEvery(UNAPPLY_FILTER_WIDGET, unapplyFilterWidget);
 }

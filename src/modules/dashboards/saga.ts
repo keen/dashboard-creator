@@ -122,6 +122,11 @@ import {
 } from './types';
 import { unregisterWidget } from '../widgets/actions';
 import { getCachedDashboardsNumber } from '../app/selectors';
+import {
+  removeConnectionFromFilter,
+  removeFilterConnections,
+} from '../widgets/saga/filterWidget';
+import { clearFilterData } from '../widgets/actions';
 
 export function* fetchDashboardList() {
   const blobApi = yield getContext(BLOB_API);
@@ -412,19 +417,32 @@ export function* removeWidgetFromDashboard({
 }: ReturnType<typeof removeWidgetFromDashboardAction>) {
   const { dashboardId, widgetId } = payload;
 
-  const { type, query, datePickerId } = yield select(
+  const { type, query, datePickerId, filterIds } = yield select(
     getWidgetSettings,
     widgetId
   );
+
   if (type === 'visualization' && query && typeof query === 'string') {
     yield call(updateAccessKeyOptions);
     if (datePickerId) {
       yield call(removeConnectionFromDatePicker, datePickerId, widgetId);
     }
+
+    if (filterIds.length > 0) {
+      yield all(
+        filterIds.map((filterId: string) =>
+          call(removeConnectionFromFilter, filterId, widgetId)
+        )
+      );
+    }
   }
 
   if (type === 'date-picker') {
     yield call(removeDatePickerConnections, dashboardId, widgetId);
+  }
+
+  if (type === 'filter') {
+    yield call(removeFilterConnections, dashboardId, widgetId);
   }
 
   yield put(removeWidget(widgetId));
@@ -467,6 +485,18 @@ export function* editDashboard({
       console.error(err);
     }
   } else {
+    const widgets = dashboard.settings.widgets;
+    if (widgets && widgets.length > 0) {
+      const connectedWidgets = yield all(
+        widgets.map((id: string) => select(getWidget, id))
+      );
+      const filtersToReset = connectedWidgets.filter(
+        (widget) => widget.widget.type === 'filter'
+      );
+      yield all(
+        filtersToReset.map((filter) => put(clearFilterData(filter.widget.id)))
+      );
+    }
     yield put(setActiveDashboard(dashboardId));
     yield put(push(ROUTES.EDITOR));
   }

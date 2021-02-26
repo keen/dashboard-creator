@@ -10,6 +10,7 @@ import { datePickerReducer } from './modules/datePicker';
 import { themeReducer } from './modules/theme';
 import { chartEditorReducer } from './modules/chartEditor';
 import { textEditorReducer } from './modules/textEditor';
+import { filterReducer } from './modules/filter';
 
 export const history = createMemoryHistory();
 
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   widgets: widgetsReducer,
   queries: queriesReducer,
   datePicker: datePickerReducer,
+  filter: filterReducer,
   chartEditor: chartEditorReducer,
   textEditor: textEditorReducer,
   router: connectRouter(history),

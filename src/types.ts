@@ -39,4 +39,9 @@ export type TranslationsSettings = {
   };
 };
 
-export type WidgetType = 'visualization' | 'text' | 'image' | 'date-picker';
+export type WidgetType =
+  | 'visualization'
+  | 'text'
+  | 'image'
+  | 'date-picker'
+  | 'filter';

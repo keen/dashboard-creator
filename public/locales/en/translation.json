@@ -25,7 +25,39 @@
     "placeholder": "Enter text",
     "delete_confirmation": "Are you sure you want to delete this text?"
   },
-  "date_picker_management": {
+  "filter_settings": {
+    "title": "Create Filter",
+    "create_button": "Create Filter",
+    "edit_button": "Update Filter",
+    "cancel_button": "Cancel",
+    "event_stream_placeholder": "Select event stream",
+    "empty_connections": "Add charts to the dashboard and then configure Filter Widget",
+    "dashboard_without_charts": "All charts have been removed from the dashboard. Create new charts and then reconfigure the filter.",
+    "target_property_placeholder": "Select property",
+    "target_property_search_placeholder": "Search",
+    "target_property_empty_search_results": "No property found with this name",
+    "untitled_chart": "Untitled Chart",
+    "description": "What do you want to filter by?",
+    "description_property_types": "(Only string properties can be used)",
+    "first_hint": "Filter will affect only  associated charts.",
+    "second_hint": "Filter can be connected only to charts that use the same Event Stream",
+    "detached_widgets_description": "Detached charts (They will be automatically disconnected)",
+    "detached_widgets_first_hint": "These charts no longer work with this filter. The query connected to the chart uses a different event stream.",
+    "detached_widgets_second_hint": "  They will be automatically disconnected.",
+    "connections_description": "Which charts should be associated with this filter?",
+    "settings_error": "Please, finish filter widget configuration",
+    "schema_processing_error": "We cannot display properties list at the moment. Please try again later.",
+    "empty_schema_error": "No strings properties in schema"
+  },
+  "filter_widget": {
+    "search_value": "Search value",
+    "select_all": "Select all",
+    "unselect_all": "Unselect all",
+    "apply": "Apply",
+    "clear": "Clear",
+    "no_properties_found": "No properties found"
+  },
+  "filter_management": {
     "edit_text": "Edit",
     "delete_confirmation": "Are you sure you want to delete this widget?"
   },
@@ -51,7 +83,9 @@
   },
   "widget_errors": {
     "detached_query_title": "Unable to present result in {{chart}} chart",
-    "detached_query_message": "Please check if query structure has changed or select other visualization"
+    "detached_query_message": "Please check if query structure has changed or select other visualization",
+    "inconsistent_filter_title": "Unable to render visualization",
+    "inconsistent_filter_message": "Applied filter is not consistent with the query"
   },
   "dashboard_details": {
     "untitled_dashboard": "Untitled dashboard",
@@ -406,7 +440,8 @@
   },
   "dashboard_timepicker": {
     "separator": "to",
-    "timeframe_modified": "Timeframe modified"
+    "timeframe_modified": "Timeframe modified",
+    "connector": "and"
   },
   "relative_time_label": {
     "label": "Last",

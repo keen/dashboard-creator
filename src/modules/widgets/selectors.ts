@@ -10,8 +10,9 @@ export const getWidgetsPosition = (
     position: widgets.items[id].widget.position,
   }));
 
-export const getWidgetSettings = ({ widgets }: RootState, id: string) =>
-  widgets.items[id].widget;
+export const getWidgetSettings = ({ widgets }: RootState, id: string) => {
+  return widgets.items[id].widget;
+};
 
 export const getWidget = ({ widgets }: RootState, id: string) =>
   widgets.items[id];

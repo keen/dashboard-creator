@@ -1,4 +1,4 @@
-import { put, select, call, take, getContext } from 'redux-saga/effects';
+import { put, select, call, take, getContext, all } from 'redux-saga/effects';
 import { getAvailableWidgets } from '@keen.io/widget-picker';
 import { Query } from '@keen.io/query';
 import { SET_QUERY_EVENT, SET_CHART_SETTINGS } from '@keen.io/query-creator';
@@ -56,7 +56,7 @@ import {
   TRANSLATIONS,
 } from '../../../constants';
 
-import { WidgetItem, ChartWidget } from '../types';
+import { WidgetItem, ChartWidget, WidgetErrors } from '../types';
 
 /**
  * Creates ad-hoc query with date picker and filters modifiers.
@@ -68,7 +68,7 @@ import { WidgetItem, ChartWidget } from '../types';
  */
 export function* prepareChartWidgetQuery(chartWidget: WidgetItem) {
   const { widget, data: chartData } = chartWidget;
-  const { datePickerId, query: chartQuery } = widget as ChartWidget;
+  const { datePickerId, filterIds, query: chartQuery } = widget as ChartWidget;
 
   let hasQueryModifiers = false;
   let query = chartQuery;
@@ -91,8 +91,27 @@ export function* prepareChartWidgetQuery(chartWidget: WidgetItem) {
     }
   }
 
+  const queryFilters = [];
+
+  if (filterIds && filterIds.length > 0) {
+    const connectedFilters = yield all(
+      filterIds.map((widgetId: string) => select(getWidget, widgetId))
+    );
+    connectedFilters.forEach((filter) => {
+      if (filter.isActive) {
+        hasQueryModifiers = true;
+        if (filter.data) {
+          queryFilters.push(filter.data.filter);
+        }
+      }
+    });
+  }
+
   if (hasQueryModifiers) {
     const { query: querySettings } = chartData as { query: Query };
+    const filters = querySettings['filters']
+      ? [...querySettings['filters'], ...queryFilters]
+      : queryFilters;
     if ('steps' in querySettings) {
       query = {
         ...querySettings,
@@ -105,6 +124,7 @@ export function* prepareChartWidgetQuery(chartWidget: WidgetItem) {
       query = {
         ...querySettings,
         ...queryModifiers,
+        filters: filters,
       };
     }
   }
@@ -125,23 +145,92 @@ export function* prepareChartWidgetQuery(chartWidget: WidgetItem) {
  */
 export function* handleDetachedQuery(
   widgetId: string,
-  visualizationType: string
+  visualizationType: string,
+  analysisResult: Record<string, any>
 ) {
-  const { t } = yield getContext(TRANSLATIONS);
+  const i18n = yield getContext(TRANSLATIONS);
   const error = {
-    title: t('widget_errors.detached_query_title', {
+    title: i18n.t('widget_errors.detached_query_title', {
       chart: visualizationType,
     }),
-    message: t('widget_errors.detached_query_message'),
+    message: i18n.t('widget_errors.detached_query_message'),
+    code: WidgetErrors.DETACHED_QUERY,
   };
 
   const widgetState: Partial<WidgetItem> = {
     isInitialized: true,
-    data: null,
+    data: analysisResult,
     error,
   };
 
   yield put(setWidgetState(widgetId, widgetState));
+}
+
+/**
+ * Setup chart widget state for query with different event collection than applied filters
+ *
+ * @param widgetId - Widget identifier
+ * @param visualizationType - Type of visualization
+ * @return void
+ *
+ */
+export function* handleInconsistentFilters(widgetId: string) {
+  const i18n = yield getContext(TRANSLATIONS);
+  const error = {
+    title: i18n.t('widget_errors.inconsistent_filter_title'),
+    message: i18n.t('widget_errors.inconsistent_filter_message'),
+    code: WidgetErrors.INCONSISTENT_FILTER,
+  };
+
+  const widgetState: Partial<WidgetItem> = {
+    isInitialized: true,
+    error,
+  };
+
+  yield put(setWidgetState(widgetId, widgetState));
+}
+
+/**
+ * Flow responsible for checking if widget has filters with the same event stream and clearing or setting appropriate error
+ *
+ * @param chartWidget - Chart widget
+ * @return boolean value stating if widget has inconsistent filters
+ *
+ */
+export function* checkIfChartWidgetHasInconsistentFilters(chartWidget: any) {
+  const connectedFilterIds = chartWidget.widget.filterIds;
+  const connectedFilters = yield all(
+    connectedFilterIds.map((filterId) => select(getWidget, filterId))
+  );
+
+  const connectedFiltersEventStreams = connectedFilters
+    .filter((filter) => filter.isActive)
+    .map((connectedFilter) => {
+      return connectedFilter.widget.settings.eventStream;
+    });
+
+  const widgetHasInconsistentFilters =
+    chartWidget.data?.query?.event_collection &&
+    connectedFiltersEventStreams.length > 0 &&
+    connectedFiltersEventStreams.some(
+      (eventStream) => eventStream !== chartWidget.data.query.event_collection
+    );
+
+  if (
+    chartWidget.error?.code === WidgetErrors.INCONSISTENT_FILTER &&
+    !widgetHasInconsistentFilters
+  ) {
+    yield put(
+      setWidgetState(chartWidget.widget.id, {
+        isInitialized: true,
+        error: null,
+      })
+    );
+  } else if (widgetHasInconsistentFilters) {
+    yield call(handleInconsistentFilters, chartWidget.widget.id);
+  }
+
+  return widgetHasInconsistentFilters;
 }
 
 /**
@@ -170,6 +259,12 @@ export function* initializeChartWidget({
     );
     yield put(setWidgetLoading(id, true));
 
+    const widgetHasInconsistentFilters = yield call(
+      checkIfChartWidgetHasInconsistentFilters,
+      chartWidget
+    );
+    if (widgetHasInconsistentFilters) return;
+
     const client = yield getContext(KEEN_ANALYSIS);
     const requestBody =
       typeof query === 'string' ? { savedQueryName: query } : query;
@@ -190,23 +285,20 @@ export function* initializeChartWidget({
     );
 
     if (isDetachedQuery) {
-      yield call(handleDetachedQuery, id, visualizationType);
+      yield call(handleDetachedQuery, id, visualizationType, analysisResult);
+    } else if (hasQueryModifiers) {
+      yield put(addInterimQuery(id, analysisResult));
+      yield put(setWidgetState(id, { isInitialized: true }));
     } else {
-      if (hasQueryModifiers) {
-        yield put(addInterimQuery(id, analysisResult));
-        yield put(setWidgetState(id, { isInitialized: true }));
-      } else {
-        const interimQuery = yield select(getInterimQuery, id);
-        if (interimQuery) {
-          yield put(removeInterimQuery(id));
-        }
-        const widgetState: Partial<WidgetItem> = {
-          isInitialized: true,
-          data: analysisResult,
-        };
-
-        yield put(setWidgetState(id, widgetState));
+      const interimQuery = yield select(getInterimQuery, id);
+      if (interimQuery) {
+        yield put(removeInterimQuery(id));
       }
+      const widgetState: Partial<WidgetItem> = {
+        isInitialized: true,
+        data: analysisResult,
+      };
+      yield put(setWidgetState(id, widgetState));
     }
   } catch (err) {
     const { body } = err;

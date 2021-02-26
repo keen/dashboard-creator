@@ -33,7 +33,18 @@ import {
   SAVED_QUERY_UPDATED,
   CLONE_WIDGET,
   SAVE_IMAGE,
+  CONFIGURE_FILTER_WIDGET,
+  EDIT_FILTER_WIDGET,
+  UPDATE_CHART_WIDGET_FILTERS_CONNECTIONS,
+  SET_FILTER_WIDGET,
+  SET_FILTER_PROPERTY_LIST,
+  APPLY_FILTER_WIDGET,
+  UNAPPLY_FILTER_WIDGET,
+  APPLY_FILTER_MODIFIERS,
+  CLEAR_FILTER_DATA,
+  CLEAR_INCONSISTENT_FILTERS_ERROR_FROM_WIDGETS,
   UNREGISTER_WIDGET,
+  RESET_FILTER_WIDGETS,
 } from './constants';
 
 export const registerWidgets = createAction(
@@ -299,6 +310,116 @@ export const resetDatePickerWidgets = createAction(
   })
 );
 
+export const configureFilerWidget = createAction(
+  CONFIGURE_FILTER_WIDGET,
+  (
+    id: string,
+    widgetConnections: string[],
+    eventStream: string,
+    targetProperty: string
+  ) => ({
+    payload: {
+      id,
+      widgetConnections,
+      eventStream,
+      targetProperty,
+    },
+  })
+);
+
+export const editFilterWidget = createAction(
+  EDIT_FILTER_WIDGET,
+  (id: string) => ({
+    payload: {
+      id,
+    },
+  })
+);
+
+export const updateChartWidgetFiltersConnections = createAction(
+  UPDATE_CHART_WIDGET_FILTERS_CONNECTIONS,
+  (id: string, filterIds: string[]) => ({
+    payload: {
+      id,
+      filterIds,
+    },
+  })
+);
+
+export const setFilterWidget = createAction(
+  SET_FILTER_WIDGET,
+  (widgetId: string) => ({
+    payload: {
+      widgetId,
+    },
+  })
+);
+
+export const setFilterPropertyList = createAction(
+  SET_FILTER_PROPERTY_LIST,
+  (filterId: string, propertyList: string[]) => ({
+    payload: {
+      filterId,
+      propertyList,
+    },
+  })
+);
+
+export const applyFilterWidget = createAction(
+  APPLY_FILTER_WIDGET,
+  (filterId: string, propertyValue: string[]) => ({
+    payload: {
+      filterId,
+      propertyValue,
+    },
+  })
+);
+
+export const unapplyFilterWidget = createAction(
+  UNAPPLY_FILTER_WIDGET,
+  (filterId: string) => ({
+    payload: {
+      filterId,
+    },
+  })
+);
+
+export const applyFilterModifiers = createAction(
+  APPLY_FILTER_MODIFIERS,
+  (id: string) => ({
+    payload: {
+      id,
+    },
+  })
+);
+
+export const clearFilterData = createAction(
+  CLEAR_FILTER_DATA,
+  (filterId: string) => ({
+    payload: {
+      filterId,
+    },
+  })
+);
+
+export const clearInconsistentFiltersError = createAction(
+  CLEAR_INCONSISTENT_FILTERS_ERROR_FROM_WIDGETS,
+  (dashboardId: string) => ({
+    payload: {
+      dashboardId,
+    },
+  })
+);
+
+export const resetFilterWidgets = createAction(
+  RESET_FILTER_WIDGETS,
+  (dashboardId: string) => ({
+    payload: {
+      dashboardId,
+    },
+  })
+);
+
 export type WidgetsActions =
   | ReturnType<typeof createWidget>
   | ReturnType<typeof removeWidget>
@@ -326,4 +447,16 @@ export type WidgetsActions =
   | ReturnType<typeof cloneWidget>
   | ReturnType<typeof saveClonedWidget>
   | ReturnType<typeof saveImage>
-  | ReturnType<typeof unregisterWidget>;
+  | ReturnType<typeof configureFilerWidget>
+  | ReturnType<typeof editDatePickerWidget>
+  | ReturnType<typeof updateChartWidgetFiltersConnections>
+  | ReturnType<typeof setFilterWidget>
+  | ReturnType<typeof setFilterPropertyList>
+  | ReturnType<typeof applyFilterWidget>
+  | ReturnType<typeof unapplyFilterWidget>
+  | ReturnType<typeof applyFilterModifiers>
+  | ReturnType<typeof clearFilterData>
+  | ReturnType<typeof clearInconsistentFiltersError>
+  | ReturnType<typeof saveImage>
+  | ReturnType<typeof unregisterWidget>
+  | ReturnType<typeof resetFilterWidgets>;

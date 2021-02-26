@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import {
   Container,
   TextManagementContainer,
-  DatePickerContainer,
+  FilterContainer,
 } from './Widget.styles';
 
 import ChartWidget from '../ChartWidget';
@@ -16,17 +16,19 @@ import DatePickerWidget from '../DatePickerWidget';
 import ImageManagement from '../ImageManagement';
 import ChartManagement from '../ChartManagement';
 import TextManagement from '../TextManagement';
-import DatePickerManagement from '../DatePickerManagement';
 
 import WidgetCover from './components/WidgetCover';
 
-import { getWidget } from '../../modules/widgets';
+import { editDatePickerWidget, getWidget } from '../../modules/widgets';
 import { getActiveDashboard } from '../../modules/app';
 import { getDashboardSettings } from '../../modules/dashboards';
 
 import { RootState } from '../../rootReducer';
 import { RenderOptions } from './types';
 import ChartWidgetFilter from '../ChartWidgetFilter';
+import FilterWidget from '../FilterWidget/FilterWidget';
+import FilterManagement from '../FilterManagement';
+import { editFilterWidget } from '../../modules/widgets/actions';
 
 type Props = {
   /** Widget identifier */
@@ -37,6 +39,8 @@ type Props = {
   isEditorMode?: boolean;
   /** Remove widget event handler */
   onRemoveWidget: () => void;
+  /** Edit widget event handler */
+  onEditWidget?: () => void;
 };
 
 const renderWidget = ({
@@ -45,24 +49,27 @@ const renderWidget = ({
   isEditorMode,
   isHoverActive,
   isHighlighted,
+  isDetached,
   isFadeOut,
   title,
   onRemoveWidget,
+  onEditWidget,
 }: RenderOptions) => {
   const enableHover = isHoverActive && !isHighlighted && !isFadeOut && !title;
   switch (widgetType) {
     case 'date-picker':
       return (
-        <DatePickerContainer isFadeOut={isFadeOut}>
+        <FilterContainer isFadeOut={isFadeOut}>
           <DatePickerWidget id={widgetId} disableInteractions={isEditorMode} />
           {isEditorMode && (
-            <DatePickerManagement
+            <FilterManagement
               id={widgetId}
               isHoverActive={isHoverActive}
               onRemoveWidget={onRemoveWidget}
+              onEditWidget={onEditWidget}
             />
           )}
-        </DatePickerContainer>
+        </FilterContainer>
       );
     case 'text':
       if (isEditorMode) {
@@ -89,8 +96,12 @@ const renderWidget = ({
               onRemoveWidget={onRemoveWidget}
             />
           )}
-          {(isHighlighted || title) && (
-            <WidgetCover isHighlighted={isHighlighted} title={title} />
+          {(isHighlighted || isDetached || title) && (
+            <WidgetCover
+              isHighlighted={isHighlighted}
+              isDetached={isDetached}
+              title={title}
+            />
           )}
           {!isEditorMode && <ChartWidgetFilter widgetId={widgetId} />}
         </Container>
@@ -108,6 +119,20 @@ const renderWidget = ({
           )}
         </Container>
       );
+    case 'filter':
+      return (
+        <FilterContainer isFadeOut={isFadeOut}>
+          <FilterWidget id={widgetId} disableInteractions={isEditorMode} />
+          {isEditorMode && (
+            <FilterManagement
+              id={widgetId}
+              isHoverActive={isHoverActive}
+              onRemoveWidget={onRemoveWidget}
+              onEditWidget={onEditWidget}
+            />
+          )}
+        </FilterContainer>
+      );
     default:
       return null;
   }
@@ -120,10 +145,12 @@ const Widget: FC<Props> = ({
   isEditorMode = false,
 }) => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const {
     widget: { id: widgetId, type: widgetType },
     isHighlighted,
     isFadeOut,
+    isDetached,
     isTitleCover,
   } = useSelector((rootState: RootState) => getWidget(rootState, id));
 
@@ -137,15 +164,25 @@ const Widget: FC<Props> = ({
     return `${t('widget_item.chart')} ${index + 1}`;
   });
 
+  let onEditWidget = null;
+  if (widgetType === 'filter') {
+    onEditWidget = () => dispatch(editFilterWidget(id));
+  }
+  if (widgetType === 'date-picker') {
+    onEditWidget = () => dispatch(editDatePickerWidget(id));
+  }
+
   return renderWidget({
     widgetType,
     widgetId,
     isEditorMode,
+    isDetached,
     isHoverActive,
     isHighlighted,
     isFadeOut,
     title: widgetTitle,
     onRemoveWidget,
+    onEditWidget,
   });
 };
 
