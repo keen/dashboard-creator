@@ -34,6 +34,8 @@ import {
   updateCachedDashboardIds,
   unregisterDashboard,
   setDashboardPublicAccess,
+  regenerateAccessKeySuccess,
+  regenerateAccessKeyError,
 } from './actions';
 import { removeDashboardTheme } from '../theme/actions';
 import {
@@ -66,6 +68,7 @@ import rootReducer from '../../rootReducer';
 import {
   CONFIRM_DASHBOARD_DELETE,
   HIDE_DELETE_CONFIRMATION,
+  SAVE_DASHBOARD_METADATA_SUCCESS,
 } from './constants';
 
 import {
@@ -772,6 +775,14 @@ describe('regenerateAccessKey()', () => {
       );
     });
 
+    test('waits for dashboard metadata save', (result) => {
+      expect(result).toEqual(take(SAVE_DASHBOARD_METADATA_SUCCESS));
+    });
+
+    test('notifies about regenerating key success', (result) => {
+      expect(result).toEqual(put(regenerateAccessKeySuccess()));
+    });
+
     test('terminates regenerate access key flow', (result) => {
       expect(result).toBeUndefined();
     });
@@ -799,6 +810,10 @@ describe('regenerateAccessKey()', () => {
     test('creates new access key', (result) => {
       expect(result).toEqual(call(createAccessKey, dashboardId));
       return new Error();
+    });
+
+    test('notifies about regenerating key error', (result) => {
+      expect(result).toEqual(put(regenerateAccessKeyError()));
     });
 
     test('gets NotificationManager from context', (result) => {
@@ -1110,15 +1125,11 @@ describe('setAccessKey()', () => {
 
     test('selects dashboard metadata', (result) => {
       expect(result).toEqual(select(getDashboardMeta, dashboardId));
-      return {
-        isPublic: false,
-      };
+      return {};
     });
 
     test('saves dashboard metadata', (result) => {
-      expect(result).toEqual(
-        put(saveDashboardMetaAction(dashboardId, { isPublic: true }))
-      );
+      expect(result).toEqual(put(saveDashboardMetaAction(dashboardId, {})));
     });
   });
 });

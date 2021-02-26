@@ -153,6 +153,7 @@ test('updates dashboard metadata and sort it by recent', () => {
       "error": null,
       "isInitiallyLoaded": false,
       "isLoaded": true,
+      "isRegeneratingAccessKey": false,
       "isSavingMetadata": false,
     }
   `);
@@ -327,6 +328,7 @@ test('serializes dashboards metadata', () => {
       ],
       "error": null,
       "isInitiallyLoaded": true,
+      "isRegeneratingAccessKey": false,
       "isSavingMetadata": false,
     }
   `);
@@ -416,8 +418,8 @@ test('return state for saving dashboard metadata', () => {
       "data": Array [],
       "error": null,
       "isInitiallyLoaded": false,
-      "isSavingMetaData": true,
-      "isSavingMetadata": false,
+      "isRegeneratingAccessKey": false,
+      "isSavingMetadata": true,
     }
   `);
 
@@ -431,7 +433,7 @@ test('return state for saving dashboard metadata', () => {
       "data": Array [],
       "error": null,
       "isInitiallyLoaded": false,
-      "isSavingMetaData": false,
+      "isRegeneratingAccessKey": false,
       "isSavingMetadata": false,
     }
   `);
@@ -446,7 +448,7 @@ test('return state for saving dashboard metadata', () => {
       "data": Array [],
       "error": null,
       "isInitiallyLoaded": false,
-      "isSavingMetaData": false,
+      "isRegeneratingAccessKey": false,
       "isSavingMetadata": false,
     }
   `);

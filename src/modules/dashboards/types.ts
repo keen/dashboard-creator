@@ -48,6 +48,7 @@ export type ReducerState = {
     error: boolean;
     data: DashboardMetaData[];
     isSavingMetadata: boolean;
+    isRegeneratingAccessKey: boolean;
   };
   dashboardSettingsModal: {
     isVisible: boolean;

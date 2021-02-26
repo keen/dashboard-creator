@@ -65,7 +65,7 @@ export const Title = styled.div`
   color: ${colors.black[100]};
 `;
 
-export const Link = styled.a`
+export const Link = styled.a<{ isDisabled: boolean }>`
   font-family: 'Lato Bold', sans-serif;
   font-size: 12px;
   line-height: 15px;
@@ -73,6 +73,12 @@ export const Link = styled.a`
   text-decoration: none;
 
   cursor: pointer;
+
+  ${(props) =>
+    props.isDisabled &&
+    css`
+      opacity: 0.5;
+    `};
 `;
 
 export const Container = styled.div<{ isActive: boolean }>`
