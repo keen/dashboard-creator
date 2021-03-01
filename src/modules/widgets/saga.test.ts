@@ -35,6 +35,7 @@ import {
   removeWidgetFromDashboard,
   updateAccessKeyOptions,
   addWidgetToDashboard,
+  getDashboard,
 } from '../dashboards';
 
 import {
@@ -56,6 +57,7 @@ import {
 } from '../chartEditor';
 
 import { widget as widgetItem } from './fixtures';
+import { findBiggestYPositionOfWidgets } from '../dashboards/utils/findBiggestYPositionOfWidgets';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
@@ -361,28 +363,73 @@ describe('selectQueryForWidget()', () => {
 
 describe('cloneWidget()', () => {
   const action = cloneWidgetAction(widgetId);
-
   describe('Scenario 1: User clone dashboard widget', () => {
     const test = sagaHelper(cloneWidget(action));
-
+    const dashboardData = {
+      settings: {
+        widgets: ['@widget/01', '@widget/02', '@widget/03'],
+      },
+    };
+    const dashboardWidgets = [
+      {
+        widget: {
+          position: {
+            y: 10,
+          },
+        },
+      },
+      {
+        widget: {
+          position: {
+            y: 14,
+          },
+        },
+      },
+      {
+        widget: {
+          position: {
+            y: 9,
+          },
+        },
+      },
+    ];
     test('get root widget', (result) => {
       expect(result).toEqual(select(getWidget, widgetId));
-
       return widgetItem;
     });
 
-    test('trigger saveClonedWidget action', (result) => {
-      expect(result).toEqual(
-        put(
-          saveClonedWidget(`widget/${widgetId}`, widgetItem.widget, widgetItem)
-        )
-      );
+    test('select active dashboard id', (result) => {
+      expect(result).toEqual(select(getActiveDashboard));
+      return dashboardId;
     });
 
-    test('select active dashbboard id', (result) => {
-      expect(result).toEqual(select(getActiveDashboard));
+    test('get active dashboard data', (result) => {
+      expect(result).toEqual(select(getDashboard, dashboardId));
+      return dashboardData;
+    });
 
-      return dashboardId;
+    test('should get widgets data', (result) => {
+      expect(result).toEqual(
+        all([
+          select(getWidget, '@widget/01'),
+          select(getWidget, '@widget/02'),
+          select(getWidget, '@widget/03'),
+        ])
+      );
+      return dashboardWidgets;
+    });
+
+    test('trigger saveClonedWidget action', (result) => {
+      const widgetSettings = {
+        ...widgetItem.widget,
+        position: {
+          ...widgetItem.widget.position,
+          y: findBiggestYPositionOfWidgets(dashboardWidgets) + 1,
+        },
+      };
+      expect(result).toEqual(
+        put(saveClonedWidget(`widget/${widgetId}`, widgetSettings, widgetItem))
+      );
     });
 
     test('trigger addWidgetToDashboard action', (result) => {

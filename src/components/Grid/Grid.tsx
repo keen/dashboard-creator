@@ -89,6 +89,19 @@ const Grid: FC<Props> = ({
     }
   }, [containerRef.current]);
 
+  // This function creates mapped grid for ReactResponsiveGrid component, which cannot detect all the changes between rerenders in some cases, with only data-grid attribute provided.
+  // This allows new element to be positioned correctly inside the grid after drop.
+  const generateLayouts = () => {
+    return {
+      lg: widgets.map((widget) => ({
+        i: widget.id,
+        static: false,
+        isResizable:
+          isEditorMode && !DISABLED_WIDGET_RESIZE.includes(widget.type),
+        ...widget.position,
+      })),
+    };
+  };
   return (
     <Container id={GRID_CONTAINER_ID} ref={containerRef}>
       <ResponsiveReactGridLayout
@@ -100,6 +113,7 @@ const Grid: FC<Props> = ({
         onResizeStart={onResizeStart}
         onResizeStop={onResizeStop}
         onDrop={onWidgetDrop}
+        layouts={generateLayouts()}
         breakpoints={GRID_BREAKPOINTS}
         cols={GRID_COLS}
         containerPadding={GRID_CONTAINER_PADDING as [number, number]}
@@ -121,16 +135,9 @@ const Grid: FC<Props> = ({
         }
         measureBeforeMount
       >
-        {widgets.map(({ id, type, position }) => (
+        {widgets.map(({ id, position }) => (
           <div
             key={id}
-            data-grid={{
-              ...position,
-              i: id,
-              static: false,
-              isResizable:
-                isEditorMode && !DISABLED_WIDGET_RESIZE.includes(type),
-            }}
             onMouseEnter={() => !isResize && setActiveWidget(id)}
             onMouseLeave={() => setActiveWidget(null)}
             style={getGridItemStyles(position)}
