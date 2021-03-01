@@ -31,8 +31,10 @@ import {
   updateDashboardMeta,
   saveDashboardSuccess,
   viewDashboard as viewDashboardAction,
+  calculateYPositionAndAddWidget as calculateYPositionAndAddWidgetAction,
   updateCachedDashboardIds,
   unregisterDashboard,
+  addWidgetToDashboard,
   setDashboardPublicAccess,
   regenerateAccessKeySuccess,
   regenerateAccessKeyError,
@@ -50,10 +52,17 @@ import {
   exportDashboardToHtml,
   saveDashboard,
   updateCachedDashboardsList,
+  calculateYPositionAndAddWidget,
   setAccessKey,
 } from './saga';
 
-import { removeWidget, registerWidgets, getWidgetSettings } from '../widgets';
+import {
+  removeWidget,
+  registerWidgets,
+  getWidgetSettings,
+  getWidget,
+  createWidget,
+} from '../widgets';
 
 import { getActiveDashboardTheme, setDashboardTheme } from '../theme';
 import { setActiveDashboard, getActiveDashboard } from '../app';
@@ -1142,6 +1151,82 @@ describe('setAccessKey()', () => {
 
     test('saves dashboard metadata', (result) => {
       expect(result).toEqual(put(saveDashboardMetaAction(dashboardId, {})));
+    });
+  });
+});
+
+describe('calculateYPositionAndAddWidget()', () => {
+  const dashboardId = '@dashboard/01';
+  const widgetType = 'text';
+  describe('should add widget at the end of the grid', () => {
+    const action = calculateYPositionAndAddWidgetAction(
+      dashboardId,
+      widgetType
+    );
+    const test = sagaHelper(calculateYPositionAndAddWidget(action));
+
+    const dashboardData = {
+      settings: {
+        widgets: ['@widget/01', '@widget/02', '@widget/03'],
+      },
+    };
+    const dashboardWidgets = [
+      {
+        widget: {
+          position: {
+            y: 10,
+          },
+        },
+      },
+      {
+        widget: {
+          position: {
+            y: 14,
+          },
+        },
+      },
+      {
+        widget: {
+          position: {
+            y: 9,
+          },
+        },
+      },
+    ];
+    const widgetId = 'widget/@dashboard/01';
+    test('should get dashboard data', (result) => {
+      expect(result).toEqual(select(getDashboard, dashboardId));
+      return dashboardData;
+    });
+
+    test('should get widgets data', (result) => {
+      expect(result).toEqual(
+        all([
+          select(getWidget, '@widget/01'),
+          select(getWidget, '@widget/02'),
+          select(getWidget, '@widget/03'),
+        ])
+      );
+      return dashboardWidgets;
+    });
+
+    test('should create widget with appropriate parameters', (result) => {
+      expect(result).toEqual(
+        put(
+          createWidget(widgetId, widgetType, {
+            x: 0,
+            y: 15,
+            w: 2,
+            h: 2,
+            minW: 2,
+            minH: 1,
+          })
+        )
+      );
+    });
+
+    test('should add widget to the dashboard', (result) => {
+      expect(result).toEqual(put(addWidgetToDashboard(dashboardId, widgetId)));
     });
   });
 });
