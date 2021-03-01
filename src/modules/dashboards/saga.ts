@@ -78,8 +78,11 @@ import {
 } from '../widgets/saga/datePickerWidget';
 
 import { removeDashboardTheme, setDashboardTheme } from '../theme';
-import { createPublicDashboardKeyName, createCodeSnippet } from './utils';
-import { createWidgetId } from '../widgets/utils';
+import {
+  createPublicDashboardKeyName,
+  createCodeSnippet,
+  createWidgetsUniqueIds,
+} from './utils';
 
 import { APIError } from '../../api';
 
@@ -710,11 +713,7 @@ export function* cloneDashboard({
     const blobApi = yield getContext(BLOB_API);
 
     const model: DashboardModel = yield blobApi.getDashboardById(dashboardId);
-
-    const uniqueIdWidgets = model.widgets.map((widget) => ({
-      ...widget,
-      id: createWidgetId(),
-    }));
+    const uniqueIdWidgets = createWidgetsUniqueIds(model.widgets);
 
     const newDashboardId = uuid();
     const metaData = yield blobApi.getDashboardMetadataById(dashboardId);
