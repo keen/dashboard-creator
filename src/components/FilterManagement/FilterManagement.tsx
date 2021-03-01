@@ -29,7 +29,6 @@ type Props = {
   onEditWidget: () => void;
 };
 
-// TODO: Handle labels
 const FilterManagement: FC<Props> = ({
   isHoverActive,
   onRemoveWidget,

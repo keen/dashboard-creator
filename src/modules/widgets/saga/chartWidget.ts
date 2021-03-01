@@ -191,6 +191,49 @@ export function* handleInconsistentFilters(widgetId: string) {
 }
 
 /**
+ * Flow responsible for checking if widget has filters with the same event stream and clearing or setting appropriate error
+ *
+ * @param chartWidget - Chart widget
+ * @return boolean value stating if widget has inconsistent filters
+ *
+ */
+export function* checkIfChartWidgetHasInconsistentFilters(chartWidget: any) {
+  const connectedFilterIds = chartWidget.widget.filterIds;
+  const connectedFilters = yield all(
+    connectedFilterIds.map((filterId) => select(getWidget, filterId))
+  );
+
+  const connectedFiltersEventStreams = connectedFilters
+    .filter((filter) => filter.isActive)
+    .map((connectedFilter) => {
+      return connectedFilter.widget.settings.eventStream;
+    });
+
+  const widgetHasInconsistentFilters =
+    chartWidget.data?.query?.event_collection &&
+    connectedFiltersEventStreams.length > 0 &&
+    connectedFiltersEventStreams.some(
+      (eventStream) => eventStream !== chartWidget.data.query.event_collection
+    );
+
+  if (
+    chartWidget.error?.code === WidgetErrors.INCONSISTENT_FILTER &&
+    !widgetHasInconsistentFilters
+  ) {
+    yield put(
+      setWidgetState(chartWidget.widget.id, {
+        isInitialized: true,
+        error: null,
+      })
+    );
+  } else if (widgetHasInconsistentFilters) {
+    yield call(handleInconsistentFilters, chartWidget.widget.id);
+  }
+
+  return widgetHasInconsistentFilters;
+}
+
+/**
  * Flow responsible for initializing chart widget.
  *
  * @param id - Widget identifer
@@ -216,6 +259,12 @@ export function* initializeChartWidget({
     );
     yield put(setWidgetLoading(id, true));
 
+    const widgetHasInconsistentFilters = yield call(
+      checkIfChartWidgetHasInconsistentFilters,
+      chartWidget
+    );
+    if (widgetHasInconsistentFilters) return;
+
     const client = yield getContext(KEEN_ANALYSIS);
     const requestBody =
       typeof query === 'string' ? { savedQueryName: query } : query;
@@ -235,48 +284,21 @@ export function* initializeChartWidget({
       visualizationType
     );
 
-    const connectedFilterIds = chartWidget.widget.filterIds;
-    const connectedFilters = yield all(
-      connectedFilterIds.map((filterId) => select(getWidget, filterId))
-    );
-
-    const connectedFiltersEventStreams = connectedFilters
-      .filter((filter) => filter.isActive)
-      .map((connectedFilter) => connectedFilter.widget.settings.eventStream);
-    const widgetHasInconsistentFilters =
-      chartWidget.data &&
-      chartWidget.data.query.event_collection &&
-      connectedFiltersEventStreams.length > 0 &&
-      connectedFiltersEventStreams.some(
-        (eventStream) => eventStream !== chartWidget.data.query.event_collection
-      );
-
-    if (
-      chartWidget.error &&
-      chartWidget.error.code === WidgetErrors.INCONSISTENT_FILTER &&
-      !widgetHasInconsistentFilters
-    ) {
-      yield put(setWidgetState(id, { isInitialized: true, error: null }));
-    } else if (widgetHasInconsistentFilters) {
-      yield call(handleInconsistentFilters, id);
-    } else if (isDetachedQuery) {
+    if (isDetachedQuery) {
       yield call(handleDetachedQuery, id, visualizationType, analysisResult);
+    } else if (hasQueryModifiers) {
+      yield put(addInterimQuery(id, analysisResult));
+      yield put(setWidgetState(id, { isInitialized: true }));
     } else {
-      if (hasQueryModifiers) {
-        yield put(addInterimQuery(id, analysisResult));
-        yield put(setWidgetState(id, { isInitialized: true }));
-      } else {
-        const interimQuery = yield select(getInterimQuery, id);
-        if (interimQuery) {
-          yield put(removeInterimQuery(id));
-        }
-        const widgetState: Partial<WidgetItem> = {
-          isInitialized: true,
-          data: analysisResult,
-        };
-
-        yield put(setWidgetState(id, widgetState));
+      const interimQuery = yield select(getInterimQuery, id);
+      if (interimQuery) {
+        yield put(removeInterimQuery(id));
       }
+      const widgetState: Partial<WidgetItem> = {
+        isInitialized: true,
+        data: analysisResult,
+      };
+      yield put(setWidgetState(id, widgetState));
     }
   } catch (err) {
     const { body } = err;

@@ -1,7 +1,5 @@
 import styled, { css } from 'styled-components';
 import { transparentize } from 'polished';
-import { layout, LayoutProps, system } from 'styled-system';
-import { UI_LAYERS } from '@keen.io/ui-core';
 import { colors } from '@keen.io/colors';
 
 export const Container = styled.div<{ isOpen?: boolean }>`
@@ -41,21 +39,6 @@ export const Bar = styled.div`
     margin-left: 10px;
     cursor: pointer;
   }
-`;
-
-export const DropdownContainer = styled.div<
-  { customTransform: string } & LayoutProps
->`
-  z-index: ${UI_LAYERS.dropdown};
-  position: absolute;
-
-  ${layout}
-
-  ${system({
-    customTransform: {
-      property: 'transform',
-    },
-  })}
 `;
 
 export const SettingsContainer = styled.div`
