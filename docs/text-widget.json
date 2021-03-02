@@ -1,0 +1,42 @@
+{
+   "version":"1.1.0-rc.24",
+   "widgets":[
+      {
+         "id":"widget/f0196fff-620e-4078-9f06-950bd7811109",
+         "position":{
+            "x":1,
+            "y":0,
+            "w":2,
+            "h":2,
+            "minW":2,
+            "minH":1
+         },
+         "type":"text",
+         "settings":{
+            "textAlignment":"left",
+            "content":{
+               "blocks":[
+                  {
+                     "key":"ame9h",
+                     "text":"lorem ipsum",
+                     "type":"unstyled",
+                     "depth":0,
+                     "inlineStyleRanges":[
+
+                     ],
+                     "entityRanges":[
+
+                     ],
+                     "data":{
+
+                     }
+                  }
+               ],
+               "entityMap":{
+
+               }
+            }
+         }
+      }
+   ]
+}
