@@ -30,6 +30,7 @@ import {
   updateAccessKeyOptions,
   addWidgetToDashboard,
   ADD_WIDGET_TO_DASHBOARD,
+  getDashboard,
 } from '../dashboards';
 import {
   openEditor,
@@ -99,6 +100,7 @@ import {
 } from './constants';
 
 import { ChartWidget, WidgetErrors, WidgetItem } from './types';
+import { findBiggestYPositionOfWidgets } from '../dashboards/utils/findBiggestYPositionOfWidgets';
 
 /**
  * Flow responsible for re-initializing widgets after updating saved query.
@@ -293,11 +295,24 @@ export function* cloneWidget({
   const { widgetId } = payload;
   const clonedWidgetId = createWidgetId();
   const widgetItem: WidgetItem = yield select(getWidget, widgetId);
+  const dashboardId = yield select(getActiveDashboard);
+  const dashboard = yield select(getDashboard, dashboardId);
+
+  const widgets = yield all(
+    dashboard.settings.widgets.map((id: string) => select(getWidget, id))
+  );
 
   const {
     widget: { type },
   } = widgetItem;
-  let widgetSettings = widgetItem.widget;
+
+  let widgetSettings = {
+    ...widgetItem.widget,
+    position: {
+      ...widgetItem.widget.position,
+      y: findBiggestYPositionOfWidgets(widgets) + 1,
+    },
+  };
 
   if (type === 'visualization') {
     widgetSettings = {
@@ -309,7 +324,6 @@ export function* cloneWidget({
   yield put(
     saveClonedWidget(clonedWidgetId, widgetSettings, widgetItem as WidgetItem)
   );
-  const dashboardId = yield select(getActiveDashboard);
   yield put(addWidgetToDashboard(dashboardId, clonedWidgetId));
   yield put(saveDashboard(dashboardId));
 }

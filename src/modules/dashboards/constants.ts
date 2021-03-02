@@ -61,6 +61,8 @@ export const SET_TAGS_FILTERS_PUBLIC = '@dashboard/SET_TAGS_FILTERS_PUBLIC';
 export const UPDATE_CACHED_DASHBOARD_IDS =
   '@dashboard/UPDATE_CACHED_DASHBOARD_IDS';
 export const UNREGISTER_DASHBOARD = '@dashboard/UNREGISTER_DASHBOARD';
+export const CALCULATE_Y_POSITION_AND_ADD_WIDGET =
+  '@dashboard/CALCULATE_Y_POSITION_AND_ADD_WIDGET';
 
 export const DASHBOARD_LIST_ORDER_KEY =
   '@keen-dashboard-creator/dashboard-list-order';

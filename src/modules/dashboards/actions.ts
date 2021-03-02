@@ -53,9 +53,11 @@ import {
   SET_TAGS_FILTERS_PUBLIC,
   UPDATE_CACHED_DASHBOARD_IDS,
   UNREGISTER_DASHBOARD,
+  CALCULATE_Y_POSITION_AND_ADD_WIDGET,
   REGENERATE_ACCESS_KEY_SUCCESS,
   REGENERATE_ACCESS_KEY_ERROR,
 } from './constants';
+import { WidgetType } from '../../types';
 
 export const fetchDashboardList = createAction(FETCH_DASHBOARDS_LIST);
 
@@ -403,6 +405,16 @@ export const unregisterDashboard = createAction(
   })
 );
 
+export const calculateYPositionAndAddWidget = createAction(
+  CALCULATE_Y_POSITION_AND_ADD_WIDGET,
+  (dashboardId: string, widgetType: WidgetType) => ({
+    payload: {
+      dashboardId,
+      widgetType,
+    },
+  })
+);
+
 export type DashboardsActions =
   | ReturnType<typeof fetchDashboardList>
   | ReturnType<typeof fetchDashboardListSuccess>
@@ -451,4 +463,5 @@ export type DashboardsActions =
   | ReturnType<typeof setTagsFilters>
   | ReturnType<typeof setTagsFiltersPublic>
   | ReturnType<typeof updateCachedDashboardIds>
-  | ReturnType<typeof unregisterDashboard>;
+  | ReturnType<typeof unregisterDashboard>
+  | ReturnType<typeof calculateYPositionAndAddWidget>;

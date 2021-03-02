@@ -50,6 +50,8 @@ import {
   addClonedDashboard,
   updateCachedDashboardIds,
   unregisterDashboard,
+  calculateYPositionAndAddWidget as calculateYPositionAndAddWidgetAction,
+  addWidgetToDashboard,
 } from './actions';
 
 import { serializeDashboard } from './serializers';
@@ -70,6 +72,7 @@ import {
   removeWidget,
   getWidget,
   getWidgetSettings,
+  createWidget,
 } from '../widgets';
 
 import {
@@ -113,6 +116,7 @@ import {
   REGENERATE_ACCESS_KEY,
   CLONE_DASHBOARD,
   EXPORT_DASHBOARD_TO_HTML,
+  CALCULATE_Y_POSITION_AND_ADD_WIDGET,
   SAVE_DASHBOARD_METADATA_SUCCESS,
 } from './constants';
 
@@ -130,6 +134,8 @@ import {
   removeFilterConnections,
 } from '../widgets/saga/filterWidget';
 import { clearFilterData } from '../widgets/actions';
+import { getDroppingItemSize } from '../../utils';
+import { findBiggestYPositionOfWidgets } from './utils/findBiggestYPositionOfWidgets';
 
 export function* fetchDashboardList() {
   const blobApi = yield getContext(BLOB_API);
@@ -813,6 +819,32 @@ export function* updateCachedDashboardsList({
   yield put(updateCachedDashboardIds(cachedDashboardIds));
 }
 
+export function* calculateYPositionAndAddWidget({
+  payload,
+}: ReturnType<typeof calculateYPositionAndAddWidgetAction>) {
+  const { dashboardId, widgetType } = payload;
+  const dashboard = yield select(getDashboard, dashboardId);
+
+  const widgets = yield all(
+    dashboard.settings.widgets.map((id: string) => select(getWidget, id))
+  );
+
+  const widgetId = createWidgetId();
+  const { w, h, minH, minW } = getDroppingItemSize(widgetType);
+
+  yield put(
+    createWidget(widgetId, widgetType, {
+      x: 0,
+      y: findBiggestYPositionOfWidgets(widgets) + 1,
+      w,
+      h,
+      minW,
+      minH,
+    })
+  );
+  yield put(addWidgetToDashboard(dashboardId, widgetId));
+}
+
 export function* dashboardsSaga() {
   yield spawn(rehydrateDashboardsOrder);
   yield takeLatest(FETCH_DASHBOARDS_LIST, fetchDashboardList);
@@ -833,4 +865,8 @@ export function* dashboardsSaga() {
   yield takeLatest(CLONE_DASHBOARD, cloneDashboard);
   yield takeLatest(EXPORT_DASHBOARD_TO_HTML, exportDashboardToHtml);
   yield takeEvery([VIEW_DASHBOARD, EDIT_DASHBOARD], updateCachedDashboardsList);
+  yield takeEvery(
+    CALCULATE_Y_POSITION_AND_ADD_WIDGET,
+    calculateYPositionAndAddWidget
+  );
 }

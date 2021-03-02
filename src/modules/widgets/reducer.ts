@@ -29,8 +29,6 @@ import {
 
 import { FilterWidget, ReducerState } from './types';
 
-import { GRID_MAX_VALUE } from '../../constants';
-
 export const initialState: ReducerState = {
   items: {},
 };
@@ -278,7 +276,6 @@ const widgetsReducer = (
               id: action.payload.id,
               position: {
                 ...action.payload.widgetSettings.position,
-                y: GRID_MAX_VALUE,
               },
             },
           },

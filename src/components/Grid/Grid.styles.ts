@@ -11,6 +11,10 @@ export const Container = styled.div`
   .react-grid-item {
     transition: all 200ms ease;
     transition-property: left, top;
+
+    &:hover {
+      z-index: 1;
+    }
   }
   .react-grid-item img {
     pointer-events: none;

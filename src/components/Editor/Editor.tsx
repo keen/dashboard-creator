@@ -40,10 +40,10 @@ import EditorBar from '../EditorBar';
 import GridLoader from '../GridLoader';
 import Grid from '../Grid';
 
-import { getDroppingItemSize } from '../../utils';
-import { ROUTES, RESIZE_WIDGET_EVENT, GRID_MAX_VALUE } from '../../constants';
+import { ROUTES, RESIZE_WIDGET_EVENT } from '../../constants';
 
 import { RootState } from '../../rootReducer';
+import { calculateYPositionAndAddWidget } from '../../modules/dashboards/actions';
 
 type Props = {
   /** Dashboard identifer */
@@ -140,20 +140,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
         >
           <Toolbar
             onAddWidget={(widgetType) => {
-              const widgetId = createWidgetId();
-              const { w, h, minH, minW } = getDroppingItemSize(widgetType);
-
-              dispatch(
-                createWidget(widgetId, widgetType, {
-                  x: 0,
-                  y: GRID_MAX_VALUE,
-                  w,
-                  h,
-                  minW,
-                  minH,
-                })
-              );
-              dispatch(addWidgetToDashboard(dashboardId, widgetId));
+              dispatch(calculateYPositionAndAddWidget(dashboardId, widgetType));
             }}
             onWidgetDrag={(widgetType) => setDroppableWidget(widgetType)}
           />
