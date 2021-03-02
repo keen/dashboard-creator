@@ -30,7 +30,7 @@ type Widget =
 
 ## Dashboard Metadata
 
-Metadata is used to provide basic information about the dashboard like it's title, tags and last modification date.
+Metadata is used to provide basic information about the dashboard like its title, tags and last modification date.
 
 ```typescript
 type MetaData = {
