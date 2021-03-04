@@ -73,6 +73,7 @@ import {
   getWidget,
   getWidgetSettings,
   createWidget,
+  createWidgetId,
 } from '../widgets';
 
 import {
