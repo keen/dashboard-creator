@@ -13,10 +13,12 @@ import {
   EditorContainer,
   RemoveContainer,
   ManagementContainer,
+  ButtonsContainer,
 } from './TextManagement.styles';
 
 import TextEditor from '../TextEditor';
 import RemoveWidget from '../RemoveWidget';
+import PreventDragPropagation from '../PreventDragPropagation';
 import {
   editInlineTextWidget,
   editTextWidget,
@@ -115,8 +117,11 @@ const TextManagement: FC<Props> = ({
       </AnimatePresence>
       <AnimatePresence>
         {showManagementSettings && (
-          <ManagementContainer {...settingsMotion}>
-            <DragHandle className={DRAG_HANDLE_ELEMENT}>
+          <ManagementContainer
+            className={DRAG_HANDLE_ELEMENT}
+            {...settingsMotion}
+          >
+            <DragHandle>
               <Icon
                 type="drag"
                 width={15}
@@ -124,26 +129,34 @@ const TextManagement: FC<Props> = ({
                 fill={colors.white[500]}
               />
             </DragHandle>
-            <Button
-              variant="blank"
-              onClick={() => dispatch(editTextWidget(id))}
-            >
-              {t('widget.edit_text')}
-            </Button>
-            <div data-testid="remove-text-widget">
-              <CircleButton
-                variant="blank"
-                onClick={() => setRemoveConfirmation(true)}
-                icon={<Icon type="delete" fill={colors.red[500]} />}
-              />
-            </div>
-            <div data-testid="clone-text-widget">
-              <CircleButton
-                variant="blank"
-                onClick={() => dispatch(cloneWidget(id))}
-                icon={<Icon type="clone" fill={colors.black[500]} />}
-              />
-            </div>
+            <ButtonsContainer>
+              <PreventDragPropagation>
+                <Button
+                  variant="blank"
+                  onClick={() => dispatch(editTextWidget(id))}
+                >
+                  {t('widget.edit_text')}
+                </Button>
+              </PreventDragPropagation>
+              <PreventDragPropagation>
+                <div data-testid="remove-text-widget">
+                  <CircleButton
+                    variant="blank"
+                    onClick={() => setRemoveConfirmation(true)}
+                    icon={<Icon type="delete" fill={colors.red[500]} />}
+                  />
+                </div>
+              </PreventDragPropagation>
+              <PreventDragPropagation>
+                <div data-testid="clone-text-widget">
+                  <CircleButton
+                    variant="blank"
+                    onClick={() => dispatch(cloneWidget(id))}
+                    icon={<Icon type="clone" fill={colors.black[500]} />}
+                  />
+                </div>
+              </PreventDragPropagation>
+            </ButtonsContainer>
           </ManagementContainer>
         )}
       </AnimatePresence>
