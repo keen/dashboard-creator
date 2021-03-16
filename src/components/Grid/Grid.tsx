@@ -26,7 +26,8 @@ import {
   ROW_HEIGHT,
   GRID_MARGIN,
   GRID_BREAKPOINTS,
-  GRID_COLS,
+  GRID_COLS_EDIT_MODE,
+  GRID_COLS_VIEW_MODE,
   GRID_CONTAINER_PADDING,
   DISABLED_WIDGET_RESIZE,
 } from './constants';
@@ -115,7 +116,7 @@ const Grid: FC<Props> = ({
         onDrop={onWidgetDrop}
         layouts={generateLayouts()}
         breakpoints={GRID_BREAKPOINTS}
-        cols={GRID_COLS}
+        cols={isEditorMode ? GRID_COLS_EDIT_MODE : GRID_COLS_VIEW_MODE}
         containerPadding={GRID_CONTAINER_PADDING as [number, number]}
         rowHeight={ROW_HEIGHT}
         margin={GRID_MARGIN as [number, number]}
