@@ -33,6 +33,7 @@ import {
   SettingsContainer,
   TitleContainer,
   TimezoneContainer,
+  Notification,
 } from './DatePickerWidget.styles';
 
 import {
@@ -251,6 +252,9 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
               )}
             </SettingsContainer>
             <TimezoneContainer>
+              <Notification>
+                {t('date_picker_widget.notification')}
+              </Notification>
               <Timezone
                 timezone={timezone}
                 onChange={(timezone) =>
@@ -259,8 +263,10 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
                     timezone,
                   }))
                 }
-                timezoneLabel="Timezone"
-                timezonePlaceholderLabel="Select timezone"
+                timezoneLabel={t('date_picker_widget.timezone')}
+                timezonePlaceholderLabel={t(
+                  'date_picker_widget.select_timezone'
+                )}
               />
             </TimezoneContainer>
             <Bar>

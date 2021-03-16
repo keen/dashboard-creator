@@ -79,7 +79,10 @@
     "relativity_title": "Include current",
     "relativity_title_today": "Include Today",
     "relative": "Relative",
-    "absolute": "Absolute"
+    "absolute": "Absolute",
+    "timezone": "Timezone",
+    "select_timezone": "Select timezone",
+    "notification": "(Charts display time in UTC)"
   },
   "widget_errors": {
     "detached_query_title": "Unable to present result in {{chart}} chart",
@@ -239,7 +242,8 @@
   "query_creator_timeframe": {
     "label": "Timeframe",
     "relative": "Relative",
-    "absolute": "Absolute"
+    "absolute": "Absolute",
+    "notification": "(Charts display time in UTC)"
   },
   "query_creator_filters": {
     "filters": "Filters",
