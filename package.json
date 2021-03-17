@@ -2,7 +2,7 @@
   "name": "@keen.io/dashboard-creator",
   "author": "Keen IO <team@keen.io> (https://keen.io/)",
   "description": "Dashboard Creator by Keen IO",
-  "version": "1.1.0-rc.33",
+  "version": "1.1.0-rc.34",
   "license": "MIT",
   "files": [
     "dist"
