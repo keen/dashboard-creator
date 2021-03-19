@@ -1,10 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 import { Query } from '@keen.io/query';
-import {
-  PickerWidgets,
-  ChartSettings,
-  WidgetSettings,
-} from '@keen.io/widget-picker';
+import { PickerWidgets, ChartSettings } from '@keen.io/widget-picker';
 
 import {
   RUN_QUERY,
@@ -32,7 +28,20 @@ import {
   USE_QUERY_FOR_WIDGET,
   BACK_TO_CHART_EDITOR,
   UPDATE_CHART_SETTINGS,
+  UPDATE_WIDGET_SETTINGS,
+  SET_EDITOR_SECTION,
 } from './constants';
+
+import { EditorSection } from './types';
+
+export const setEditorSection = createAction(
+  SET_EDITOR_SECTION,
+  (editorSection: EditorSection) => ({
+    payload: {
+      editorSection,
+    },
+  })
+);
 
 export const setQuerySettings = createAction(
   SET_QUERY_SETTINGS,
@@ -102,7 +111,7 @@ export const setVisualizationSettings = createAction(
   (
     type: PickerWidgets,
     chartSettings: ChartSettings,
-    widgetSettings: WidgetSettings
+    widgetSettings: Record<string, any>
   ) => ({
     payload: {
       type,
@@ -164,6 +173,15 @@ export const updateChartSettings = createAction(
   })
 );
 
+export const updateWidgetSettings = createAction(
+  UPDATE_WIDGET_SETTINGS,
+  (widgetSettings: Record<string, any>) => ({
+    payload: {
+      widgetSettings,
+    },
+  })
+);
+
 export const restoreSavedQuery = createAction(RESTORE_SAVED_QUERY);
 
 export type ChartEditorActions =
@@ -191,4 +209,6 @@ export type ChartEditorActions =
   | ReturnType<typeof queryUpdateConfirmationMounted>
   | ReturnType<typeof useQueryForWidget>
   | ReturnType<typeof backToChartEditor>
-  | ReturnType<typeof updateChartSettings>;
+  | ReturnType<typeof updateChartSettings>
+  | ReturnType<typeof updateWidgetSettings>
+  | ReturnType<typeof setEditorSection>;

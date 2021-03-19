@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import React from 'react';
 import {
   render as rtlRender,
@@ -81,8 +82,6 @@ test('allows user to run query', () => {
       },
     ]
   `);
-
-  jest.clearAllTimers();
 });
 
 test('triggers action after editor is mounted', async () => {
@@ -97,13 +96,43 @@ test('triggers action after editor is mounted', async () => {
       ])
     );
   });
-  jest.clearAllTimers();
+});
+
+test('do not allows user to apply incomplete chart settings', () => {
+  const storeState = {
+    chartEditor: {
+      ...chartEditorState,
+      analysisResult: null,
+      visualization: {
+        type: 'metric',
+        chartSettings: {},
+        widgetSettings: {},
+      },
+    },
+  };
+
+  const {
+    wrapper: { getByText },
+  } = render(storeState);
+
+  const button = getByText('chart_widget_editor.add_to_dashboard');
+  fireEvent.click(button);
+
+  expect(
+    getByText('chart_widget_editor.configuration_error')
+  ).toBeInTheDocument();
 });
 
 test('allows user to apply chart editor configuration', () => {
   const storeState = {
     chartEditor: {
       ...chartEditorState,
+      analysisResult: {
+        query: {
+          analysis_type: 'count',
+        },
+        results: 100,
+      },
       visualization: {
         type: 'metric',
         chartSettings: {},
@@ -130,14 +159,29 @@ test('allows user to apply chart editor configuration', () => {
       },
     ]
   `);
-
-  jest.clearAllTimers();
 });
 
 test('renders visualization settings error', () => {
+  const storeState = {
+    chartEditor: {
+      ...chartEditorState,
+      analysisResult: {
+        query: {
+          analysis_type: 'count',
+        },
+        results: 100,
+      },
+      visualization: {
+        type: 'line',
+        chartSettings: {},
+        widgetSettings: {},
+      },
+    },
+  };
+
   const {
     wrapper: { getByText },
-  } = render();
+  } = render(storeState);
 
   const button = getByText('chart_widget_editor.add_to_dashboard');
   fireEvent.click(button);
@@ -157,8 +201,6 @@ test('calls "onClose" event handler', () => {
   fireEvent.click(cancelButton);
 
   expect(props.onClose).toHaveBeenCalled();
-
-  jest.clearAllTimers();
 });
 
 test('shows saved query updated message', () => {
@@ -174,8 +216,6 @@ test('shows saved query updated message', () => {
   } = render(storeState);
 
   expect(getByText('chart_widget_editor.save_query_edit')).toBeInTheDocument();
-
-  jest.clearAllTimers();
 });
 
 test('allows user to restore saved query settings', async () => {
@@ -208,8 +248,6 @@ test('allows user to restore saved query settings', async () => {
       },
     ]
   `);
-
-  jest.clearAllTimers();
 });
 
 test('shows placeholder with run query button', () => {
@@ -224,6 +262,4 @@ test('shows placeholder with run query button', () => {
   } = render(storeState);
 
   expect(getByText('chart_widget_editor.run_query')).toBeInTheDocument();
-
-  jest.clearAllTimers();
 });

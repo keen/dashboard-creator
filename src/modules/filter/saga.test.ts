@@ -261,12 +261,35 @@ describe('getFilterWidgetConnections()', () => {
               position: { y: 5 },
             },
           },
+          '@widget/04': {
+            widget: {
+              id: '@widget/04',
+              type: 'visualization',
+              filterIds: [],
+              position: { y: 5 },
+              settings: {
+                widgetSettings: {
+                  title: {
+                    content: '@widget/title',
+                  },
+                },
+              },
+            },
+            data: {
+              query: {
+                analysis_type: 'count',
+                event_collection: 'purchases',
+              },
+            },
+          },
         },
       },
       dashboards: {
         items: {
           [dashboardId]: {
-            settings: { widgets: ['@widget/01', '@widget/02', '@widget/03'] },
+            settings: {
+              widgets: ['@widget/01', '@widget/02', '@widget/03', '@widget/04'],
+            },
           },
         },
       },
@@ -296,6 +319,12 @@ describe('getFilterWidgetConnections()', () => {
           isConnected: true,
           title: null,
           positionIndex: 2,
+        },
+        {
+          widgetId: '@widget/04',
+          isConnected: false,
+          title: '@widget/title',
+          positionIndex: 4,
         },
       ]);
     });

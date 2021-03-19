@@ -13,6 +13,7 @@ export const RESTORE_SAVED_QUERY = '@chart-editor/RESTORE_SAVED_QUERY';
 export const SET_VISUALIZATION_SETTINGS =
   '@chart-editor/SET_VISUALIZATION_SETTINGS';
 export const UPDATE_CHART_SETTINGS = '@chart-editor/UPDATE_CHART_SETTINGS';
+export const UPDATE_WIDGET_SETTINGS = '@chart-editor/UPDATE_WIDGET_SETTINGS';
 export const SET_INITIAL_QUERY_SETTINGS =
   '@chart-editor/SET_INITIAL_QUERY_SETTINGS';
 export const SET_QUERY_SETTINGS = '@chart-editor/SET_QUERY_SETTINGS';
@@ -21,6 +22,7 @@ export const QUERY_UPDATE_CONFIRMATION_MOUNTED =
 export const EDITOR_MOUNTED = '@chart-editor/EDITOR_MOUNTED';
 export const EDITOR_UNMOUNTED = '@chart-editor/EDITOR_UNMOUNTED';
 export const APPLY_CONFIGURATION = '@chart-editor/APPLY_CONFIGURATION';
+export const SET_EDITOR_SECTION = '@chart-editor/SET_EDITOR_SECTION';
 
 export const SHOW_QUERY_UPDATE_CONFIRMATION =
   '@chart-editor/SHOW_QUERY_UPDATE_CONFIRMATION';

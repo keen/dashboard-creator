@@ -15,11 +15,14 @@ import {
   checkIfChartWidgetHasInconsistentFilters,
 } from './chartWidget';
 
+import { updateSaveQuery } from '../../../modules/queries';
+
 import {
   openEditor,
   closeEditor,
   resetEditor,
   applyConfiguration,
+  confirmSaveQueryUpdate,
   setVisualizationSettings,
   setQueryType,
   setQuerySettings,
@@ -27,6 +30,7 @@ import {
   setQueryResult,
   getChartEditor,
   showQueryUpdateConfirmation,
+  createWidgetSettings,
   EDITOR_MOUNTED,
   EDITOR_UNMOUNTED,
   CLOSE_EDITOR,
@@ -871,7 +875,11 @@ describe('editChartSavedQuery()', () => {
         stackMode: 'normal',
       } as ChartSettings,
       type: 'area' as PickerWidgets,
-      widgetSettings: {},
+      widgetSettings: {
+        title: {
+          content: '@widget/title',
+        },
+      },
     },
     querySettings: {
       analysis_type: 'count',
@@ -977,6 +985,32 @@ describe('editChartSavedQuery()', () => {
           USE_QUERY_FOR_WIDGET,
         ])
       );
+
+      return confirmSaveQueryUpdate();
+    });
+
+    test('get widget settings', (result) => {
+      expect(result).toEqual(select(getWidgetSettings, widgetId));
+
+      return {
+        query: 'purchases',
+      };
+    });
+
+    test('updates save query with basic visualization metadata', (result) => {
+      const metadata = {
+        visualization: {
+          chartSettings: {
+            stackMode: 'normal',
+          },
+          type: 'area',
+          widgetSettings: {},
+        },
+      };
+
+      expect(result).toEqual(
+        call(updateSaveQuery, 'purchases', chartEditor.querySettings, metadata)
+      );
     });
   });
 });
@@ -991,7 +1025,11 @@ describe('editChartWidget()', () => {
       stackMode: 'percent',
     } as ChartSettings,
     visualizationType: 'area' as PickerWidgets,
-    widgetSettings: {},
+    widgetSettings: {
+      title: {
+        content: '@widget/title',
+      },
+    },
   };
 
   describe('Scenario 1: User edits widget with ad-hoc query', () => {
@@ -1057,7 +1095,7 @@ describe('editChartWidget()', () => {
           setVisualizationSettings(
             visualizationType,
             chartSettings,
-            widgetSettings
+            createWidgetSettings(widgetSettings)
           )
         )
       );
@@ -1230,7 +1268,7 @@ describe('editChartWidget()', () => {
           setVisualizationSettings(
             visualizationType,
             chartSettings,
-            widgetSettings
+            createWidgetSettings(widgetSettings)
           )
         )
       );

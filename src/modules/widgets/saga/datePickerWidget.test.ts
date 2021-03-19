@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import sagaHelper from 'redux-saga-testing';
 import { all, put, call, take, select } from 'redux-saga/effects';
 
@@ -522,12 +523,118 @@ describe('getDatePickerWidgetConnections()', () => {
     const dashboardId = '@dashboard/01';
     const datePickerId = '@date-picker/01';
 
-    const test = sagaHelper(
-      getDatePickerWidgetConnections(dashboardId, datePickerId, true)
-    );
+    const state = {
+      widgets: {
+        items: {
+          '@widget/01': {
+            widget: {
+              id: '@widget/01',
+              type: 'visualization',
+              datePickerId: '@date-picker/02',
+              filterIds: [],
+              position: { y: 5 },
+              settings: {
+                widgetSettings: {},
+              },
+            },
+            data: {
+              query: {
+                analysis_type: 'count',
+                event_collection: 'purchases',
+              },
+            },
+          },
+          '@widget/02': {
+            widget: {
+              type: 'date-picker',
+              position: { y: 5 },
+            },
+          },
+          '@widget/03': {
+            widget: {
+              id: '@widget/03',
+              type: 'visualization',
+              datePickerId: null,
+              filterIds: [],
+              position: { y: 5 },
+              settings: {
+                widgetSettings: {
+                  title: {
+                    content: '@widget/title',
+                  },
+                },
+              },
+            },
+            data: {
+              query: {
+                analysis_type: 'count',
+                event_collection: 'purchases',
+              },
+            },
+          },
+          '@widget/04': {
+            widget: {
+              id: '@widget/04',
+              type: 'visualization',
+              datePickerId: '@date-picker/01',
+              filterIds: [],
+              position: { y: 5 },
+              settings: {
+                widgetSettings: {},
+              },
+            },
+            data: {
+              query: {
+                analysis_type: 'count',
+                event_collection: 'purchases',
+              },
+            },
+          },
+        },
+      },
+      dashboards: {
+        items: {
+          [dashboardId]: {
+            settings: {
+              widgets: ['@widget/01', '@widget/02', '@widget/03', '@widget/04'],
+            },
+          },
+        },
+      },
+    };
+
+    function* wrapper() {
+      const result = yield* getDatePickerWidgetConnections(
+        dashboardId,
+        datePickerId,
+        false
+      );
+      return result;
+    }
+
+    const test = sagaHelper(wrapper());
 
     test('gets application state', (result) => {
       expect(result).toEqual(select());
+
+      return state;
+    });
+
+    test('returns date picker widget connections', (result) => {
+      expect(result).toEqual([
+        {
+          widgetId: '@widget/03',
+          isConnected: false,
+          title: '@widget/title',
+          positionIndex: 3,
+        },
+        {
+          widgetId: '@widget/04',
+          isConnected: true,
+          title: null,
+          positionIndex: 4,
+        },
+      ]);
     });
   });
 });
