@@ -1,56 +1,47 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import React, {
-  FC,
-  useState,
-  useEffect,
-  useCallback,
-  useRef,
-  useContext,
-} from 'react';
+import React, { FC, useState, useEffect, useCallback } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { transparentize } from 'polished';
 import deepEqual from 'deep-equal';
-import QueryCreator from '@keen.io/query-creator';
 import { getAvailableWidgets } from '@keen.io/widget-picker';
-import { colors } from '@keen.io/colors';
-import { Button, Alert, Anchor, Tooltip } from '@keen.io/ui-core';
-import { Icon } from '@keen.io/icons';
-import { Query } from '@keen.io/query';
+import { Button, Alert, Anchor } from '@keen.io/ui-core';
 
 import {
   Container,
-  QueryCreatorContainer,
+  QuerySettings,
+  ChartSettings,
   VisualizationContainer,
-  RestoreSavedQuery,
-  TooltipContainer,
-  TooltipContent,
   NotificationBar,
-  EditTooltip,
-  EditInfo,
   Cancel,
+  NavBar,
   Footer,
 } from './ChartEditor.styles';
 
 import {
   applyConfiguration,
-  editorMounted,
-  editorUnmounted,
+  setEditorSection,
   runQuery,
-  setQuerySettings,
-  setInitialQuerySettings,
   setQueryDirty,
   setVisualizationSettings,
-  updateChartSettings,
   restoreSavedQuery,
+  updateWidgetSettings,
   getChartEditor,
+  editorUnmounted,
+  EditorSection,
 } from '../../../../modules/chartEditor';
 import { getActiveDashboardTheme } from '../../../../modules/theme';
 
 import WidgetVisualization from '../WidgetVisualization';
-import { AppContext } from '../../../../contexts';
+import HeadingSettings from '../HeadingSettings';
+import SaveQueryWarning from '../SaveQueryWarning';
+import QueryEditor from '../QueryEditor';
+import Navigation from '../Navigation';
+
+import { CHART_EDITOR_ERRORS } from './constants';
 import { TOOLTIP_MOTION } from '../../../../constants';
+
+import { ChartEditorError } from './types';
 
 type Props = {
   /** Close editor event handler */
@@ -60,19 +51,16 @@ type Props = {
 const ChartEditor: FC<Props> = ({ onClose }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const {
-    modalContainer,
-    analyticsApiUrl,
-    project: { id, userKey, masterKey },
-  } = useContext(AppContext);
 
-  const [widgetError, setWidgetError] = useState(null);
+  const [localQuery, setLocalQuery] = useState(null);
+  const [error, setError] = useState<ChartEditorError>(null);
 
   const {
     analysisResult,
     initialQuerySettings,
     querySettings,
     visualization,
+    editorSection,
     isEditMode,
     isDirtyQuery,
     isSavedQuery,
@@ -81,30 +69,19 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
   } = useSelector(getChartEditor);
   const baseTheme = useSelector(getActiveDashboardTheme);
 
-  const initialQueryRef = useRef(null);
-  const [editTooltip, setEditTooltip] = useState(false);
+  const { type: widgetType, widgetSettings } = visualization;
 
-  const [localQuery, setLocalQuery] = useState(null);
-  initialQueryRef.current = initialQuerySettings;
-
-  const { type: widgetType } = visualization;
-
-  const handleConfigurationApply = useCallback(() => {
+  const onApplyConfiguration = useCallback(() => {
     const availableWidgets = getAvailableWidgets(querySettings);
-    if (availableWidgets.includes(widgetType)) {
-      setWidgetError(null);
+    if (availableWidgets.includes(widgetType) && analysisResult) {
+      setError(null);
       dispatch(applyConfiguration());
+    } else if (!analysisResult) {
+      setError(ChartEditorError.CONFIGURATION);
     } else {
-      setWidgetError(true);
+      setError(ChartEditorError.WIDGET);
     }
-  }, [widgetType, querySettings]);
-
-  const handleChartSettingsUpdate = useCallback(
-    (chartSettings: Record<string, any>) => {
-      dispatch(updateChartSettings(chartSettings));
-    },
-    []
-  );
+  }, [widgetType, querySettings, analysisResult]);
 
   useEffect(() => {
     if (initialQuerySettings && localQuery) {
@@ -119,7 +96,6 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
   }, [initialQuerySettings, querySettings]);
 
   useEffect(() => {
-    dispatch(editorMounted());
     return () => dispatch(editorUnmounted());
   }, []);
 
@@ -128,9 +104,9 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
   return (
     <Container id="chart-editor">
       <AnimatePresence>
-        {widgetError && (
+        {error && (
           <NotificationBar {...TOOLTIP_MOTION}>
-            <Alert type="error">{t('chart_widget_editor.widget_error')}</Alert>
+            <Alert type="error">{t(CHART_EDITOR_ERRORS[error])}</Alert>
           </NotificationBar>
         )}
       </AnimatePresence>
@@ -143,46 +119,62 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
           analysisResult={analysisResult}
           querySettings={querySettings}
           onRunQuery={() => {
-            setWidgetError(null);
+            setError(null);
             dispatch(runQuery());
           }}
-          onChangeVisualization={({ type, chartSettings, widgetSettings }) =>
+          onChangeVisualization={({
+            type,
+            chartSettings,
+            widgetSettings: defaultWidgetSettings,
+          }) => {
+            const { title, subtitle } = widgetSettings;
             dispatch(
-              setVisualizationSettings(type, chartSettings, widgetSettings)
-            )
-          }
+              setVisualizationSettings(type, chartSettings, {
+                ...defaultWidgetSettings,
+                title,
+                subtitle,
+              })
+            );
+          }}
         />
       </VisualizationContainer>
-      <QueryCreatorContainer>
-        <QueryCreator
-          projectId={id}
-          readKey={userKey}
-          masterKey={masterKey}
-          modalContainer={modalContainer}
-          onUpdateChartSettings={handleChartSettingsUpdate}
-          onUpdateQuery={(query: Query, isQueryReady: boolean) => {
-            if (isEditMode) {
-              if (isQueryReady) {
-                dispatch(setQuerySettings(query));
-                if (!initialQueryRef.current) {
-                  dispatch(setInitialQuerySettings(query));
-                }
-              }
-            } else {
-              dispatch(setQuerySettings(query));
-              if (!initialQueryRef.current) {
-                dispatch(setInitialQuerySettings(query));
-              }
+      <NavBar>
+        <Navigation
+          onChangeSection={(section) => {
+            if (section !== EditorSection.QUERY) {
+              setLocalQuery(null);
             }
+            dispatch(setEditorSection(section));
           }}
-          host={analyticsApiUrl}
+          activeSection={editorSection}
         />
-      </QueryCreatorContainer>
+      </NavBar>
+      {editorSection === EditorSection.QUERY ? (
+        <QuerySettings>
+          <QueryEditor
+            initialQueryInitialized={!!initialQuerySettings}
+            isEditMode={isEditMode}
+          />
+        </QuerySettings>
+      ) : (
+        <ChartSettings>
+          <HeadingSettings
+            title={widgetSettings.title}
+            subtitle={widgetSettings.subtitle}
+            onUpdateTitleSettings={(settings) =>
+              dispatch(updateWidgetSettings({ title: settings }))
+            }
+            onUpdateSubtitleSettings={(settings) =>
+              dispatch(updateWidgetSettings({ subtitle: settings }))
+            }
+          />
+        </ChartSettings>
+      )}
       <Footer>
         <Button
           variant="secondary"
           isDisabled={isQueryPerforming}
-          onClick={handleConfigurationApply}
+          onClick={onApplyConfiguration}
         >
           {isEditMode
             ? t('chart_widget_editor.save')
@@ -192,38 +184,9 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
           <Anchor onClick={onClose}>{t('chart_widget_editor.cancel')}</Anchor>
         </Cancel>
         {isSavedQuery && hasQueryChanged && (
-          <EditInfo>
-            {t('chart_widget_editor.save_query_edit')}
-            <EditTooltip
-              data-testid="edit-tooltip-icon"
-              onMouseEnter={() => setEditTooltip(true)}
-              onMouseLeave={() => setEditTooltip(false)}
-            >
-              <Icon
-                type="info"
-                width={15}
-                height={15}
-                fill={transparentize(0.5, colors.black[100])}
-              />
-              <AnimatePresence>
-                {editTooltip && (
-                  <TooltipContainer {...TOOLTIP_MOTION}>
-                    <Tooltip mode="light" hasArrow={false}>
-                      <TooltipContent>
-                        {t('chart_widget_editor.save_query_edit_tooltip')}
-                        <RestoreSavedQuery>
-                          {t('chart_widget_editor.save_query_restore_hint')}{' '}
-                          <Anchor onClick={() => dispatch(restoreSavedQuery())}>
-                            {t('chart_widget_editor.save_query_restore')}
-                          </Anchor>
-                        </RestoreSavedQuery>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipContainer>
-                )}
-              </AnimatePresence>
-            </EditTooltip>
-          </EditInfo>
+          <SaveQueryWarning
+            onRestoreQuery={() => dispatch(restoreSavedQuery())}
+          />
         )}
       </Footer>
     </Container>

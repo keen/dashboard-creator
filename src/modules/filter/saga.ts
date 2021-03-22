@@ -77,7 +77,7 @@ export function* getFilterWidgetConnections(
         isConnected: connectByDefault
           ? true
           : filterIds?.includes(filterWidgetId),
-        title: 'title' in widgetSettings ? widgetSettings.title : null,
+        title: 'title' in widgetSettings ? widgetSettings.title.content : null,
         positionIndex: widgetsIds.indexOf(id) + 1,
       };
     });
@@ -124,7 +124,7 @@ export function* getDetachedFilterWidgetConnections(
       return {
         widgetId: id,
         isConnected: true,
-        title: 'title' in widgetSettings ? widgetSettings.title : null,
+        title: 'title' in widgetSettings ? widgetSettings.title.content : null,
         positionIndex: widgetsIds.indexOf(id) + 1,
       };
     });

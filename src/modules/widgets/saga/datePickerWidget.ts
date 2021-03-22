@@ -111,7 +111,7 @@ export function* getDatePickerWidgetConnections(
     .map(({ id, datePickerId, settings: { widgetSettings } }: ChartWidget) => ({
       widgetId: id,
       isConnected: connectByDefault ? true : !!datePickerId,
-      title: 'title' in widgetSettings ? widgetSettings.title : null,
+      title: 'title' in widgetSettings ? widgetSettings.title.content : null,
       positionIndex: widgetsIds.indexOf(id) + 1,
     }));
 

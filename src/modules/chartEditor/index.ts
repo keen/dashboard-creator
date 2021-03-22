@@ -7,6 +7,7 @@ import {
   setQueryChange,
   setQueryDirty,
   setQueryType,
+  setEditorSection,
   setEditMode,
   runQuery,
   restoreSavedQuery,
@@ -23,9 +24,15 @@ import {
   useQueryForWidget,
   backToChartEditor,
   updateChartSettings,
+  updateWidgetSettings,
 } from './actions';
 import { getChartEditor } from './selectors';
 import { chartEditorSaga } from './saga';
+import {
+  setQueryMetadata,
+  createWidgetSettings,
+  createHeadingSettings,
+} from './utils';
 
 import {
   APPLY_CONFIGURATION,
@@ -38,12 +45,14 @@ import {
   HIDE_QUERY_UPDATE_CONFIRMATION,
   RUN_QUERY,
 } from './constants';
+import { EditorSection } from './types';
 
 export {
   chartEditorReducer,
   initialState,
   setQuerySettings,
   setInitialQuerySettings,
+  setEditorSection,
   setQueryChange,
   setVisualizationSettings,
   setQueryResult,
@@ -59,6 +68,7 @@ export {
   editorUnmounted,
   backToChartEditor,
   updateChartSettings,
+  updateWidgetSettings,
   getChartEditor,
   applyConfiguration,
   chartEditorSaga,
@@ -76,4 +86,8 @@ export {
   USE_QUERY_FOR_WIDGET,
   HIDE_QUERY_UPDATE_CONFIRMATION,
   RUN_QUERY,
+  EditorSection,
+  createWidgetSettings,
+  createHeadingSettings,
+  setQueryMetadata,
 };
