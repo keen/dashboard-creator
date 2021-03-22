@@ -6,11 +6,10 @@ import { RawDraftContentState } from 'draft-js';
 import { Modal } from '@keen.io/ui-core';
 
 import { Container } from './TextWidgetEditor.styles';
-
 import {
-  closeEditor,
-  applyTextEditorSettings,
+  textEditorActions,
   TextAlignment,
+  textEditorSagaActions,
 } from '../../modules/textEditor';
 
 const Editor = Loadable({
@@ -39,7 +38,7 @@ const TextWidgetEditor: FC<Props> = ({
     <Modal
       isOpen={isOpen}
       adjustPositionToScroll={false}
-      onClose={() => dispatch(closeEditor())}
+      onClose={() => dispatch(textEditorActions.closeEditor())}
     >
       {(_, closeHandler) => (
         <Container>
@@ -47,7 +46,12 @@ const TextWidgetEditor: FC<Props> = ({
             initialContent={textEditorContent}
             initialTextAlignment={editorTextAlignment}
             onUpdateText={(content, textAlignment) =>
-              dispatch(applyTextEditorSettings(content, textAlignment))
+              dispatch(
+                textEditorSagaActions.applyTextEditorSettings(
+                  content,
+                  textAlignment
+                )
+              )
             }
             onCancel={closeHandler}
           />
