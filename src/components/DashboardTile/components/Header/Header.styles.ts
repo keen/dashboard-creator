@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import { colors } from '@keen.io/colors';
 import { UI_LAYERS } from '@keen.io/ui-core';
 
+const excerptWidth = '10ch';
+
 export const Container = styled.div`
   padding: 10px 20px;
   height: 90px;
@@ -39,7 +41,7 @@ export const TagsWrapper = styled(motion.div)<{ isOpen: boolean }>`
   margin-left: 6px;
   padding: 0 25px 0 5px;
   height: 20px;
-  width: 70%;
+  width: calc(100% - ${excerptWidth});
   overflow: hidden;
   position: absolute;
   top: 0;
@@ -48,6 +50,7 @@ export const TagsWrapper = styled(motion.div)<{ isOpen: boolean }>`
   ${(props) =>
     props.isOpen &&
     css`
+      top: -5px;
       height: auto;
       padding: 5px 25px 5px 5px;
       background: ${colors.white[500]};
@@ -80,8 +83,7 @@ export const Excerpt = styled.div`
   font-size: 12px;
   line-height: 15px;
   color: ${transparentize(0.3, colors.black[100])};
-  min-width: 70px;
-  max-width: 30%;
+  width: ${excerptWidth};
   text-overflow: ellipsis;
   overflow: hidden;
 `;
@@ -102,11 +104,11 @@ export const TitleWrapper = styled.div`
 export const DropIndicatorContainer = styled.div<{ isOpen: boolean }>`
   position: absolute;
   right: 5px;
-  bottom: 0;
+  top: 0;
 
   ${(props) =>
     props.isOpen &&
     css`
-      bottom: 5px;
+      top: 5px;
     `}
 `;
