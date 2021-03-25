@@ -11,11 +11,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { v4 as uuid } from 'uuid';
 import { Icon } from '@keen.io/icons';
-import { Dropdown, Button } from '@keen.io/ui-core';
+import { Dropdown, Button, EmptySearch } from '@keen.io/ui-core';
 import { colors } from '@keen.io/colors';
 
 import SearchInput from '../SearchInput';
-import EmptySearch from '../EmptySearch';
 
 import { setActiveDashboard, getActiveDashboard } from '../../modules/app';
 import {
