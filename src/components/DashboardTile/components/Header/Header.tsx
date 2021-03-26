@@ -87,7 +87,7 @@ const Header: FC<Props> = ({ title, excerpt, isPublic, tags, children }) => {
             {tags?.length > 0 &&
               tags.map((tag) => (
                 <BadgeContainer key={tag}>
-                  <Badge variant="gray">{tag}</Badge>
+                  <Badge variant="purple">{tag}</Badge>
                 </BadgeContainer>
               ))}
           </TagsWrapper>
