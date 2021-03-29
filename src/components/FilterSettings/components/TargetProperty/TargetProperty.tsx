@@ -6,10 +6,10 @@ import {
   DropableContainer,
   PropertiesTree,
   createTree,
+  EmptySearch,
 } from '@keen.io/ui-core';
 
 import PropertyPath from '../PropertyPath';
-import EmptySearch from '../../../EmptySearch';
 import { Container, Message, Property } from './TargetProperty.styles';
 
 import { AppContext } from '../../../../contexts';
