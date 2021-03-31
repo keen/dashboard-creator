@@ -1,21 +1,15 @@
-import textEditorReducer, { initialState } from './reducer';
-
-import {
-  setEditorContent,
-  setTextAlignment,
-  openEditor,
-  closeEditor,
-} from './actions';
+import { textEditorActions, textEditorReducer } from './index';
+import { initialState } from './reducer';
 
 test('opens text editor', () => {
-  const action = openEditor();
+  const action = textEditorActions.openEditor();
   const { isOpen } = textEditorReducer(initialState, action);
 
   expect(isOpen).toEqual(true);
 });
 
 test('closes editor and restores initial editor settings', () => {
-  const action = closeEditor();
+  const action = textEditorActions.closeEditor();
   const result = textEditorReducer(
     { ...initialState, isOpen: false, textAlignment: 'right' },
     action
@@ -48,7 +42,7 @@ test('set editor content', () => {
     entityMap: {},
   };
 
-  const action = setEditorContent(editorContent);
+  const action = textEditorActions.setEditorContent(editorContent);
   const { content } = textEditorReducer(initialState, action);
 
   expect(content).toEqual(editorContent);
@@ -56,7 +50,7 @@ test('set editor content', () => {
 
 test('set text alignment', () => {
   const alignment = 'center';
-  const action = setTextAlignment(alignment);
+  const action = textEditorActions.setTextAlignment(alignment);
   const { textAlignment } = textEditorReducer(initialState, action);
 
   expect(textAlignment).toEqual(alignment);

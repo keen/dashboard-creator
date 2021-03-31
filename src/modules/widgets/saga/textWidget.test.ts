@@ -8,21 +8,12 @@ import {
   editInlineTextWidget as editInlineTextWidgetAction,
   setTextWidget,
 } from '../actions';
+
 import { editTextWidget, editInlineTextWidget } from './textWidget';
-
 import { getWidgetSettings } from '../selectors';
-
 import { saveDashboard } from '../../dashboards';
 
-import {
-  setEditorContent,
-  setTextAlignment,
-  openEditor as openTextEditor,
-  closeEditor as closeTextEditor,
-  applyTextEditorSettings,
-  APPLY_TEXT_EDITOR_SETTINGS,
-  CLOSE_EDITOR as CLOSE_TEXT_EDITOR,
-} from '../../textEditor';
+import { textEditorActions, textEditorSagaActions } from '../../textEditor';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
@@ -58,15 +49,17 @@ describe('editTextWidget()', () => {
     });
 
     test('set editor content', (result) => {
-      expect(result).toEqual(put(setEditorContent(textWidgetContent)));
+      expect(result).toEqual(
+        put(textEditorActions.setEditorContent(textWidgetContent))
+      );
     });
 
     test('set editor text alignment', (result) => {
-      expect(result).toEqual(put(setTextAlignment('center')));
+      expect(result).toEqual(put(textEditorActions.setTextAlignment('center')));
     });
 
     test('opens text editor', (result) => {
-      expect(result).toEqual(put(openTextEditor()));
+      expect(result).toEqual(put(textEditorActions.openEditor()));
     });
 
     test('updates widget state', (result) => {
@@ -81,10 +74,16 @@ describe('editTextWidget()', () => {
 
     test('waits for user action', (result) => {
       expect(result).toEqual(
-        take([APPLY_TEXT_EDITOR_SETTINGS, CLOSE_TEXT_EDITOR])
+        take([
+          textEditorSagaActions.applyTextEditorSettings.type,
+          textEditorActions.closeEditor.type,
+        ])
       );
 
-      return applyTextEditorSettings(textWidgetContent, 'left');
+      return textEditorSagaActions.applyTextEditorSettings(
+        textWidgetContent,
+        'left'
+      );
     });
 
     test('set text widget settings', (result) => {
@@ -107,7 +106,7 @@ describe('editTextWidget()', () => {
     });
 
     test('close text editor', (result) => {
-      expect(result).toEqual(put(closeTextEditor()));
+      expect(result).toEqual(put(textEditorActions.closeEditor()));
     });
   });
 });

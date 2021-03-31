@@ -11,16 +11,8 @@ import { getWidgetSettings } from '../selectors';
 
 import { saveDashboard } from '../../dashboards';
 
-import {
-  openEditor as openTextEditor,
-  closeEditor as closeTextEditor,
-  setTextAlignment,
-  setEditorContent,
-  APPLY_TEXT_EDITOR_SETTINGS,
-  CLOSE_EDITOR as CLOSE_TEXT_EDITOR,
-} from '../../textEditor';
-
 import { getActiveDashboard } from '../../app';
+import { textEditorActions, textEditorSagaActions } from '../../textEditor';
 
 /**
  * Flow responsible for creating text widget.
@@ -58,19 +50,21 @@ export function* editTextWidget({
     settings: { content, textAlignment },
   } = yield select(getWidgetSettings, id);
 
-  yield put(setEditorContent(content));
-  yield put(setTextAlignment(textAlignment));
-
-  yield put(openTextEditor());
+  yield put(textEditorActions.setEditorContent(content));
+  yield put(textEditorActions.setTextAlignment(textAlignment));
+  yield put(textEditorActions.openEditor());
   yield put(
     setWidgetState(id, {
       isInitialized: false,
     })
   );
 
-  const action = yield take([APPLY_TEXT_EDITOR_SETTINGS, CLOSE_TEXT_EDITOR]);
+  const action = yield take([
+    textEditorSagaActions.applyTextEditorSettings.type,
+    textEditorActions.closeEditor.type,
+  ]);
 
-  if (action.type === APPLY_TEXT_EDITOR_SETTINGS) {
+  if (action.type === textEditorSagaActions.applyTextEditorSettings.type) {
     const {
       content: updatedContent,
       textAlignment: updatedAlignment,
@@ -85,7 +79,7 @@ export function* editTextWidget({
     const dashboardId = yield select(getActiveDashboard);
     yield put(saveDashboard(dashboardId));
 
-    yield put(closeTextEditor());
+    yield put(textEditorActions.closeEditor());
   }
 
   yield put(

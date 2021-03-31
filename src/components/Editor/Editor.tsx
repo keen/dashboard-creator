@@ -21,7 +21,7 @@ import {
   WidgetsPosition,
 } from '../../modules/widgets';
 import { getChartEditor } from '../../modules/chartEditor';
-import { getTextEditor } from '../../modules/textEditor';
+import { textEditorSelectors } from '../../modules/textEditor';
 import { setActiveDashboard } from '../../modules/app';
 
 import { EditorContext } from '../../contexts';
@@ -66,7 +66,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
     isOpen: textWidgetEditorOpen,
     content: textEditorContent,
     textAlignment,
-  } = useSelector(getTextEditor);
+  } = useSelector(textEditorSelectors.getTextEditor);
 
   const { widgetsId, isInitialized, isSaving } = useSelector(
     (state: RootState) => {

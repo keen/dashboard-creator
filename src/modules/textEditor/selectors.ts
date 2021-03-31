@@ -1,3 +1,7 @@
 import { RootState } from '../../rootReducer';
 
-export const getTextEditor = ({ textEditor }: RootState) => textEditor;
+const getTextEditor = ({ textEditor }: RootState) => textEditor;
+
+export const textEditorSelectors = {
+  getTextEditor,
+};
