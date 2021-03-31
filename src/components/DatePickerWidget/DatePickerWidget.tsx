@@ -24,6 +24,8 @@ import {
   convertRelativeTime,
   getDefaultAbsoluteTime,
   TIME_PICKER_CLASS,
+  Tooltip,
+  UI_LAYERS,
 } from '@keen.io/ui-core';
 
 import TimeframeLabel from '../TimeframeLabel';
@@ -54,6 +56,8 @@ import {
   ABSOLUTE_TAB,
   RELATIVE_TAB,
 } from './constants';
+import { AnimatePresence, motion } from 'framer-motion';
+import { TOOLTIP_MOTION } from '../../constants';
 
 type Props = {
   /** Widget identifier */
@@ -65,19 +69,30 @@ type Props = {
 const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { modalContainer } = useContext(AppContext);
+  const { modalContainer, widgetsConfiguration } = useContext(AppContext);
   const { isActive, data } = useSelector((state: RootState) =>
     getWidget(state, id)
   );
 
+  const datePickerConfiguration = widgetsConfiguration?.datePicker;
+
   const initialData = {
     timeframe: data?.timeframe || DEFAULT_TIMEFRAME,
-    timezone: data?.timezone || DEFAULT_TIMEZONE,
+    timezone:
+      data?.timezone ||
+      datePickerConfiguration?.defaultTimezone ||
+      DEFAULT_TIMEZONE,
   };
 
   const [isOpen, setOpen] = useState(false);
   const [dropdown, setDropdown] = useState({ top: 0, left: 0, width: 0 });
   const [localData, setLocalData] = useState(initialData);
+
+  const [tooltipVisible, setTooltipVisible] = useState(false);
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+
+  const timezoneContainerRef = useRef<HTMLDivElement>(null);
+  const requestFrameRef = React.useRef(null);
 
   const containerRef = useRef(null);
   const dropdownContainerRef = useRef(null);
@@ -132,6 +147,7 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
   return (
     <>
       <Container
+        data-testid="dropable-container"
         ref={containerRef}
         isOpen={isOpen}
         onClick={() => {
@@ -276,6 +292,36 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
                 )}
               />
             </TimezoneContainer>
+            {datePickerConfiguration?.disableTimezoneSelection &&
+              tooltipVisible && (
+                <AnimatePresence>
+                  <motion.div
+                    {...TOOLTIP_MOTION}
+                    initial={{
+                      opacity: 0,
+                      x: tooltipPosition.x,
+                      y: tooltipPosition.y,
+                      top: 0,
+                      left: 0,
+                    }}
+                    animate={{
+                      x: tooltipPosition.x,
+                      y: tooltipPosition.y,
+                      opacity: 1,
+                    }}
+                    style={{
+                      position: 'fixed',
+                      pointerEvents: 'none',
+                      zIndex: UI_LAYERS.tooltip,
+                      width: 225,
+                    }}
+                  >
+                    <Tooltip hasArrow={false} fontSize={12}>
+                      {t('date_picker_widget.selection_disabled_description')}
+                    </Tooltip>
+                  </motion.div>
+                </AnimatePresence>
+              )}
             <Bar>
               <Button
                 onClick={() => {

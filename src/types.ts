@@ -19,6 +19,9 @@ export type DashboardCreatorOptions = {
   theme?: Partial<Theme>;
   createSharedDashboardUrl: (accessKey: string, dashboardId: string) => string;
   cachedDashboardsNumber: number;
+  timezoneSelectionDisabled?: boolean;
+  defaultTimezoneForQuery?: string;
+  widgetsConfiguration?: WidgetsConfiguration;
 };
 
 export type PublicDashboardOptions = {
@@ -31,6 +34,9 @@ export type PublicDashboardOptions = {
   };
   modalContainer: string;
   translations?: TranslationsSettings;
+  timezoneSelectionDisabled?: boolean;
+  defaultTimezoneForQuery?: string;
+  widgetsConfiguration?: WidgetsConfiguration;
 };
 
 export type TranslationsSettings = {
@@ -45,3 +51,12 @@ export type WidgetType =
   | 'image'
   | 'date-picker'
   | 'filter';
+
+export type DatePickerWidgetConfiguration = {
+  disableTimezoneSelection?: boolean;
+  defaultTimezone?: string;
+};
+
+export type WidgetsConfiguration = {
+  datePicker?: DatePickerWidgetConfiguration;
+};

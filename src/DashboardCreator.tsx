@@ -1,4 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase, @typescript-eslint/ban-ts-ignore */
+
+import { DEFAULT_TIMEZONE } from './components/DatePickerWidget/constants';
+
 if (process.env.NODE_ENV === 'production') {
   // @ts-ignore
   __webpack_public_path__ = window.dashboardCreatorResourcesBasePath;
@@ -72,6 +75,15 @@ export class DashboardCreator {
   /** Cached dashboards number */
   private cachedDashboardsNumber = 3;
 
+  /** Timezone selection disabled in query **/
+  private timezoneSelectionDisabled = false;
+
+  /** Default timezone for query **/
+  private defaultTimezoneForQuery = DEFAULT_TIMEZONE;
+
+  /** Widgets configuration **/
+  private widgetsConfiguration = {};
+
   constructor(config: DashboardCreatorOptions) {
     const {
       container,
@@ -83,6 +95,9 @@ export class DashboardCreator {
       theme,
       createSharedDashboardUrl,
       cachedDashboardsNumber,
+      timezoneSelectionDisabled,
+      defaultTimezoneForQuery,
+      widgetsConfiguration,
     } = config;
 
     const { id, masterKey, accessKey } = project;
@@ -103,6 +118,9 @@ export class DashboardCreator {
     if (cachedDashboardsNumber) {
       this.cachedDashboardsNumber = cachedDashboardsNumber;
     }
+    this.defaultTimezoneForQuery = defaultTimezoneForQuery;
+    this.timezoneSelectionDisabled = timezoneSelectionDisabled;
+    this.widgetsConfiguration = widgetsConfiguration;
   }
 
   render() {
@@ -136,6 +154,12 @@ export class DashboardCreator {
 
     const store = configureStore({
       reducer: rootReducer,
+      preloadedState: {
+        timezone: {
+          defaultTimezoneForQuery: this.defaultTimezoneForQuery,
+          timezoneSelectionDisabled: !!this.timezoneSelectionDisabled,
+        },
+      },
       middleware: [sagaMiddleware, routerMiddleware(history)],
     });
 
@@ -172,6 +196,7 @@ export class DashboardCreator {
                   analyticsApiUrl: this.analyticsApiUrl,
                   modalContainer: this.modalContainer,
                   createSharedDashboardUrl: this.createSharedDashboardUrl,
+                  widgetsConfiguration: this.widgetsConfiguration,
                 }}
               >
                 <APIContext.Provider value={{ blobApi, keenAnalysis }}>

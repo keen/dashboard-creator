@@ -27,6 +27,10 @@ const render = (storeState: any = {}, overProps: any = {}) => {
     app: { activeDashboardId: '@dashboard-id' },
     theme: { dashboards: {} },
     chartEditor: chartEditorState,
+    timezone: {
+      defaultTimezoneForQuery: 'Africa/Nairobi',
+      timezoneSelectionDisabled: false,
+    },
     ...storeState,
   };
 

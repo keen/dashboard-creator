@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase, @typescript-eslint/ban-ts-ignore */
+import { timezoneActions } from './modules/timezone';
+
 if (process.env.NODE_ENV === 'production') {
   // @ts-ignore
   __webpack_public_path__ = window.dashboardCreatorResourcesBasePath;
@@ -31,6 +33,7 @@ import { createRootSaga } from './rootSaga';
 import { SHOW_TOAST_NOTIFICATION_EVENT } from './constants';
 
 import { PublicDashboardOptions, TranslationsSettings } from './types';
+import { DEFAULT_TIMEZONE } from './components/DatePickerWidget/constants';
 
 export class PublicDashboard {
   /** Container used to mount application */
@@ -57,6 +60,15 @@ export class PublicDashboard {
   /** App localization settings */
   private readonly translationsSettings: TranslationsSettings;
 
+  /** Timezone selection disabled in query **/
+  private timezoneSelectionDisabled = false;
+
+  /** Default timezone for query **/
+  private defaultTimezoneForQuery = DEFAULT_TIMEZONE;
+
+  /** Widgets configuration **/
+  private widgetsConfiguration = {};
+
   constructor(config: PublicDashboardOptions) {
     const {
       container,
@@ -65,6 +77,9 @@ export class PublicDashboard {
       dashboardId,
       backend,
       translations,
+      timezoneSelectionDisabled,
+      defaultTimezoneForQuery,
+      widgetsConfiguration,
     } = config;
 
     if (backend?.analyticsApiUrl)
@@ -80,6 +95,9 @@ export class PublicDashboard {
     this.dashboardId = dashboardId;
     this.accessKey = accessKey;
     this.translationsSettings = translations || {};
+    this.defaultTimezoneForQuery = defaultTimezoneForQuery;
+    this.timezoneSelectionDisabled = timezoneSelectionDisabled;
+    this.widgetsConfiguration = widgetsConfiguration;
   }
 
   render() {
@@ -111,6 +129,12 @@ export class PublicDashboard {
 
     const store = configureStore({
       reducer: rootReducer,
+      preloadedState: {
+        timezone: {
+          defaultTimezoneForQuery: this.defaultTimezoneForQuery,
+          timezoneSelectionDisabled: !!this.timezoneSelectionDisabled,
+        },
+      },
       middleware: [sagaMiddleware, routerMiddleware(history)],
     });
 
@@ -122,6 +146,9 @@ export class PublicDashboard {
     };
 
     sagaMiddleware.run(rootSaga);
+
+    timezoneActions.fetchTimezones();
+
     store.dispatch(viewPublicDashboard(this.dashboardId));
 
     ReactDOM.render(
@@ -139,6 +166,7 @@ export class PublicDashboard {
                   project: projectSettings,
                   analyticsApiUrl: this.analyticsApiUrl,
                   modalContainer: this.modalContainer,
+                  widgetsConfiguration: this.widgetsConfiguration,
                 }}
               >
                 <APIContext.Provider value={{ blobApi, keenAnalysis }}>
