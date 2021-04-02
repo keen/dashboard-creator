@@ -262,7 +262,6 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
                       start: setTimezoneOffset(timeframe['start'], timezone),
                       end: setTimezoneOffset(timeframe['end'], timezone),
                     };
-                    console.log(timeWithZone);
                     timeframe = timeWithZone;
                   }
                   setLocalData((state) => ({
