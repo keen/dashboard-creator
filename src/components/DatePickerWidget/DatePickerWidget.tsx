@@ -90,12 +90,6 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
   const [dropdown, setDropdown] = useState({ top: 0, left: 0, width: 0 });
   const [localData, setLocalData] = useState(initialData);
 
-  const [tooltipVisible, setTooltipVisible] = useState(false);
-  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
-
-  const timezoneContainerRef = useRef<HTMLDivElement>(null);
-  const requestFrameRef = React.useRef(null);
-
   const containerRef = useRef(null);
   const dropdownContainerRef = useRef(null);
 
