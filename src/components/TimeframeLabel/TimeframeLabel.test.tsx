@@ -1,14 +1,11 @@
 import React from 'react';
-import moment from 'moment-timezone';
 import { fireEvent, render as rtlRender } from '@testing-library/react';
-
-import { TIMEFRAME_FORMAT } from '../../constants';
-
 import TimeframeLabel from './TimeframeLabel';
 
 const render = (overProps: any = {}) => {
   const props = {
     timeframe: 'this_14_days',
+    timezone: 'UTC',
     onRemove: jest.fn(),
     ...overProps,
   };
@@ -41,14 +38,12 @@ test('should call onRemove handler', () => {
 });
 
 test('should render absolute timeframe', () => {
-  const today = moment().format();
-  const yesterday = moment().subtract(-1, 'days').format();
+  const today = '2021-04-02T02:00:00';
+  const yesterday = '2021-04-01T02:00:00';
   const {
     wrapper: { getByText },
   } = render({ timeframe: { start: yesterday, end: today } });
 
-  expect(getByText(moment(today).format(TIMEFRAME_FORMAT))).toBeInTheDocument();
-  expect(
-    getByText(moment(yesterday).format(TIMEFRAME_FORMAT))
-  ).toBeInTheDocument();
+  expect(getByText('2021-04-01 02:00')).toBeInTheDocument();
+  expect(getByText('2021-04-02 02:00')).toBeInTheDocument();
 });

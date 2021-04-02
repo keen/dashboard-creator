@@ -87,8 +87,7 @@
     "relative": "Relative",
     "absolute": "Absolute",
     "timezone": "Timezone",
-    "select_timezone": "Select timezone",
-    "notification": "(Charts display time in UTC)"
+    "select_timezone": "Select timezone"
   },
   "widget_errors": {
     "detached_query_title": "Unable to present result in {{chart}} chart",
