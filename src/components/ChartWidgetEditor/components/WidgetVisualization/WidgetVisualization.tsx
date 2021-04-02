@@ -1,4 +1,4 @@
-import React, { FC, useMemo, useEffect } from 'react';
+import React, { FC, useMemo, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence } from 'framer-motion';
 import { getAvailableWidgets, WidgetPicker } from '@keen.io/widget-picker';
@@ -20,6 +20,7 @@ import { fadeMaskMotion } from './motion';
 import { DISABLE_WIDGETS } from './constants';
 
 import { VisualizationSettings } from './types';
+import { getPresentationTimezone } from '../../../../modules/timezone';
 
 type Props = {
   /** Query run indocator */
@@ -58,6 +59,7 @@ const WidgetVisualization: FC<Props> = ({
       ),
     [analysisResult]
   );
+  let presentationTimezone = null;
 
   const { type, chartSettings, widgetSettings } = visualization;
 
@@ -75,6 +77,19 @@ const WidgetVisualization: FC<Props> = ({
       });
     }
   }, [widgets, type]);
+
+  const getTimezone = useCallback(
+    (queryResults) => getPresentationTimezone(queryResults),
+    []
+  );
+
+  if (
+    analysisResult &&
+    analysisResult.query.analysis_type !== 'funnel' &&
+    analysisResult.query.result
+  ) {
+    presentationTimezone = getTimezone(analysisResult);
+  }
 
   return (
     <Container>
@@ -103,6 +118,7 @@ const WidgetVisualization: FC<Props> = ({
                 chartSettings={chartSettings}
                 widgetSettings={widgetSettings}
                 analysisResults={analysisResult}
+                presentationTimezone={presentationTimezone}
               />
               <AnimatePresence>
                 {outdatedAnalysisResults && (

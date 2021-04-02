@@ -34,6 +34,7 @@ import { createRootSaga } from './rootSaga';
 import { SHOW_TOAST_NOTIFICATION_EVENT } from './constants';
 
 import { DashboardCreatorOptions, TranslationsSettings } from './types';
+import GlobalStyles from './components/GlobalStyles';
 
 export class DashboardCreator {
   /** Container used to mount application */
@@ -182,6 +183,7 @@ export class DashboardCreator {
 
     ReactDOM.render(
       <Provider store={store}>
+        <GlobalStyles modalContainer={this.modalContainer} />
         <ThemeProvider
           theme={{
             breakpoints: screenBreakpoints,

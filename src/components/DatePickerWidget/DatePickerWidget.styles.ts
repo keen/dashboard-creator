@@ -67,6 +67,6 @@ export const Separator = styled.div`
   color: ${colors.blue[100]};
 `;
 
-export const TimezoneContainer = styled.div`
-  margin: 0 5px;
+export const ErrorContainer = styled.div`
+  padding: 15px 10px;
 `;

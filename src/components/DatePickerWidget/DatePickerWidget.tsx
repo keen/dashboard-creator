@@ -24,8 +24,8 @@ import {
   convertRelativeTime,
   getDefaultAbsoluteTime,
   TIME_PICKER_CLASS,
-  Tooltip,
-  UI_LAYERS,
+  MousePositionedTooltip,
+  TimezoneError,
 } from '@keen.io/ui-core';
 
 import TimeframeLabel from '../TimeframeLabel';
@@ -35,7 +35,7 @@ import {
   Bar,
   SettingsContainer,
   TitleContainer,
-  TimezoneContainer,
+  ErrorContainer,
 } from './DatePickerWidget.styles';
 
 import {
@@ -56,8 +56,10 @@ import {
   ABSOLUTE_TAB,
   RELATIVE_TAB,
 } from './constants';
-import { AnimatePresence, motion } from 'framer-motion';
-import { TOOLTIP_MOTION } from '../../constants';
+
+import { BodyText } from '@keen.io/typography';
+import { getTimezoneState } from '../../modules/timezone';
+import TimezoneLoader from './components/TimezoneLoader';
 
 type Props = {
   /** Widget identifier */
@@ -88,14 +90,10 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
   const [dropdown, setDropdown] = useState({ top: 0, left: 0, width: 0 });
   const [localData, setLocalData] = useState(initialData);
 
-  const [tooltipVisible, setTooltipVisible] = useState(false);
-  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
-
-  const timezoneContainerRef = useRef<HTMLDivElement>(null);
-  const requestFrameRef = React.useRef(null);
-
   const containerRef = useRef(null);
   const dropdownContainerRef = useRef(null);
+
+  const { timezones, isLoading, error } = useSelector(getTimezoneState);
 
   const outsideClick = useCallback(
     (e) => {
@@ -268,60 +266,59 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
                 />
               )}
             </SettingsContainer>
-            <TimezoneContainer>
-              <Timezone
-                timezone={timezone}
-                onChange={(timezone) => {
-                  let timeframe = localData.timeframe;
-                  if (typeof timeframe !== 'string') {
-                    const timeWithZone = {
-                      start: setTimezoneOffset(timeframe['start'], timezone),
-                      end: setTimezoneOffset(timeframe['end'], timezone),
-                    };
-                    timeframe = timeWithZone;
-                  }
-                  setLocalData((state) => ({
-                    ...state,
-                    timeframe,
-                    timezone,
-                  }));
-                }}
-                timezoneLabel={t('date_picker_widget.timezone')}
-                timezonePlaceholderLabel={t(
-                  'date_picker_widget.select_timezone'
-                )}
+            {isLoading ? (
+              <TimezoneLoader
+                message={t('date_picker_widget_timezone.loading')}
               />
-            </TimezoneContainer>
-            {datePickerConfiguration?.disableTimezoneSelection &&
-              tooltipVisible && (
-                <AnimatePresence>
-                  <motion.div
-                    {...TOOLTIP_MOTION}
-                    initial={{
-                      opacity: 0,
-                      x: tooltipPosition.x,
-                      y: tooltipPosition.y,
-                      top: 0,
-                      left: 0,
-                    }}
-                    animate={{
-                      x: tooltipPosition.x,
-                      y: tooltipPosition.y,
-                      opacity: 1,
-                    }}
-                    style={{
-                      position: 'fixed',
-                      pointerEvents: 'none',
-                      zIndex: UI_LAYERS.tooltip,
-                      width: 225,
-                    }}
+            ) : (
+              <>
+                {error ? (
+                  <ErrorContainer>
+                    <TimezoneError
+                      tooltipPortal={modalContainer}
+                      tooltipMessage={t('date_picker_widget_timezone.error')}
+                      placeholder={t(
+                        'date_picker_widget_timezone.select_timezone'
+                      )}
+                      label={t('date_picker_widget_timezone.timezone')}
+                    />
+                  </ErrorContainer>
+                ) : (
+                  <MousePositionedTooltip
+                    renderContent={() => (
+                      <BodyText variant="body3" fontWeight="normal">
+                        {t(
+                          'date_picker_widget_timezone.selection_disabled_description'
+                        )}
+                      </BodyText>
+                    )}
+                    isActive={datePickerConfiguration?.disableTimezoneSelection}
+                    tooltipPortal={modalContainer}
                   >
-                    <Tooltip hasArrow={false} fontSize={12}>
-                      {t('date_picker_widget.selection_disabled_description')}
-                    </Tooltip>
-                  </motion.div>
-                </AnimatePresence>
-              )}
+                    <Timezone
+                      timezone={timezone}
+                      timezones={timezones}
+                      disableSelection={
+                        datePickerConfiguration?.disableTimezoneSelection
+                      }
+                      emptySearchLabel={t(
+                        'date_picker_widget_timezone.empty_search'
+                      )}
+                      onChange={(timezone) =>
+                        setLocalData((state) => ({
+                          ...state,
+                          timezone,
+                        }))
+                      }
+                      timezoneLabel={t('date_picker_widget_timezone.timezone')}
+                      timezonePlaceholderLabel={t(
+                        'date_picker_widget_timezone.select_timezone'
+                      )}
+                    />
+                  </MousePositionedTooltip>
+                )}
+              </>
+            )}
             <Bar>
               <Button
                 onClick={() => {

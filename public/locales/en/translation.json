@@ -85,10 +85,15 @@
     "relativity_title": "Include current",
     "relativity_title_today": "Include Today",
     "relative": "Relative",
-    "absolute": "Absolute",
+    "absolute": "Absolute"
+  },
+  "date_picker_widget_timezone": {
     "timezone": "Timezone",
+    "timezone_empty_search": "No timezone found with this criteria",
+    "timezone_selection_disabled_description": "Timezone for your metrics is the same as your site configuration.",
     "select_timezone": "Select timezone",
-    "notification": "(Charts display time in UTC)",
+    "loading": "Loading list of time zones",
+    "error": "We cannot load list of time zones. Try again later if you need to check data for specific time zone.",
     "selection_disabled_description": "Timezone for your metrics is the same as your site configuration."
   },
   "widget_errors": {

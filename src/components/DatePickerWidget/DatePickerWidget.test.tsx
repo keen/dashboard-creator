@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  render as rtlRender,
-  cleanup,
-  fireEvent,
-} from '@testing-library/react';
+import { render as rtlRender, cleanup } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 
@@ -33,6 +29,15 @@ const render = (
           },
         },
       },
+    },
+    timezone: {
+      timezones: [
+        {
+          name: 'Europe/Warsaw',
+          utcOffset: '+01:00',
+          numberOfSecondsToOffsetTime: 3600,
+        },
+      ],
     },
     ...storeState,
   };
@@ -99,59 +104,4 @@ test('should render widget title for inactive widget', () => {
     wrapper: { getByText },
   } = render({ ...state }, { id: widgetId });
   expect(getByText('date_picker_widget.name')).toBeInTheDocument();
-});
-
-test('should not render tooltip on timezone section hover when timezone selection is enabled', async () => {
-  const {
-    wrapper: { getByTestId, queryByText },
-  } = render(
-    {},
-    {},
-    {
-      widgetsConfiguration: {
-        datePicker: {
-          disableTimezoneSelection: false,
-        },
-      },
-    }
-  );
-
-  const propertyContainer = getByTestId('dropable-container');
-  fireEvent.click(propertyContainer);
-
-  const timezoneContainer = getByTestId('timezone-container');
-  fireEvent.mouseOver(timezoneContainer);
-
-  const testId = await queryByText(
-    'date_picker_widget.selection_disabled_description'
-  );
-  expect(testId).not.toBeInTheDocument();
-});
-
-test('should render tooltip on timezone section hover when timezone selection is disabled', async () => {
-  const {
-    wrapper: { getByTestId, queryByText },
-  } = render(
-    {},
-    {},
-    {
-      widgetsConfiguration: {
-        datePicker: {
-          disableTimezoneSelection: true,
-        },
-      },
-    }
-  );
-
-  const propertyContainer = getByTestId('dropable-container');
-  fireEvent.click(propertyContainer);
-
-  const timezoneContainer = getByTestId('timezone-container');
-  fireEvent.mouseOver(timezoneContainer);
-
-  const testId = await queryByText(
-    'date_picker_widget.selection_disabled_description'
-  );
-
-  expect(testId).toBeInTheDocument();
 });
