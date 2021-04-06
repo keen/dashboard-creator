@@ -59,7 +59,6 @@ const WidgetVisualization: FC<Props> = ({
       ),
     [analysisResult]
   );
-  let presentationTimezone = null;
 
   const { type, chartSettings, widgetSettings } = visualization;
 
@@ -78,18 +77,16 @@ const WidgetVisualization: FC<Props> = ({
     }
   }, [widgets, type]);
 
-  const getTimezone = useCallback(
-    (queryResults) => getPresentationTimezone(queryResults),
-    []
-  );
-
-  if (
-    analysisResult &&
-    analysisResult.query.analysis_type !== 'funnel' &&
-    analysisResult.query.result
-  ) {
-    presentationTimezone = getTimezone(analysisResult);
-  }
+  const getTimezone = useCallback((queryResults) => {
+    if (
+      analysisResult &&
+      analysisResult.query.analysis_type !== 'funnel' &&
+      analysisResult.result
+    ) {
+      return getPresentationTimezone(queryResults);
+    }
+    return null;
+  }, []);
 
   return (
     <Container>
@@ -118,7 +115,7 @@ const WidgetVisualization: FC<Props> = ({
                 chartSettings={chartSettings}
                 widgetSettings={widgetSettings}
                 analysisResults={analysisResult}
-                presentationTimezone={presentationTimezone}
+                presentationTimezone={getTimezone(analysisResult)}
               />
               <AnimatePresence>
                 {outdatedAnalysisResults && (

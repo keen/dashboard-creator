@@ -57,20 +57,17 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
 
   const showVisualization = isConfigured && isInitialized && !isLoading;
   const chartData = interimQuery ? interimQuery : data;
-  let presentationTimezone = null;
 
-  const getTimezone = useCallback(
-    (queryResults) => getPresentationTimezone(queryResults),
-    []
-  );
-
-  if (
-    chartData &&
-    chartData.query &&
-    chartData.query.analysis_type !== 'funnel'
-  ) {
-    presentationTimezone = getTimezone(chartData);
-  }
+  const getTimezone = useCallback((chartData) => {
+    if (
+      chartData &&
+      chartData.query &&
+      chartData.query.analysis_type !== 'funnel'
+    ) {
+      return getPresentationTimezone(chartData);
+    }
+    return null;
+  }, []);
 
   useEffect(() => {
     if (showVisualization) {
@@ -78,7 +75,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
         widget as ChartWidget,
         theme,
         containerRef.current,
-        presentationTimezone
+        getTimezone(chartData)
       );
 
       if (error) {

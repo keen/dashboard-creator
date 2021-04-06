@@ -78,7 +78,6 @@ export class PublicDashboard {
       translations,
       timezoneSelectionDisabled,
       defaultTimezoneForQuery,
-      widgetsConfiguration,
     } = config;
 
     if (backend?.analyticsApiUrl)
@@ -96,7 +95,6 @@ export class PublicDashboard {
     this.translationsSettings = translations || {};
     this.defaultTimezoneForQuery = defaultTimezoneForQuery;
     this.timezoneSelectionDisabled = timezoneSelectionDisabled;
-    this.widgetsConfiguration = widgetsConfiguration;
   }
 
   render() {
@@ -149,8 +147,7 @@ export class PublicDashboard {
 
     sagaMiddleware.run(rootSaga);
 
-    timezoneActions.fetchTimezones();
-
+    store.dispatch(timezoneActions.fetchTimezones());
     store.dispatch(viewPublicDashboard(this.dashboardId));
 
     ReactDOM.render(
