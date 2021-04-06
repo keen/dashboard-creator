@@ -2,7 +2,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Timezone } from '@keen.io/time-utils';
 
 import { ReducerState } from './types';
-import { DEFAULT_TIMEZONE } from '../../components/DatePickerWidget/constants';
+
+import { DEFAULT_TIMEZONE } from '../../constants';
 
 const initialState: ReducerState = {
   defaultTimezoneForQuery: DEFAULT_TIMEZONE,

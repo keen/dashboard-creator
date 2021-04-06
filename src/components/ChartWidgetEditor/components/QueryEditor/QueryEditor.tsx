@@ -48,7 +48,6 @@ const QueryEditor: FC<Props> = ({ isEditMode, initialQueryInitialized }) => {
   const initialQueryRef = useRef(null);
 
   initialQueryRef.current = initialQueryInitialized;
-
   return (
     <QueryCreator
       projectId={id}
@@ -57,7 +56,7 @@ const QueryEditor: FC<Props> = ({ isEditMode, initialQueryInitialized }) => {
       modalContainer={modalContainer}
       onUpdateChartSettings={setChartSettings}
       defaultTimezoneForQuery={defaultTimezoneForQuery}
-      timezoneSelectionDisabled={timezoneSelectionDisabled}
+      disableTimezoneSelection={timezoneSelectionDisabled}
       onUpdateQuery={(query: Query, isQueryReady: boolean) => {
         if (isEditMode) {
           if (isQueryReady) {

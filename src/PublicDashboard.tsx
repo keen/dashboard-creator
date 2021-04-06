@@ -30,10 +30,9 @@ import createSagaMiddleware from './createSagaMiddleware';
 import rootReducer, { history } from './rootReducer';
 import { createRootSaga } from './rootSaga';
 
-import { SHOW_TOAST_NOTIFICATION_EVENT } from './constants';
+import { DEFAULT_TIMEZONE, SHOW_TOAST_NOTIFICATION_EVENT } from './constants';
 
 import { PublicDashboardOptions, TranslationsSettings } from './types';
-import { DEFAULT_TIMEZONE } from './components/DatePickerWidget/constants';
 
 export class PublicDashboard {
   /** Container used to mount application */
@@ -128,11 +127,13 @@ export class PublicDashboard {
       }),
     });
 
+    const defaultTimezoneForQuery =
+      this.defaultTimezoneForQuery || DEFAULT_TIMEZONE;
     const store = configureStore({
       reducer: rootReducer,
       preloadedState: {
         timezone: {
-          defaultTimezoneForQuery: this.defaultTimezoneForQuery,
+          defaultTimezoneForQuery: defaultTimezoneForQuery,
           timezoneSelectionDisabled: !!this.timezoneSelectionDisabled,
         },
       },

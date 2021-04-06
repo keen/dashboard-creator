@@ -19,7 +19,7 @@ export type DashboardCreatorOptions = {
   theme?: Partial<Theme>;
   createSharedDashboardUrl: (accessKey: string, dashboardId: string) => string;
   cachedDashboardsNumber: number;
-  timezoneSelectionDisabled?: boolean;
+  disableTimezoneSelection?: boolean;
   defaultTimezoneForQuery?: string;
   widgetsConfiguration?: WidgetsConfiguration;
 };

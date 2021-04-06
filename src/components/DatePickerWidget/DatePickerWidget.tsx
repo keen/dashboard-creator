@@ -50,16 +50,12 @@ import { AppContext } from '../../contexts';
 
 import { getEventPath } from '../../utils';
 
-import {
-  DEFAULT_TIMEFRAME,
-  DEFAULT_TIMEZONE,
-  ABSOLUTE_TAB,
-  RELATIVE_TAB,
-} from './constants';
+import { DEFAULT_TIMEFRAME, ABSOLUTE_TAB, RELATIVE_TAB } from './constants';
 
 import { BodyText } from '@keen.io/typography';
 import { getTimezoneState } from '../../modules/timezone';
 import TimezoneLoader from './components/TimezoneLoader';
+import { DEFAULT_TIMEZONE } from '../../constants';
 
 type Props = {
   /** Widget identifier */

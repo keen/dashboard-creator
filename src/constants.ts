@@ -4,6 +4,7 @@ export const KEEN_ANALYSIS = 'KEEN_ANALYSIS';
 export const PUBSUB = 'PUBSUB';
 export const NOTIFICATION_MANAGER = 'NOTIFICATION_MANAGER';
 export const ANALYTICS_API_HOST = 'ANALYTICS_API_HOST';
+export const DEFAULT_TIMEZONE = 'Etc/UTC';
 
 export const SHOW_TOAST_NOTIFICATION_EVENT =
   '@dashboard-creator/show-toast-notification';

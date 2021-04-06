@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase, @typescript-eslint/ban-ts-ignore */
 
-import { DEFAULT_TIMEZONE } from './components/DatePickerWidget/constants';
-
 if (process.env.NODE_ENV === 'production') {
   // @ts-ignore
   __webpack_public_path__ = window.dashboardCreatorResourcesBasePath;
@@ -31,7 +29,7 @@ import createSagaMiddleware from './createSagaMiddleware';
 import rootReducer, { history } from './rootReducer';
 import { createRootSaga } from './rootSaga';
 
-import { SHOW_TOAST_NOTIFICATION_EVENT } from './constants';
+import { DEFAULT_TIMEZONE, SHOW_TOAST_NOTIFICATION_EVENT } from './constants';
 
 import { DashboardCreatorOptions, TranslationsSettings } from './types';
 import GlobalStyles from './components/GlobalStyles';
@@ -77,7 +75,7 @@ export class DashboardCreator {
   private cachedDashboardsNumber = 3;
 
   /** Timezone selection disabled in query **/
-  private timezoneSelectionDisabled = false;
+  private disableTimezoneSelection = false;
 
   /** Default timezone for query **/
   private defaultTimezoneForQuery = DEFAULT_TIMEZONE;
@@ -96,7 +94,7 @@ export class DashboardCreator {
       theme,
       createSharedDashboardUrl,
       cachedDashboardsNumber,
-      timezoneSelectionDisabled,
+      disableTimezoneSelection,
       defaultTimezoneForQuery,
       widgetsConfiguration,
     } = config;
@@ -120,7 +118,7 @@ export class DashboardCreator {
       this.cachedDashboardsNumber = cachedDashboardsNumber;
     }
     this.defaultTimezoneForQuery = defaultTimezoneForQuery;
-    this.timezoneSelectionDisabled = timezoneSelectionDisabled;
+    this.disableTimezoneSelection = disableTimezoneSelection;
     this.widgetsConfiguration = widgetsConfiguration;
   }
 
@@ -153,12 +151,14 @@ export class DashboardCreator {
       analyticsApiHost: this.analyticsApiUrl,
     });
 
+    const defaultTimezoneForQuery =
+      this.defaultTimezoneForQuery || DEFAULT_TIMEZONE;
     const store = configureStore({
       reducer: rootReducer,
       preloadedState: {
         timezone: {
-          defaultTimezoneForQuery: this.defaultTimezoneForQuery,
-          timezoneSelectionDisabled: !!this.timezoneSelectionDisabled,
+          defaultTimezoneForQuery: defaultTimezoneForQuery,
+          timezoneSelectionDisabled: !!this.disableTimezoneSelection,
         },
       },
       middleware: [sagaMiddleware, routerMiddleware(history)],
