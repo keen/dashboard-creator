@@ -121,6 +121,7 @@ export class PublicDashboard {
       blobApi,
       keenAnalysis,
       i18n,
+      analyticsApiHost: this.analyticsApiUrl,
       notificationManager: new NotificationManager({
         pubsub: notificationPubSub,
         eventName: SHOW_TOAST_NOTIFICATION_EVENT,

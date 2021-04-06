@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { put } from 'redux-saga/effects';
+import { getContext, put } from 'redux-saga/effects';
 import { StatusCodes } from 'http-status-codes';
 
 import { timezoneSlice } from '../reducer';
+import { ANALYTICS_API_HOST } from '../../../constants';
 
 /**
  * Fetch collection of timezones from API
@@ -12,9 +13,10 @@ import { timezoneSlice } from '../reducer';
 export function* fetchTimezonesHandler() {
   try {
     yield put(timezoneSlice.actions.setTimezonesLoading(true));
+    const analyticsApiHost = yield getContext(ANALYTICS_API_HOST);
     const response: Response = yield fetch(
-      `https://staging-api.keen.io/timezones`
-    ); //todo  get this url from env when api ready
+      `https://${analyticsApiHost}/timezones`
+    );
 
     if (response.status === StatusCodes.OK) {
       const timezones = yield response.json();

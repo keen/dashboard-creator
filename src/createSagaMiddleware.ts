@@ -11,6 +11,7 @@ import {
   TRANSLATIONS,
   KEEN_ANALYSIS,
   NOTIFICATION_MANAGER,
+  ANALYTICS_API_HOST,
 } from './constants';
 
 type SagaContext = {
@@ -18,6 +19,7 @@ type SagaContext = {
   blobApi: BlobAPI;
   keenAnalysis: any;
   notificationManager: NotificationManager;
+  analyticsApiHost: string;
 };
 
 const createSagaMiddleware = ({
@@ -25,6 +27,7 @@ const createSagaMiddleware = ({
   keenAnalysis,
   i18n,
   notificationManager,
+  analyticsApiHost,
 }: SagaContext) =>
   createMiddleware({
     context: {
@@ -33,6 +36,7 @@ const createSagaMiddleware = ({
       [TRANSLATIONS]: i18n,
       [PUBSUB]: getPubSub(),
       [NOTIFICATION_MANAGER]: notificationManager,
+      [ANALYTICS_API_HOST]: analyticsApiHost,
     },
   });
 

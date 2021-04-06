@@ -142,7 +142,6 @@ export class DashboardCreator {
     createI18n(this.translationsSettings);
 
     const notificationPubSub = new PubSub();
-
     const sagaMiddleware = createSagaMiddleware({
       blobApi,
       keenAnalysis,
@@ -151,6 +150,7 @@ export class DashboardCreator {
         pubsub: notificationPubSub,
         eventName: SHOW_TOAST_NOTIFICATION_EVENT,
       }),
+      analyticsApiHost: this.analyticsApiUrl,
     });
 
     const store = configureStore({
