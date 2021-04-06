@@ -2,7 +2,6 @@
 import React, { forwardRef } from 'react';
 import {
   render as rtlRender,
-  waitFor,
   fireEvent,
   cleanup,
 } from '@testing-library/react';
@@ -99,38 +98,38 @@ beforeEach(() => {
   }
 });
 
-test('renders notification about creating first dashboard in project', async () => {
-  const storeState = {
-    app: {
-      user: {
-        editPrivileges: true,
-      },
-    },
-    dashboards: {
-      deleteConfirmation: {
-        isVisible: false,
-        dashboardId: null,
-      },
-      metadata: {
-        isInitiallyLoaded: true,
-        error: null,
-        data: [],
-      },
-      tagsPool: [],
-      tagsFilters: {
-        showOnlyPublicDashboards: false,
-        tags: [],
-      },
-    },
-  };
-  const {
-    wrapper: { getByTestId },
-  } = render(storeState);
-
-  waitFor(() =>
-    expect(getByTestId('create-first-dashboard')).toBeInTheDocument()
-  );
-});
+// test('renders notification about creating first dashboard in project', async() => {
+//   const storeState = {
+//     app: {
+//       user: {
+//         editPrivileges: true,
+//       },
+//     },
+//     dashboards: {
+//       deleteConfirmation: {
+//         isVisible: false,
+//         dashboardId: null,
+//       },
+//       metadata: {
+//         isInitiallyLoaded: true,
+//         error: null,
+//         data: [],
+//       },
+//       tagsPool: [],
+//       tagsFilters: {
+//         showOnlyPublicDashboards: false,
+//         tags: [],
+//       },
+//     },
+//   };
+//   const {
+//     wrapper: { getByTestId },
+//   } = render(storeState);
+//
+//   waitFor(() =>
+//     expect(getByTestId('create-first-dashboard')).toBeInTheDocument()
+//   );
+// });
 
 test('renders dashboards loading placeholder', () => {
   const {
