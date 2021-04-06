@@ -32,8 +32,10 @@ test('allows user to create new dashboard', () => {
 
 test('do not renders notification', () => {
   const {
-    wrapper: { queryByTestId },
+    wrapper: { queryByText },
   } = render({ isVisible: false });
 
-  expect(queryByTestId('create-first-dashboard')).not.toBeInTheDocument();
+  expect(
+    queryByText('dashboard_management.empty_project')
+  ).not.toBeInTheDocument();
 });
