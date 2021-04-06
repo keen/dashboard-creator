@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import moment from 'moment-timezone';
+import { formatDate } from '@keen.io/time-utils';
 import { Timeframe } from '@keen.io/query';
 
 import Option from '../Option';
@@ -13,9 +13,10 @@ import { TIMEFRAME_FORMAT } from '../../../../constants';
 type Props = {
   /** Timeframe */
   timeframe: Timeframe;
+  /** Timezone */
+  timezone: string;
 };
-
-const DatePickerContent: FC<Props> = ({ timeframe }) => {
+const DatePickerContent: FC<Props> = ({ timeframe, timezone }) => {
   const { t } = useTranslation();
   return (
     <>
@@ -31,9 +32,13 @@ const DatePickerContent: FC<Props> = ({ timeframe }) => {
         </Option>
       ) : (
         <TimeframeWrapper>
-          <Option>{moment(timeframe.start).format(TIMEFRAME_FORMAT)}</Option>
+          <Option>
+            {formatDate(timeframe.start, timezone, TIMEFRAME_FORMAT)}
+          </Option>
           <Separator>{t('dashboard_timepicker.separator')}</Separator>
-          <Option>{moment(timeframe.end).format(TIMEFRAME_FORMAT)}</Option>
+          <Option>
+            {formatDate(timeframe.end, timezone, TIMEFRAME_FORMAT)}
+          </Option>
         </TimeframeWrapper>
       )}
     </>

@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { transparentize } from 'polished';
 import { Icon } from '@keen.io/icons';
 import { colors } from '@keen.io/colors';
+import { setTimezoneOffset } from '@keen.io/time-utils';
 import {
   Button,
   Anchor,
@@ -33,7 +34,6 @@ import {
   SettingsContainer,
   TitleContainer,
   TimezoneContainer,
-  Notification,
 } from './DatePickerWidget.styles';
 
 import {
@@ -143,6 +143,7 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
         {isActive ? (
           <TimeframeLabel
             timeframe={data?.timeframe || timeframe}
+            timezone={data?.timezone || timezone}
             onRemove={(e) => {
               e.stopPropagation();
               dispatch(clearDatePickerModifiers(id));
@@ -252,17 +253,23 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
               )}
             </SettingsContainer>
             <TimezoneContainer>
-              <Notification>
-                {t('date_picker_widget.notification')}
-              </Notification>
               <Timezone
                 timezone={timezone}
-                onChange={(timezone) =>
+                onChange={(timezone) => {
+                  let timeframe = localData.timeframe;
+                  if (typeof timeframe !== 'string') {
+                    const timeWithZone = {
+                      start: setTimezoneOffset(timeframe['start'], timezone),
+                      end: setTimezoneOffset(timeframe['end'], timezone),
+                    };
+                    timeframe = timeWithZone;
+                  }
                   setLocalData((state) => ({
                     ...state,
+                    timeframe,
                     timezone,
-                  }))
-                }
+                  }));
+                }}
                 timezoneLabel={t('date_picker_widget.timezone')}
                 timezonePlaceholderLabel={t(
                   'date_picker_widget.select_timezone'

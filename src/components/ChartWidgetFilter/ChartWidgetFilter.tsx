@@ -73,7 +73,10 @@ const ChartWidgetFilter: FC<Props> = ({ widgetId }) => {
       <Container>
         {datePickerData && (
           <WidgetFilter icon="date-picker">
-            <DatePickerContent timeframe={datePickerData.timeframe} />
+            <DatePickerContent
+              timeframe={datePickerData.timeframe}
+              timezone={datePickerData.timezone}
+            />
           </WidgetFilter>
         )}
         {filtersData.length > 0 && (

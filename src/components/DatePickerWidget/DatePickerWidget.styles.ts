@@ -70,13 +70,3 @@ export const Separator = styled.div`
 export const TimezoneContainer = styled.div`
   margin: 0 5px;
 `;
-
-export const Notification = styled.div`
-  margin-top: 10px;
-  padding: 0 15px;
-  color: ${colors.black[100]};
-  font-family: 'Lato Regular', sans-serif;
-  font-size: 14px;
-  line-height: 17px;
-  text-align: right;
-`;
