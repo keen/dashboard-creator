@@ -30,7 +30,7 @@ import createSagaMiddleware from './createSagaMiddleware';
 import rootReducer, { history } from './rootReducer';
 import { createRootSaga } from './rootSaga';
 
-import { DEFAULT_TIMEZONE, SHOW_TOAST_NOTIFICATION_EVENT } from './constants';
+import { SHOW_TOAST_NOTIFICATION_EVENT } from './constants';
 
 import { PublicDashboardOptions, TranslationsSettings } from './types';
 
@@ -59,12 +59,6 @@ export class PublicDashboard {
   /** App localization settings */
   private readonly translationsSettings: TranslationsSettings;
 
-  /** Timezone selection disabled in query **/
-  private timezoneSelectionDisabled = false;
-
-  /** Default timezone for query **/
-  private defaultTimezoneForQuery = DEFAULT_TIMEZONE;
-
   /** Widgets configuration **/
   private widgetsConfiguration = {};
 
@@ -76,8 +70,7 @@ export class PublicDashboard {
       dashboardId,
       backend,
       translations,
-      timezoneSelectionDisabled,
-      defaultTimezoneForQuery,
+      widgetsConfiguration,
     } = config;
 
     if (backend?.analyticsApiUrl)
@@ -93,8 +86,7 @@ export class PublicDashboard {
     this.dashboardId = dashboardId;
     this.accessKey = accessKey;
     this.translationsSettings = translations || {};
-    this.defaultTimezoneForQuery = defaultTimezoneForQuery;
-    this.timezoneSelectionDisabled = timezoneSelectionDisabled;
+    this.widgetsConfiguration = widgetsConfiguration;
   }
 
   render() {
@@ -125,16 +117,8 @@ export class PublicDashboard {
       }),
     });
 
-    const defaultTimezoneForQuery =
-      this.defaultTimezoneForQuery || DEFAULT_TIMEZONE;
     const store = configureStore({
       reducer: rootReducer,
-      preloadedState: {
-        timezone: {
-          defaultTimezoneForQuery: defaultTimezoneForQuery,
-          timezoneSelectionDisabled: !!this.timezoneSelectionDisabled,
-        },
-      },
       middleware: [sagaMiddleware, routerMiddleware(history)],
     });
 

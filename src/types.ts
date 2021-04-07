@@ -34,8 +34,7 @@ export type PublicDashboardOptions = {
   };
   modalContainer: string;
   translations?: TranslationsSettings;
-  timezoneSelectionDisabled?: boolean;
-  defaultTimezoneForQuery?: string;
+  widgetsConfiguration: WidgetsConfiguration;
 };
 
 export type TranslationsSettings = {

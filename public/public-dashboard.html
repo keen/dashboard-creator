@@ -21,7 +21,11 @@
      container: '#root',
      dashboardId: 'cf34686d-e8ef-4818-bb78-26ab95b6d596',
      modalContainer: "#modal-root",
-     defaultTimezoneForQuery: "Africa/Nairobi",
+     widgetsConfiguration: {
+       datePicker: {
+         disableTimezoneSelection: true,
+         defaultTimezone: 'Africa/Nairobi'
+     }},
      backend: {
        analyticsApiUrl: 'staging-api.keen.io',
        dashboardsApiUrl: 'https://blob-service.us-west-2.test.aws.keen.io',

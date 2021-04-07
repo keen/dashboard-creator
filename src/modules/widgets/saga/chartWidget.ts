@@ -485,8 +485,6 @@ export function* editChartWidget({
   yield take(EDITOR_MOUNTED);
   const pubsub = yield getContext(PUBSUB);
 
-  console.log('publisz', query);
-
   yield pubsub.publish(SET_QUERY_EVENT, { query });
 
   if (chartSettings?.stepLabels && chartSettings.stepLabels.length) {
