@@ -38,7 +38,6 @@ const Dataviz: FC<Props> = ({
 }) => {
   const datavizRef = useRef(null);
   const containerRef = useRef(null);
-
   useEffect(() => {
     const themeSettings = visualizationTheme
       ? {

@@ -11,7 +11,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { transparentize } from 'polished';
 import { Icon } from '@keen.io/icons';
 import { colors } from '@keen.io/colors';
-import { setTimezoneOffset } from '@keen.io/time-utils';
 import {
   Button,
   Anchor,
@@ -262,71 +261,66 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
                 />
               )}
             </SettingsContainer>
-            {isLoading ? (
-              <TimezoneLoader
-                message={t('date_picker_widget_timezone.loading')}
-              />
-            ) : (
-              <>
-                {error ? (
-                  <ErrorContainer>
-                    <TimezoneError
-                      tooltipPortal={modalContainer}
-                      tooltipMessage={t('date_picker_widget_timezone.error')}
-                      placeholder={t(
-                        'date_picker_widget_timezone.select_timezone'
-                      )}
-                      label={t('date_picker_widget_timezone.timezone')}
-                    />
-                  </ErrorContainer>
-                ) : (
-                  <MousePositionedTooltip
-                    renderContent={() => (
-                      <BodyText variant="body3" fontWeight="normal">
-                        {t(
-                          'date_picker_widget_timezone.selection_disabled_description'
+            <div data-testid="timezone-select">
+              {isLoading ? (
+                <TimezoneLoader
+                  message={t('date_picker_widget_timezone.loading')}
+                />
+              ) : (
+                <>
+                  {error ? (
+                    <ErrorContainer>
+                      <TimezoneError
+                        tooltipPortal={modalContainer}
+                        tooltipMessage={t('date_picker_widget_timezone.error')}
+                        placeholder={t(
+                          'date_picker_widget_timezone.select_timezone'
                         )}
-                      </BodyText>
-                    )}
-                    isActive={datePickerConfiguration?.disableTimezoneSelection}
-                    tooltipPortal={modalContainer}
-                  >
-                    <Timezone
-                      timezone={timezone}
-                      timezones={timezones}
-                      disableSelection={
+                        label={t('date_picker_widget_timezone.timezone')}
+                      />
+                    </ErrorContainer>
+                  ) : (
+                    <MousePositionedTooltip
+                      renderContent={() => (
+                        <BodyText variant="body3" fontWeight="normal">
+                          {t(
+                            'date_picker_widget_timezone.selection_disabled_description'
+                          )}
+                        </BodyText>
+                      )}
+                      isActive={
                         datePickerConfiguration?.disableTimezoneSelection
                       }
-                      emptySearchLabel={t(
-                        'date_picker_widget_timezone.empty_search'
-                      )}
-                      onChange={(timezone) => {
-                        let timeframe = localData.timeframe;
-                        if (typeof timeframe !== 'string') {
-                          const timeWithZone = {
-                            start: setTimezoneOffset(
-                              timeframe['start'],
-                              timezone
-                            ),
-                            end: setTimezoneOffset(timeframe['end'], timezone),
-                          };
-                          timeframe = timeWithZone;
+                      tooltipPortal={modalContainer}
+                    >
+                      <Timezone
+                        timezone={timezone}
+                        timezones={timezones}
+                        disableSelection={
+                          datePickerConfiguration?.disableTimezoneSelection
                         }
-                        setLocalData((state) => ({
-                          ...state,
-                          timeframe,
-                          timezone,
-                        }));
-                      }}
-                      timezoneLabel={t('date_picker_widget_timezone.timezone')}
-                      timezonePlaceholderLabel={t(
-                        'date_picker_widget_timezone.select_timezone'
-                      )}
-                    />
-                  </MousePositionedTooltip>
-                )}
-              </>
-            )}
+                        emptySearchLabel={t(
+                          'date_picker_widget_timezone.empty_search'
+                        )}
+                        onChange={(timezone) =>
+                          setLocalData((state) => ({
+                            ...state,
+                            timezone,
+                          }))
+                        }
+                        timezoneLabel={t(
+                          'date_picker_widget_timezone.timezone'
+                        )}
+                        timezonePlaceholderLabel={t(
+                          'date_picker_widget_timezone.select_timezone'
+                        )}
+                      />
+                    </MousePositionedTooltip>
+                  )}
+                </>
+              )}
+            </div>
+
             <Bar>
               <Button
                 onClick={() => {

@@ -41,6 +41,11 @@ const render = (
           utcOffset: '+01:00',
           numberOfSecondsToOffsetTime: 3600,
         },
+        {
+          name: 'Africa/Nairobi',
+          utcOffset: '+01:00',
+          numberOfSecondsToOffsetTime: 3600,
+        },
       ],
     },
     ...storeState,
@@ -52,6 +57,12 @@ const render = (
   const contextValue = {
     ...contextValues,
     modalContainer: '#modal-root',
+    widgetsConfiguration: {
+      datePicker: {
+        disableTimezoneSelection: true,
+        defaultTimezone: 'Africa/Nairobi',
+      },
+    },
   } as any;
 
   const wrapper = rtlRender(
@@ -168,4 +179,24 @@ test('should render widget title for inactive widget', () => {
     wrapper: { getByText },
   } = render({ ...state }, { id: widgetId });
   expect(getByText('date_picker_widget.name')).toBeInTheDocument();
+});
+
+test('Should render default timezone if widget has no data', async () => {
+  const {
+    wrapper: { getByTestId, findByTestId },
+  } = render({
+    widgets: {
+      items: {
+        '@widget/01': {
+          isActive: true,
+          data: {},
+        },
+      },
+    },
+  });
+
+  const dropdown = getByTestId('dropable-container');
+  fireEvent.click(dropdown);
+  const timezoneSelect = await findByTestId('timezone-select');
+  expect(timezoneSelect).toHaveTextContent('Africa/Nairobi');
 });
