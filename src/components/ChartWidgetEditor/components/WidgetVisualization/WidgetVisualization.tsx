@@ -1,7 +1,11 @@
 import React, { FC, useMemo, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence } from 'framer-motion';
-import { getAvailableWidgets, WidgetPicker } from '@keen.io/widget-picker';
+import {
+  getAvailableWidgets,
+  getSimpleOptionsWidgets,
+  WidgetPicker,
+} from '@keen.io/widget-picker';
 import { Button, FadeLoader } from '@keen.io/ui-core';
 import { Theme } from '@keen.io/charts';
 
@@ -98,6 +102,7 @@ const WidgetVisualization: FC<Props> = ({
               currentWidget={type}
               chartSettings={chartSettings}
               widgetSettings={widgetSettings}
+              disabledWidgetOptions={getSimpleOptionsWidgets(querySettings)}
               onUpdateSettings={(widgetType, chartSettings, widgetSettings) =>
                 onChangeVisualization({
                   type: widgetType,
