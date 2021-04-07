@@ -24,6 +24,7 @@ import { NotificationManager } from './modules/notifications';
 import { viewPublicDashboard } from './modules/dashboards';
 
 import PublicDashboardViewer from './components/PublicDashboardViewer';
+import GlobalStyles from './components/GlobalStyles';
 
 import createI18n from './i18n';
 import createSagaMiddleware from './createSagaMiddleware';
@@ -136,6 +137,7 @@ export class PublicDashboard {
 
     ReactDOM.render(
       <Provider store={store}>
+        <GlobalStyles modalContainer={this.modalContainer} />
         <ThemeProvider
           theme={{
             breakpoints: screenBreakpoints,
