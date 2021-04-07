@@ -304,12 +304,24 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
                       emptySearchLabel={t(
                         'date_picker_widget_timezone.empty_search'
                       )}
-                      onChange={(timezone) =>
+                      onChange={(timezone) => {
+                        let timeframe = localData.timeframe;
+                        if (typeof timeframe !== 'string') {
+                          const timeWithZone = {
+                            start: setTimezoneOffset(
+                              timeframe['start'],
+                              timezone
+                            ),
+                            end: setTimezoneOffset(timeframe['end'], timezone),
+                          };
+                          timeframe = timeWithZone;
+                        }
                         setLocalData((state) => ({
                           ...state,
+                          timeframe,
                           timezone,
-                        }))
-                      }
+                        }));
+                      }}
                       timezoneLabel={t('date_picker_widget_timezone.timezone')}
                       timezonePlaceholderLabel={t(
                         'date_picker_widget_timezone.select_timezone'
