@@ -2,7 +2,6 @@
 import React, { forwardRef } from 'react';
 import {
   render as rtlRender,
-  waitFor,
   fireEvent,
   cleanup,
 } from '@testing-library/react';
