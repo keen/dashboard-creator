@@ -101,10 +101,12 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
         width,
       }: ClientRect = containerRef.current.getBoundingClientRect();
 
+      console.log(left, bottom, width, 'sa');
+
       setDropdown((state) => ({
         ...state,
         x: left,
-        y: bottom - document.body.offsetHeight + window.scrollY,
+        y: bottom + window.scrollY,
         width,
       }));
     }

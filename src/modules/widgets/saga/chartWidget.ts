@@ -309,6 +309,7 @@ export function* initializeChartWidget({
         isInitialized: true,
         error: {
           message: body,
+          code: WidgetErrors.CANNOT_INITIALIZE,
         },
       })
     );
