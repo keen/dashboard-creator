@@ -1476,13 +1476,13 @@
   integrity sha512-ATUL4zpj6NNHZChCVfI3ellRIzfJMsYzSCqnkcd7AqZseSGVLe6A8yK0yqlzzYVtz3yunX9nDN1AMpJH2dFIfA==
 
 "@keen.io/dataviz@^2.3.0":
-  version "2.11.13"
-  resolved "https://registry.yarnpkg.com/@keen.io/dataviz/-/dataviz-2.11.13.tgz#a14c343f0883ec4bff93e3c1fab6774730a3a619"
-  integrity sha512-jKiZEscz89lD9feguBoaKg/R4Sb8CJdd85FNAfUWYE9CypWj21KA3IdF/1VvEiY7o1tbMkIQqzu30TDDnJlLlw==
+  version "2.11.14"
+  resolved "https://registry.yarnpkg.com/@keen.io/dataviz/-/dataviz-2.11.14.tgz#1e049fbb01b97d20cfc0a5281b4746632c7ef36b"
+  integrity sha512-hIrm2VRtiOt+ucLVTZ19Q90cJNOxQpIQUKGvdEtc1k+WDabAfdK8vHFchmM/+/BmTFYTsQ21xXuTMOSqW9qpbQ==
   dependencies:
     "@keen.io/charts" "^2.12.15"
     "@keen.io/colors" "^1.1.0"
-    "@keen.io/parser" "^2.8.13"
+    "@keen.io/parser" "^2.8.14"
     "@keen.io/query" "^1.2.0"
     "@keen.io/widgets" "^2.3.23"
     deepmerge "4.2.2"
@@ -1508,12 +1508,12 @@
   dependencies:
     "@keen.io/colors" "^1.1.0"
 
-"@keen.io/parser@^2.3.3", "@keen.io/parser@^2.8.13":
-  version "2.8.13"
-  resolved "https://registry.yarnpkg.com/@keen.io/parser/-/parser-2.8.13.tgz#5eabef8146373fdd2f4c87fd56f44587cea50b07"
-  integrity sha512-NG898lzPAESjLukTVoTGSZ4nEPihsNuYLf8oO1zWU8giCHHo79XMZgCXhf68uP5gLpuSVCaqQwkbyy0R4S3deQ==
+"@keen.io/parser@^2.3.3", "@keen.io/parser@^2.8.14":
+  version "2.8.14"
+  resolved "https://registry.yarnpkg.com/@keen.io/parser/-/parser-2.8.14.tgz#418b4b4c6b13f90874e434b3b34599a5204daf8a"
+  integrity sha512-EaB1z7xRV6YQbJ/GRaw1U97wIJ58JXkTVgl0VQUpf3dnveADUBmp0gXixQxBtSgkyM7j7t2FyBiQ33WWrPjUFQ==
   dependencies:
-    "@keen.io/time-utils" "^1.2.2"
+    "@keen.io/time-utils" "^1.2.3"
     d3-time-format "^2.2.3"
 
 "@keen.io/pubsub@^1.1.0", "@keen.io/pubsub@^1.1.1":
@@ -1522,9 +1522,9 @@
   integrity sha512-S9zhZNDSwsL6WXOtFqeZ3+vOdCzykL7pYifRm9dZ7ivLe/frAeyqIQsfRA8Z52DPnRN7d+gKbWrJtlZM22ErjQ==
 
 "@keen.io/query-creator@^1.1.6":
-  version "1.5.3"
-  resolved "https://registry.yarnpkg.com/@keen.io/query-creator/-/query-creator-1.5.3.tgz#6f5b5687993ff034962f02bb4048ae19678c0b6a"
-  integrity sha512-PQjRRM9pYmd2i6M6cBB3D+qvqz5RJF5atF8JYMZcPuEoI3r7IJKLBIdWwE/yFcBuQpdgNL9AYzJjjD8zwAIe/Q==
+  version "1.5.4"
+  resolved "https://registry.yarnpkg.com/@keen.io/query-creator/-/query-creator-1.5.4.tgz#408d1522ff04cf11363ea59079e84618ef69609f"
+  integrity sha512-EUX7N89z00V3pHWbtuXOHeLx4+CRFpR/usAXuQiPglTAn3YNXhHnesAXhZG0CBMI6u6Azm2QBOldb7uTkhiOHg==
   dependencies:
     "@keen.io/colors" "^1.1.0"
     "@keen.io/icons" "^1.2.1"
@@ -1570,10 +1570,10 @@
     d3-array "^2.7.1"
     fuse.js "^6.4.1"
 
-"@keen.io/time-utils@^1.2.0", "@keen.io/time-utils@^1.2.1", "@keen.io/time-utils@^1.2.2":
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/@keen.io/time-utils/-/time-utils-1.2.2.tgz#39bf91b2be98179f1c7eb86ba5ed1561ff87a6aa"
-  integrity sha512-zSRm3M4VGokPoghqyxwOshJjrhBtEtZ0MXKc8ZXZEaugrW3M79CKVXdoSmXZ1fLq4sbIiX//7sKKaq7ZPhK35A==
+"@keen.io/time-utils@^1.2.0", "@keen.io/time-utils@^1.2.1", "@keen.io/time-utils@^1.2.3":
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/@keen.io/time-utils/-/time-utils-1.2.3.tgz#e11c2ea1736166e81d943b80cbf401250f2a90db"
+  integrity sha512-s441TjBg6c4VBLCPJQgmMYVT6UG9KRTic3Pne+T/sbDcngVd8ciBqD7ZlqnJ+ZE4nJDxp+Xgt0WGtJVyrQBQhw==
   dependencies:
     dayjs "^1.10.4"
 
@@ -4298,10 +4298,15 @@ core-js@^2.4.0:
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.12.tgz#d9333dfa7b065e347cc5682219d6f690859cc2ec"
   integrity sha512-Kb2wC0fvsWfQrgk8HU5lW6U/Lcs8+9aaYcy4ZFc6DDlo4nZ7n70dEgE5rtR0oG6ufKDUnrwfWL1mXR5ljDatrQ==
 
-core-js@^3.6.1, core-js@^3.6.4, core-js@^3.6.5:
+core-js@^3.6.1, core-js@^3.6.4:
   version "3.10.0"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.10.0.tgz#9a020547c8b6879f929306949e31496bbe2ae9b3"
   integrity sha512-MQx/7TLgmmDVamSyfE+O+5BHvG1aUGj/gHhLn1wVtm2B5u1eVIPvh7vkfjwWKNCjrTJB8+He99IntSQ1qP+vYQ==
+
+core-js@^3.6.5:
+  version "3.10.1"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.10.1.tgz#e683963978b6806dcc6c0a4a8bd4ab0bdaf3f21a"
+  integrity sha512-pwCxEXnj27XG47mu7SXAwhLP3L5CrlvCB91ANUkIz40P27kUcvNfSdvyZJ9CLHiVoKSp+TTChMQMSKQEH/IQxA==
 
 core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
