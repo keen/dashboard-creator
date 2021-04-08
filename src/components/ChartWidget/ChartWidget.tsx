@@ -1,4 +1,11 @@
-import React, { FC, useRef, useEffect, useState, useContext } from 'react';
+import React, {
+  FC,
+  useRef,
+  useEffect,
+  useState,
+  useContext,
+  useCallback,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { Loader } from '@keen.io/ui-core';
 import { colors } from '@keen.io/colors';
@@ -16,6 +23,7 @@ import { RESIZE_WIDGET_EVENT } from '../../constants';
 
 import getChartInput from '../../utils/getChartInput';
 import createDataviz from './utils/createDataviz';
+import { getPresentationTimezone } from '../../modules/timezone';
 
 type Props = {
   /** Widget identifier */
@@ -50,12 +58,24 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
   const showVisualization = isConfigured && isInitialized && !isLoading;
   const chartData = interimQuery ? interimQuery : data;
 
+  const getTimezone = useCallback((chartData) => {
+    if (
+      chartData &&
+      chartData.query &&
+      chartData.query.analysis_type !== 'funnel'
+    ) {
+      return getPresentationTimezone(chartData);
+    }
+    return null;
+  }, []);
+
   useEffect(() => {
     if (showVisualization) {
       datavizRef.current = createDataviz(
         widget as ChartWidget,
         theme,
-        containerRef.current
+        containerRef.current,
+        getTimezone(chartData)
       );
 
       if (error) {

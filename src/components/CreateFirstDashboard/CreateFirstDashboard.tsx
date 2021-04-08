@@ -17,11 +17,7 @@ const CreateFirstDashboard: FC<Props> = ({ isVisible, onClick }) => {
   return (
     <AnimatePresence>
       {isVisible && (
-        <MotionContainer
-          {...modalMotion}
-          onClick={onClick}
-          data-testid="create-first-dashboard"
-        >
+        <MotionContainer {...modalMotion} onClick={onClick}>
           {t('dashboard_management.empty_project')}
         </MotionContainer>
       )}

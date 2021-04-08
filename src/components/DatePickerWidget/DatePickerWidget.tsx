@@ -11,7 +11,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { transparentize } from 'polished';
 import { Icon } from '@keen.io/icons';
 import { colors } from '@keen.io/colors';
-import { setTimezoneOffset } from '@keen.io/time-utils';
 import {
   Button,
   Anchor,
@@ -24,6 +23,8 @@ import {
   convertRelativeTime,
   getDefaultAbsoluteTime,
   TIME_PICKER_CLASS,
+  MousePositionedTooltip,
+  TimezoneError,
 } from '@keen.io/ui-core';
 
 import TimeframeLabel from '../TimeframeLabel';
@@ -33,7 +34,7 @@ import {
   Bar,
   SettingsContainer,
   TitleContainer,
-  TimezoneContainer,
+  ErrorContainer,
 } from './DatePickerWidget.styles';
 
 import {
@@ -48,12 +49,12 @@ import { AppContext } from '../../contexts';
 
 import { getEventPath } from '../../utils';
 
-import {
-  DEFAULT_TIMEFRAME,
-  DEFAULT_TIMEZONE,
-  ABSOLUTE_TAB,
-  RELATIVE_TAB,
-} from './constants';
+import { DEFAULT_TIMEFRAME, ABSOLUTE_TAB, RELATIVE_TAB } from './constants';
+
+import { BodyText } from '@keen.io/typography';
+import { getTimezoneState } from '../../modules/timezone';
+import TimezoneLoader from './components/TimezoneLoader';
+import { DEFAULT_TIMEZONE } from '../../constants';
 
 type Props = {
   /** Widget identifier */
@@ -65,14 +66,19 @@ type Props = {
 const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { modalContainer } = useContext(AppContext);
+  const { modalContainer, widgetsConfiguration } = useContext(AppContext);
   const { isActive, data } = useSelector((state: RootState) =>
     getWidget(state, id)
   );
 
+  const datePickerConfiguration = widgetsConfiguration?.datePicker;
+
   const initialData = {
     timeframe: data?.timeframe || DEFAULT_TIMEFRAME,
-    timezone: data?.timezone || DEFAULT_TIMEZONE,
+    timezone:
+      data?.timezone ||
+      datePickerConfiguration?.defaultTimezone ||
+      DEFAULT_TIMEZONE,
   };
 
   const [isOpen, setOpen] = useState(false);
@@ -81,6 +87,8 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
 
   const containerRef = useRef(null);
   const dropdownContainerRef = useRef(null);
+
+  const { timezones, isLoading, error } = useSelector(getTimezoneState);
 
   const outsideClick = useCallback(
     (e) => {
@@ -132,6 +140,7 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
   return (
     <>
       <Container
+        data-testid="dropable-container"
         ref={containerRef}
         isOpen={isOpen}
         onClick={() => {
@@ -252,30 +261,66 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
                 />
               )}
             </SettingsContainer>
-            <TimezoneContainer>
-              <Timezone
-                timezone={timezone}
-                onChange={(timezone) => {
-                  let timeframe = localData.timeframe;
-                  if (typeof timeframe !== 'string') {
-                    const timeWithZone = {
-                      start: setTimezoneOffset(timeframe['start'], timezone),
-                      end: setTimezoneOffset(timeframe['end'], timezone),
-                    };
-                    timeframe = timeWithZone;
-                  }
-                  setLocalData((state) => ({
-                    ...state,
-                    timeframe,
-                    timezone,
-                  }));
-                }}
-                timezoneLabel={t('date_picker_widget.timezone')}
-                timezonePlaceholderLabel={t(
-                  'date_picker_widget.select_timezone'
-                )}
-              />
-            </TimezoneContainer>
+            <div data-testid="timezone-select">
+              {isLoading ? (
+                <TimezoneLoader
+                  message={t('date_picker_widget_timezone.loading')}
+                />
+              ) : (
+                <>
+                  {error ? (
+                    <ErrorContainer>
+                      <TimezoneError
+                        tooltipPortal={modalContainer}
+                        tooltipMessage={t('date_picker_widget_timezone.error')}
+                        placeholder={t(
+                          'date_picker_widget_timezone.select_timezone'
+                        )}
+                        label={t('date_picker_widget_timezone.timezone')}
+                      />
+                    </ErrorContainer>
+                  ) : (
+                    <MousePositionedTooltip
+                      renderContent={() => (
+                        <BodyText variant="body3" fontWeight="normal">
+                          {t(
+                            'date_picker_widget_timezone.selection_disabled_description'
+                          )}
+                        </BodyText>
+                      )}
+                      isActive={
+                        datePickerConfiguration?.disableTimezoneSelection
+                      }
+                      tooltipPortal={modalContainer}
+                    >
+                      <Timezone
+                        timezone={timezone}
+                        timezones={timezones}
+                        disableSelection={
+                          datePickerConfiguration?.disableTimezoneSelection
+                        }
+                        emptySearchLabel={t(
+                          'date_picker_widget_timezone.empty_search'
+                        )}
+                        onChange={(timezone) =>
+                          setLocalData((state) => ({
+                            ...state,
+                            timezone,
+                          }))
+                        }
+                        timezoneLabel={t(
+                          'date_picker_widget_timezone.timezone'
+                        )}
+                        timezonePlaceholderLabel={t(
+                          'date_picker_widget_timezone.select_timezone'
+                        )}
+                      />
+                    </MousePositionedTooltip>
+                  )}
+                </>
+              )}
+            </div>
+
             <Bar>
               <Button
                 onClick={() => {

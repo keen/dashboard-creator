@@ -1,5 +1,9 @@
 import React from 'react';
-import { render as rtlRender, cleanup } from '@testing-library/react';
+import {
+  render as rtlRender,
+  fireEvent,
+  cleanup,
+} from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 
@@ -7,7 +11,11 @@ import { AppContext } from '../../contexts';
 
 import DatePickerWidget from './DatePickerWidget';
 
-const render = (storeState: any = {}, overProps: any = {}) => {
+const render = (
+  storeState: any = {},
+  overProps: any = {},
+  contextValues = {}
+) => {
   const widgetId = '@widget/01';
   const props = {
     id: widgetId,
@@ -26,21 +34,40 @@ const render = (storeState: any = {}, overProps: any = {}) => {
         },
       },
     },
+    timezone: {
+      timezones: [
+        {
+          name: 'Europe/Warsaw',
+          utcOffset: '+01:00',
+          numberOfSecondsToOffsetTime: 3600,
+        },
+        {
+          name: 'Africa/Nairobi',
+          utcOffset: '+01:00',
+          numberOfSecondsToOffsetTime: 3600,
+        },
+      ],
+    },
     ...storeState,
   };
 
   const mockStore = configureStore([]);
   const store = mockStore({ ...state });
 
+  const contextValue = {
+    ...contextValues,
+    modalContainer: '#modal-root',
+    widgetsConfiguration: {
+      datePicker: {
+        disableTimezoneSelection: true,
+        defaultTimezone: 'Africa/Nairobi',
+      },
+    },
+  } as any;
+
   const wrapper = rtlRender(
     <Provider store={store}>
-      <AppContext.Provider
-        value={
-          {
-            modalContainer: '#modal-root',
-          } as any
-        }
-      >
+      <AppContext.Provider value={contextValue}>
         <DatePickerWidget {...props} />
       </AppContext.Provider>
     </Provider>
@@ -75,6 +102,66 @@ test('should render timeframe for active widget', () => {
   expect(getByText('relative_time_label.today_includes')).toBeInTheDocument();
 });
 
+test('allows user to apply date picker modifiers', () => {
+  const {
+    store,
+    wrapper: { getByText, getByTestId },
+  } = render();
+
+  const element = getByTestId('dropable-container');
+  fireEvent.click(element);
+
+  store.clearActions();
+
+  const button = getByText('date_picker_widget.apply');
+  fireEvent.click(button);
+
+  expect(store.getActions()).toMatchInlineSnapshot(`
+    Array [
+      Object {
+        "payload": Object {
+          "timeframe": "this_14_days",
+          "timezone": "UTC",
+          "widgetId": "@widget/01",
+        },
+        "type": "@widgets/SET_DATE_PICKER_WIDGET_MODIFIERS",
+      },
+      Object {
+        "payload": Object {
+          "id": "@widget/01",
+        },
+        "type": "@widgets/APPLY_DATE_PICKER_MODIFIERS",
+      },
+    ]
+  `);
+});
+
+test('allows user to clear date picker modifiers', () => {
+  const {
+    store,
+    wrapper: { getByText, getByTestId },
+  } = render();
+
+  const element = getByTestId('dropable-container');
+  fireEvent.click(element);
+
+  store.clearActions();
+
+  const clearButton = getByText('date_picker_widget.clear');
+  fireEvent.click(clearButton);
+
+  expect(store.getActions()).toMatchInlineSnapshot(`
+    Array [
+      Object {
+        "payload": Object {
+          "id": "@widget/01",
+        },
+        "type": "@widgets/CLEAR_DATE_PICKER_MODIFIERS",
+      },
+    ]
+  `);
+});
+
 test('should render widget title for inactive widget', () => {
   const widgetId = '@widget/02';
   const state = {
@@ -92,4 +179,24 @@ test('should render widget title for inactive widget', () => {
     wrapper: { getByText },
   } = render({ ...state }, { id: widgetId });
   expect(getByText('date_picker_widget.name')).toBeInTheDocument();
+});
+
+test('Should render default timezone if widget has no data', async () => {
+  const {
+    wrapper: { getByTestId, findByTestId },
+  } = render({
+    widgets: {
+      items: {
+        '@widget/01': {
+          isActive: true,
+          data: {},
+        },
+      },
+    },
+  });
+
+  const dropdown = getByTestId('dropable-container');
+  fireEvent.click(dropdown);
+  const timezoneSelect = await findByTestId('timezone-select');
+  expect(timezoneSelect).toHaveTextContent('Africa/Nairobi');
 });

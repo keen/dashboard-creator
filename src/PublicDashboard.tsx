@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase, @typescript-eslint/ban-ts-ignore */
+import { timezoneActions } from './modules/timezone';
+
 if (process.env.NODE_ENV === 'production') {
   // @ts-ignore
   __webpack_public_path__ = window.dashboardCreatorResourcesBasePath;
@@ -22,6 +24,7 @@ import { NotificationManager } from './modules/notifications';
 import { viewPublicDashboard } from './modules/dashboards';
 
 import PublicDashboardViewer from './components/PublicDashboardViewer';
+import GlobalStyles from './components/GlobalStyles';
 
 import createI18n from './i18n';
 import createSagaMiddleware from './createSagaMiddleware';
@@ -57,6 +60,9 @@ export class PublicDashboard {
   /** App localization settings */
   private readonly translationsSettings: TranslationsSettings;
 
+  /** Widgets configuration **/
+  private widgetsConfiguration = {};
+
   constructor(config: PublicDashboardOptions) {
     const {
       container,
@@ -65,6 +71,7 @@ export class PublicDashboard {
       dashboardId,
       backend,
       translations,
+      widgetsConfiguration,
     } = config;
 
     if (backend?.analyticsApiUrl)
@@ -80,6 +87,7 @@ export class PublicDashboard {
     this.dashboardId = dashboardId;
     this.accessKey = accessKey;
     this.translationsSettings = translations || {};
+    this.widgetsConfiguration = widgetsConfiguration;
   }
 
   render() {
@@ -103,6 +111,7 @@ export class PublicDashboard {
       blobApi,
       keenAnalysis,
       i18n,
+      analyticsApiHost: this.analyticsApiUrl,
       notificationManager: new NotificationManager({
         pubsub: notificationPubSub,
         eventName: SHOW_TOAST_NOTIFICATION_EVENT,
@@ -122,10 +131,13 @@ export class PublicDashboard {
     };
 
     sagaMiddleware.run(rootSaga);
+
+    store.dispatch(timezoneActions.fetchTimezones());
     store.dispatch(viewPublicDashboard(this.dashboardId));
 
     ReactDOM.render(
       <Provider store={store}>
+        <GlobalStyles modalContainer={this.modalContainer} />
         <ThemeProvider
           theme={{
             breakpoints: screenBreakpoints,
@@ -139,6 +151,7 @@ export class PublicDashboard {
                   project: projectSettings,
                   analyticsApiUrl: this.analyticsApiUrl,
                   modalContainer: this.modalContainer,
+                  widgetsConfiguration: this.widgetsConfiguration,
                 }}
               >
                 <APIContext.Provider value={{ blobApi, keenAnalysis }}>

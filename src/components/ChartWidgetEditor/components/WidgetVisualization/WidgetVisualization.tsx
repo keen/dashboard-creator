@@ -1,7 +1,11 @@
-import React, { FC, useMemo, useEffect } from 'react';
+import React, { FC, useMemo, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence } from 'framer-motion';
-import { getAvailableWidgets, WidgetPicker } from '@keen.io/widget-picker';
+import {
+  getAvailableWidgets,
+  getSimpleOptionsWidgets,
+  WidgetPicker,
+} from '@keen.io/widget-picker';
 import { Button, FadeLoader } from '@keen.io/ui-core';
 import { Theme } from '@keen.io/charts';
 
@@ -20,6 +24,7 @@ import { fadeMaskMotion } from './motion';
 import { DISABLE_WIDGETS } from './constants';
 
 import { VisualizationSettings } from './types';
+import { getPresentationTimezone } from '../../../../modules/timezone';
 
 type Props = {
   /** Query run indocator */
@@ -76,6 +81,17 @@ const WidgetVisualization: FC<Props> = ({
     }
   }, [widgets, type]);
 
+  const getTimezone = useCallback((queryResults) => {
+    if (
+      analysisResult &&
+      analysisResult.query.analysis_type !== 'funnel' &&
+      analysisResult.result
+    ) {
+      return getPresentationTimezone(queryResults);
+    }
+    return null;
+  }, []);
+
   return (
     <Container>
       {analysisResult ? (
@@ -86,6 +102,7 @@ const WidgetVisualization: FC<Props> = ({
               currentWidget={type}
               chartSettings={chartSettings}
               widgetSettings={widgetSettings}
+              disabledWidgetOptions={getSimpleOptionsWidgets(querySettings)}
               onUpdateSettings={(widgetType, chartSettings, widgetSettings) =>
                 onChangeVisualization({
                   type: widgetType,
@@ -103,6 +120,7 @@ const WidgetVisualization: FC<Props> = ({
                 chartSettings={chartSettings}
                 widgetSettings={widgetSettings}
                 analysisResults={analysisResult}
+                presentationTimezone={getTimezone(analysisResult)}
               />
               <AnimatePresence>
                 {outdatedAnalysisResults && (

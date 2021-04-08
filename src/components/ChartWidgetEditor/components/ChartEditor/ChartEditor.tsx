@@ -96,7 +96,9 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
   }, [initialQuerySettings, querySettings]);
 
   useEffect(() => {
-    return () => dispatch(editorUnmounted());
+    return () => {
+      dispatch(editorUnmounted());
+    };
   }, []);
 
   const outdatedAnalysisResults = !!(analysisResult !== null && isDirtyQuery);

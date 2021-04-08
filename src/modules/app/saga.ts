@@ -5,6 +5,7 @@ import { setBaseTheme } from '../theme';
 import { appStart as appStartAction } from './actions';
 
 import { APP_START } from './constants';
+import { timezoneActions } from '../timezone';
 
 export function* appStart({ payload }: ReturnType<typeof appStartAction>) {
   const {
@@ -12,6 +13,7 @@ export function* appStart({ payload }: ReturnType<typeof appStartAction>) {
   } = payload;
   yield put(fetchDashboardList());
   yield put(setBaseTheme(baseTheme));
+  yield put(timezoneActions.fetchTimezones());
 }
 
 export function* appSaga() {

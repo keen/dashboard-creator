@@ -104,7 +104,7 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
       setDropdown((state) => ({
         ...state,
         x: left,
-        y: bottom - document.body.offsetHeight + window.scrollY,
+        y: bottom + window.scrollY,
         width,
       }));
     }

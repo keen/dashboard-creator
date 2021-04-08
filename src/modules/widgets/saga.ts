@@ -196,6 +196,8 @@ export function* createQueryForWidget(widgetId: string) {
 
   if (action.type === CLOSE_CHART_EDITOR) {
     yield* cancelWidgetConfiguration(widgetId);
+    yield take(EDITOR_UNMOUNTED);
+    yield put(resetEditor());
   } else {
     const {
       querySettings,

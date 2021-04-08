@@ -24,6 +24,7 @@ const initialProps = {
   },
   chartSettings: {},
   widgetSettings: {},
+  presentationTimezone: 60,
 };
 
 beforeEach(() => {
@@ -33,7 +34,6 @@ beforeEach(() => {
 
 test('creates KeenDataviz instance', () => {
   render(<DataViz {...initialProps} />);
-
   expect(KeenDataviz).toHaveBeenCalledTimes(1);
 });
 
@@ -54,6 +54,14 @@ test('creates KeenDataviz instance with theme settings', () => {
 
 test('calls KeenDataviz render method with analysis results', () => {
   render(<DataViz {...initialProps} />);
-
   expect(renderMock).toHaveBeenCalledWith(initialProps.analysisResults);
+});
+
+test('calls KeenDataviz render method with presentation timezone', () => {
+  render(<DataViz {...initialProps} />);
+  expect(KeenDataviz).toHaveBeenCalledWith(
+    expect.objectContaining({
+      presentationTimezone: initialProps.presentationTimezone,
+    })
+  );
 });

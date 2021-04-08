@@ -11,6 +11,7 @@ import { themeReducer } from './modules/theme';
 import { chartEditorReducer } from './modules/chartEditor';
 import { textEditorReducer } from './modules/textEditor';
 import { filterReducer } from './modules/filter';
+import { timezoneReducer } from './modules/timezone';
 
 export const history = createMemoryHistory();
 
@@ -25,6 +26,7 @@ const rootReducer = combineReducers({
   textEditor: textEditorReducer,
   router: connectRouter(history),
   theme: themeReducer,
+  timezone: timezoneReducer,
 });
 
 export default rootReducer;

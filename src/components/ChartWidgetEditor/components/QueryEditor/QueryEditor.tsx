@@ -1,5 +1,5 @@
 import React, { FC, useRef, useEffect, useCallback, useContext } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Query } from '@keen.io/query';
 import QueryCreator from '@keen.io/query-creator';
 
@@ -11,6 +11,10 @@ import {
 } from '../../../../modules/chartEditor';
 
 import { AppContext } from '../../../../contexts';
+import {
+  getDefaultTimezone,
+  getTimezoneSelectionDisabled,
+} from '../../../../modules/timezone';
 
 type Props = {
   /** Edit mode indicator */
@@ -28,6 +32,9 @@ const QueryEditor: FC<Props> = ({ isEditMode, initialQueryInitialized }) => {
     project: { id, userKey, masterKey },
   } = useContext(AppContext);
 
+  const defaultTimezoneForQuery = useSelector(getDefaultTimezone);
+  const timezoneSelectionDisabled = useSelector(getTimezoneSelectionDisabled);
+
   const setChartSettings = useCallback(
     (chartSettings: Record<string, any>) =>
       dispatch(updateChartSettings(chartSettings)),
@@ -41,7 +48,6 @@ const QueryEditor: FC<Props> = ({ isEditMode, initialQueryInitialized }) => {
   const initialQueryRef = useRef(null);
 
   initialQueryRef.current = initialQueryInitialized;
-
   return (
     <QueryCreator
       projectId={id}
@@ -49,6 +55,8 @@ const QueryEditor: FC<Props> = ({ isEditMode, initialQueryInitialized }) => {
       masterKey={masterKey}
       modalContainer={modalContainer}
       onUpdateChartSettings={setChartSettings}
+      defaultTimezoneForQuery={defaultTimezoneForQuery}
+      disableTimezoneSelection={timezoneSelectionDisabled}
       onUpdateQuery={(query: Query, isQueryReady: boolean) => {
         if (isEditMode) {
           if (isQueryReady) {

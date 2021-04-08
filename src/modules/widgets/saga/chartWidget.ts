@@ -215,7 +215,8 @@ export function* checkIfChartWidgetHasInconsistentFilters(chartWidget: any) {
     chartWidget.data?.query?.event_collection &&
     connectedFiltersEventStreams.length > 0 &&
     connectedFiltersEventStreams.some(
-      (eventStream) => eventStream !== chartWidget.data.query.event_collection
+      (eventStream: string) =>
+        eventStream !== chartWidget.data.query.event_collection
     );
 
   if (
@@ -309,6 +310,7 @@ export function* initializeChartWidget({
         isInitialized: true,
         error: {
           message: body,
+          code: WidgetErrors.CANNOT_INITIALIZE,
         },
       })
     );
@@ -482,6 +484,7 @@ export function* editChartWidget({
 
   yield take(EDITOR_MOUNTED);
   const pubsub = yield getContext(PUBSUB);
+
   yield pubsub.publish(SET_QUERY_EVENT, { query });
 
   if (chartSettings?.stepLabels && chartSettings.stepLabels.length) {

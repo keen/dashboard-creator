@@ -805,6 +805,7 @@ describe('initializeChartWidget()', () => {
             isInitialized: true,
             error: {
               message: errorBody,
+              code: WidgetErrors.CANNOT_INITIALIZE,
             },
           })
         )

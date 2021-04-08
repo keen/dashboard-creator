@@ -2,7 +2,6 @@
 import React, { forwardRef } from 'react';
 import {
   render as rtlRender,
-  waitFor,
   fireEvent,
   cleanup,
 } from '@testing-library/react';
@@ -124,12 +123,13 @@ test('renders notification about creating first dashboard in project', async () 
     },
   };
   const {
-    wrapper: { getByTestId },
+    wrapper: { findByText },
   } = render(storeState);
 
-  waitFor(() =>
-    expect(getByTestId('create-first-dashboard')).toBeInTheDocument()
+  const createDashboardNotification = await findByText(
+    'dashboard_management.empty_project'
   );
+  expect(createDashboardNotification).toBeInTheDocument();
 });
 
 test('renders dashboards loading placeholder', () => {

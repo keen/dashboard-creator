@@ -1,5 +1,6 @@
 import React from 'react';
 import { PubSub } from '@keen.io/pubsub';
+import { WidgetsConfiguration } from '../types';
 
 export const AppContext = React.createContext<{
   notificationPubSub: PubSub;
@@ -11,6 +12,7 @@ export const AppContext = React.createContext<{
     masterKey: string;
   };
   createSharedDashboardUrl?: (accessKey: string, dashboardId: string) => string;
+  widgetsConfiguration?: WidgetsConfiguration;
 }>({
   notificationPubSub: null,
   modalContainer: null,
@@ -21,4 +23,5 @@ export const AppContext = React.createContext<{
     masterKey: null,
   },
   createSharedDashboardUrl: () => '',
+  widgetsConfiguration: {},
 });

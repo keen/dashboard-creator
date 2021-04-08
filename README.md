@@ -16,7 +16,46 @@ or
 yarn add @keen.io/dashboard-creator
 ```
 
-### project setup
+### Settings
+
+The Dashboard Creator components configuration could be specified during creation of application instance.
+
+##### Set default timezone for queries
+
+Specify default `timezone` used for new created queries. Provided argument must be compatible with **IANA** [Time Zone Database](https://www.iana.org/time-zones) standard.
+
+```typescript
+const explorer = new KeenDashboardCreator({
+  defaultTimezoneForQuery: 'Europe/Warsaw',
+});
+```
+
+##### Disable timezone selection
+
+Disables possibility to change `timezone` for queries from user interface.
+
+```typescript
+const explorer = new KeenDashboardCreator({
+  disableTimezoneSelection: true,
+});
+```
+
+##### Date Picker
+
+Setup default timezone in widget and disable timezone selection.
+
+```typescript
+const explorer = new KeenDashboardCreator({
+  widgetsConfiguration: {
+    datePicker: {
+      defaultTimezone: 'Etc/UTC',
+      disableTimezoneSelection: true
+    }
+  },
+});
+```
+
+### Project Setup
 
 ##### prerequisites
 
