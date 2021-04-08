@@ -83,9 +83,9 @@ const WidgetVisualization: FC<Props> = ({
 
   const getTimezone = useCallback((queryResults) => {
     if (
-      analysisResult &&
-      analysisResult.query.analysis_type !== 'funnel' &&
-      analysisResult.result
+      queryResults &&
+      queryResults.query.analysis_type !== 'funnel' &&
+      queryResults.result
     ) {
       return getPresentationTimezone(queryResults);
     }
