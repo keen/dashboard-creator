@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { transparentize } from 'polished';
 import { Icon } from '@keen.io/icons';
+import { setTimezoneOffset } from '@keen.io/time-utils';
 import { colors } from '@keen.io/colors';
 import {
   Button,
@@ -302,12 +303,27 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
                         emptySearchLabel={t(
                           'date_picker_widget_timezone.empty_search'
                         )}
-                        onChange={(timezone) =>
+                        onChange={(timezone) => {
+                          let timeframe = localData.timeframe;
+                          if (typeof timeframe !== 'string') {
+                            const timeWithZone = {
+                              start: setTimezoneOffset(
+                                timeframe['start'],
+                                timezone
+                              ),
+                              end: setTimezoneOffset(
+                                timeframe['end'],
+                                timezone
+                              ),
+                            };
+                            timeframe = timeWithZone;
+                          }
                           setLocalData((state) => ({
                             ...state,
+                            timeframe,
                             timezone,
-                          }))
-                        }
+                          }));
+                        }}
                         timezoneLabel={t(
                           'date_picker_widget_timezone.timezone'
                         )}
