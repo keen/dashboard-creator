@@ -19,6 +19,10 @@ export const Container = styled.div`
   display: flex;
   flex: 1;
   overflow: hidden;
+
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  height: inherit;
 `;
 
 export const Html = styled.div<{
