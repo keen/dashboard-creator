@@ -14,6 +14,7 @@ import {
   RemoveContainer,
   ManagementContainer,
   ButtonsContainer,
+  ButtonWrapper,
 } from './TextManagement.styles';
 
 import TextEditor from '../TextEditor';
@@ -131,12 +132,14 @@ const TextManagement: FC<Props> = ({
             </DragHandle>
             <ButtonsContainer>
               <PreventDragPropagation>
-                <Button
-                  variant="blank"
-                  onClick={() => dispatch(editTextWidget(id))}
-                >
-                  {t('widget.edit_text')}
-                </Button>
+                <ButtonWrapper>
+                  <Button
+                    variant="blank"
+                    onClick={() => dispatch(editTextWidget(id))}
+                  >
+                    {t('widget.edit_text')}
+                  </Button>
+                </ButtonWrapper>
               </PreventDragPropagation>
               <PreventDragPropagation>
                 <div data-testid="remove-text-widget">
