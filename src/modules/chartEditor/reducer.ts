@@ -36,6 +36,7 @@ export const initialState: ReducerState = {
   hasQueryChanged: false,
   initialQuerySettings: null,
   querySettings: {},
+  queryError: null,
   visualization: {
     type: null,
     chartSettings: {},
@@ -131,6 +132,7 @@ const chartEditorReducer = (
       return {
         ...state,
         isDirtyQuery: false,
+        queryError: action.payload,
         isQueryPerforming: false,
       };
     case RUN_QUERY_SUCCESS:
@@ -138,6 +140,7 @@ const chartEditorReducer = (
         ...state,
         isQueryPerforming: false,
         isDirtyQuery: false,
+        queryError: null,
         analysisResult: action.payload.results,
       };
     case RUN_QUERY:

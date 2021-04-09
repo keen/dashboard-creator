@@ -151,7 +151,7 @@ export function* runQuery() {
     yield put(runQuerySuccess(analysisResult));
   } catch (error) {
     const { body } = error;
-    yield put(runQueryError());
+    yield put(runQueryError(body));
     const notificationManager = yield getContext(NOTIFICATION_MANAGER);
     yield notificationManager.showNotification({
       type: 'error',

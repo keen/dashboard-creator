@@ -1,11 +1,18 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import React, { FC, useState, useEffect, useCallback } from 'react';
+import React, { FC, useState, useEffect, useCallback, useContext } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import deepEqual from 'deep-equal';
 import { getAvailableWidgets } from '@keen.io/widget-picker';
-import { Button, Alert, Anchor } from '@keen.io/ui-core';
+import {
+  Button,
+  Alert,
+  Anchor,
+  MousePositionedTooltip,
+} from '@keen.io/ui-core';
+import { colors } from '@keen.io/colors';
+import { BodyText } from '@keen.io/typography';
 
 import {
   Container,
@@ -31,6 +38,7 @@ import {
   EditorSection,
 } from '../../../../modules/chartEditor';
 import { getActiveDashboardTheme } from '../../../../modules/theme';
+import { AppContext } from '../../../../contexts';
 
 import WidgetVisualization from '../WidgetVisualization';
 import HeadingSettings from '../HeadingSettings';
@@ -65,9 +73,12 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
     isDirtyQuery,
     isSavedQuery,
     isQueryPerforming,
+    queryError,
     hasQueryChanged,
   } = useSelector(getChartEditor);
+
   const baseTheme = useSelector(getActiveDashboardTheme);
+  const { modalContainer } = useContext(AppContext);
 
   const { type: widgetType, widgetSettings } = visualization;
 
@@ -173,15 +184,30 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
         </ChartSettings>
       )}
       <Footer>
-        <Button
-          variant="secondary"
-          isDisabled={isQueryPerforming}
-          onClick={onApplyConfiguration}
+        <MousePositionedTooltip
+          isActive={isDirtyQuery}
+          renderContent={() => (
+            <BodyText
+              variant="body2"
+              fontWeight="normal"
+              color={colors.white[500]}
+            >
+              {t('chart_widget_editor.run_query_first')}
+            </BodyText>
+          )}
+          tooltipPortal={modalContainer}
+          tooltipTheme="dark"
         >
-          {isEditMode
-            ? t('chart_widget_editor.save')
-            : t('chart_widget_editor.add_to_dashboard')}
-        </Button>
+          <Button
+            variant="secondary"
+            isDisabled={isQueryPerforming || isDirtyQuery || !!queryError}
+            onClick={onApplyConfiguration}
+          >
+            {isEditMode
+              ? t('chart_widget_editor.save')
+              : t('chart_widget_editor.add_to_dashboard')}
+          </Button>
+        </MousePositionedTooltip>
         <Cancel>
           <Anchor onClick={onClose}>{t('chart_widget_editor.cancel')}</Anchor>
         </Cancel>
