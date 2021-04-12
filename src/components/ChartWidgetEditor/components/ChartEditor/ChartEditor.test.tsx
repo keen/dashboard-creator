@@ -131,14 +131,15 @@ test('do not allows user to apply incomplete chart settings', () => {
 
   const {
     wrapper: { getByText },
+    store,
   } = render(storeState);
+
+  store.clearActions();
 
   const button = getByText('chart_widget_editor.add_to_dashboard');
   fireEvent.click(button);
 
-  expect(
-    getByText('chart_widget_editor.configuration_error')
-  ).toBeInTheDocument();
+  expect(store.getActions()).toEqual([]);
 });
 
 test('allows user to apply chart editor configuration', () => {
