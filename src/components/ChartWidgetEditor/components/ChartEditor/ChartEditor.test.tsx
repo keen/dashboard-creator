@@ -4,6 +4,7 @@ import {
   render as rtlRender,
   fireEvent,
   waitFor,
+  cleanup,
 } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
@@ -40,7 +41,7 @@ const render = (storeState: any = {}, overProps: any = {}) => {
   const appContext = {
     notificationPubSub: new PubSub(),
     analyticsApiUrl: '@keen-api-url',
-    modalContainer: '#modalContainer',
+    modalContainer: '#modal-root',
     project: {
       id: '@project-id',
       userKey: '@user-key',
@@ -66,6 +67,19 @@ const render = (storeState: any = {}, overProps: any = {}) => {
 };
 
 jest.useFakeTimers();
+
+afterEach(() => {
+  cleanup();
+});
+
+beforeEach(() => {
+  let modalRoot = document.getElementById('modal-root');
+  if (!modalRoot) {
+    modalRoot = document.createElement('div');
+    modalRoot.setAttribute('id', 'modal-root');
+    document.body.appendChild(modalRoot);
+  }
+});
 
 test('allows user to run query', () => {
   const {
@@ -266,4 +280,66 @@ test('shows placeholder with run query button', () => {
   } = render(storeState);
 
   expect(getByText('chart_widget_editor.run_query')).toBeInTheDocument();
+});
+
+test('does not allow user to apply chart editor configuration when query has error', () => {
+  const storeState = {
+    chartEditor: {
+      ...chartEditorState,
+      analysisResult: {
+        query: {
+          analysis_type: 'count',
+        },
+        results: 100,
+      },
+      visualization: {
+        type: 'metric',
+        chartSettings: {},
+        widgetSettings: {},
+      },
+      queryError: 'There is error in the query',
+    },
+  };
+
+  const {
+    wrapper: { getByText },
+    store,
+  } = render(storeState);
+
+  store.clearActions();
+
+  const button = getByText('chart_widget_editor.add_to_dashboard');
+  fireEvent.click(button);
+  expect(store.getActions()).toEqual([]);
+});
+
+test('does not allow user to apply chart editor configuration when query is dirty', () => {
+  const storeState = {
+    chartEditor: {
+      ...chartEditorState,
+      analysisResult: {
+        query: {
+          analysis_type: 'count',
+        },
+        results: 100,
+      },
+      visualization: {
+        type: 'metric',
+        chartSettings: {},
+        widgetSettings: {},
+      },
+      isDirtyQuery: true,
+    },
+  };
+
+  const {
+    wrapper: { getByText },
+    store,
+  } = render(storeState);
+
+  store.clearActions();
+
+  const button = getByText('chart_widget_editor.add_to_dashboard');
+  fireEvent.click(button);
+  expect(store.getActions()).toEqual([]);
 });

@@ -100,14 +100,16 @@ test('set state for successful query perform', () => {
   expect(analysisResult).toEqual(queryResult);
 });
 
-test('set perform state for unsuccessful query', () => {
-  const action = runQueryError();
-  const { isQueryPerforming } = chartEditorReducer(
-    { ...initialState, isQueryPerforming: true },
+test('set perform state and error message for unsuccessful query', () => {
+  const errorMessage = 'An error occurred';
+  const action = runQueryError(errorMessage);
+  const { isQueryPerforming, queryError } = chartEditorReducer(
+    { ...initialState, isQueryPerforming: true, queryError: null },
     action
   );
 
   expect(isQueryPerforming).toEqual(false);
+  expect(errorMessage).toEqual(queryError);
 });
 
 test('set correct query performing state', () => {

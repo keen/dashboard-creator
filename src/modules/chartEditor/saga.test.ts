@@ -255,6 +255,7 @@ describe('runQuery()', () => {
     const keenAnalysis = {
       query: jest.fn(),
     };
+    const queryError = 'QUERY_ERROR';
 
     const notificationManager = {
       showNotification: jest.fn(),
@@ -270,12 +271,13 @@ describe('runQuery()', () => {
 
     test('performs query', () => {
       expect(keenAnalysis.query).toHaveBeenCalledWith(querySettings);
-
-      return new Error();
+      const error = new Error() as any;
+      error.body = queryError;
+      return error;
     });
 
     test('dispatch run query error action', (result) => {
-      expect(result).toEqual(put(runQueryError()));
+      expect(result).toEqual(put(runQueryError(queryError)));
     });
 
     test('get notification manager from context', () => {

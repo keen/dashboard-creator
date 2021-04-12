@@ -142,7 +142,11 @@ export const runQuerySuccess = createAction(
   })
 );
 
-export const runQueryError = createAction(RUN_QUERY_ERROR);
+export const runQueryError = createAction(RUN_QUERY_ERROR, (body: string) => {
+  return {
+    payload: body,
+  };
+});
 
 export const applyConfiguration = createAction(APPLY_CONFIGURATION);
 

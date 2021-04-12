@@ -28,6 +28,7 @@ export type ReducerState = {
   querySettings: Partial<Query>;
   initialQuerySettings: Partial<Query>;
   analysisResult: Record<string, any> | null;
+  queryError: string | null;
   visualization: {
     type: Exclude<PickerWidgets, 'json'>;
     chartSettings: ChartSettings;
