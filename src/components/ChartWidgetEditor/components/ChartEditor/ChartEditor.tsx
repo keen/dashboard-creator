@@ -86,12 +86,9 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
     const availableWidgets = getAvailableWidgets(querySettings);
     if (availableWidgets.includes(widgetType) && analysisResult) {
       setError(null);
-      dispatch(applyConfiguration());
-    } else if (!analysisResult) {
-      setError(ChartEditorError.CONFIGURATION);
-    } else {
-      setError(ChartEditorError.WIDGET);
+      return dispatch(applyConfiguration());
     }
+    setError(ChartEditorError.WIDGET);
   }, [widgetType, querySettings, analysisResult]);
 
   useEffect(() => {
@@ -185,7 +182,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
       )}
       <Footer>
         <MousePositionedTooltip
-          isActive={isDirtyQuery}
+          isActive={isDirtyQuery || !analysisResult}
           renderContent={() => (
             <BodyText
               variant="body2"
@@ -200,7 +197,12 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
         >
           <Button
             variant="secondary"
-            isDisabled={isQueryPerforming || isDirtyQuery || !!queryError}
+            isDisabled={
+              isQueryPerforming ||
+              isDirtyQuery ||
+              !!queryError ||
+              !analysisResult
+            }
             onClick={onApplyConfiguration}
           >
             {isEditMode
