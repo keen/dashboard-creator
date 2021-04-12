@@ -8,7 +8,10 @@ import React, {
 } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { transparentize } from 'polished';
 import { Dropdown, Portal } from '@keen.io/ui-core';
+import { BodyText } from '@keen.io/typography';
+import { colors } from '@keen.io/colors';
 
 import { getEventPath } from '../../utils';
 
@@ -108,10 +111,16 @@ const FilterDashboards = () => {
 
   return (
     <>
-      <Container ref={containerRef} onClick={() => setOpen(!isOpen)}>
+      <Container
+        ref={containerRef}
+        onClick={() => setOpen(!isOpen)}
+        isOpen={isOpen}
+      >
         <Filter>
-          {t('tags_filters.title')}
-          {filtersCount ? ` (${filtersCount})` : null}
+          <BodyText variant="body2" fontWeight="bold">
+            {t('tags_filters.title')}
+            {filtersCount ? ` (${filtersCount})` : null}
+          </BodyText>
         </Filter>
       </Container>
       <Portal modalContainer={modalContainer}>
@@ -121,9 +130,9 @@ const FilterDashboards = () => {
             fullWidth={false}
             positionRelativeToDocument={true}
             motion={{
-              initial: { opacity: 0, top: dropdown.y, left: dropdown.x },
-              animate: { opacity: 1, top: dropdown.y, left: dropdown.x },
-              exit: { opacity: 0, top: dropdown.y, left: dropdown.x },
+              initial: { opacity: 0, top: dropdown.y, left: dropdown.x, y: 20 },
+              animate: { opacity: 1, y: 2 },
+              exit: { opacity: 0, y: 30 },
             }}
           >
             <DropdownContent>
@@ -166,7 +175,13 @@ const FilterDashboards = () => {
               </TagsContainer>
               {isEmptySearch && (
                 <EmptySearch>
-                  {t('tags_filters.empty_search_message')}
+                  <BodyText
+                    variant="body3"
+                    fontWeight="normal"
+                    color={transparentize(0.2, colors.black[100])}
+                  >
+                    {t('tags_filters.empty_search_message')}
+                  </BodyText>
                 </EmptySearch>
               )}
             </DropdownContent>
@@ -176,7 +191,13 @@ const FilterDashboards = () => {
                 dispatch(setTagsFilters([]));
               }}
             >
-              {t('tags_filters.clear')}
+              <BodyText
+                variant="body2"
+                fontWeight="bold"
+                color={colors.blue[200]}
+              >
+                {t('tags_filters.clear')}
+              </BodyText>
             </ClearFilters>
           </Dropdown>
         </div>

@@ -1,17 +1,20 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { transparentize } from 'polished';
 import { colors } from '@keen.io/colors';
 
-export const Container = styled.div`
+export const Container = styled.div<{ isOpen: boolean }>`
   position: relative;
   cursor: pointer;
+
+  ${({ isOpen }) =>
+    isOpen &&
+    css`
+      box-shadow: 0 2px 4px 0 ${transparentize(0.85, colors.black[500])};
+    `};
 `;
 
 export const Filter = styled.div`
   border-radius: 4px;
-  font-size: 14px;
-  color: ${colors.black[100]};
-  font-family: Lato Bold, sans-serif;
   background: ${colors.white[500]};
   padding: 10px 14px;
 `;
@@ -30,16 +33,10 @@ export const TagsContainer = styled.div`
 export const ClearFilters = styled.div`
   padding: 10px 14px;
   border-top: solid 1px ${colors.gray[300]};
-  color: ${colors.blue[200]};
-  font-size: 14px;
-  font-family: 'Lato Bold', sans-serif;
   cursor: pointer;
 `;
 
 export const EmptySearch = styled.div`
   padding: 10px 14px;
-  color: ${transparentize(0.2, colors.black[100])};
-  font-size: 12px;
-  font-family: 'Lato Regular', sans-serif;
   text-align: center;
 `;

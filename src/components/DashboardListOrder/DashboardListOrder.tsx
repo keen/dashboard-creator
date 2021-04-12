@@ -5,9 +5,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Dropdown, UI_LAYERS } from '@keen.io/ui-core';
 import { colors } from '@keen.io/colors';
 import { Icon } from '@keen.io/icons';
+import { BodyText } from '@keen.io/typography';
 
 import {
-  Container,
   Order,
   DropIndicator,
   List,
@@ -52,9 +52,15 @@ const DashboardListOrder = () => {
   }, [isOpen]);
 
   return (
-    <Container ref={containerRef}>
-      <Order data-testid="dropable-container" onClick={() => setOpen(true)}>
-        {DASHBOARDS_ORDER[dashboardListOrder]}
+    <div ref={containerRef}>
+      <Order
+        data-testid="dropable-container"
+        onClick={() => setOpen(!isOpen)}
+        isOpen={isOpen}
+      >
+        <BodyText variant="body2" fontWeight="bold">
+          {DASHBOARDS_ORDER[dashboardListOrder]}
+        </BodyText>
         <DropIndicator>
           <Icon
             type="caret-down"
@@ -79,13 +85,13 @@ const DashboardListOrder = () => {
                   setSelected(order);
                 }}
               >
-                {DASHBOARDS_ORDER[order]}
+                <BodyText variant="body2">{DASHBOARDS_ORDER[order]}</BodyText>
               </ListItem>
             ))}
           </List>
         </Dropdown>
       </div>
-    </Container>
+    </div>
   );
 };
 
