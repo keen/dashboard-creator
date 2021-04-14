@@ -5,6 +5,8 @@ import {
   fireEvent,
   waitFor,
   cleanup,
+  screen,
+  getByPlaceholderText,
 } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
@@ -15,6 +17,7 @@ import ChartEditor from './ChartEditor';
 import {
   initialState as chartEditorState,
   EDITOR_MOUNTED,
+  EditorSection,
 } from '../../../../modules/chartEditor';
 import { AppContext } from '../../../../contexts';
 

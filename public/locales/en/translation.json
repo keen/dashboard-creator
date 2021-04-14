@@ -471,5 +471,25 @@
     "label": "Last",
     "today_includes": "(Includes today)",
     "relativity_title": "Includes current"
+  },
+  "widget_customization_heading_settings": {
+    "section_title": "Basic Info",
+    "section_description": "(Add context to your data by applying Title and Subtitle)",
+    "title_label": "Chart title",
+    "title_placeholder": "Enter title",
+    "subtitle_label": "Chart subtitle",
+    "subtitle_placeholder": "Enter subtitle",
+    "saved_query_name_label": "Saved Query name:",
+    "saved_query_name_tooltip": "Click to use as Chart Title"
+  },
+  "widget_customization_format_value_settings": {
+    "section_title": "Values Format",
+    "section_description": "(See in metric chart or series details popup, axis that presents values)"
+  },
+  "widget_customization_section": {
+    "clear_button": "Clear"
+  },
+  "widget_customization": {
+    "settings_disabled": "Run your query first"
   }
 }

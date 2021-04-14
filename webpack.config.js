@@ -20,6 +20,7 @@ const config = (env) => merge(commonConfig(env.APP_NAME), {
   devServer: {
     contentBase: path.join(__dirname, 'public'),
     compress: true,
+    hot: true,
     port: 8080,
   },
   output: {

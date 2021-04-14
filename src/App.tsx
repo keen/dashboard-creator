@@ -12,7 +12,6 @@ import PageLoader from './components/PageLoader';
 import ToastNotifications from './components/ToastNotifications';
 import DashboardSettingsModal from './components/DashboardSettingsModal';
 import DashboardShareModal from './components/DashboardShareModal';
-
 import { ROUTES } from './constants';
 
 type Props = {};

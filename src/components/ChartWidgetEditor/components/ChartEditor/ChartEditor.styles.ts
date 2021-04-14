@@ -12,12 +12,6 @@ export const NavBar = styled.div`
   border-bottom: solid 1px ${colors.gray[500]};
 `;
 
-export const ChartSettings = styled.div`
-  padding: 15px;
-  border-bottom: solid 1px ${colors.gray[500]};
-  background-color: ${colors.white[500]};
-`;
-
 export const NotificationBar = styled(motion.div)`
   position: absolute;
   top: 0;
