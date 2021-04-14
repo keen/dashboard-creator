@@ -42,7 +42,6 @@ export const ManagementContainer = styled(motion.div)`
   background: ${transparentize(0.4, colors.black[300])};
 
   display: flex;
-  column-gap: 10px;
   align-items: center;
 
   padding: 0 10px;
@@ -58,4 +57,8 @@ export const ButtonsContainer = styled.div`
   justify-content: center;
   flex: 1;
   column-gap: 10px;
+`;
+
+export const ButtonWrapper = styled.div`
+  padding: 0 10px;
 `;
