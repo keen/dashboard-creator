@@ -96,7 +96,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
       const isDirty = !deepEqual(localQuery, querySettings, {
         strict: true,
       });
-
+      if (isDirty) setLocalQuery(querySettings);
       dispatch(setQueryDirty(isDirty));
     } else if (initialQuerySettings && !localQuery) {
       setLocalQuery(querySettings);
