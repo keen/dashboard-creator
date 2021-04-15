@@ -15,6 +15,7 @@ import ChartEditor from './ChartEditor';
 import {
   initialState as chartEditorState,
   EDITOR_MOUNTED,
+  EditorSection,
 } from '../../../../modules/chartEditor';
 import { AppContext } from '../../../../contexts';
 
@@ -343,4 +344,112 @@ test('does not allow user to apply chart editor configuration when query is dirt
   const button = getByText('chart_widget_editor.add_to_dashboard');
   fireEvent.click(button);
   expect(store.getActions()).toEqual([]);
+});
+
+test('allows user to set chart title', async () => {
+  const chartTitle = 'CHART_TITLE';
+  const storeState = {
+    chartEditor: {
+      ...chartEditorState,
+      analysisResult: {
+        query: {
+          analysis_type: 'count',
+        },
+        results: 100,
+      },
+      visualization: {
+        type: 'area',
+        visualizationType: 'area',
+        chartSettings: {
+          curve: 'linear',
+          stackMode: 'normal',
+          groupMode: 'grouped',
+        },
+        widgetSettings: {},
+      },
+      editorSection: EditorSection.SETTINGS,
+    },
+  };
+  const {
+    wrapper: { getByPlaceholderText },
+    store,
+  } = render(storeState);
+
+  store.clearActions();
+  const titleInput = getByPlaceholderText(
+    'widget_customization_heading_settings.title_placeholder'
+  );
+  fireEvent.change(titleInput, { target: { value: chartTitle } });
+
+  expect(store.getActions()).toMatchSnapshot();
+});
+
+test('allows user to set chart subtitle', async () => {
+  const chartSubtitle = 'CHART_SUBTITLE';
+  const storeState = {
+    chartEditor: {
+      ...chartEditorState,
+      analysisResult: {
+        query: {
+          analysis_type: 'count',
+        },
+        results: 100,
+      },
+      visualization: {
+        type: 'area',
+        visualizationType: 'area',
+        chartSettings: {
+          curve: 'linear',
+          stackMode: 'normal',
+          groupMode: 'grouped',
+        },
+        widgetSettings: {},
+      },
+      editorSection: EditorSection.SETTINGS,
+    },
+  };
+  const {
+    wrapper: { getByPlaceholderText },
+    store,
+  } = render(storeState);
+
+  store.clearActions();
+  const titleInput = getByPlaceholderText(
+    'widget_customization_heading_settings.subtitle_placeholder'
+  );
+  fireEvent.change(titleInput, { target: { value: chartSubtitle } });
+
+  expect(store.getActions()).toMatchSnapshot();
+});
+
+test('allows user use chart name from saved query', async () => {
+  const storeState = {
+    chartEditor: {
+      ...chartEditorState,
+      analysisResult: {
+        query_name: 'QUERY_NAME',
+        query: {
+          analysis_type: 'count',
+        },
+        results: 100,
+      },
+      visualization: {
+        type: 'area',
+        visualizationType: 'area',
+        chartSettings: {
+          curve: 'linear',
+          stackMode: 'normal',
+          groupMode: 'grouped',
+        },
+        widgetSettings: {},
+      },
+      editorSection: EditorSection.SETTINGS,
+    },
+  };
+  const {
+    wrapper: { getByTestId },
+  } = render(storeState);
+
+  const inheritQueryNameInfo = getByTestId('inherit-query-name');
+  expect(inheritQueryNameInfo).toBeInTheDocument();
 });
