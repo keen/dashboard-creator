@@ -461,7 +461,6 @@ export function* editChartWidget({
   const isSavedQuery = typeof widgetQuery === 'string';
 
   yield put(setQueryType(isSavedQuery));
-  //const enhancedWidgetSettings = createWidgetSettings(widgetSettings);
 
   yield put(
     setVisualizationSettings(visualizationType, chartSettings, widgetSettings)
