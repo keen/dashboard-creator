@@ -29,8 +29,6 @@ import {
 import { getActiveDashboard } from '../../../modules/app';
 
 import {
-  setQueryMetadata,
-  createWidgetSettings,
   openEditor,
   closeEditor,
   resetEditor,
@@ -372,16 +370,12 @@ export function* editChartSavedQuery(widgetId: string) {
     } else if (action.type === CONFIRM_SAVE_QUERY_UPDATE) {
       try {
         const { query: queryName } = yield select(getWidgetSettings, widgetId);
-        const {
-          defaultChartSettings,
-          defaultWidgetSettings,
-        } = setQueryMetadata(widgetType, chartSettings, widgetSettings);
 
         const metadata = {
           visualization: {
             type: widgetType,
-            chartSettings: defaultChartSettings,
-            widgetSettings: defaultWidgetSettings,
+            chartSettings,
+            widgetSettings,
           },
         };
         yield call(updateSaveQuery, queryName, querySettings, metadata);
@@ -467,14 +461,10 @@ export function* editChartWidget({
   const isSavedQuery = typeof widgetQuery === 'string';
 
   yield put(setQueryType(isSavedQuery));
-  const enhancedWidgetSettings = createWidgetSettings(widgetSettings);
+  //const enhancedWidgetSettings = createWidgetSettings(widgetSettings);
 
   yield put(
-    setVisualizationSettings(
-      visualizationType,
-      chartSettings,
-      enhancedWidgetSettings
-    )
+    setVisualizationSettings(visualizationType, chartSettings, widgetSettings)
   );
   yield put(setEditMode(true));
   yield put(setQuerySettings(query));

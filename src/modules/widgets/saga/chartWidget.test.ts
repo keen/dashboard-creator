@@ -30,7 +30,6 @@ import {
   setQueryResult,
   getChartEditor,
   showQueryUpdateConfirmation,
-  createWidgetSettings,
   EDITOR_MOUNTED,
   EDITOR_UNMOUNTED,
   CLOSE_EDITOR,
@@ -998,14 +997,18 @@ describe('editChartSavedQuery()', () => {
       };
     });
 
-    test('updates save query with basic visualization metadata', (result) => {
+    test('updates saved query visualization metadata', (result) => {
       const metadata = {
         visualization: {
           chartSettings: {
             stackMode: 'normal',
           },
           type: 'area',
-          widgetSettings: {},
+          widgetSettings: {
+            title: {
+              content: '@widget/title',
+            },
+          },
         },
       };
 
@@ -1096,7 +1099,7 @@ describe('editChartWidget()', () => {
           setVisualizationSettings(
             visualizationType,
             chartSettings,
-            createWidgetSettings(widgetSettings)
+            widgetSettings
           )
         )
       );
@@ -1269,7 +1272,7 @@ describe('editChartWidget()', () => {
           setVisualizationSettings(
             visualizationType,
             chartSettings,
-            createWidgetSettings(widgetSettings)
+            widgetSettings
           )
         )
       );
