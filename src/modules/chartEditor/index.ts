@@ -28,11 +28,6 @@ import {
 } from './actions';
 import { getChartEditor } from './selectors';
 import { chartEditorSaga } from './saga';
-import {
-  setQueryMetadata,
-  createWidgetSettings,
-  createHeadingSettings,
-} from './utils';
 
 import {
   APPLY_CONFIGURATION,
@@ -87,7 +82,4 @@ export {
   HIDE_QUERY_UPDATE_CONFIRMATION,
   RUN_QUERY,
   EditorSection,
-  createWidgetSettings,
-  createHeadingSettings,
-  setQueryMetadata,
 };
