@@ -14,14 +14,13 @@ export const Container = styled.div`
 
 export const Content = styled.div`
   position: relative;
-  padding-bottom: 30px;
   max-width: 1200px;
   width: 100%;
 `;
 
 export const Message = styled.div`
   margin-top: 20px;
-  colors: ${colors.black[500]};
+  color: ${colors.black[500]};
   font-family: 'Lato Regular', sans-serif;
   font-size: 16px;
 `;

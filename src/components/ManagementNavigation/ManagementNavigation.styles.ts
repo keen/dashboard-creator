@@ -31,4 +31,5 @@ export const Message = styled.div`
 
 export const ButtonMotion = styled(motion.div)`
   border-radius: 25px;
+  flex-shrink: 0;
 `;
