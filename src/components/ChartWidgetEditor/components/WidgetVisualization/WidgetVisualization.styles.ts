@@ -32,6 +32,7 @@ export const DatavizContainer = styled.div`
   max-height: 440px;
   min-width: 0;
   max-width: 80%;
+  transform: translate(0, 0);
 `;
 
 export const Placeholder = styled.div`
