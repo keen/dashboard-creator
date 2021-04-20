@@ -105,7 +105,7 @@ workflows:
             branches:
               only:
                 - develop
-                - master
+                - main
             tags:
               ignore: /.*/
   ci:
