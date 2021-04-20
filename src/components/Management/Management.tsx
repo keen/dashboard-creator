@@ -4,12 +4,12 @@ import { useTranslation } from 'react-i18next';
 import { v4 as uuid } from 'uuid';
 
 import {
-  Navigation,
   Filters,
   EmptySearch,
   Search,
   Content,
   SearchInputContainer,
+  Container,
 } from './Management.styles';
 
 import CreateFirstDashboard from '../CreateFirstDashboard';
@@ -78,8 +78,8 @@ const Management: FC<Props> = () => {
   const showPlaceholders = isEmptyProject || isEmptySearch || !dashboardsLoaded;
 
   return (
-    <div>
-      <Navigation>
+    <Container>
+      <div>
         <ManagementNavigation
           attractCreateDashboardButton={isEmptyProject}
           showCreateDashboardButton={editPrivileges && dashboardsLoaded}
@@ -99,7 +99,7 @@ const Management: FC<Props> = () => {
           </Search>
           <DashboardListOrder />
         </Filters>
-      </Navigation>
+      </div>
       <Content>
         {showPlaceholders ? (
           <DashboardsPlaceholder />
@@ -128,7 +128,7 @@ const Management: FC<Props> = () => {
           </>
         )}
       </Content>
-    </div>
+    </Container>
   );
 };
 

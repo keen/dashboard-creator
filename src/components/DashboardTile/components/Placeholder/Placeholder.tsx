@@ -7,7 +7,7 @@ type Props = {
   height?: string | number;
 };
 
-const Placeholder: FC<Props> = ({ width = 380, height = 170 }) => (
+const Placeholder: FC<Props> = ({ width = '100%', height = 170 }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"

@@ -10,4 +10,5 @@ export const Container = styled.div`
 export const Content = styled.div`
   max-width: 1200px;
   width: 100%;
+  padding: 20px;
 `;
