@@ -30,7 +30,7 @@ jobs:
           command: |
             if [ "$CIRCLE_BRANCH" = "develop" ]; then
               yarn release --prerelease rc --skip.changelog
-            elif [ "$CIRCLE_BRANCH" = "master" ]; then
+            elif [ "$CIRCLE_BRANCH" = "main" ]; then
               yarn release
             fi
       - run:
