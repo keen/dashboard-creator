@@ -12,7 +12,6 @@ import {
   hideDashboardSettingsModal,
   showDashboardShareModal,
   hideDashboardShareModal,
-  setTagsPool,
   setDashboardError,
   saveDashboardMeta,
   saveDashboardMetaSuccess,
@@ -21,6 +20,10 @@ import {
   setDashboardPublicAccess,
   regenerateAccessKey,
   addClonedDashboard,
+  prepareTagsPool,
+  clearTagsPool,
+  setTagsFiltersPublic,
+  setTagsFilters,
 } from './actions';
 
 import { dashboardsMeta } from './fixtures';
@@ -86,7 +89,7 @@ test('updates dashboard save indicator', () => {
   `);
 });
 
-test('updates dashboard metadata', () => {
+test('updates dashboard metadata and sort it by recent', () => {
   const action = updateDashboardMeta('@dashboard/01', {
     title: 'Title',
     queries: 30,
@@ -107,6 +110,16 @@ test('updates dashboard metadata', () => {
           isPublic: false,
           publicAccessKey: null,
         },
+        {
+          id: '@dashboard/02',
+          widgets: 1,
+          queries: 0,
+          title: null,
+          lastModificationDate: 1,
+          tags: [],
+          isPublic: false,
+          publicAccessKey: null,
+        },
       ],
     },
   };
@@ -116,6 +129,16 @@ test('updates dashboard metadata', () => {
   expect(metadata).toMatchInlineSnapshot(`
     Object {
       "data": Array [
+        Object {
+          "id": "@dashboard/02",
+          "isPublic": false,
+          "lastModificationDate": 1,
+          "publicAccessKey": null,
+          "queries": 0,
+          "tags": Array [],
+          "title": null,
+          "widgets": 1,
+        },
         Object {
           "id": "@dashboard/01",
           "isPublic": false,
@@ -130,6 +153,7 @@ test('updates dashboard metadata', () => {
       "error": null,
       "isInitiallyLoaded": false,
       "isLoaded": true,
+      "isRegeneratingAccessKey": false,
       "isSavingMetadata": false,
     }
   `);
@@ -304,6 +328,7 @@ test('serializes dashboards metadata', () => {
       ],
       "error": null,
       "isInitiallyLoaded": true,
+      "isRegeneratingAccessKey": false,
       "isSavingMetadata": false,
     }
   `);
@@ -385,20 +410,6 @@ test('closes dashboard share modal', () => {
   `);
 });
 
-test('sets tags pool for dashboard', () => {
-  const tags = ['tag1', 'tag2', 'tag3'];
-  const action = setTagsPool(tags);
-  const { tagsPool } = dashboardsReducer(initialState, action);
-
-  expect(tagsPool).toMatchInlineSnapshot(`
-    Array [
-      "tag1",
-      "tag2",
-      "tag3",
-    ]
-  `);
-});
-
 test('return state for saving dashboard metadata', () => {
   const action = saveDashboardMeta('@dashboardId', dashboardsMeta[0]);
   const { metadata } = dashboardsReducer(initialState, action);
@@ -407,8 +418,8 @@ test('return state for saving dashboard metadata', () => {
       "data": Array [],
       "error": null,
       "isInitiallyLoaded": false,
-      "isSavingMetaData": true,
-      "isSavingMetadata": false,
+      "isRegeneratingAccessKey": false,
+      "isSavingMetadata": true,
     }
   `);
 
@@ -422,7 +433,7 @@ test('return state for saving dashboard metadata', () => {
       "data": Array [],
       "error": null,
       "isInitiallyLoaded": false,
-      "isSavingMetaData": false,
+      "isRegeneratingAccessKey": false,
       "isSavingMetadata": false,
     }
   `);
@@ -437,7 +448,7 @@ test('return state for saving dashboard metadata', () => {
       "data": Array [],
       "error": null,
       "isInitiallyLoaded": false,
-      "isSavingMetaData": false,
+      "isRegeneratingAccessKey": false,
       "isSavingMetadata": false,
     }
   `);
@@ -453,6 +464,7 @@ test('set order for dashboard list', () => {
 test('set public access to the dashboard', () => {
   const dashboardId = '@dashboard/01';
   const isPublicTest = false;
+  const accessKey = 'public-access-key';
 
   const state = {
     ...initialState,
@@ -461,14 +473,17 @@ test('set public access to the dashboard', () => {
       data: dashboardsMeta,
     },
   };
-  const action = setDashboardPublicAccess(dashboardId, isPublicTest);
+  const action = setDashboardPublicAccess(dashboardId, isPublicTest, accessKey);
   const {
     metadata: { data },
   } = dashboardsReducer(state, action);
 
-  const { isPublic } = data.find((item) => item.id === dashboardId);
+  const { isPublic, publicAccessKey } = data.find(
+    (item) => item.id === dashboardId
+  );
 
   expect(isPublic).toEqual(isPublicTest);
+  expect(publicAccessKey).toEqual(accessKey);
 });
 
 test('regenerate access key for the dashboard', () => {
@@ -515,4 +530,76 @@ test('add cloned dashboard to the list', () => {
       },
     ]
   `);
+});
+
+test('prepare tagsPool', () => {
+  const state = {
+    ...initialState,
+    metadata: {
+      ...initialState.metadata,
+      isLoaded: true,
+      data: [
+        {
+          id: '@dashboard/01',
+          widgets: 1,
+          queries: 0,
+          title: null,
+          lastModificationDate: 0,
+          tags: ['marketing'],
+          isPublic: false,
+          publicAccessKey: null,
+        },
+        {
+          id: '@dashboard/02',
+          widgets: 1,
+          queries: 0,
+          title: null,
+          lastModificationDate: 0,
+          tags: ['sales'],
+          isPublic: false,
+          publicAccessKey: null,
+        },
+      ],
+    },
+  };
+
+  const action = prepareTagsPool();
+  const { tagsPool } = dashboardsReducer(state, action);
+
+  expect(tagsPool).toMatchInlineSnapshot(`
+    Array [
+      "marketing",
+      "sales",
+    ]
+  `);
+});
+
+test('clear tagsPool', () => {
+  const action = clearTagsPool();
+  const { tagsPool } = dashboardsReducer(initialState, action);
+
+  expect(tagsPool).toMatchInlineSnapshot(`Array []`);
+});
+
+test('set tagsFilters tags', () => {
+  const action = setTagsFilters(['sales', 'marketing']);
+  const {
+    tagsFilters: { tags },
+  } = dashboardsReducer(initialState, action);
+
+  expect(tags).toMatchInlineSnapshot(`
+    Array [
+      "sales",
+      "marketing",
+    ]
+  `);
+});
+
+test('set tagsFilters showOnlyPublicDashboards', () => {
+  const action = setTagsFiltersPublic(true);
+  const {
+    tagsFilters: { showOnlyPublicDashboards },
+  } = dashboardsReducer(initialState, action);
+
+  expect(showOnlyPublicDashboards).toBeTruthy();
 });

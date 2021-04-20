@@ -2,37 +2,46 @@ import { DashboardsActions } from './actions';
 
 import {
   createDashboardMeta,
+  createTagsPool,
   reduceWidgetsCount,
   sortDashboards,
 } from './utils';
 
 import {
-  FETCH_DASHBOARDS_LIST_SUCCESS,
-  SAVE_DASHBOARD,
-  SAVE_DASHBOARD_SUCCESS,
-  SAVE_DASHBOARD_ERROR,
-  UPDATE_DASHBOARD_METADATA,
-  SAVE_DASHBOARD_METADATA,
-  SAVE_DASHBOARD_METADATA_SUCCESS,
-  SAVE_DASHBOARD_METADATA_ERROR,
-  REGISTER_DASHBOARD,
-  DELETE_DASHBOARD_SUCCESS,
-  UPDATE_DASHBOARD,
-  CREATE_DASHBOARD,
-  SET_DASHBOARD_LIST,
-  SET_DASHBOARD_ERROR,
+  ADD_CLONED_DASHBOARD,
   ADD_WIDGET_TO_DASHBOARD,
-  REMOVE_WIDGET_FROM_DASHBOARD,
-  SHOW_DELETE_CONFIRMATION,
-  HIDE_DELETE_CONFIRMATION,
-  SHOW_DASHBOARD_SETTINGS_MODAL,
+  CLEAR_TAGS_POOL,
+  CREATE_DASHBOARD,
+  DELETE_DASHBOARD_SUCCESS,
+  FETCH_DASHBOARDS_LIST_SUCCESS,
   HIDE_DASHBOARD_SETTINGS_MODAL,
-  SET_TAGS_POOL,
-  SHOW_DASHBOARD_SHARE_MODAL,
   HIDE_DASHBOARD_SHARE_MODAL,
+  HIDE_DELETE_CONFIRMATION,
+  PREPARE_TAGS_POOL,
+  REGENERATE_ACCESS_KEY,
+  REGENERATE_ACCESS_KEY_SUCCESS,
+  REGENERATE_ACCESS_KEY_ERROR,
+  REGISTER_DASHBOARD,
+  REMOVE_WIDGET_FROM_DASHBOARD,
+  SAVE_DASHBOARD,
+  SAVE_DASHBOARD_ERROR,
+  SAVE_DASHBOARD_METADATA,
+  SAVE_DASHBOARD_METADATA_ERROR,
+  SAVE_DASHBOARD_METADATA_SUCCESS,
+  SAVE_DASHBOARD_SUCCESS,
+  SET_DASHBOARD_ERROR,
+  SET_DASHBOARD_LIST,
   SET_DASHBOARD_LIST_ORDER,
   SET_DASHBOARD_PUBLIC_ACCESS,
-  ADD_CLONED_DASHBOARD,
+  SET_TAGS_FILTERS,
+  SET_TAGS_FILTERS_PUBLIC,
+  SHOW_DASHBOARD_SETTINGS_MODAL,
+  SHOW_DASHBOARD_SHARE_MODAL,
+  SHOW_DELETE_CONFIRMATION,
+  UNREGISTER_DASHBOARD,
+  UPDATE_CACHED_DASHBOARD_IDS,
+  UPDATE_DASHBOARD,
+  UPDATE_DASHBOARD_METADATA,
 } from './constants';
 
 import { ReducerState } from './types';
@@ -43,6 +52,7 @@ export const initialState: ReducerState = {
     error: null,
     data: [],
     isSavingMetadata: false,
+    isRegeneratingAccessKey: false,
   },
   deleteConfirmation: {
     isVisible: false,
@@ -57,7 +67,12 @@ export const initialState: ReducerState = {
     dashboardId: null,
   },
   tagsPool: [],
+  tagsFilters: {
+    showOnlyPublicDashboards: false,
+    tags: [],
+  },
   items: {},
+  cachedDashboardIds: [],
   dashboardListOrder: 'recent',
 };
 
@@ -71,16 +86,19 @@ const dashboardsReducer = (
         ...state,
         metadata: {
           ...state.metadata,
-          data: state.metadata.data.map((dashboardMeta) => {
-            if (action.payload.dashboardId === dashboardMeta.id) {
-              return {
-                ...dashboardMeta,
-                ...action.payload.metadata,
-              };
-            }
+          data: sortDashboards(
+            state.metadata.data.map((dashboardMeta) => {
+              if (action.payload.dashboardId === dashboardMeta.id) {
+                return {
+                  ...dashboardMeta,
+                  ...action.payload.metadata,
+                };
+              }
 
-            return dashboardMeta;
-          }),
+              return dashboardMeta;
+            }),
+            state.dashboardListOrder
+          ),
         },
       };
     case SHOW_DELETE_CONFIRMATION:
@@ -179,8 +197,8 @@ const dashboardsReducer = (
             settings: {
               ...state.items[action.payload.dashboardId].settings,
               widgets: [
-                action.payload.widgetId,
                 ...state.items[action.payload.dashboardId].settings.widgets,
+                action.payload.widgetId,
               ],
             },
           },
@@ -300,17 +318,12 @@ const dashboardsReducer = (
           ),
         },
       };
-    case SET_TAGS_POOL:
-      return {
-        ...state,
-        tagsPool: action.payload.tagsPool,
-      };
     case SAVE_DASHBOARD_METADATA:
       return {
         ...state,
         metadata: {
           ...state.metadata,
-          isSavingMetaData: true,
+          isSavingMetadata: true,
         },
       };
     case SAVE_DASHBOARD_METADATA_SUCCESS:
@@ -319,7 +332,7 @@ const dashboardsReducer = (
         ...state,
         metadata: {
           ...state.metadata,
-          isSavingMetaData: false,
+          isSavingMetadata: false,
         },
       };
     case SET_DASHBOARD_LIST_ORDER:
@@ -341,6 +354,7 @@ const dashboardsReducer = (
               return {
                 ...dashboardMeta,
                 isPublic: action.payload.isPublic,
+                publicAccessKey: action.payload.accessKey,
               };
             }
 
@@ -357,6 +371,61 @@ const dashboardsReducer = (
             [...state.metadata.data, action.payload.dashboardMeta],
             state.dashboardListOrder
           ),
+        },
+      };
+    case PREPARE_TAGS_POOL:
+      return {
+        ...state,
+        tagsPool: createTagsPool(state.metadata.data),
+      };
+    case CLEAR_TAGS_POOL:
+      return {
+        ...state,
+        tagsPool: [],
+      };
+    case SET_TAGS_FILTERS:
+      return {
+        ...state,
+        tagsFilters: {
+          ...state.tagsFilters,
+          tags: action.payload.tags,
+        },
+      };
+    case SET_TAGS_FILTERS_PUBLIC:
+      return {
+        ...state,
+        tagsFilters: {
+          ...state.tagsFilters,
+          showOnlyPublicDashboards: action.payload.filterPublic,
+        },
+      };
+    case UPDATE_CACHED_DASHBOARD_IDS:
+      return {
+        ...state,
+        cachedDashboardIds: action.payload.dashboardIds,
+      };
+    case UNREGISTER_DASHBOARD:
+      const items = { ...state.items };
+      delete items[action.payload.dashboardId];
+      return {
+        ...state,
+        items,
+      };
+    case REGENERATE_ACCESS_KEY:
+      return {
+        ...state,
+        metadata: {
+          ...state.metadata,
+          isRegeneratingAccessKey: true,
+        },
+      };
+    case REGENERATE_ACCESS_KEY_SUCCESS:
+    case REGENERATE_ACCESS_KEY_ERROR:
+      return {
+        ...state,
+        metadata: {
+          ...state.metadata,
+          isRegeneratingAccessKey: false,
         },
       };
     default:

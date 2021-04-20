@@ -26,11 +26,12 @@ module.exports = (env) => {
     },
 
     optimization: {
+      runtimeChunk: 'single',
       splitChunks: {
         cacheGroups: {
           vendors: {
             test: /node_modules/,
-            chunks: 'initial',
+            chunks: 'all',
             name: 'vendors',
             enforce: true,
           },

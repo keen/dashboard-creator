@@ -21,14 +21,16 @@ import {
   WidgetsPosition,
 } from '../../modules/widgets';
 import { getChartEditor } from '../../modules/chartEditor';
-import { getTextEditor } from '../../modules/textEditor';
+import { textEditorSelectors } from '../../modules/textEditor';
 import { setActiveDashboard } from '../../modules/app';
 
 import { EditorContext } from '../../contexts';
 
 import EditorNavigation from '../EditorNavigation';
 import QueryPickerModal from '../QueryPickerModal';
+import DatePickerModal from '../DatePickerModal';
 import ImagePickerModal from '../ImagePickerModal';
+import FilterModal from '../FilterModal';
 import ChartWidgetEditor from '../ChartWidgetEditor';
 import TextWidgetEditor from '../TextWidgetEditor';
 import ConfirmQueryChange from '../ConfirmQueryChange';
@@ -38,10 +40,10 @@ import EditorBar from '../EditorBar';
 import GridLoader from '../GridLoader';
 import Grid from '../Grid';
 
-import { getDroppingItemSize } from '../../utils';
 import { ROUTES, RESIZE_WIDGET_EVENT } from '../../constants';
 
 import { RootState } from '../../rootReducer';
+import { calculateYPositionAndAddWidget } from '../../modules/dashboards/actions';
 
 type Props = {
   /** Dashboard identifer */
@@ -59,11 +61,12 @@ const Editor: FC<Props> = ({ dashboardId }) => {
     isOpen: chartWidgetEditorOpen,
     changeQueryConfirmation,
   } = useSelector(getChartEditor);
+
   const {
     isOpen: textWidgetEditorOpen,
     content: textEditorContent,
     textAlignment,
-  } = useSelector(getTextEditor);
+  } = useSelector(textEditorSelectors.getTextEditor);
 
   const { widgetsId, isInitialized, isSaving } = useSelector(
     (state: RootState) => {
@@ -137,20 +140,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
         >
           <Toolbar
             onAddWidget={(widgetType) => {
-              const widgetId = createWidgetId();
-              const { w, h, minH, minW } = getDroppingItemSize(widgetType);
-
-              dispatch(
-                createWidget(widgetId, widgetType, {
-                  x: 0,
-                  y: Infinity,
-                  w,
-                  h,
-                  minW,
-                  minH,
-                })
-              );
-              dispatch(addWidgetToDashboard(dashboardId, widgetId));
+              dispatch(calculateYPositionAndAddWidget(dashboardId, widgetType));
             }}
             onWidgetDrag={(widgetType) => setDroppableWidget(widgetType)}
           />
@@ -191,7 +181,9 @@ const Editor: FC<Props> = ({ dashboardId }) => {
       <ConfirmQueryChange isOpen={changeQueryConfirmation} />
       <DashboardDeleteConfirmation />
       <QueryPickerModal />
+      <DatePickerModal />
       <ImagePickerModal />
+      <FilterModal />
     </EditorContext.Provider>
   );
 };

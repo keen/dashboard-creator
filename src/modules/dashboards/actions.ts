@@ -39,7 +39,6 @@ import {
   CONFIRM_DASHBOARD_DELETE,
   SHOW_DASHBOARD_SETTINGS_MODAL,
   HIDE_DASHBOARD_SETTINGS_MODAL,
-  SET_TAGS_POOL,
   SHOW_DASHBOARD_SHARE_MODAL,
   HIDE_DASHBOARD_SHARE_MODAL,
   SET_DASHBOARD_LIST_ORDER,
@@ -48,7 +47,17 @@ import {
   REGENERATE_ACCESS_KEY,
   ADD_CLONED_DASHBOARD,
   EXPORT_DASHBOARD_TO_HTML,
+  PREPARE_TAGS_POOL,
+  CLEAR_TAGS_POOL,
+  SET_TAGS_FILTERS,
+  SET_TAGS_FILTERS_PUBLIC,
+  UPDATE_CACHED_DASHBOARD_IDS,
+  UNREGISTER_DASHBOARD,
+  CALCULATE_Y_POSITION_AND_ADD_WIDGET,
+  REGENERATE_ACCESS_KEY_SUCCESS,
+  REGENERATE_ACCESS_KEY_ERROR,
 } from './constants';
+import { WidgetType } from '../../types';
 
 export const fetchDashboardList = createAction(FETCH_DASHBOARDS_LIST);
 
@@ -291,13 +300,6 @@ export const hideDashboardSettingsModal = createAction(
   HIDE_DASHBOARD_SETTINGS_MODAL
 );
 
-export const setTagsPool = createAction(
-  SET_TAGS_POOL,
-  (tagsPool: string[]) => ({
-    payload: { tagsPool },
-  })
-);
-
 export const showDashboardShareModal = createAction(
   SHOW_DASHBOARD_SHARE_MODAL,
   (dashboardId: string) => ({
@@ -318,10 +320,11 @@ export const setDashboardListOrder = createAction(
 
 export const setDashboardPublicAccess = createAction(
   SET_DASHBOARD_PUBLIC_ACCESS,
-  (dashboardId: string, isPublic: boolean) => ({
+  (dashboardId: string, isPublic: boolean, accessKey: null | string) => ({
     payload: {
       dashboardId,
       isPublic,
+      accessKey,
     },
   })
 );
@@ -334,6 +337,14 @@ export const regenerateAccessKey = createAction(
       dashboardId,
     },
   })
+);
+
+export const regenerateAccessKeySuccess = createAction(
+  REGENERATE_ACCESS_KEY_SUCCESS
+);
+
+export const regenerateAccessKeyError = createAction(
+  REGENERATE_ACCESS_KEY_ERROR
 );
 
 export const addClonedDashboard = createAction(
@@ -350,6 +361,56 @@ export const exportDashboardToHtml = createAction(
   (dashboardId: string) => ({
     payload: {
       dashboardId,
+    },
+  })
+);
+
+export const prepareTagsPool = createAction(PREPARE_TAGS_POOL);
+
+export const clearTagsPool = createAction(CLEAR_TAGS_POOL);
+
+export const setTagsFilters = createAction(
+  SET_TAGS_FILTERS,
+  (tags: string[]) => ({
+    payload: {
+      tags,
+    },
+  })
+);
+
+export const setTagsFiltersPublic = createAction(
+  SET_TAGS_FILTERS_PUBLIC,
+  (filterPublic: boolean) => ({
+    payload: {
+      filterPublic,
+    },
+  })
+);
+
+export const updateCachedDashboardIds = createAction(
+  UPDATE_CACHED_DASHBOARD_IDS,
+  (dashboardIds: string[]) => ({
+    payload: {
+      dashboardIds,
+    },
+  })
+);
+
+export const unregisterDashboard = createAction(
+  UNREGISTER_DASHBOARD,
+  (dashboardId: string) => ({
+    payload: {
+      dashboardId,
+    },
+  })
+);
+
+export const calculateYPositionAndAddWidget = createAction(
+  CALCULATE_Y_POSITION_AND_ADD_WIDGET,
+  (dashboardId: string, widgetType: WidgetType) => ({
+    payload: {
+      dashboardId,
+      widgetType,
     },
   })
 );
@@ -383,7 +444,6 @@ export type DashboardsActions =
   | ReturnType<typeof confirmDashboardDelete>
   | ReturnType<typeof showDashboardSettingsModal>
   | ReturnType<typeof hideDashboardSettingsModal>
-  | ReturnType<typeof setTagsPool>
   | ReturnType<typeof saveDashboardMeta>
   | ReturnType<typeof saveDashboardMetaSuccess>
   | ReturnType<typeof saveDashboardMetaError>
@@ -393,6 +453,15 @@ export type DashboardsActions =
   | ReturnType<typeof setDashboardPublicAccess>
   | ReturnType<typeof updateAccessKeyOptions>
   | ReturnType<typeof regenerateAccessKey>
+  | ReturnType<typeof regenerateAccessKeySuccess>
+  | ReturnType<typeof regenerateAccessKeyError>
   | ReturnType<typeof setDashboardListOrder>
   | ReturnType<typeof addClonedDashboard>
-  | ReturnType<typeof exportDashboardToHtml>;
+  | ReturnType<typeof exportDashboardToHtml>
+  | ReturnType<typeof prepareTagsPool>
+  | ReturnType<typeof clearTagsPool>
+  | ReturnType<typeof setTagsFilters>
+  | ReturnType<typeof setTagsFiltersPublic>
+  | ReturnType<typeof updateCachedDashboardIds>
+  | ReturnType<typeof unregisterDashboard>
+  | ReturnType<typeof calculateYPositionAndAddWidget>;

@@ -6,7 +6,7 @@ exports[`renders Placeholder 1`] = `
     data-testid="thumbnail-placeholder"
     height="170"
     viewBox="0 0 380 170"
-    width="380"
+    width="100%"
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
   >

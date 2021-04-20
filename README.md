@@ -1,6 +1,6 @@
 # Dashboard Creator
 
-[![written in typescript](https://img.shields.io/badge/written%20in-typescript-blue.svg)](https://www.typescriptlang.org) [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-yellow.svg)](https://github.com/prettier/prettier) [![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://facebook.github.io/jest/) [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/) [![yarn](https://img.shields.io/badge/maintained%20with-yarn-cc00ff.svg)](https://yarnpkg.com/en/)
+[![written in typescript](https://img.shields.io/badge/written%20in-typescript-blue.svg)](https://www.typescriptlang.org) [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-yellow.svg)](https://github.com/prettier/prettier) [![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://facebook.github.io/jest/) [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/) [![yarn](https://img.shields.io/badge/maintained%20with-yarn-cc00ff.svg)](https://yarnpkg.com/en/) [![codecov](https://codecov.io/gh/keen/dashboard-creator/branch/develop/graph/badge.svg?token=W77XX9UV5Y)](https://codecov.io/gh/keen/dashboard-creator)
 
 The Dashboard Creator is an open source point-and-click interface for creating dashboards. It's maintained by the team at [Keen IO](https://keen.io/).
 
@@ -16,7 +16,46 @@ or
 yarn add @keen.io/dashboard-creator
 ```
 
-### project setup
+### Settings
+
+The Dashboard Creator components configuration could be specified during creation of application instance.
+
+##### Set default timezone for queries
+
+Specify default `timezone` used for new created queries. Provided argument must be compatible with **IANA** [Time Zone Database](https://www.iana.org/time-zones) standard.
+
+```typescript
+const explorer = new KeenDashboardCreator({
+  defaultTimezoneForQuery: 'Europe/Warsaw',
+});
+```
+
+##### Disable timezone selection
+
+Disables possibility to change `timezone` for queries from user interface.
+
+```typescript
+const explorer = new KeenDashboardCreator({
+  disableTimezoneSelection: true,
+});
+```
+
+##### Date Picker
+
+Setup default timezone in widget and disable timezone selection.
+
+```typescript
+const explorer = new KeenDashboardCreator({
+  widgetsConfiguration: {
+    datePicker: {
+      defaultTimezone: 'Etc/UTC',
+      disableTimezoneSelection: true
+    }
+  },
+});
+```
+
+### Project Setup
 
 ##### prerequisites
 

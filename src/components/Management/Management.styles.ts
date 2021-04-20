@@ -3,11 +3,6 @@ import { colors } from '@keen.io/colors';
 
 export const Content = styled.div`
   position: relative;
-  padding-bottom: 30px;
-`;
-
-export const Navigation = styled.div`
-  padding: 30px 0;
 `;
 
 export const Filters = styled.div`
@@ -17,8 +12,15 @@ export const Filters = styled.div`
   justify-content: space-between;
 `;
 
-export const Search = styled.div`
+export const SearchInputContainer = styled.div`
   width: 300px;
+  margin-right: 20px;
+`;
+
+export const Search = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 `;
 
 export const EmptySearch = styled.div`
@@ -30,4 +32,10 @@ export const EmptySearch = styled.div`
   font-family: 'Lato Regular', sans-serif;
   font-size: 16px;
   color: ${colors.blue[500]};
+`;
+
+export const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  row-gap: 30px;
 `;

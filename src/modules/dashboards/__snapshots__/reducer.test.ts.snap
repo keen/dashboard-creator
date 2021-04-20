@@ -2,6 +2,7 @@
 
 exports[`add widget to dashboard 1`] = `
 Object {
+  "cachedDashboardIds": Array [],
   "dashboardListOrder": "recent",
   "dashboardSettingsModal": Object {
     "dashboardId": null,
@@ -44,7 +45,12 @@ Object {
     "error": null,
     "isInitiallyLoaded": false,
     "isLoaded": true,
+    "isRegeneratingAccessKey": false,
     "isSavingMetadata": false,
+  },
+  "tagsFilters": Object {
+    "showOnlyPublicDashboards": false,
+    "tags": Array [],
   },
   "tagsPool": Array [],
 }
@@ -52,6 +58,7 @@ Object {
 
 exports[`removes widget from dashboard 1`] = `
 Object {
+  "cachedDashboardIds": Array [],
   "dashboardListOrder": "recent",
   "dashboardSettingsModal": Object {
     "dashboardId": null,
@@ -92,7 +99,12 @@ Object {
     "error": null,
     "isInitiallyLoaded": false,
     "isLoaded": true,
+    "isRegeneratingAccessKey": false,
     "isSavingMetadata": false,
+  },
+  "tagsFilters": Object {
+    "showOnlyPublicDashboards": false,
+    "tags": Array [],
   },
   "tagsPool": Array [],
 }

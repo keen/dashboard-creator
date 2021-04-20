@@ -33,3 +33,32 @@ export const getDashboardMetaSaving = ({ dashboards }: RootState) =>
 
 export const getDashboardListOrder = ({ dashboards }: RootState) =>
   dashboards.dashboardListOrder;
+
+export const getTagsFilter = ({ dashboards }: RootState) =>
+  dashboards.tagsFilters;
+
+export const getCurrentDashboardChartsCount = ({
+  app,
+  widgets,
+  dashboards,
+}: RootState) => {
+  const { activeDashboardId } = app;
+  const dashboard = dashboards.items[activeDashboardId];
+
+  if (dashboard) {
+    const {
+      settings: { widgets: widgetIds },
+    } = dashboard;
+    return widgetIds
+      .map((widgetId) => widgets.items[widgetId])
+      .filter(({ widget: { type } }) => type === 'visualization').length;
+  }
+
+  return 0;
+};
+
+export const getCachedDashboardIds = ({ dashboards }: RootState) =>
+  dashboards.cachedDashboardIds;
+
+export const getDashboardAccessKeyRegenerating = ({ dashboards }: RootState) =>
+  dashboards.metadata.isRegeneratingAccessKey;

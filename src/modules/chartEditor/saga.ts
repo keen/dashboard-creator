@@ -14,6 +14,7 @@ import {
   setQuerySettings,
   runQuerySuccess,
   runQueryError,
+  setEditorSection,
 } from './actions';
 
 import { getChartEditor } from './selectors';
@@ -27,8 +28,11 @@ import {
   EDITOR_MOUNTED,
   QUERY_UPDATE_CONFIRMATION_MOUNTED,
   SHOW_QUERY_UPDATE_CONFIRMATION,
+  SET_EDITOR_SECTION,
 } from './constants';
 import { KEEN_ANALYSIS, NOTIFICATION_MANAGER, PUBSUB } from '../../constants';
+
+import { EditorSection } from './types';
 
 function* scrollToElement(element: HTMLElement) {
   if (element && !isElementInViewport(element)) {
@@ -58,6 +62,30 @@ export function* showUpdateConfirmation() {
   const element = document.getElementById('confirm-query-update');
   if (element) {
     yield scrollToElement(element);
+  }
+}
+
+export function* updateEditorSection({
+  payload,
+}: ReturnType<typeof setEditorSection>) {
+  const { editorSection } = payload;
+
+  if (editorSection === EditorSection.QUERY) {
+    yield take(EDITOR_MOUNTED);
+    const pubsub = yield getContext(PUBSUB);
+    const {
+      querySettings,
+      visualization: { chartSettings },
+    } = yield select(getChartEditor);
+
+    if (chartSettings?.stepLabels && chartSettings.stepLabels.length) {
+      const { stepLabels } = chartSettings;
+      yield pubsub.publish(SET_CHART_SETTINGS, {
+        chartSettings: { stepLabels },
+      });
+    }
+
+    yield pubsub.publish(SET_QUERY_EVENT, { query: querySettings });
   }
 }
 
@@ -123,7 +151,7 @@ export function* runQuery() {
     yield put(runQuerySuccess(analysisResult));
   } catch (error) {
     const { body } = error;
-    yield put(runQueryError());
+    yield put(runQueryError(body));
     const notificationManager = yield getContext(NOTIFICATION_MANAGER);
     yield notificationManager.showNotification({
       type: 'error',
@@ -134,6 +162,7 @@ export function* runQuery() {
 }
 
 export function* chartEditorSaga() {
+  yield takeLatest(SET_EDITOR_SECTION, updateEditorSection);
   yield takeLatest(RESTORE_SAVED_QUERY, restoreSavedQuery);
   yield takeLatest(SET_QUERY_SETTINGS, updateQuerySettings);
   yield takeLatest(RUN_QUERY, runQuery);

@@ -24,6 +24,8 @@ type Props = {
   widgetSettings: WidgetSettings;
   /** Visualizations theme settings */
   visualizationTheme?: Partial<Theme>;
+  /** Presentation timezone */
+  presentationTimezone?: string | number;
 };
 
 const Dataviz: FC<Props> = ({
@@ -32,10 +34,10 @@ const Dataviz: FC<Props> = ({
   chartSettings,
   widgetSettings,
   visualizationTheme,
+  presentationTimezone,
 }) => {
   const datavizRef = useRef(null);
   const containerRef = useRef(null);
-
   useEffect(() => {
     const themeSettings = visualizationTheme
       ? {
@@ -51,6 +53,7 @@ const Dataviz: FC<Props> = ({
         ...themeSettings,
       },
       widget: widgetSettings,
+      presentationTimezone,
     });
 
     datavizRef.current.render(getChartInput(analysisResults));

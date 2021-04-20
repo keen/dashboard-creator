@@ -76,9 +76,16 @@ const DashboardTile: FC<Props> = ({
     return () => document.removeEventListener('click', outsideActionsMenuClick);
   }, [showActionsMenu, actionsMenuContainer]);
 
-  const excerpt = isActive
-    ? `${t('dashboard_tile.queries')} ${queriesCount}`
-    : lastModificationDate;
+  const getExcerpt = () => {
+    if (isActive) {
+      if (queriesCount > 1)
+        return `${queriesCount} ${t('dashboard_tile.queries')}`;
+      if (queriesCount === 1)
+        return `${queriesCount} ${t('dashboard_tile.query')}`;
+      return t('dashboard_tile.no_queries');
+    }
+    return lastModificationDate;
+  };
 
   return (
     <Card
@@ -88,7 +95,12 @@ const DashboardTile: FC<Props> = ({
         setActive(false);
       }}
     >
-      <Header title={title} excerpt={excerpt} isPublic={isPublic} tags={tags}>
+      <Header
+        title={title}
+        excerpt={getExcerpt()}
+        isPublic={isPublic}
+        tags={tags}
+      >
         <AnimatePresence>
           {isActive && editPrivileges && (
             <ActionsMotion data-testid="dashboard-actions" {...actionsMotion}>

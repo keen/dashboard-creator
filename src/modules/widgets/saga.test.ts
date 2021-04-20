@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import sagaHelper from 'redux-saga-testing';
-import { all, put, take, call, getContext, select } from 'redux-saga/effects';
+import { all, put, take, call, select } from 'redux-saga/effects';
 import { Query } from '@keen.io/query';
-import { PickerWidgets, ChartSettings } from '@keen.io/widget-picker';
-import { SET_QUERY_EVENT } from '@keen.io/query-creator';
 
 import {
   savedQueryUpdated,
@@ -11,26 +9,14 @@ import {
   finishChartWidgetConfiguration,
   initializeChartWidget as initializeChartWidgetAction,
   initializeWidget as initializeWidgetAction,
-  editChartWidget as editChartWidgetAction,
-  setImageWidget as setImageWidgetAction,
-  editTextWidget as editTextWidgetAction,
-  editInlineTextWidget as editInlineTextWidgetAction,
-  setTextWidget,
-  setWidgetLoading,
   cloneWidget as cloneWidgetAction,
   saveClonedWidget,
 } from './actions';
 import {
   selectQueryForWidget,
   createQueryForWidget,
-  editChartWidget,
-  editChartSavedQuery,
-  editTextWidget,
-  editInlineTextWidget,
   reinitializeWidgets,
-  initializeChartWidget,
   initializeWidget,
-  selectImageWidget,
   cloneWidget,
 } from './saga';
 
@@ -41,9 +27,6 @@ import {
   showQueryPicker,
   hideQueryPicker,
   HIDE_QUERY_PICKER,
-  showImagePicker,
-  HIDE_IMAGE_PICKER,
-  hideImagePicker,
 } from '../app';
 
 import {
@@ -52,6 +35,7 @@ import {
   removeWidgetFromDashboard,
   updateAccessKeyOptions,
   addWidgetToDashboard,
+  getDashboard,
 } from '../dashboards';
 
 import {
@@ -60,8 +44,6 @@ import {
   SELECT_SAVED_QUERY,
   CREATE_QUERY,
   SavedQuery,
-  SAVE_IMAGE,
-  saveImage,
 } from '../queries';
 
 import {
@@ -69,34 +51,13 @@ import {
   closeEditor,
   resetEditor,
   applyConfiguration,
-  setVisualizationSettings,
-  setQueryType,
-  setQuerySettings,
-  setEditMode,
-  setQueryResult,
-  getChartEditor,
-  showQueryUpdateConfirmation,
-  EDITOR_MOUNTED,
   EDITOR_UNMOUNTED,
   CLOSE_EDITOR,
   APPLY_CONFIGURATION,
-  HIDE_QUERY_UPDATE_CONFIRMATION,
-  CONFIRM_SAVE_QUERY_UPDATE,
-  USE_QUERY_FOR_WIDGET,
 } from '../chartEditor';
 
-import { KEEN_ANALYSIS, TRANSLATIONS } from '../../constants';
-import {
-  setEditorContent,
-  setTextAlignment,
-  openEditor as openTextEditor,
-  closeEditor as closeTextEditor,
-  applyTextEditorSettings,
-  APPLY_TEXT_EDITOR_SETTINGS,
-  CLOSE_EDITOR as CLOSE_TEXT_EDITOR,
-} from '../textEditor';
-
 import { widget as widgetItem } from './fixtures';
+import { findBiggestYPositionOfWidgets } from '../dashboards/utils/findBiggestYPositionOfWidgets';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
@@ -105,126 +66,6 @@ jest.mock('uuid', () => {
   return {
     v4: () => '@widget/01',
   };
-});
-
-describe('editTextWidget()', () => {
-  describe('Scenario 1: User edits text widget in editor', () => {
-    const action = editTextWidgetAction(widgetId);
-    const test = sagaHelper(editTextWidget(action));
-
-    const textWidgetContent = {
-      blocks: [
-        {
-          key: '@key',
-          text: '@text',
-          type: 'unstyled',
-          depth: 0,
-          inlineStyleRanges: [],
-          entityRanges: [],
-        },
-      ],
-      entityMap: {},
-    };
-
-    test('get widget settings', (result) => {
-      expect(result).toEqual(select(getWidgetSettings, widgetId));
-
-      return {
-        settings: {
-          textAlignment: 'center',
-          content: textWidgetContent,
-        },
-      };
-    });
-
-    test('set editor content', (result) => {
-      expect(result).toEqual(put(setEditorContent(textWidgetContent)));
-    });
-
-    test('set editor text alignment', (result) => {
-      expect(result).toEqual(put(setTextAlignment('center')));
-    });
-
-    test('opens text editor', (result) => {
-      expect(result).toEqual(put(openTextEditor()));
-    });
-
-    test('updates widget state', (result) => {
-      expect(result).toEqual(
-        put(
-          setWidgetState(widgetId, {
-            isInitialized: false,
-          })
-        )
-      );
-    });
-
-    test('waits for user action', (result) => {
-      expect(result).toEqual(
-        take([APPLY_TEXT_EDITOR_SETTINGS, CLOSE_TEXT_EDITOR])
-      );
-
-      return applyTextEditorSettings(textWidgetContent, 'left');
-    });
-
-    test('set text widget settings', (result) => {
-      expect(result).toEqual(
-        put(
-          setTextWidget(widgetId, {
-            content: textWidgetContent,
-            textAlignment: 'left',
-          })
-        )
-      );
-    });
-
-    test('gets active dashboard identifier', () => {
-      return dashboardId;
-    });
-
-    test('triggers save dashboard action', (result) => {
-      expect(result).toEqual(put(saveDashboard(dashboardId)));
-    });
-
-    test('close text editor', (result) => {
-      expect(result).toEqual(put(closeTextEditor()));
-    });
-  });
-});
-
-describe('editInlineTextWidget()', () => {
-  const textWidgetContent = {
-    blocks: [
-      {
-        key: '@key',
-        text: '@text',
-        type: 'unstyled',
-        depth: 0,
-        inlineStyleRanges: [],
-        entityRanges: [],
-      },
-    ],
-    entityMap: {},
-  };
-
-  describe('Scenario 1: User edits inline text widget', () => {
-    const action = editInlineTextWidgetAction(widgetId, textWidgetContent);
-    const test = sagaHelper(editInlineTextWidget(action));
-
-    test('set text widget settings', (result) => {
-      expect(result).toEqual(
-        put(setTextWidget(widgetId, { content: textWidgetContent }))
-      );
-    });
-
-    test('gets active dashboard identifier', () => {
-      return dashboardId;
-    });
-
-    test('triggers save dashboard action', (result) => {
-      expect(result).toEqual(put(saveDashboard(dashboardId)));
-    });
-  });
 });
 
 describe('reinitializeWidgets()', () => {
@@ -286,145 +127,6 @@ describe('reinitializeWidgets()', () => {
   });
 });
 
-describe('initializeChartWidget()', () => {
-  const action = initializeChartWidgetAction(widgetId);
-
-  describe('Scenario 1: Query detached from visualization', () => {
-    const test = sagaHelper(initializeChartWidget(action));
-    const i18n = {
-      t: jest.fn().mockImplementation((key) => key),
-    };
-
-    const keenAnalysis = {
-      query: jest.fn(),
-    };
-
-    const analysisResult = {
-      result: 10,
-      query: {
-        analysis_type: 'count',
-        event_collection: 'purchases',
-        order_by: null,
-      } as Query,
-    };
-
-    test('get widget settings', (result) => {
-      expect(result).toEqual(select(getWidgetSettings, widgetId));
-
-      return {
-        query: 'purchases',
-        settings: {
-          visualizationType: 'line',
-        },
-      };
-    });
-
-    test('get Keen client from context', (result) => {
-      expect(result).toEqual(getContext(KEEN_ANALYSIS));
-
-      return keenAnalysis;
-    });
-
-    test('set widget in loading state', (result) => {
-      expect(result).toEqual(put(setWidgetLoading(widgetId, true)));
-    });
-
-    test('performs query', () => {
-      expect(keenAnalysis.query).toHaveBeenCalledWith({
-        savedQueryName: 'purchases',
-      });
-
-      return analysisResult;
-    });
-
-    test('get i18n from context', (result) => {
-      expect(result).toEqual(getContext(TRANSLATIONS));
-
-      return i18n;
-    });
-
-    test('updates widget state', (result) => {
-      expect(result).toEqual(
-        put(
-          setWidgetState(widgetId, {
-            isInitialized: true,
-            error: {
-              title: 'widget_errors.detached_query_title',
-              message: 'widget_errors.detached_query_message',
-            },
-            data: analysisResult,
-          })
-        )
-      );
-    });
-
-    test('set widget in loading state', (result) => {
-      expect(result).toEqual(put(setWidgetLoading(widgetId, false)));
-    });
-  });
-
-  describe('Scenario 2: Successful initializes chart widget', () => {
-    const test = sagaHelper(initializeChartWidget(action));
-    const keenAnalysis = {
-      query: jest.fn(),
-    };
-
-    const query: Query = {
-      analysis_type: 'count',
-      timeframe: 'this_14_days',
-      event_collection: 'purchases',
-      order_by: null,
-    };
-
-    const analysisResult = {
-      result: 10,
-      query,
-    };
-
-    test('get widget settings', (result) => {
-      expect(result).toEqual(select(getWidgetSettings, widgetId));
-
-      return {
-        query,
-        settings: {
-          visualizationType: 'metric',
-        },
-      };
-    });
-
-    test('get Keen client from context', (result) => {
-      expect(result).toEqual(getContext(KEEN_ANALYSIS));
-
-      return keenAnalysis;
-    });
-
-    test('set widget in loading state', (result) => {
-      expect(result).toEqual(put(setWidgetLoading(widgetId, true)));
-    });
-
-    test('performs query', () => {
-      expect(keenAnalysis.query).toHaveBeenCalledWith(query);
-
-      return analysisResult;
-    });
-
-    test('updates widget state', (result) => {
-      expect(result).toEqual(
-        put(
-          setWidgetState(widgetId, {
-            isInitialized: true,
-            data: analysisResult,
-          })
-        )
-      );
-    });
-
-    test('set widget in loading state', (result) => {
-      expect(result).toEqual(put(setWidgetLoading(widgetId, false)));
-    });
-  });
-});
-
 describe('initializeWidget()', () => {
   const action = initializeWidgetAction(widgetId);
 
@@ -441,421 +143,6 @@ describe('initializeWidget()', () => {
 
     test('initializes visualization widget', (result) => {
       expect(result).toEqual(put(initializeChartWidgetAction(widgetId)));
-    });
-  });
-});
-
-describe('editChartSavedQuery()', () => {
-  const chartEditor = {
-    isSavedQuery: false,
-    hasQueryChanged: false,
-    visualization: {
-      chartSettings: {
-        stackMode: 'normal',
-      } as ChartSettings,
-      type: 'area' as PickerWidgets,
-      widgetSettings: {},
-    },
-    querySettings: {
-      analysis_type: 'count',
-      event_collection: 'purchases',
-      order_by: null,
-    } as Query,
-  };
-
-  describe('Scenario 1: User edits widget settings without changing query', () => {
-    const test = sagaHelper(editChartSavedQuery(widgetId));
-
-    test('get chart editor state', (result) => {
-      expect(result).toEqual(select(getChartEditor));
-      return chartEditor;
-    });
-
-    test('close chart editor', (result) => {
-      expect(result).toEqual(put(closeEditor()));
-    });
-
-    test('waits until editor is closed', (result) => {
-      expect(result).toEqual(take(EDITOR_UNMOUNTED));
-    });
-
-    test('reset chart editor', (result) => {
-      expect(result).toEqual(put(resetEditor()));
-    });
-
-    test('updates widget state', (result) => {
-      expect(result).toEqual(
-        put(
-          setWidgetState(widgetId, {
-            isInitialized: false,
-            isConfigured: false,
-            error: null,
-            data: null,
-          })
-        )
-      );
-    });
-
-    test('get widget settings', (result) => {
-      expect(result).toEqual(select(getWidgetSettings, widgetId));
-
-      return {
-        query: 'purchases',
-      };
-    });
-
-    test('finishes chart widget configuration', (result) => {
-      const {
-        visualization: { type, chartSettings, widgetSettings },
-      } = chartEditor;
-
-      const action = finishChartWidgetConfiguration(
-        widgetId,
-        'purchases',
-        type,
-        chartSettings,
-        widgetSettings
-      );
-
-      expect(result).toEqual(put(action));
-    });
-
-    test('initializes chart widget', (result) => {
-      expect(result).toEqual(put(initializeChartWidgetAction(widgetId)));
-    });
-
-    test('gets active dashboard identifier', () => {
-      return dashboardId;
-    });
-
-    test('triggers save dashboard action', (result) => {
-      expect(result).toEqual(put(saveDashboard(dashboardId)));
-    });
-  });
-
-  describe('Scenario 2: User edits query and widget settings ', () => {
-    const test = sagaHelper(editChartSavedQuery(widgetId));
-
-    test('get chart editor state', (result) => {
-      expect(result).toEqual(select(getChartEditor));
-      return {
-        ...chartEditor,
-        hasQueryChanged: true,
-      };
-    });
-
-    test('close chart editor', (result) => {
-      expect(result).toEqual(put(closeEditor()));
-    });
-
-    test('shows query update confirmation', (result) => {
-      expect(result).toEqual(put(showQueryUpdateConfirmation()));
-    });
-
-    test('waits for user action', (result) => {
-      expect(result).toEqual(
-        take([
-          HIDE_QUERY_UPDATE_CONFIRMATION,
-          CONFIRM_SAVE_QUERY_UPDATE,
-          USE_QUERY_FOR_WIDGET,
-        ])
-      );
-    });
-  });
-});
-
-describe('editChartWidget()', () => {
-  const action = editChartWidgetAction(widgetId);
-  const visualizationSettings = {
-    chartSettings: {
-      stackMode: 'percent',
-    } as ChartSettings,
-    visualizationType: 'area' as PickerWidgets,
-    widgetSettings: {},
-  };
-
-  describe('Scenario 1: User edits widget with ad-hoc query', () => {
-    const test = sagaHelper(editChartWidget(action));
-    const query: Query = {
-      analysis_type: 'count',
-      timeframe: 'this_14_days',
-      event_collection: 'logins',
-      order_by: null,
-    };
-
-    const pubsub = {
-      publish: jest.fn(),
-    };
-
-    const chartEditor = {
-      isSavedQuery: false,
-      visualization: {
-        chartSettings: {
-          stackMode: 'percent',
-        } as ChartSettings,
-        type: 'bar' as PickerWidgets,
-        widgetSettings: {},
-      },
-      querySettings: {
-        analysis_type: 'count',
-        event_collection: 'purchases',
-        order_by: null,
-      } as Query,
-    };
-
-    test('get widget from state', () => {
-      return {
-        widgets: {
-          items: {
-            [widgetId]: {
-              ...widgetItem,
-              data: { query, result: 10 },
-              widget: {
-                ...widgetItem.widget,
-                settings: visualizationSettings,
-                query,
-              },
-            },
-          },
-        },
-      };
-    });
-
-    test('set chart editor query type', (result) => {
-      expect(result).toEqual(put(setQueryType(false)));
-    });
-
-    test('set visualization settings in chart editor', (result) => {
-      const {
-        visualizationType,
-        chartSettings,
-        widgetSettings,
-      } = visualizationSettings;
-
-      expect(result).toEqual(
-        put(
-          setVisualizationSettings(
-            visualizationType,
-            chartSettings,
-            widgetSettings
-          )
-        )
-      );
-    });
-
-    test('set edit mode in chart editor', (result) => {
-      expect(result).toEqual(put(setEditMode(true)));
-    });
-
-    test('set query settings in chart editor', (result) => {
-      expect(result).toEqual(put(setQuerySettings(query)));
-    });
-
-    test('set query results in chart editor', (result) => {
-      expect(result).toEqual(put(setQueryResult({ query, result: 10 })));
-    });
-
-    test('opens chart editor', (result) => {
-      expect(result).toEqual(put(openEditor()));
-    });
-
-    test('waits until chart editor is mounted', (result) => {
-      expect(result).toEqual(take(EDITOR_MOUNTED));
-    });
-
-    test('get pubsub from context', () => {
-      return pubsub;
-    });
-
-    test('updates query creator settings', () => {
-      expect(pubsub.publish).toHaveBeenCalledWith(SET_QUERY_EVENT, { query });
-    });
-
-    test('waits until user applies chart editor settigs', (result) => {
-      expect(result).toEqual(take([CLOSE_EDITOR, APPLY_CONFIGURATION]));
-
-      return applyConfiguration();
-    });
-
-    test('gets chart editor settings', () => {
-      return chartEditor;
-    });
-
-    test('updates widget state', (result) => {
-      expect(result).toEqual(
-        put(
-          setWidgetState(widgetId, {
-            isInitialized: false,
-            isConfigured: false,
-            error: null,
-            data: null,
-          })
-        )
-      );
-    });
-
-    test('finishes chart widget configuration', (result) => {
-      const {
-        querySettings,
-        visualization: { type, chartSettings, widgetSettings },
-      } = chartEditor;
-
-      const action = finishChartWidgetConfiguration(
-        widgetId,
-        querySettings,
-        type,
-        chartSettings,
-        widgetSettings
-      );
-
-      expect(result).toEqual(put(action));
-    });
-
-    test('initializes chart widget', (result) => {
-      expect(result).toEqual(put(initializeChartWidgetAction(widgetId)));
-    });
-
-    test('close chart editor', (result) => {
-      expect(result).toEqual(put(closeEditor()));
-    });
-
-    test('waits until editor is closed', (result) => {
-      expect(result).toEqual(take(EDITOR_UNMOUNTED));
-    });
-
-    test('reset chart editor', (result) => {
-      expect(result).toEqual(put(resetEditor()));
-    });
-
-    test('gets active dashboard identifier', () => {
-      return dashboardId;
-    });
-
-    test('triggers save dashboard action', (result) => {
-      expect(result).toEqual(put(saveDashboard(dashboardId)));
-    });
-  });
-
-  describe('Scenario 2: User edits widget with saved query', () => {
-    const test = sagaHelper(editChartWidget(action));
-    const query = 'financial-report';
-
-    test('get widget from state', () => {
-      return {
-        widgets: {
-          items: {
-            [widgetId]: {
-              ...widgetItem,
-              data: { query, result: 10 },
-              widget: {
-                ...widgetItem.widget,
-                settings: visualizationSettings,
-                query,
-              },
-            },
-          },
-        },
-      };
-    });
-
-    test('set chart editor query type', (result) => {
-      expect(result).toEqual(put(setQueryType(true)));
-    });
-  });
-
-  describe('Scenario 3: User cancel chart widget edition', () => {
-    const test = sagaHelper(editChartWidget(action));
-    const query: Query = {
-      analysis_type: 'count',
-      timeframe: 'this_14_days',
-      event_collection: 'logins',
-      order_by: null,
-    };
-
-    const pubsub = {
-      publish: jest.fn(),
-    };
-
-    test('get widget from state', () => {
-      return {
-        widgets: {
-          items: {
-            [widgetId]: {
-              ...widgetItem,
-              data: { query, result: 500 },
-              widget: {
-                ...widgetItem.widget,
-                settings: visualizationSettings,
-                query,
-              },
-            },
-          },
-        },
-      };
-    });
-
-    test('set chart editor query type', (result) => {
-      expect(result).toEqual(put(setQueryType(false)));
-    });
-
-    test('set visualization settings in chart editor', (result) => {
-      const {
-        visualizationType,
-        chartSettings,
-        widgetSettings,
-      } = visualizationSettings;
-
-      expect(result).toEqual(
-        put(
-          setVisualizationSettings(
-            visualizationType,
-            chartSettings,
-            widgetSettings
-          )
-        )
-      );
-    });
-
-    test('set edit mode in chart editor', (result) => {
-      expect(result).toEqual(put(setEditMode(true)));
-    });
-
-    test('set query settings in chart editor', (result) => {
-      expect(result).toEqual(put(setQuerySettings(query)));
-    });
-
-    test('set query results in chart editor', (result) => {
-      expect(result).toEqual(put(setQueryResult({ query, result: 500 })));
-    });
-
-    test('opens chart editor', (result) => {
-      expect(result).toEqual(put(openEditor()));
-    });
-
-    test('waits until chart editor is mounted', (result) => {
-      expect(result).toEqual(take(EDITOR_MOUNTED));
-    });
-
-    test('get pubsub from context', () => {
-      return pubsub;
-    });
-
-    test('updates query creator settings', () => {
-      expect(pubsub.publish).toHaveBeenCalledWith(SET_QUERY_EVENT, { query });
-    });
-
-    test('waits until user applies chart editor settigs', (result) => {
-      expect(result).toEqual(take([CLOSE_EDITOR, APPLY_CONFIGURATION]));
-
-      return closeEditor();
-    });
-
-    test('waits until chart editor is unmounted', (result) => {
-      expect(result).toEqual(take(EDITOR_UNMOUNTED));
-    });
-
-    test('resets chart editor', (result) => {
-      expect(result).toEqual(put(resetEditor()));
     });
   });
 });
@@ -1074,95 +361,75 @@ describe('selectQueryForWidget()', () => {
   });
 });
 
-describe('selectImageWidget()', () => {
-  describe('Scenario 1: User saves new image', () => {
-    const test = sagaHelper(selectImageWidget(widgetId));
-    const link = 'https://example.com/image-1.jpg';
-
-    test('shows query picker', (result) => {
-      expect(result).toEqual(put(showImagePicker()));
-    });
-
-    test('waits until user save new image', (result) => {
-      expect(result).toEqual(take([SAVE_IMAGE, HIDE_IMAGE_PICKER]));
-
-      return saveImage(link);
-    });
-
-    test('configures image widget', (result) => {
-      const action = setImageWidgetAction(widgetId, link);
-
-      expect(result).toEqual(put(action));
-    });
-
-    test('sets widget state', (result) => {
-      expect(result).toEqual(
-        put(setWidgetState(widgetId, { isConfigured: true }))
-      );
-    });
-
-    test('hides Image picker', (result) => {
-      expect(result).toEqual(put(hideImagePicker()));
-    });
-
-    test('gets active dashboard identifier', () => {
-      return dashboardId;
-    });
-
-    test('triggers save dashboard action', (result) => {
-      expect(result).toEqual(put(saveDashboard(dashboardId)));
-    });
-  });
-
-  describe('Scenario 2: User cancel creation of chart widget', () => {
-    const test = sagaHelper(selectImageWidget(widgetId));
-
-    test('shows image picker', (result) => {
-      expect(result).toEqual(put(showImagePicker()));
-    });
-
-    test('waits until user close image picker', (result) => {
-      expect(result).toEqual(take([SAVE_IMAGE, HIDE_IMAGE_PICKER]));
-
-      return hideImagePicker();
-    });
-
-    test('gets active dashboard identifier', () => {
-      return dashboardId;
-    });
-
-    test('removes widget from dashboard', (result) => {
-      expect(result).toEqual(
-        put(removeWidgetFromDashboard(dashboardId, widgetId))
-      );
-    });
-  });
-});
-
 describe('cloneWidget()', () => {
   const action = cloneWidgetAction(widgetId);
-
   describe('Scenario 1: User clone dashboard widget', () => {
     const test = sagaHelper(cloneWidget(action));
-
+    const dashboardData = {
+      settings: {
+        widgets: ['@widget/01', '@widget/02', '@widget/03'],
+      },
+    };
+    const dashboardWidgets = [
+      {
+        widget: {
+          position: {
+            y: 10,
+          },
+        },
+      },
+      {
+        widget: {
+          position: {
+            y: 14,
+          },
+        },
+      },
+      {
+        widget: {
+          position: {
+            y: 9,
+          },
+        },
+      },
+    ];
     test('get root widget', (result) => {
       expect(result).toEqual(select(getWidget, widgetId));
-
       return widgetItem;
     });
 
-    test('trigger saveClonedWidget action', (result) => {
-      expect(result).toEqual(
-        put(
-          saveClonedWidget(`widget/${widgetId}`, widgetItem.widget, widgetItem)
-        )
-      );
+    test('select active dashboard id', (result) => {
+      expect(result).toEqual(select(getActiveDashboard));
+      return dashboardId;
     });
 
-    test('select active dashbboard id', (result) => {
-      expect(result).toEqual(select(getActiveDashboard));
+    test('get active dashboard data', (result) => {
+      expect(result).toEqual(select(getDashboard, dashboardId));
+      return dashboardData;
+    });
 
-      return dashboardId;
+    test('should get widgets data', (result) => {
+      expect(result).toEqual(
+        all([
+          select(getWidget, '@widget/01'),
+          select(getWidget, '@widget/02'),
+          select(getWidget, '@widget/03'),
+        ])
+      );
+      return dashboardWidgets;
+    });
+
+    test('trigger saveClonedWidget action', (result) => {
+      const widgetSettings = {
+        ...widgetItem.widget,
+        position: {
+          ...widgetItem.widget.position,
+          y: findBiggestYPositionOfWidgets(dashboardWidgets) + 1,
+        },
+      };
+      expect(result).toEqual(
+        put(saveClonedWidget(`widget/${widgetId}`, widgetSettings, widgetItem))
+      );
     });
 
     test('trigger addWidgetToDashboard action', (result) => {

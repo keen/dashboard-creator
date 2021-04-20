@@ -1,18 +1,11 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import sagaHelper from 'redux-saga-testing';
-import { put, take, select, getContext, call } from 'redux-saga/effects';
+import { put, take, select, getContext, call, all } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
-import { exportToHtml } from '@keen.io/ui-core';
 
 jest.mock('uuid', () => {
   return {
     v4: () => '@dashboard/01',
-  };
-});
-
-jest.mock('@keen.io/ui-core', () => {
-  return {
-    exportToHtml: jest.fn().mockImplementation(() => ''),
   };
 });
 
@@ -34,6 +27,17 @@ import {
   addClonedDashboard,
   initializeDashboardWidgets as initializeDashboardWidgetsAction,
   exportDashboardToHtml as exportDashboardToHtmlAction,
+  saveDashboard as saveDashboardAction,
+  updateDashboardMeta,
+  saveDashboardSuccess,
+  viewDashboard as viewDashboardAction,
+  calculateYPositionAndAddWidget as calculateYPositionAndAddWidgetAction,
+  updateCachedDashboardIds,
+  unregisterDashboard,
+  addWidgetToDashboard,
+  setDashboardPublicAccess,
+  regenerateAccessKeySuccess,
+  regenerateAccessKeyError,
 } from './actions';
 import { removeDashboardTheme } from '../theme/actions';
 import {
@@ -46,11 +50,21 @@ import {
   viewPublicDashboard,
   cloneDashboard,
   exportDashboardToHtml,
+  saveDashboard,
+  updateCachedDashboardsList,
+  calculateYPositionAndAddWidget,
+  setAccessKey,
 } from './saga';
 
-import { removeWidget, registerWidgets, getWidgetSettings } from '../widgets';
+import {
+  removeWidget,
+  registerWidgets,
+  getWidgetSettings,
+  getWidget,
+  createWidget,
+} from '../widgets';
 
-import { setDashboardTheme } from '../theme';
+import { getActiveDashboardTheme, setDashboardTheme } from '../theme';
 import { setActiveDashboard, getActiveDashboard } from '../app';
 
 import { serializeDashboard } from './serializers';
@@ -63,6 +77,7 @@ import rootReducer from '../../rootReducer';
 import {
   CONFIRM_DASHBOARD_DELETE,
   HIDE_DELETE_CONFIRMATION,
+  SAVE_DASHBOARD_METADATA_SUCCESS,
 } from './constants';
 
 import {
@@ -71,7 +86,17 @@ import {
   ROUTES,
   KEEN_ANALYSIS,
 } from '../../constants';
-import { getDashboardMeta } from './selectors';
+import {
+  getCachedDashboardIds,
+  getDashboard,
+  getDashboardMeta,
+  getDashboardSettings,
+  getDashboardsMetadata,
+} from './selectors';
+import { removeConnectionFromFilter } from '../widgets/saga/filterWidget';
+
+import { getCachedDashboardsNumber } from '../app/selectors';
+import { unregisterWidget } from '../widgets/actions';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
@@ -203,6 +228,7 @@ describe('viewPublicDashboard()', () => {
 
 describe('removeWidgetFromDashboard()', () => {
   const action = removeWidgetFromDashboardAction(dashboardId, widgetId);
+  const filterIds = ['@filter/01', '@filter/02'];
 
   describe('Scenario 1: User removes visualization widget from dashboard', () => {
     const test = sagaHelper(removeWidgetFromDashboard(action));
@@ -213,11 +239,21 @@ describe('removeWidgetFromDashboard()', () => {
       return {
         query: 'purchases',
         type: 'visualization',
+        filterIds,
       };
     });
 
-    test('select state', (result) => {
+    test('update access key options', (result) => {
       expect(result).toEqual(call(updateAccessKeyOptions));
+    });
+
+    test('removes connections from filter', (result) => {
+      expect(result).toEqual(
+        all([
+          call(removeConnectionFromFilter, '@filter/01', widgetId),
+          call(removeConnectionFromFilter, '@filter/02', widgetId),
+        ])
+      );
     });
 
     test('triggers remove widget', (result) => {
@@ -725,39 +761,97 @@ describe('cloneDashboard', () => {
 
 describe('regenerateAccessKey()', () => {
   const dashboardId = '@dashboard/01';
-  const action = regenerateAccessKeyAction(dashboardId);
-  const test = sagaHelper(regenerateAccessKey(action));
   const publicAccessKey = 'public-access-key';
   const newAccessKey = 'new-access-key';
 
-  test('selects access key for dashboard', (result) => {
-    expect(result).toEqual(select(getDashboardMeta, dashboardId));
-    return {
-      publicAccessKey,
+  describe('Scenario 1: User regenerates access key', () => {
+    const action = regenerateAccessKeyAction(dashboardId);
+    const test = sagaHelper(regenerateAccessKey(action));
+
+    test('selects access key for dashboard', (result) => {
+      expect(result).toEqual(select(getDashboardMeta, dashboardId));
+      return {
+        publicAccessKey,
+      };
+    });
+
+    test('deletes existing access key', (result) => {
+      expect(result).toEqual(call(deleteAccessKey, publicAccessKey));
+    });
+
+    test('creates new access key', (result) => {
+      expect(result).toEqual(call(createAccessKey, dashboardId));
+      return {
+        key: newAccessKey,
+      };
+    });
+
+    test('saves new access key in dashboard meta', (result) => {
+      expect(result).toEqual(
+        put(
+          saveDashboardMetaAction(dashboardId, {
+            publicAccessKey: newAccessKey,
+          })
+        )
+      );
+    });
+
+    test('waits for dashboard metadata save', (result) => {
+      expect(result).toEqual(take(SAVE_DASHBOARD_METADATA_SUCCESS));
+    });
+
+    test('notifies about regenerating key success', (result) => {
+      expect(result).toEqual(put(regenerateAccessKeySuccess()));
+    });
+
+    test('terminates regenerate access key flow', (result) => {
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe('Scenario 2: User fails to regenerate access key', () => {
+    const action = regenerateAccessKeyAction(dashboardId);
+    const test = sagaHelper(regenerateAccessKey(action));
+
+    const notificationManagerMock = {
+      showNotification: jest.fn(),
     };
-  });
 
-  test('deletes existing access key', (result) => {
-    expect(result).toEqual(call(deleteAccessKey, publicAccessKey));
-  });
+    test('selects access key for dashboard', (result) => {
+      expect(result).toEqual(select(getDashboardMeta, dashboardId));
+      return {
+        publicAccessKey,
+      };
+    });
 
-  test('creates new access key', (result) => {
-    expect(result).toEqual(call(createAccessKey, dashboardId));
-    return {
-      key: newAccessKey,
-    };
-  });
+    test('deletes existing access key', (result) => {
+      expect(result).toEqual(call(deleteAccessKey, publicAccessKey));
+    });
 
-  test('saves new access key in dashboard meta', (result) => {
-    expect(result).toEqual(
-      put(
-        saveDashboardMetaAction(dashboardId, { publicAccessKey: newAccessKey })
-      )
-    );
-  });
+    test('creates new access key', (result) => {
+      expect(result).toEqual(call(createAccessKey, dashboardId));
+      return new Error();
+    });
 
-  test('terminates regenerate access key flow', (result) => {
-    expect(result).toBeUndefined();
+    test('notifies about regenerating key error', (result) => {
+      expect(result).toEqual(put(regenerateAccessKeyError()));
+    });
+
+    test('gets NotificationManager from context', (result) => {
+      expect(result).toEqual(getContext(NOTIFICATION_MANAGER));
+      return notificationManagerMock;
+    });
+
+    test('calls show notification method', () => {
+      expect(notificationManagerMock.showNotification).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'error',
+          showDismissButton: true,
+          autoDismiss: false,
+          message: 'dashboard_share.access_key_api_error',
+        })
+      );
+    });
   });
 });
 
@@ -766,12 +860,12 @@ describe('exportDashboardToHtml()', () => {
   const test = sagaHelper(exportDashboardToHtml(action));
 
   const projectId = 'projectId';
-  const masterKey = 'masterKey';
+  const userKey = 'userKey';
 
   const keenAnalysisMock = {
     config: {
       projectId,
-      masterKey,
+      readKey: userKey,
     },
   };
 
@@ -785,15 +879,354 @@ describe('exportDashboardToHtml()', () => {
 
   test('creates code snippet', (result) => {
     expect(result).toEqual(
-      createCodeSnippet({ projectId, masterKey, dashboardId })
+      createCodeSnippet({ projectId, userKey, dashboardId })
     );
     return snippet;
   });
+});
 
-  test('exports created snippet', () => {
-    expect(exportToHtml).toHaveBeenCalledWith({
-      data: snippet,
-      fileName: dashboardId,
+describe('saveDashboard()', () => {
+  const dashboardId = '@dashboard/01';
+  const dashboard: DashboardModel = {
+    baseTheme: {},
+    version: '0.0.1',
+    widgets: [],
+  };
+  const state = {
+    rootReducer,
+    app: {
+      activeDashboardId: dashboardId,
+    },
+    dashboards: {
+      items: {
+        [dashboardId]: dashboard,
+      },
+    },
+    theme: {
+      dashboards: {},
+    },
+  };
+
+  const blobApiMock = {
+    saveDashboard: jest.fn(),
+  };
+
+  const updatedMetadata: DashboardMetaData = {
+    id: dashboardId,
+    widgets: 0,
+    queries: 0,
+    title: 'Dashboard',
+    tags: [],
+    lastModificationDate: 0,
+    isPublic: true,
+    publicAccessKey: 'public-access-key',
+  };
+
+  const action = saveDashboardAction(dashboardId);
+  const test = sagaHelper(saveDashboard(action));
+
+  test('prepare state activeDashboardId', (result) => {
+    expect(result).toEqual(select());
+
+    return state;
+  });
+
+  test('get dashboard settings', (result) => {
+    expect(result).toEqual(select(getDashboardSettings, dashboardId));
+
+    return dashboard;
+  });
+
+  test('get dashboard theme', (result) => {
+    expect(result).toEqual(select(getActiveDashboardTheme));
+
+    return {};
+  });
+
+  test('get dashboards meta data', (result) => {
+    expect(result).toEqual(select(getDashboardsMetadata));
+
+    return [updatedMetadata];
+  });
+
+  test('gets BlobAPI instance from context', (result) => {
+    expect(result).toEqual(getContext(BLOB_API));
+
+    return blobApiMock;
+  });
+
+  test('calls saveDashboard', () => {
+    const serializedDashboard = serializeDashboard(dashboard);
+
+    expect(blobApiMock.saveDashboard).toHaveBeenCalledWith(
+      dashboardId,
+      serializedDashboard,
+      updatedMetadata
+    );
+  });
+
+  test('updates dashboard metadata', (result) => {
+    expect(result).toEqual(
+      put(updateDashboardMeta(dashboardId, updatedMetadata))
+    );
+  });
+
+  test('notifies about save success', (result) => {
+    expect(result).toEqual(put(saveDashboardSuccess(dashboardId)));
+  });
+});
+
+describe('updateCachedDashboardsList()', () => {
+  const dashboardId = '@dashboard/01';
+  const action = viewDashboardAction(dashboardId);
+
+  describe('Scenario 1: Should add dashboard id to cached dashboards if total cached dashboards number is less than maximal cached dashboards number', () => {
+    const test = sagaHelper(updateCachedDashboardsList(action));
+    test('should get cached dashboard ids', (result) => {
+      expect(result).toEqual(select(getCachedDashboardIds));
+      return [];
+    });
+    test('should get maximal cached dashboards number', (result) => {
+      expect(result).toEqual(select(getCachedDashboardsNumber));
+      return 3;
+    });
+    test('should update state with the array containing the id of visited dashboard', (result) => {
+      expect(result).toEqual(put(updateCachedDashboardIds([dashboardId])));
+    });
+  });
+
+  describe('Scenario 2: Should move dashboard id position to the end of cached dashboards array if dashboard id already exists inside it', () => {
+    const test = sagaHelper(updateCachedDashboardsList(action));
+    const cachedDashboardIds = [
+      '@dashboard/01',
+      '@dashboard/03',
+      '@dashboard/04',
+    ];
+    test('should get cached dashboard ids', (result) => {
+      expect(result).toEqual(select(getCachedDashboardIds));
+      return cachedDashboardIds;
+    });
+    test('should get maximal cached dashboards number', (result) => {
+      expect(result).toEqual(select(getCachedDashboardsNumber));
+      return 3;
+    });
+    test('should update state with array containing recent dashboard id at the end', (result) => {
+      expect(result).toEqual(
+        put(
+          updateCachedDashboardIds([
+            '@dashboard/03',
+            '@dashboard/04',
+            '@dashboard/01',
+          ])
+        )
+      );
+    });
+  });
+
+  describe('Scenario 3: Should remove the oldest dashboard id from cache and its related widgets', () => {
+    const test = sagaHelper(updateCachedDashboardsList(action));
+    const cachedDashboardIds = [
+      '@dashboard/02',
+      '@dashboard/03',
+      '@dashboard/04',
+    ];
+
+    test('should get cached dashboard ids', (result) => {
+      expect(result).toEqual(select(getCachedDashboardIds));
+      return cachedDashboardIds;
+    });
+    test('should get maximal cached dashboards number', (result) => {
+      expect(result).toEqual(select(getCachedDashboardsNumber));
+      return 3;
+    });
+    test('should get dashboard to remove', (result) => {
+      expect(result).toEqual(select(getDashboard, cachedDashboardIds[0]));
+      return {
+        settings: {
+          widgets: ['@widget/01', '@widget/02', '@widget/03'],
+        },
+      };
+    });
+    test('should remove dashboard widgets from cache', (result) => {
+      expect(result).toEqual(
+        all([
+          put(unregisterWidget('@widget/01')),
+          put(unregisterWidget('@widget/02')),
+          put(unregisterWidget('@widget/03')),
+        ])
+      );
+    });
+    test('should remove dashboard from cache', (result) => {
+      expect(result).toEqual(put(unregisterDashboard(cachedDashboardIds[0])));
+    });
+    test('should update cached dashboard ids with the array which not contains removed element', (result) => {
+      expect(result).toEqual(
+        put(
+          updateCachedDashboardIds([
+            '@dashboard/03',
+            '@dashboard/04',
+            '@dashboard/01',
+          ])
+        )
+      );
+    });
+  });
+});
+
+describe('setAccessKey()', () => {
+  const dashboardId = '@dashboard/01';
+  const publicAccessKey = 'public-access-key';
+
+  describe('Scenario 1: User successfully sets access key for public dashboard', () => {
+    const action = setDashboardPublicAccess(dashboardId, true, null);
+    const test = sagaHelper(setAccessKey(action));
+
+    test('selects dashboard metadata', (result) => {
+      expect(result).toEqual(select(getDashboardMeta, dashboardId));
+      return {};
+    });
+
+    test('creates new access key in api', (result) => {
+      expect(result).toEqual(call(createAccessKey, dashboardId));
+      return {
+        key: publicAccessKey,
+      };
+    });
+
+    test('saves new access key in dashboard meta', (result) => {
+      expect(result).toEqual(
+        put(
+          saveDashboardMetaAction(dashboardId, {
+            isPublic: true,
+            publicAccessKey: publicAccessKey,
+          })
+        )
+      );
+    });
+  });
+
+  describe('Scenario 2: User fails to set access key for public dashboard', () => {
+    const action = setDashboardPublicAccess(dashboardId, true, null);
+    const test = sagaHelper(setAccessKey(action));
+
+    const notificationManagerMock = {
+      showNotification: jest.fn(),
+    };
+
+    test('selects dashboard metadata', (result) => {
+      expect(result).toEqual(select(getDashboardMeta, dashboardId));
+      return {};
+    });
+
+    test('creates new access key', (result) => {
+      expect(result).toEqual(call(createAccessKey, dashboardId));
+      return new Error();
+    });
+
+    test('gets NotificationManager from context', (result) => {
+      expect(result).toEqual(getContext(NOTIFICATION_MANAGER));
+      return notificationManagerMock;
+    });
+
+    test('calls show notification method', () => {
+      expect(notificationManagerMock.showNotification).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'error',
+          showDismissButton: true,
+          autoDismiss: false,
+          message: 'dashboard_share.access_key_api_error',
+        })
+      );
+    });
+  });
+
+  describe('Scenario 3: User makes dashboard public and access key exists', () => {
+    const action = setDashboardPublicAccess(dashboardId, true, publicAccessKey);
+    const test = sagaHelper(setAccessKey(action));
+
+    test('selects dashboard metadata', (result) => {
+      expect(result).toEqual(select(getDashboardMeta, dashboardId));
+      return {};
+    });
+
+    test('saves dashboard metadata', (result) => {
+      expect(result).toEqual(put(saveDashboardMetaAction(dashboardId, {})));
+    });
+  });
+});
+
+describe('calculateYPositionAndAddWidget()', () => {
+  const dashboardId = '@dashboard/01';
+  const widgetType = 'text';
+  describe('should add widget at the end of the grid', () => {
+    const action = calculateYPositionAndAddWidgetAction(
+      dashboardId,
+      widgetType
+    );
+    const test = sagaHelper(calculateYPositionAndAddWidget(action));
+
+    const dashboardData = {
+      settings: {
+        widgets: ['@widget/01', '@widget/02', '@widget/03'],
+      },
+    };
+    const dashboardWidgets = [
+      {
+        widget: {
+          position: {
+            y: 10,
+          },
+        },
+      },
+      {
+        widget: {
+          position: {
+            y: 14,
+          },
+        },
+      },
+      {
+        widget: {
+          position: {
+            y: 9,
+          },
+        },
+      },
+    ];
+    const widgetId = 'widget/@dashboard/01';
+    test('should get dashboard data', (result) => {
+      expect(result).toEqual(select(getDashboard, dashboardId));
+      return dashboardData;
+    });
+
+    test('should get widgets data', (result) => {
+      expect(result).toEqual(
+        all([
+          select(getWidget, '@widget/01'),
+          select(getWidget, '@widget/02'),
+          select(getWidget, '@widget/03'),
+        ])
+      );
+      return dashboardWidgets;
+    });
+
+    test('should create widget with appropriate parameters', (result) => {
+      expect(result).toEqual(
+        put(
+          createWidget(widgetId, widgetType, {
+            x: 0,
+            y: 15,
+            w: 2,
+            h: 2,
+            minW: 2,
+            minH: 1,
+          })
+        )
+      );
+    });
+
+    test('should add widget to the dashboard', (result) => {
+      expect(result).toEqual(put(addWidgetToDashboard(dashboardId, widgetId)));
     });
   });
 });

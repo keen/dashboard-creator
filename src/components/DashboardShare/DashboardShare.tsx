@@ -84,10 +84,12 @@ const DashboardShare: FC<Props> = ({ dashboardId }) => {
       .then((res) => {
         if (!res.length && isPublic) {
           setAccessKeyError(t(ACCESS_KEY_ERROR.NOT_EXIST));
-          dispatch(setDashboardPublicAccess(dashboardId, false));
+          dispatch(setDashboardPublicAccess(dashboardId, false, null));
         }
         if (res.length) {
-          const { is_active } = res[0];
+          const { is_active, key } = res[0];
+          if (key !== publicAccessKey)
+            dispatch(setDashboardPublicAccess(dashboardId, isPublic, key));
           if (isPublic && !is_active)
             setAccessKeyError(ACCESS_KEY_ERROR.REVOKE_ERROR);
         }
@@ -106,8 +108,8 @@ const DashboardShare: FC<Props> = ({ dashboardId }) => {
   }, []);
 
   const handleToggleChange = useCallback(() => {
-    dispatch(setDashboardPublicAccess(dashboardId, !isPublic));
-  }, [dashboardId, isPublic]);
+    dispatch(setDashboardPublicAccess(dashboardId, !isPublic, publicAccessKey));
+  }, [dashboardId, isPublic, publicAccessKey]);
 
   return (
     <ModalWrapper>

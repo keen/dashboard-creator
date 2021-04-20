@@ -48,6 +48,7 @@ export type ReducerState = {
     error: boolean;
     data: DashboardMetaData[];
     isSavingMetadata: boolean;
+    isRegeneratingAccessKey: boolean;
   };
   dashboardSettingsModal: {
     isVisible: boolean;
@@ -58,6 +59,11 @@ export type ReducerState = {
     dashboardId: string | null;
   };
   tagsPool: string[];
+  tagsFilters: {
+    showOnlyPublicDashboards: boolean;
+    tags: string[];
+  };
   items: Record<string, DashboardItem>;
   dashboardListOrder: DashboardListOrder;
+  cachedDashboardIds: string[];
 };

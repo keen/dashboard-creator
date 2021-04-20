@@ -35,6 +35,14 @@
        analyticsApiUrl: 'staging-api.keen.io',
        dashboardsApiUrl: 'https://blob-service.us-west-2.test.aws.keen.io',
      },
+     defaultTimezoneForQuery: "Africa/Nairobi",
+     disableTimezoneSelection: true,
+     widgetsConfiguration: {
+       datePicker: {
+         defaultTimezone: 'Africa/Nairobi',
+         disableTimezoneSelection: false
+       }
+     },
      modalContainer: '#modal-root',
      project: <%= config %>,
      theme,

@@ -1,4 +1,11 @@
-import React, { FC, useRef, useEffect, useState, useContext } from 'react';
+import React, {
+  FC,
+  useRef,
+  useEffect,
+  useState,
+  useContext,
+  useCallback,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { Loader } from '@keen.io/ui-core';
 import { colors } from '@keen.io/colors';
@@ -8,6 +15,7 @@ import { Container, LoaderWrapper } from './ChartWidget.styles';
 
 import { EditorContext } from '../../contexts';
 import { getWidget, ChartWidget } from '../../modules/widgets';
+import { getInterimQuery } from '../../modules/queries';
 import { getActiveDashboardTheme } from '../../modules/theme';
 import { RootState } from '../../rootReducer';
 
@@ -15,6 +23,7 @@ import { RESIZE_WIDGET_EVENT } from '../../constants';
 
 import getChartInput from '../../utils/getChartInput';
 import createDataviz from './utils/createDataviz';
+import { getPresentationTimezone } from '../../modules/timezone';
 
 type Props = {
   /** Widget identifier */
@@ -39,24 +48,40 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
     data,
     widget,
   } = useSelector((state: RootState) => getWidget(state, id));
+  const interimQuery = useSelector((state: RootState) =>
+    getInterimQuery(state, id)
+  );
   const theme = useSelector((state: RootState) =>
     getActiveDashboardTheme(state)
   );
 
   const showVisualization = isConfigured && isInitialized && !isLoading;
+  const chartData = interimQuery ? interimQuery : data;
+
+  const getTimezone = useCallback((chartData) => {
+    if (
+      chartData &&
+      chartData.query &&
+      chartData.query.analysis_type !== 'funnel'
+    ) {
+      return getPresentationTimezone(chartData);
+    }
+    return null;
+  }, []);
 
   useEffect(() => {
     if (showVisualization) {
       datavizRef.current = createDataviz(
         widget as ChartWidget,
         theme,
-        containerRef.current
+        containerRef.current,
+        getTimezone(chartData)
       );
 
       if (error) {
         datavizRef.current.error(error.message, error.title);
       } else {
-        datavizRef.current.render(getChartInput(data));
+        datavizRef.current.render(getChartInput(chartData));
       }
     }
   }, [showVisualization, error]);
@@ -69,14 +94,14 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
           const { id: widgetId } = meta;
           if (datavizRef.current && widgetId === id && !error) {
             datavizRef.current.destroy();
-            datavizRef.current.render(getChartInput(data));
+            datavizRef.current.render(getChartInput(chartData));
           }
           break;
       }
     });
 
     return () => dispose();
-  }, [error, data, editorPubSub]);
+  }, [error, chartData, editorPubSub]);
 
   useEffect(() => {
     if (loaderRef.current) {

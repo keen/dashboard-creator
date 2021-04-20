@@ -5,11 +5,17 @@ export const widget: WidgetItem = {
   error: null,
   isConfigured: false,
   isInitialized: false,
+  isDetached: false,
+  isActive: false,
   isLoading: false,
+  isHighlighted: false,
+  isFadeOut: false,
+  isTitleCover: false,
   widget: {
     id: '@widget/id',
     position: { x: 3, y: 2, w: 6, h: 2 },
     query: null,
+    datePickerId: null,
     settings: {
       chartSettings: {},
       visualizationType: null,

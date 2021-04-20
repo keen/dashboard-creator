@@ -18,6 +18,10 @@ export type DashboardCreatorOptions = {
   translations?: TranslationsSettings;
   theme?: Partial<Theme>;
   createSharedDashboardUrl: (accessKey: string, dashboardId: string) => string;
+  cachedDashboardsNumber: number;
+  disableTimezoneSelection?: boolean;
+  defaultTimezoneForQuery?: string;
+  widgetsConfiguration?: WidgetsConfiguration;
 };
 
 export type PublicDashboardOptions = {
@@ -30,6 +34,7 @@ export type PublicDashboardOptions = {
   };
   modalContainer: string;
   translations?: TranslationsSettings;
+  widgetsConfiguration: WidgetsConfiguration;
 };
 
 export type TranslationsSettings = {
@@ -38,4 +43,18 @@ export type TranslationsSettings = {
   };
 };
 
-export type WidgetType = 'visualization' | 'text' | 'image';
+export type WidgetType =
+  | 'visualization'
+  | 'text'
+  | 'image'
+  | 'date-picker'
+  | 'filter';
+
+export type DatePickerWidgetConfiguration = {
+  disableTimezoneSelection?: boolean;
+  defaultTimezone?: string;
+};
+
+export type WidgetsConfiguration = {
+  datePicker?: DatePickerWidgetConfiguration;
+};

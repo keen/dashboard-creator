@@ -5,9 +5,11 @@ import { Icon } from '@keen.io/icons';
 import { Badge } from '@keen.io/ui-core';
 import { colors } from '@keen.io/colors';
 
+import DashboardViewSwitch from '../DashboardViewSwitch';
+
 import {
-  Title,
   Tag,
+  Title,
   Header,
   BackButton,
   BackText,
@@ -22,6 +24,8 @@ type Props = {
   tags?: string[];
   /** Dashboard is public identifier */
   isPublic?: boolean;
+  /** Dashboard switcher available */
+  useDashboardSwitcher?: boolean;
   /** Back event handler */
   onBack?: () => void;
 };
@@ -30,6 +34,7 @@ const DashboardDetails: FC<Props> = ({
   title,
   tags = [],
   isPublic = false,
+  useDashboardSwitcher = true,
   onBack,
 }) => {
   const { t } = useTranslation();
@@ -37,9 +42,11 @@ const DashboardDetails: FC<Props> = ({
   return (
     <div>
       <Header>
-        <Title isActive={!!title}>
-          {title ? title : t('dashboard_details.untitled_dashboard')}
-        </Title>
+        {useDashboardSwitcher ? (
+          <DashboardViewSwitch title={title} />
+        ) : (
+          <Title data-testid="public-title">{title}</Title>
+        )}
         {isPublic && (
           <Tag>
             <Badge variant="green">{t('dashboard_details.public')}</Badge>

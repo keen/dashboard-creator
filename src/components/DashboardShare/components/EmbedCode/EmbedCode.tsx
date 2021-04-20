@@ -35,7 +35,7 @@ import {
 
 import { AppContext } from '../../../../contexts';
 import { TOOLTIP_MOTION as MOTION } from '../../../../constants';
-import { TOOLTIP_HIDE } from './constants';
+import { TOOLTIP_HIDE } from '../../constants';
 
 SyntaxHighlighter.registerLanguage('xml', xml);
 SyntaxHighlighter.registerLanguage('javascript', js);
@@ -62,17 +62,15 @@ const EmbedCode: FC<Props> = ({ dashboardId, isPublic }) => {
   const containerRef = useRef(null);
 
   const {
-    project: { id: projectId, masterKey },
+    project: { id: projectId, userKey },
   } = useContext(AppContext);
 
   const codeHead = useMemo(
-    () =>
-      createCodeSnippet({ projectId, masterKey, dashboardId, type: 'head' }),
+    () => createCodeSnippet({ projectId, userKey, dashboardId, type: 'head' }),
     [dashboardId]
   );
   const codeBody = useMemo(
-    () =>
-      createCodeSnippet({ projectId, masterKey, dashboardId, type: 'body' }),
+    () => createCodeSnippet({ projectId, userKey, dashboardId, type: 'body' }),
     [dashboardId]
   );
 
@@ -123,7 +121,7 @@ const EmbedCode: FC<Props> = ({ dashboardId, isPublic }) => {
             marginLeft="10px"
             dangerouslySetInnerHTML={{
               __html: t('dashboard_share.embed_step_first', {
-                tag: '<strong>head</strong>',
+                tag: '<strong>&lt;head&gt;</strong>',
                 interpolation: { escapeValue: false },
               }),
             }}
@@ -160,7 +158,7 @@ const EmbedCode: FC<Props> = ({ dashboardId, isPublic }) => {
             marginLeft="10px"
             dangerouslySetInnerHTML={{
               __html: t('dashboard_share.embed_step_second', {
-                tag: '<strong>body</strong>',
+                tag: '<strong>&lt;body&gt;</strong>',
                 interpolation: { escapeValue: false },
               }),
             }}

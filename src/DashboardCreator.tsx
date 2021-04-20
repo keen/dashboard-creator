@@ -1,3 +1,10 @@
+/* eslint-disable @typescript-eslint/camelcase, @typescript-eslint/ban-ts-ignore */
+
+if (process.env.NODE_ENV === 'production') {
+  // @ts-ignore
+  __webpack_public_path__ = window.dashboardCreatorResourcesBasePath;
+}
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import i18n from 'i18next';
@@ -22,9 +29,10 @@ import createSagaMiddleware from './createSagaMiddleware';
 import rootReducer, { history } from './rootReducer';
 import { createRootSaga } from './rootSaga';
 
-import { SHOW_TOAST_NOTIFICATION_EVENT } from './constants';
+import { DEFAULT_TIMEZONE, SHOW_TOAST_NOTIFICATION_EVENT } from './constants';
 
 import { DashboardCreatorOptions, TranslationsSettings } from './types';
+import GlobalStyles from './components/GlobalStyles';
 
 export class DashboardCreator {
   /** Container used to mount application */
@@ -63,6 +71,18 @@ export class DashboardCreator {
     dashboardId: string
   ) => string;
 
+  /** Cached dashboards number */
+  private cachedDashboardsNumber = 3;
+
+  /** Timezone selection disabled in query **/
+  private disableTimezoneSelection = false;
+
+  /** Default timezone for query **/
+  private defaultTimezoneForQuery = DEFAULT_TIMEZONE;
+
+  /** Widgets configuration **/
+  private widgetsConfiguration = {};
+
   constructor(config: DashboardCreatorOptions) {
     const {
       container,
@@ -73,10 +93,13 @@ export class DashboardCreator {
       translations,
       theme,
       createSharedDashboardUrl,
+      cachedDashboardsNumber,
+      disableTimezoneSelection,
+      defaultTimezoneForQuery,
+      widgetsConfiguration,
     } = config;
 
     const { id, masterKey, accessKey } = project;
-
     if (backend?.analyticsApiUrl)
       this.analyticsApiUrl = backend.analyticsApiUrl;
     if (backend?.dashboardsApiUrl)
@@ -91,6 +114,12 @@ export class DashboardCreator {
     this.translationsSettings = translations || {};
     this.themeSettings = theme || {};
     this.createSharedDashboardUrl = createSharedDashboardUrl;
+    if (cachedDashboardsNumber) {
+      this.cachedDashboardsNumber = cachedDashboardsNumber;
+    }
+    this.defaultTimezoneForQuery = defaultTimezoneForQuery;
+    this.disableTimezoneSelection = disableTimezoneSelection;
+    this.widgetsConfiguration = widgetsConfiguration;
   }
 
   render() {
@@ -111,7 +140,6 @@ export class DashboardCreator {
     createI18n(this.translationsSettings);
 
     const notificationPubSub = new PubSub();
-
     const sagaMiddleware = createSagaMiddleware({
       blobApi,
       keenAnalysis,
@@ -120,17 +148,32 @@ export class DashboardCreator {
         pubsub: notificationPubSub,
         eventName: SHOW_TOAST_NOTIFICATION_EVENT,
       }),
+      analyticsApiHost: this.analyticsApiUrl,
     });
 
+    const defaultTimezoneForQuery =
+      this.defaultTimezoneForQuery || DEFAULT_TIMEZONE;
     const store = configureStore({
       reducer: rootReducer,
+      preloadedState: {
+        timezone: {
+          defaultTimezoneForQuery: defaultTimezoneForQuery,
+          timezoneSelectionDisabled: !!this.disableTimezoneSelection,
+        },
+      },
       middleware: [sagaMiddleware, routerMiddleware(history)],
     });
 
     const rootSaga = createRootSaga(this.editPrivileges);
 
     sagaMiddleware.run(rootSaga);
-    store.dispatch(appStart(this.themeSettings, this.editPrivileges));
+    store.dispatch(
+      appStart(
+        this.themeSettings,
+        this.editPrivileges,
+        this.cachedDashboardsNumber
+      )
+    );
 
     const projectSettings = {
       id: this.projectId,
@@ -140,6 +183,7 @@ export class DashboardCreator {
 
     ReactDOM.render(
       <Provider store={store}>
+        <GlobalStyles modalContainer={this.modalContainer} />
         <ThemeProvider
           theme={{
             breakpoints: screenBreakpoints,
@@ -154,6 +198,7 @@ export class DashboardCreator {
                   analyticsApiUrl: this.analyticsApiUrl,
                   modalContainer: this.modalContainer,
                   createSharedDashboardUrl: this.createSharedDashboardUrl,
+                  widgetsConfiguration: this.widgetsConfiguration,
                 }}
               >
                 <APIContext.Provider value={{ blobApi, keenAnalysis }}>

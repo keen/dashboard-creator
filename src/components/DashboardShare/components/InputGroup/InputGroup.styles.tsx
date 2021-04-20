@@ -46,3 +46,10 @@ export const Button = styled.button`
 export const Group = styled.div`
   display: flex;
 `;
+
+export const TooltipText = styled.div`
+  font-family: 'Lato Light', sans-serif;
+  font-size: 11px;
+  line-height: 14px;
+  color: ${colors.white['500']};
+`;

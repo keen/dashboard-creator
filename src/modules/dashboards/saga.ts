@@ -8,6 +8,7 @@ import {
   getContext,
   spawn,
   call,
+  takeEvery,
 } from 'redux-saga/effects';
 import { StatusCodes } from 'http-status-codes';
 import { push } from 'connected-react-router';
@@ -35,21 +36,27 @@ import {
   deleteDashboard as deleteDashboardAction,
   setDashboardPublicAccess as setDashboardPublicAccessAction,
   regenerateAccessKey as regenerateAccessKeyAction,
+  regenerateAccessKeySuccess,
+  regenerateAccessKeyError,
   cloneDashboard as cloneDashboardAction,
   exportDashboardToHtml as exportDashboardToHtmlAction,
   showDeleteConfirmation,
   hideDeleteConfirmation,
   saveDashboardMetaSuccess,
   saveDashboardMetaError,
-  setTagsPool,
   setDashboardList,
   setDashboardError,
   setDashboardListOrder,
   addClonedDashboard,
+  updateCachedDashboardIds,
+  unregisterDashboard,
+  calculateYPositionAndAddWidget as calculateYPositionAndAddWidgetAction,
+  addWidgetToDashboard,
 } from './actions';
 
 import { serializeDashboard } from './serializers';
 import {
+  getCachedDashboardIds,
   getDashboard,
   getDashboardMeta,
   getDashboardSettings,
@@ -58,21 +65,28 @@ import {
 import { getBaseTheme, getActiveDashboardTheme } from '../theme/selectors';
 
 import { setActiveDashboard, getActiveDashboard } from '../app';
+
 import {
   initializeWidget,
   registerWidgets,
   removeWidget,
   getWidget,
   getWidgetSettings,
+  createWidget,
+  createWidgetId,
 } from '../widgets';
+
+import {
+  removeDatePickerConnections,
+  removeConnectionFromDatePicker,
+} from '../widgets/saga/datePickerWidget';
 
 import { removeDashboardTheme, setDashboardTheme } from '../theme';
 import {
-  createTagsPool,
   createPublicDashboardKeyName,
   createCodeSnippet,
+  createWidgetsUniqueIds,
 } from './utils';
-import { createWidgetId } from '../widgets/utils';
 
 import { APIError } from '../../api';
 
@@ -96,8 +110,6 @@ import {
   SHOW_DELETE_CONFIRMATION,
   CONFIRM_DASHBOARD_DELETE,
   HIDE_DELETE_CONFIRMATION,
-  SHOW_DASHBOARD_SETTINGS_MODAL,
-  HIDE_DASHBOARD_SETTINGS_MODAL,
   SET_DASHBOARD_LIST_ORDER,
   DASHBOARD_LIST_ORDER_KEY,
   SET_DASHBOARD_PUBLIC_ACCESS,
@@ -105,6 +117,8 @@ import {
   REGENERATE_ACCESS_KEY,
   CLONE_DASHBOARD,
   EXPORT_DASHBOARD_TO_HTML,
+  CALCULATE_Y_POSITION_AND_ADD_WIDGET,
+  SAVE_DASHBOARD_METADATA_SUCCESS,
 } from './constants';
 
 import { RootState } from '../../rootReducer';
@@ -114,6 +128,15 @@ import {
   DashboardMetaData,
   DashboardError,
 } from './types';
+import { unregisterWidget } from '../widgets/actions';
+import { getCachedDashboardsNumber } from '../app/selectors';
+import {
+  removeConnectionFromFilter,
+  removeFilterConnections,
+} from '../widgets/saga/filterWidget';
+import { clearFilterData } from '../widgets/actions';
+import { getDroppingItemSize } from '../../utils';
+import { findBiggestYPositionOfWidgets } from './utils/findBiggestYPositionOfWidgets';
 
 export function* fetchDashboardList() {
   const blobApi = yield getContext(BLOB_API);
@@ -155,7 +178,7 @@ export function* saveDashboardMetadata({
   }
 }
 
-function* generateAccessKeyOptions(dashboardId) {
+function* generateAccessKeyOptions(dashboardId: string) {
   const state: RootState = yield select();
   const dashboard = yield getDashboard(state, dashboardId);
   const queries = new Set();
@@ -171,6 +194,7 @@ function* generateAccessKeyOptions(dashboardId) {
       widgets.forEach((widget) => {
         if (
           widget.type === 'visualization' &&
+          widget.query &&
           typeof widget.query === 'string'
         ) {
           queries.add(widget.query);
@@ -190,7 +214,7 @@ function* generateAccessKeyOptions(dashboardId) {
       const {
         widget: { type, query },
       } = item;
-      if (type === 'visualization' && typeof query === 'string') {
+      if (type === 'visualization' && query && typeof query === 'string') {
         queries.add(query);
       }
     });
@@ -270,8 +294,11 @@ export function* saveDashboard({
   const state: RootState = yield select();
 
   try {
-    const dashboard: Dashboard = yield getDashboardSettings(state, dashboardId);
-    const dashboardTheme = yield getActiveDashboardTheme(state);
+    const dashboard: Dashboard = yield select(
+      getDashboardSettings,
+      dashboardId
+    );
+    const dashboardTheme = yield select(getActiveDashboardTheme);
     const serializedDashboard = {
       ...dashboard,
       widgets: dashboard.widgets.map((widgetId) =>
@@ -280,6 +307,18 @@ export function* saveDashboard({
       baseTheme: dashboardTheme,
     };
 
+    const { widgets } = serializedDashboard;
+    const queries = widgets.reduce((acc, widget) => {
+      if (
+        widget.type === 'visualization' &&
+        widget.query &&
+        typeof widget.query === 'string'
+      ) {
+        acc.add(widget.query);
+      }
+      return acc;
+    }, new Set([]));
+
     const dashboardsMeta = yield select(getDashboardsMetadata);
     const metadata: DashboardMetaData = dashboardsMeta.find(
       ({ id }) => id === dashboardId
@@ -287,6 +326,7 @@ export function* saveDashboard({
 
     const updatedMetadata: DashboardMetaData = {
       ...metadata,
+      queries: queries.size,
       lastModificationDate: +new Date(),
     };
 
@@ -358,14 +398,23 @@ export function* deleteDashboard({
         message: 'notifications.dashboard_delete_success',
         autoDismiss: true,
       });
+    } catch (err) {
+      yield notificationManager.showNotification({
+        type: 'error',
+        message: 'notifications.dashboard_delete_error',
+        showDismissButton: true,
+        autoDismiss: false,
+      });
+    }
 
+    try {
       if (publicAccessKey) {
         yield call(deleteAccessKey, publicAccessKey);
       }
     } catch (err) {
       yield notificationManager.showNotification({
         type: 'error',
-        message: 'notifications.dashboard_delete_error',
+        message: 'dashboard_share.access_key_api_error',
         showDismissButton: true,
         autoDismiss: false,
       });
@@ -376,11 +425,34 @@ export function* deleteDashboard({
 export function* removeWidgetFromDashboard({
   payload,
 }: ReturnType<typeof removeWidgetFromDashboardAction>) {
-  const { widgetId } = payload;
+  const { dashboardId, widgetId } = payload;
 
-  const { type, query } = yield select(getWidgetSettings, widgetId);
+  const { type, query, datePickerId, filterIds } = yield select(
+    getWidgetSettings,
+    widgetId
+  );
+
   if (type === 'visualization' && query && typeof query === 'string') {
     yield call(updateAccessKeyOptions);
+    if (datePickerId) {
+      yield call(removeConnectionFromDatePicker, datePickerId, widgetId);
+    }
+
+    if (filterIds.length > 0) {
+      yield all(
+        filterIds.map((filterId: string) =>
+          call(removeConnectionFromFilter, filterId, widgetId)
+        )
+      );
+    }
+  }
+
+  if (type === 'date-picker') {
+    yield call(removeDatePickerConnections, dashboardId, widgetId);
+  }
+
+  if (type === 'filter') {
+    yield call(removeFilterConnections, dashboardId, widgetId);
   }
 
   yield put(removeWidget(widgetId));
@@ -423,6 +495,18 @@ export function* editDashboard({
       console.error(err);
     }
   } else {
+    const widgets = dashboard.settings.widgets;
+    if (widgets && widgets.length > 0) {
+      const connectedWidgets = yield all(
+        widgets.map((id: string) => select(getWidget, id))
+      );
+      const filtersToReset = connectedWidgets.filter(
+        (widget) => widget.widget.type === 'filter'
+      );
+      yield all(
+        filtersToReset.map((filter) => put(clearFilterData(filter.widget.id)))
+      );
+    }
     yield put(setActiveDashboard(dashboardId));
     yield put(push(ROUTES.EDITOR));
   }
@@ -537,16 +621,6 @@ export function* initializeDashboardWidgets({
   yield all(widgetsId.map((widgetId) => put(initializeWidget(widgetId))));
 }
 
-export function* showDashboardSettings() {
-  const dashboards = yield select(getDashboardsMetadata);
-  const tagsPool = createTagsPool(dashboards);
-  yield put(setTagsPool(tagsPool));
-}
-
-export function* hideDashboardSettings() {
-  yield put(setTagsPool([]));
-}
-
 export function* rehydrateDashboardsOrder() {
   try {
     const settings = localStorage.getItem(DASHBOARD_LIST_ORDER_KEY);
@@ -573,39 +647,32 @@ export function* persistDashboardsOrder({
 export function* setAccessKey({
   payload,
 }: ReturnType<typeof setDashboardPublicAccessAction>) {
-  const { dashboardId, isPublic } = payload;
+  const { dashboardId, isPublic, accessKey } = payload;
+  const metadata = yield select(getDashboardMeta, dashboardId);
 
-  const state: RootState = yield select();
-  const metadata = yield getDashboardMeta(state, dashboardId);
-
-  if (isPublic) {
-    try {
-      const accessKey = yield createAccessKey(dashboardId);
-      const { key: publicAccessKey } = accessKey;
-      const updatedMetadata: DashboardMetaData = {
-        ...metadata,
-        publicAccessKey,
-      };
-
-      yield put(saveDashboardMetaAction(dashboardId, updatedMetadata));
-    } catch (error) {
-      console.error(error);
-    }
+  if (accessKey) {
+    yield put(saveDashboardMetaAction(dashboardId, metadata));
   } else {
-    const { publicAccessKey } = metadata;
-    const updatedMetadata: DashboardMetaData = {
-      ...metadata,
-      publicAccessKey: null,
-    };
-
-    if (publicAccessKey) {
+    if (isPublic) {
       try {
-        yield call(deleteAccessKey, publicAccessKey);
+        const accessKey = yield call(createAccessKey, dashboardId);
+        const { key: publicAccessKey } = accessKey;
+
+        const updatedMetadata: DashboardMetaData = {
+          ...metadata,
+          isPublic,
+          publicAccessKey,
+        };
+
         yield put(saveDashboardMetaAction(dashboardId, updatedMetadata));
       } catch (error) {
-        console.error(error);
-        if (error.status === StatusCodes.NOT_FOUND)
-          yield put(saveDashboardMetaAction(dashboardId, updatedMetadata));
+        const notificationManager = yield getContext(NOTIFICATION_MANAGER);
+        yield notificationManager.showNotification({
+          type: 'error',
+          message: 'dashboard_share.access_key_api_error',
+          showDismissButton: true,
+          autoDismiss: false,
+        });
       }
     }
   }
@@ -617,7 +684,6 @@ export function* regenerateAccessKey({
   const { dashboardId } = payload;
   const metadata = yield select(getDashboardMeta, dashboardId);
   const { publicAccessKey } = metadata;
-
   if (publicAccessKey) {
     try {
       yield call(deleteAccessKey, publicAccessKey);
@@ -628,10 +694,18 @@ export function* regenerateAccessKey({
         ...metadata,
         publicAccessKey: key,
       };
-
       yield put(saveDashboardMetaAction(dashboardId, updatedMetadata));
+      yield take(SAVE_DASHBOARD_METADATA_SUCCESS);
+      yield put(regenerateAccessKeySuccess());
     } catch (error) {
-      console.error(error);
+      yield put(regenerateAccessKeyError());
+      const notificationManager = yield getContext(NOTIFICATION_MANAGER);
+      yield notificationManager.showNotification({
+        type: 'error',
+        message: 'dashboard_share.access_key_api_error',
+        showDismissButton: true,
+        autoDismiss: false,
+      });
     }
   }
 }
@@ -646,11 +720,7 @@ export function* cloneDashboard({
     const blobApi = yield getContext(BLOB_API);
 
     const model: DashboardModel = yield blobApi.getDashboardById(dashboardId);
-
-    const uniqueIdWidgets = model.widgets.map((widget) => ({
-      ...widget,
-      id: createWidgetId(),
-    }));
+    const uniqueIdWidgets = createWidgetsUniqueIds(model.widgets);
 
     const newDashboardId = uuid();
     const metaData = yield blobApi.getDashboardMetadataById(dashboardId);
@@ -709,10 +779,10 @@ export function* exportDashboardToHtml({
 }: ReturnType<typeof exportDashboardToHtmlAction>) {
   const { dashboardId } = payload;
   const client = yield getContext(KEEN_ANALYSIS);
-  const { projectId, masterKey } = client.config;
+  const { projectId, readKey: userKey } = client.config;
   const codeSnippet = yield createCodeSnippet({
     projectId,
-    masterKey,
+    userKey,
     dashboardId,
   });
   exportToHtml({ data: codeSnippet, fileName: dashboardId });
@@ -720,6 +790,60 @@ export function* exportDashboardToHtml({
 
 export function* showDashboardDeleteConfirmation() {
   yield window.scrollTo(0, 0);
+}
+
+export function* updateCachedDashboardsList({
+  payload,
+}: ReturnType<typeof viewDashboardAction | typeof editDashboardAction>) {
+  const { dashboardId } = payload;
+  let [...cachedDashboardIds] = yield select(getCachedDashboardIds);
+  const cachedDashboardsNumber = yield select(getCachedDashboardsNumber);
+  if (cachedDashboardIds.includes(dashboardId)) {
+    cachedDashboardIds.push(
+      cachedDashboardIds.splice(cachedDashboardIds.indexOf(dashboardId), 1)[0]
+    );
+  } else if (cachedDashboardIds.length < cachedDashboardsNumber) {
+    cachedDashboardIds.push(dashboardId);
+  } else {
+    const dashboardToUnregister = yield select(
+      getDashboard,
+      cachedDashboardIds[0]
+    );
+    if (dashboardToUnregister.settings) {
+      const widgets = dashboardToUnregister.settings.widgets;
+      yield all(widgets.map((widgetId) => put(unregisterWidget(widgetId))));
+      yield put(unregisterDashboard(cachedDashboardIds[0]));
+      cachedDashboardIds.push(dashboardId);
+      cachedDashboardIds = cachedDashboardIds.splice(1, 3);
+    }
+  }
+  yield put(updateCachedDashboardIds(cachedDashboardIds));
+}
+
+export function* calculateYPositionAndAddWidget({
+  payload,
+}: ReturnType<typeof calculateYPositionAndAddWidgetAction>) {
+  const { dashboardId, widgetType } = payload;
+  const dashboard = yield select(getDashboard, dashboardId);
+
+  const widgets = yield all(
+    dashboard.settings.widgets.map((id: string) => select(getWidget, id))
+  );
+
+  const widgetId = createWidgetId();
+  const { w, h, minH, minW } = getDroppingItemSize(widgetType);
+
+  yield put(
+    createWidget(widgetId, widgetType, {
+      x: 0,
+      y: findBiggestYPositionOfWidgets(widgets) + 1,
+      w,
+      h,
+      minW,
+      minH,
+    })
+  );
+  yield put(addWidgetToDashboard(dashboardId, widgetId));
 }
 
 export function* dashboardsSaga() {
@@ -736,11 +860,14 @@ export function* dashboardsSaga() {
   yield takeLatest(REMOVE_WIDGET_FROM_DASHBOARD, removeWidgetFromDashboard);
   yield takeLatest(INITIALIZE_DASHBOARD_WIDGETS, initializeDashboardWidgets);
   yield takeLatest(SHOW_DELETE_CONFIRMATION, showDashboardDeleteConfirmation);
-  yield takeLatest(SHOW_DASHBOARD_SETTINGS_MODAL, showDashboardSettings);
-  yield takeLatest(HIDE_DASHBOARD_SETTINGS_MODAL, hideDashboardSettings);
   yield takeLatest(SET_DASHBOARD_PUBLIC_ACCESS, setAccessKey);
   yield takeLatest(UPDATE_ACCESS_KEY_OPTIONS, updateAccessKeyOptions);
   yield takeLatest(REGENERATE_ACCESS_KEY, regenerateAccessKey);
   yield takeLatest(CLONE_DASHBOARD, cloneDashboard);
   yield takeLatest(EXPORT_DASHBOARD_TO_HTML, exportDashboardToHtml);
+  yield takeEvery([VIEW_DASHBOARD, EDIT_DASHBOARD], updateCachedDashboardsList);
+  yield takeEvery(
+    CALCULATE_Y_POSITION_AND_ADD_WIDGET,
+    calculateYPositionAndAddWidget
+  );
 }

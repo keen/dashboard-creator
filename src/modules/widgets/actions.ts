@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 import { RawDraftContentState } from 'draft-js';
-import { Query } from '@keen.io/query';
+import { Query, Timeframe } from '@keen.io/query';
 
 import { WidgetType } from '../../types';
 import { Widget, WidgetItem, GridPosition, WidgetsPosition } from './types';
@@ -10,21 +10,41 @@ import {
   CREATE_WIDGET,
   REMOVE_WIDGET,
   UPDATE_WIDGETS_POSITION,
+  UPDATE_CHART_WIDGET_DATE_PICKER_CONNECTION,
   FINISH_CHART_WIDGET_CONFIGURATION,
   INITIALIZE_WIDGET,
   INITIALIZE_CHART_WIDGET,
   EDIT_CHART_WIDGET,
   EDIT_IMAGE_WIDGET,
+  RESET_DATE_PICKER_WIDGETS,
+  APPLY_DATE_PICKER_MODIFIERS,
+  CLEAR_DATE_PICKER_MODIFIERS,
+  SET_DATE_PICKER_WIDGET_MODIFIERS,
+  EDIT_DATE_PICKER_WIDGET,
   SET_IMAGE_WIDGET,
   SET_TEXT_WIDGET,
   EDIT_TEXT_WIDGET,
   EDIT_INLINE_TEXT_WIDGET,
+  SET_DATE_PICKER_WIDGET,
   SAVE_CLONED_WIDGET,
   SET_WIDGET_LOADING,
   SET_WIDGET_INITIALIZATION,
   SET_WIDGET_STATE,
   SAVED_QUERY_UPDATED,
   CLONE_WIDGET,
+  SAVE_IMAGE,
+  CONFIGURE_FILTER_WIDGET,
+  EDIT_FILTER_WIDGET,
+  UPDATE_CHART_WIDGET_FILTERS_CONNECTIONS,
+  SET_FILTER_WIDGET,
+  SET_FILTER_PROPERTY_LIST,
+  APPLY_FILTER_WIDGET,
+  UNAPPLY_FILTER_WIDGET,
+  APPLY_FILTER_MODIFIERS,
+  CLEAR_FILTER_DATA,
+  CLEAR_INCONSISTENT_FILTERS_ERROR_FROM_WIDGETS,
+  UNREGISTER_WIDGET,
+  RESET_FILTER_WIDGETS,
 } from './constants';
 
 export const registerWidgets = createAction(
@@ -202,11 +222,203 @@ export const savedQueryUpdated = createAction(
   })
 );
 
+export const unregisterWidget = createAction(
+  UNREGISTER_WIDGET,
+  (widgetId: string) => ({
+    payload: {
+      widgetId,
+    },
+  })
+);
+
 export const cloneWidget = createAction(CLONE_WIDGET, (widgetId: string) => ({
   payload: {
     widgetId,
   },
 }));
+
+export const saveImage = createAction(SAVE_IMAGE, (link: string) => ({
+  payload: {
+    link,
+  },
+}));
+
+export const updateChartWidgetDatePickerConnection = createAction(
+  UPDATE_CHART_WIDGET_DATE_PICKER_CONNECTION,
+  (id: string, datePickerId: string | null) => ({
+    payload: {
+      id,
+      datePickerId,
+    },
+  })
+);
+
+export const setDatePickerWidget = createAction(
+  SET_DATE_PICKER_WIDGET,
+  (id: string, widgetConnections: string[]) => ({
+    payload: {
+      id,
+      widgetConnections,
+    },
+  })
+);
+
+export const editDatePickerWidget = createAction(
+  EDIT_DATE_PICKER_WIDGET,
+  (id: string) => ({
+    payload: {
+      id,
+    },
+  })
+);
+
+export const applyDatePickerModifiers = createAction(
+  APPLY_DATE_PICKER_MODIFIERS,
+  (id: string) => ({
+    payload: {
+      id,
+    },
+  })
+);
+
+export const clearDatePickerModifiers = createAction(
+  CLEAR_DATE_PICKER_MODIFIERS,
+  (id: string) => ({
+    payload: {
+      id,
+    },
+  })
+);
+
+export const setDatePickerModifiers = createAction(
+  SET_DATE_PICKER_WIDGET_MODIFIERS,
+  (widgetId: string, timeframe: Timeframe, timezone: string) => ({
+    payload: {
+      widgetId,
+      timeframe,
+      timezone,
+    },
+  })
+);
+
+export const resetDatePickerWidgets = createAction(
+  RESET_DATE_PICKER_WIDGETS,
+  (dashboardId: string) => ({
+    payload: {
+      dashboardId,
+    },
+  })
+);
+
+export const configureFilerWidget = createAction(
+  CONFIGURE_FILTER_WIDGET,
+  (
+    id: string,
+    widgetConnections: string[],
+    eventStream: string,
+    targetProperty: string
+  ) => ({
+    payload: {
+      id,
+      widgetConnections,
+      eventStream,
+      targetProperty,
+    },
+  })
+);
+
+export const editFilterWidget = createAction(
+  EDIT_FILTER_WIDGET,
+  (id: string) => ({
+    payload: {
+      id,
+    },
+  })
+);
+
+export const updateChartWidgetFiltersConnections = createAction(
+  UPDATE_CHART_WIDGET_FILTERS_CONNECTIONS,
+  (id: string, filterIds: string[]) => ({
+    payload: {
+      id,
+      filterIds,
+    },
+  })
+);
+
+export const setFilterWidget = createAction(
+  SET_FILTER_WIDGET,
+  (widgetId: string) => ({
+    payload: {
+      widgetId,
+    },
+  })
+);
+
+export const setFilterPropertyList = createAction(
+  SET_FILTER_PROPERTY_LIST,
+  (filterId: string, propertyList: string[]) => ({
+    payload: {
+      filterId,
+      propertyList,
+    },
+  })
+);
+
+export const applyFilterWidget = createAction(
+  APPLY_FILTER_WIDGET,
+  (filterId: string, propertyValue: string[]) => ({
+    payload: {
+      filterId,
+      propertyValue,
+    },
+  })
+);
+
+export const unapplyFilterWidget = createAction(
+  UNAPPLY_FILTER_WIDGET,
+  (filterId: string) => ({
+    payload: {
+      filterId,
+    },
+  })
+);
+
+export const applyFilterModifiers = createAction(
+  APPLY_FILTER_MODIFIERS,
+  (id: string) => ({
+    payload: {
+      id,
+    },
+  })
+);
+
+export const clearFilterData = createAction(
+  CLEAR_FILTER_DATA,
+  (filterId: string) => ({
+    payload: {
+      filterId,
+    },
+  })
+);
+
+export const clearInconsistentFiltersError = createAction(
+  CLEAR_INCONSISTENT_FILTERS_ERROR_FROM_WIDGETS,
+  (dashboardId: string) => ({
+    payload: {
+      dashboardId,
+    },
+  })
+);
+
+export const resetFilterWidgets = createAction(
+  RESET_FILTER_WIDGETS,
+  (dashboardId: string) => ({
+    payload: {
+      dashboardId,
+    },
+  })
+);
 
 export type WidgetsActions =
   | ReturnType<typeof createWidget>
@@ -222,8 +434,29 @@ export type WidgetsActions =
   | ReturnType<typeof setTextWidget>
   | ReturnType<typeof editTextWidget>
   | ReturnType<typeof editInlineTextWidget>
+  | ReturnType<typeof editDatePickerWidget>
   | ReturnType<typeof setImageWidget>
+  | ReturnType<typeof setDatePickerWidget>
   | ReturnType<typeof finishChartWidgetConfiguration>
+  | ReturnType<typeof updateChartWidgetDatePickerConnection>
+  | ReturnType<typeof resetDatePickerWidgets>
+  | ReturnType<typeof setDatePickerModifiers>
+  | ReturnType<typeof applyDatePickerModifiers>
+  | ReturnType<typeof clearDatePickerModifiers>
   | ReturnType<typeof savedQueryUpdated>
   | ReturnType<typeof cloneWidget>
-  | ReturnType<typeof saveClonedWidget>;
+  | ReturnType<typeof saveClonedWidget>
+  | ReturnType<typeof saveImage>
+  | ReturnType<typeof configureFilerWidget>
+  | ReturnType<typeof editDatePickerWidget>
+  | ReturnType<typeof updateChartWidgetFiltersConnections>
+  | ReturnType<typeof setFilterWidget>
+  | ReturnType<typeof setFilterPropertyList>
+  | ReturnType<typeof applyFilterWidget>
+  | ReturnType<typeof unapplyFilterWidget>
+  | ReturnType<typeof applyFilterModifiers>
+  | ReturnType<typeof clearFilterData>
+  | ReturnType<typeof clearInconsistentFiltersError>
+  | ReturnType<typeof saveImage>
+  | ReturnType<typeof unregisterWidget>
+  | ReturnType<typeof resetFilterWidgets>;

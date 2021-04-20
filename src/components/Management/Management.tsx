@@ -4,11 +4,12 @@ import { useTranslation } from 'react-i18next';
 import { v4 as uuid } from 'uuid';
 
 import {
-  Navigation,
   Filters,
   EmptySearch,
   Search,
   Content,
+  SearchInputContainer,
+  Container,
 } from './Management.styles';
 
 import CreateFirstDashboard from '../CreateFirstDashboard';
@@ -17,6 +18,7 @@ import DashboardsPlaceholder from '../DashboardsPlaceholder';
 import ManagementNavigation from '../ManagementNavigation';
 import SearchInput from '../SearchInput';
 import DashboardDeleteConfirmation from '../DashboardDeleteConfirmation';
+import FilterDashboards from '../FilterDashboards';
 import DashboardListOrder from '../DashboardListOrder';
 
 import {
@@ -26,6 +28,7 @@ import {
   getDashboardsLoadState,
   showDashboardSettingsModal,
   getDashboardListOrder,
+  getTagsFilter,
 } from '../../modules/dashboards';
 import { getUser } from '../../modules/app';
 
@@ -38,6 +41,7 @@ const Management: FC<Props> = () => {
   const dashboardsLoaded = useSelector(getDashboardsLoadState);
   const dashboardListOrder = useSelector(getDashboardListOrder);
   const { editPrivileges } = useSelector(getUser);
+  const dashboardsFilters = useSelector(getTagsFilter);
 
   const [searchPhrase, setSearchPhrase] = useState('');
 
@@ -56,34 +60,46 @@ const Management: FC<Props> = () => {
       );
     }
 
+    if (dashboardsFilters.showOnlyPublicDashboards) {
+      dashboardsList = dashboardsList.filter(({ isPublic }) => isPublic);
+    }
+
+    if (dashboardsFilters.tags.length) {
+      dashboardsList = dashboardsList.filter(({ tags }) =>
+        tags.some((tag) => dashboardsFilters.tags.includes(tag))
+      );
+    }
+
     return dashboardsList;
-  }, [searchPhrase, dashboards, dashboardListOrder]);
+  }, [searchPhrase, dashboards, dashboardListOrder, dashboardsFilters]);
 
   const isEmptyProject = dashboardsLoaded && dashboards.length === 0;
-  const isEmptySearch =
-    searchPhrase && dashboardsLoaded && filteredDashboards.length === 0;
+  const isEmptySearch = dashboardsLoaded && filteredDashboards.length === 0;
   const showPlaceholders = isEmptyProject || isEmptySearch || !dashboardsLoaded;
 
   return (
-    <div>
-      <Navigation>
+    <Container>
+      <div>
         <ManagementNavigation
           attractCreateDashboardButton={isEmptyProject}
-          showCreateDashboardButton={editPrivileges}
+          showCreateDashboardButton={editPrivileges && dashboardsLoaded}
           onCreateDashboard={createDashbord}
         />
         <Filters>
           <Search>
-            <SearchInput
-              searchPhrase={searchPhrase}
-              placeholder={t('dashboard_management.search_input_placeholder')}
-              onChangePhrase={(phrase) => setSearchPhrase(phrase)}
-              onClearSearch={() => setSearchPhrase('')}
-            />
+            <SearchInputContainer>
+              <SearchInput
+                searchPhrase={searchPhrase}
+                placeholder={t('dashboard_management.search_input_placeholder')}
+                onChangePhrase={(phrase) => setSearchPhrase(phrase)}
+                onClearSearch={() => setSearchPhrase('')}
+              />
+            </SearchInputContainer>
+            {dashboardsLoaded && <FilterDashboards />}
           </Search>
           <DashboardListOrder />
         </Filters>
-      </Navigation>
+      </div>
       <Content>
         {showPlaceholders ? (
           <DashboardsPlaceholder />
@@ -112,7 +128,7 @@ const Management: FC<Props> = () => {
           </>
         )}
       </Content>
-    </div>
+    </Container>
   );
 };
 

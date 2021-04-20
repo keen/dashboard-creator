@@ -2,10 +2,10 @@ import createCodeSnippet from './createCodeSnippet';
 
 test('return code snippet for provided projectId and dashboardId', () => {
   const projectId = 'projectId';
-  const masterKey = 'masterKey';
+  const userKey = 'userKey';
   const dashboardId = 'dashboardId';
 
-  expect(createCodeSnippet({ projectId, masterKey, dashboardId }))
+  expect(createCodeSnippet({ projectId, userKey, dashboardId }))
     .toMatchInlineSnapshot(`
     "
       <!doctype html>
@@ -28,14 +28,14 @@ test('return code snippet for provided projectId and dashboardId', () => {
       <script type=\\"text/javascript\\">
          new KeenPublicDashboard({
            container: '#root',
-           dashboardId: dashboardId,
+           dashboardId: 'dashboardId',
            backend: {
              analyticsApiUrl: 'api.keen.io',
              dashboardsApiUrl: 'https://blob-service.keen.io',
            },
            project: {
-             id: projectId,
-             masterKey: masterKey 
+             id: 'projectId',
+             accessKey: 'userKey' 
            },
          }).render();
         </script>
@@ -48,11 +48,11 @@ test('return code snippet for provided projectId and dashboardId', () => {
 test('return code snippet for head section', () => {
   const projectId = 'projectId';
   const dashboardId = 'dashboardId';
-  const masterKey = 'masterKey';
+  const userKey = 'userKey';
   const type = 'head';
 
   expect(
-    createCodeSnippet({ projectId, masterKey, dashboardId, type })
+    createCodeSnippet({ projectId, userKey, dashboardId, type })
   ).toMatchInlineSnapshot(
     `"<script crossorigin src=\\"https://cdn.jsdelivr.net/npm/@keen.io/dashboard-creator@latest/dist/public-dashboard/main.min.js\\"></script>"`
   );
@@ -60,24 +60,24 @@ test('return code snippet for head section', () => {
 
 test('return code snippet for body section', () => {
   const projectId = 'projectId';
-  const masterKey = 'masterKey';
+  const userKey = 'userKey';
   const dashboardId = 'dashboardId';
   const type = 'body';
 
-  expect(createCodeSnippet({ projectId, masterKey, dashboardId, type }))
+  expect(createCodeSnippet({ projectId, userKey, dashboardId, type }))
     .toMatchInlineSnapshot(`
     "<div id=\\"root\\"></div>
     <script type=\\"text/javascript\\">
       new KeenPublicDashboard({
         container: '#root',
-        dashboardId: dashboardId,
+        dashboardId: 'dashboardId',
         backend: {
           analyticsApiUrl: 'api.keen.io',
           dashboardsApiUrl: 'https://blob-service.keen.io',
         },
         project: {
-          id: projectId,
-          masterKey: masterKey 
+          id: 'projectId',
+          accessKey: 'userKey' 
         },
       }).render();
     </script>"

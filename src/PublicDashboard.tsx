@@ -1,3 +1,11 @@
+/* eslint-disable @typescript-eslint/camelcase, @typescript-eslint/ban-ts-ignore */
+import { timezoneActions } from './modules/timezone';
+
+if (process.env.NODE_ENV === 'production') {
+  // @ts-ignore
+  __webpack_public_path__ = window.dashboardCreatorResourcesBasePath;
+}
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import i18n from 'i18next';
@@ -10,12 +18,13 @@ import { PubSub } from '@keen.io/pubsub';
 import { ToastProvider } from '@keen.io/toast-notifications';
 import { screenBreakpoints } from '@keen.io/ui-core';
 
-import { APIContext } from './contexts';
+import { APIContext, AppContext } from './contexts';
 import { BlobAPI } from './api';
 import { NotificationManager } from './modules/notifications';
 import { viewPublicDashboard } from './modules/dashboards';
 
 import PublicDashboardViewer from './components/PublicDashboardViewer';
+import GlobalStyles from './components/GlobalStyles';
 
 import createI18n from './i18n';
 import createSagaMiddleware from './createSagaMiddleware';
@@ -29,6 +38,9 @@ import { PublicDashboardOptions, TranslationsSettings } from './types';
 export class PublicDashboard {
   /** Container used to mount application */
   private container: string;
+
+  /** Container used to mount application modals */
+  private modalContainer: string;
 
   /** Project identifer */
   private readonly projectId: string;
@@ -48,8 +60,19 @@ export class PublicDashboard {
   /** App localization settings */
   private readonly translationsSettings: TranslationsSettings;
 
+  /** Widgets configuration **/
+  private widgetsConfiguration = {};
+
   constructor(config: PublicDashboardOptions) {
-    const { container, project, dashboardId, backend, translations } = config;
+    const {
+      container,
+      modalContainer,
+      project,
+      dashboardId,
+      backend,
+      translations,
+      widgetsConfiguration,
+    } = config;
 
     if (backend?.analyticsApiUrl)
       this.analyticsApiUrl = backend.analyticsApiUrl;
@@ -59,10 +82,12 @@ export class PublicDashboard {
     const { id: projectId, accessKey } = project;
 
     this.container = container;
+    this.modalContainer = modalContainer;
     this.projectId = projectId;
     this.dashboardId = dashboardId;
     this.accessKey = accessKey;
     this.translationsSettings = translations || {};
+    this.widgetsConfiguration = widgetsConfiguration;
   }
 
   render() {
@@ -86,6 +111,7 @@ export class PublicDashboard {
       blobApi,
       keenAnalysis,
       i18n,
+      analyticsApiHost: this.analyticsApiUrl,
       notificationManager: new NotificationManager({
         pubsub: notificationPubSub,
         eventName: SHOW_TOAST_NOTIFICATION_EVENT,
@@ -98,12 +124,20 @@ export class PublicDashboard {
     });
 
     const rootSaga = createRootSaga();
+    const projectSettings = {
+      id: this.projectId,
+      userKey: this.accessKey,
+      masterKey: '',
+    };
 
     sagaMiddleware.run(rootSaga);
+
+    store.dispatch(timezoneActions.fetchTimezones());
     store.dispatch(viewPublicDashboard(this.dashboardId));
 
     ReactDOM.render(
       <Provider store={store}>
+        <GlobalStyles modalContainer={this.modalContainer} />
         <ThemeProvider
           theme={{
             breakpoints: screenBreakpoints,
@@ -111,9 +145,19 @@ export class PublicDashboard {
         >
           <ConnectedRouter history={history}>
             <ToastProvider>
-              <APIContext.Provider value={{ blobApi, keenAnalysis }}>
-                <PublicDashboardViewer dashboardId={this.dashboardId} />
-              </APIContext.Provider>
+              <AppContext.Provider
+                value={{
+                  notificationPubSub,
+                  project: projectSettings,
+                  analyticsApiUrl: this.analyticsApiUrl,
+                  modalContainer: this.modalContainer,
+                  widgetsConfiguration: this.widgetsConfiguration,
+                }}
+              >
+                <APIContext.Provider value={{ blobApi, keenAnalysis }}>
+                  <PublicDashboardViewer dashboardId={this.dashboardId} />
+                </APIContext.Provider>
+              </AppContext.Provider>
             </ToastProvider>
           </ConnectedRouter>
         </ThemeProvider>

@@ -1,6 +1,12 @@
 import { Query } from '@keen.io/query';
 import { PickerWidgets } from '@keen.io/widget-picker';
 
+export type ReducerState = {
+  interimQueries: {
+    [widgetId: string]: Record<string, any>;
+  };
+};
+
 export type SavedQueryAPIResponse = {
   query: Query;
   query_name: string;

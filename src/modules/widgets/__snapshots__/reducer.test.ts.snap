@@ -5,10 +5,17 @@ Object {
   "@widget/id": Object {
     "data": null,
     "error": null,
+    "isActive": false,
     "isConfigured": false,
+    "isDetached": false,
+    "isFadeOut": false,
+    "isHighlighted": false,
     "isInitialized": false,
     "isLoading": false,
+    "isTitleCover": false,
     "widget": Object {
+      "datePickerId": null,
+      "filterIds": Array [],
       "id": "@widget/id",
       "position": Object {
         "h": 2,
@@ -32,10 +39,16 @@ exports[`finishes visualization widget configuration 1`] = `
 Object {
   "data": null,
   "error": null,
+  "isActive": false,
   "isConfigured": true,
+  "isDetached": false,
+  "isFadeOut": false,
+  "isHighlighted": false,
   "isInitialized": false,
   "isLoading": false,
+  "isTitleCover": false,
   "widget": Object {
+    "datePickerId": null,
     "id": "@widget/id",
     "position": Object {
       "h": 2,
@@ -61,16 +74,22 @@ Object {
   "@widget/id": Object {
     "data": null,
     "error": null,
+    "isActive": false,
     "isConfigured": false,
+    "isDetached": false,
+    "isFadeOut": false,
+    "isHighlighted": false,
     "isInitialized": false,
     "isLoading": false,
+    "isTitleCover": false,
     "widget": Object {
+      "datePickerId": null,
       "id": "@widget/id",
       "position": Object {
         "h": 2,
         "w": 6,
         "x": 3,
-        "y": 999999,
+        "y": 2,
       },
       "query": null,
       "settings": Object {

@@ -18,11 +18,16 @@ import {
   SHOW_QUERY_UPDATE_CONFIRMATION,
   HIDE_QUERY_UPDATE_CONFIRMATION,
   UPDATE_CHART_SETTINGS,
+  UPDATE_WIDGET_SETTINGS,
+  SET_EDITOR_SECTION,
 } from './constants';
 
-import { ReducerState } from './types';
+import { createWidgetSettings } from './utils';
+
+import { ReducerState, EditorSection } from './types';
 
 export const initialState: ReducerState = {
+  editorSection: EditorSection.QUERY,
   isOpen: false,
   isEditMode: false,
   isSavedQuery: false,
@@ -31,10 +36,11 @@ export const initialState: ReducerState = {
   hasQueryChanged: false,
   initialQuerySettings: null,
   querySettings: {},
+  queryError: null,
   visualization: {
     type: null,
     chartSettings: {},
-    widgetSettings: {},
+    widgetSettings: createWidgetSettings(),
   },
   analysisResult: null,
   changeQueryConfirmation: false,
@@ -45,6 +51,11 @@ const chartEditorReducer = (
   action: ChartEditorActions
 ) => {
   switch (action.type) {
+    case SET_EDITOR_SECTION:
+      return {
+        ...state,
+        editorSection: action.payload.editorSection,
+      };
     case SHOW_QUERY_UPDATE_CONFIRMATION:
       return {
         ...state,
@@ -74,6 +85,17 @@ const chartEditorReducer = (
       return {
         ...state,
         isEditMode: action.payload.isEditMode,
+      };
+    case UPDATE_WIDGET_SETTINGS:
+      return {
+        ...state,
+        visualization: {
+          ...state.visualization,
+          widgetSettings: {
+            ...state.visualization.widgetSettings,
+            ...action.payload.widgetSettings,
+          },
+        },
       };
     case UPDATE_CHART_SETTINGS:
       return {
@@ -110,6 +132,7 @@ const chartEditorReducer = (
       return {
         ...state,
         isDirtyQuery: false,
+        queryError: action.payload,
         isQueryPerforming: false,
       };
     case RUN_QUERY_SUCCESS:
@@ -117,6 +140,7 @@ const chartEditorReducer = (
         ...state,
         isQueryPerforming: false,
         isDirtyQuery: false,
+        queryError: null,
         analysisResult: action.payload.results,
       };
     case RUN_QUERY:

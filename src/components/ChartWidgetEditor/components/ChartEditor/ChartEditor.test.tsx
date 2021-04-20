@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import React from 'react';
 import {
   render as rtlRender,
   fireEvent,
   waitFor,
+  cleanup,
 } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
@@ -13,6 +15,7 @@ import ChartEditor from './ChartEditor';
 import {
   initialState as chartEditorState,
   EDITOR_MOUNTED,
+  EditorSection,
 } from '../../../../modules/chartEditor';
 import { AppContext } from '../../../../contexts';
 
@@ -26,6 +29,10 @@ const render = (storeState: any = {}, overProps: any = {}) => {
     app: { activeDashboardId: '@dashboard-id' },
     theme: { dashboards: {} },
     chartEditor: chartEditorState,
+    timezone: {
+      defaultTimezoneForQuery: 'Africa/Nairobi',
+      timezoneSelectionDisabled: false,
+    },
     ...storeState,
   };
 
@@ -35,7 +42,7 @@ const render = (storeState: any = {}, overProps: any = {}) => {
   const appContext = {
     notificationPubSub: new PubSub(),
     analyticsApiUrl: '@keen-api-url',
-    modalContainer: '#modalContainer',
+    modalContainer: '#modal-root',
     project: {
       id: '@project-id',
       userKey: '@user-key',
@@ -62,6 +69,19 @@ const render = (storeState: any = {}, overProps: any = {}) => {
 
 jest.useFakeTimers();
 
+afterEach(() => {
+  cleanup();
+});
+
+beforeEach(() => {
+  let modalRoot = document.getElementById('modal-root');
+  if (!modalRoot) {
+    modalRoot = document.createElement('div');
+    modalRoot.setAttribute('id', 'modal-root');
+    document.body.appendChild(modalRoot);
+  }
+});
+
 test('allows user to run query', () => {
   const {
     wrapper: { getByText },
@@ -81,8 +101,6 @@ test('allows user to run query', () => {
       },
     ]
   `);
-
-  jest.clearAllTimers();
 });
 
 test('triggers action after editor is mounted', async () => {
@@ -97,13 +115,44 @@ test('triggers action after editor is mounted', async () => {
       ])
     );
   });
-  jest.clearAllTimers();
+});
+
+test('do not allows user to apply incomplete chart settings', () => {
+  const storeState = {
+    chartEditor: {
+      ...chartEditorState,
+      analysisResult: null,
+      visualization: {
+        type: 'metric',
+        chartSettings: {},
+        widgetSettings: {},
+      },
+    },
+  };
+
+  const {
+    wrapper: { getByText },
+    store,
+  } = render(storeState);
+
+  store.clearActions();
+
+  const button = getByText('chart_widget_editor.add_to_dashboard');
+  fireEvent.click(button);
+
+  expect(store.getActions()).toEqual([]);
 });
 
 test('allows user to apply chart editor configuration', () => {
   const storeState = {
     chartEditor: {
       ...chartEditorState,
+      analysisResult: {
+        query: {
+          analysis_type: 'count',
+        },
+        results: 100,
+      },
       visualization: {
         type: 'metric',
         chartSettings: {},
@@ -130,14 +179,29 @@ test('allows user to apply chart editor configuration', () => {
       },
     ]
   `);
-
-  jest.clearAllTimers();
 });
 
 test('renders visualization settings error', () => {
+  const storeState = {
+    chartEditor: {
+      ...chartEditorState,
+      analysisResult: {
+        query: {
+          analysis_type: 'count',
+        },
+        results: 100,
+      },
+      visualization: {
+        type: 'line',
+        chartSettings: {},
+        widgetSettings: {},
+      },
+    },
+  };
+
   const {
     wrapper: { getByText },
-  } = render();
+  } = render(storeState);
 
   const button = getByText('chart_widget_editor.add_to_dashboard');
   fireEvent.click(button);
@@ -157,8 +221,6 @@ test('calls "onClose" event handler', () => {
   fireEvent.click(cancelButton);
 
   expect(props.onClose).toHaveBeenCalled();
-
-  jest.clearAllTimers();
 });
 
 test('shows saved query updated message', () => {
@@ -174,8 +236,6 @@ test('shows saved query updated message', () => {
   } = render(storeState);
 
   expect(getByText('chart_widget_editor.save_query_edit')).toBeInTheDocument();
-
-  jest.clearAllTimers();
 });
 
 test('allows user to restore saved query settings', async () => {
@@ -208,8 +268,6 @@ test('allows user to restore saved query settings', async () => {
       },
     ]
   `);
-
-  jest.clearAllTimers();
 });
 
 test('shows placeholder with run query button', () => {
@@ -224,6 +282,174 @@ test('shows placeholder with run query button', () => {
   } = render(storeState);
 
   expect(getByText('chart_widget_editor.run_query')).toBeInTheDocument();
+});
 
-  jest.clearAllTimers();
+test('does not allow user to apply chart editor configuration when query has error', () => {
+  const storeState = {
+    chartEditor: {
+      ...chartEditorState,
+      analysisResult: {
+        query: {
+          analysis_type: 'count',
+        },
+        results: 100,
+      },
+      visualization: {
+        type: 'metric',
+        chartSettings: {},
+        widgetSettings: {},
+      },
+      queryError: 'There is error in the query',
+    },
+  };
+
+  const {
+    wrapper: { getByText },
+    store,
+  } = render(storeState);
+
+  store.clearActions();
+
+  const button = getByText('chart_widget_editor.add_to_dashboard');
+  fireEvent.click(button);
+  expect(store.getActions()).toEqual([]);
+});
+
+test('does not allow user to apply chart editor configuration when query is dirty', () => {
+  const storeState = {
+    chartEditor: {
+      ...chartEditorState,
+      analysisResult: {
+        query: {
+          analysis_type: 'count',
+        },
+        results: 100,
+      },
+      visualization: {
+        type: 'metric',
+        chartSettings: {},
+        widgetSettings: {},
+      },
+      isDirtyQuery: true,
+    },
+  };
+
+  const {
+    wrapper: { getByText },
+    store,
+  } = render(storeState);
+
+  store.clearActions();
+
+  const button = getByText('chart_widget_editor.add_to_dashboard');
+  fireEvent.click(button);
+  expect(store.getActions()).toEqual([]);
+});
+
+test('allows user to set chart title', async () => {
+  const chartTitle = 'CHART_TITLE';
+  const storeState = {
+    chartEditor: {
+      ...chartEditorState,
+      analysisResult: {
+        query: {
+          analysis_type: 'count',
+        },
+        results: 100,
+      },
+      visualization: {
+        type: 'area',
+        visualizationType: 'area',
+        chartSettings: {
+          curve: 'linear',
+          stackMode: 'normal',
+          groupMode: 'grouped',
+        },
+        widgetSettings: {},
+      },
+      editorSection: EditorSection.SETTINGS,
+    },
+  };
+  const {
+    wrapper: { getByPlaceholderText },
+    store,
+  } = render(storeState);
+
+  store.clearActions();
+  const titleInput = getByPlaceholderText(
+    'widget_customization_heading_settings.title_placeholder'
+  );
+  fireEvent.change(titleInput, { target: { value: chartTitle } });
+
+  expect(store.getActions()).toMatchSnapshot();
+});
+
+test('allows user to set chart subtitle', async () => {
+  const chartSubtitle = 'CHART_SUBTITLE';
+  const storeState = {
+    chartEditor: {
+      ...chartEditorState,
+      analysisResult: {
+        query: {
+          analysis_type: 'count',
+        },
+        results: 100,
+      },
+      visualization: {
+        type: 'area',
+        visualizationType: 'area',
+        chartSettings: {
+          curve: 'linear',
+          stackMode: 'normal',
+          groupMode: 'grouped',
+        },
+        widgetSettings: {},
+      },
+      editorSection: EditorSection.SETTINGS,
+    },
+  };
+  const {
+    wrapper: { getByPlaceholderText },
+    store,
+  } = render(storeState);
+
+  store.clearActions();
+  const titleInput = getByPlaceholderText(
+    'widget_customization_heading_settings.subtitle_placeholder'
+  );
+  fireEvent.change(titleInput, { target: { value: chartSubtitle } });
+
+  expect(store.getActions()).toMatchSnapshot();
+});
+
+test('allows user use chart name from saved query', async () => {
+  const storeState = {
+    chartEditor: {
+      ...chartEditorState,
+      analysisResult: {
+        query_name: 'QUERY_NAME',
+        query: {
+          analysis_type: 'count',
+        },
+        results: 100,
+      },
+      visualization: {
+        type: 'area',
+        visualizationType: 'area',
+        chartSettings: {
+          curve: 'linear',
+          stackMode: 'normal',
+          groupMode: 'grouped',
+        },
+        widgetSettings: {},
+      },
+      editorSection: EditorSection.SETTINGS,
+    },
+  };
+  const {
+    wrapper: { getByTestId },
+  } = render(storeState);
+
+  const inheritQueryNameInfo = getByTestId('inherit-query-name');
+  expect(inheritQueryNameInfo).toBeInTheDocument();
 });

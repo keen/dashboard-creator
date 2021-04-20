@@ -59,7 +59,12 @@ const PublicDashboardViewer: FC<Props> = ({ dashboardId }) => {
     <Container>
       <Content>
         <Navigation>
-          {metadata && <DashboardDetails title={metadata.title} />}
+          {metadata && (
+            <DashboardDetails
+              title={metadata.title}
+              useDashboardSwitcher={false}
+            />
+          )}
         </Navigation>
         <AnimatePresence>
           {error && (

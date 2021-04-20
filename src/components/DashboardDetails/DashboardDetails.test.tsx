@@ -1,15 +1,36 @@
 import React from 'react';
 import { render as rtlRender, fireEvent } from '@testing-library/react';
-
+import { Provider } from 'react-redux';
+import configureStore from 'redux-mock-store';
 import DashboardDetails from './DashboardDetails';
 
 const render = (overProps: any = {}) => {
+  const mockStore = configureStore([]);
+  const store = mockStore({
+    app: {
+      activeDashboard: '@dashboard/01',
+    },
+    dashboards: {
+      metadata: {
+        data: [
+          {
+            id: '@dashboard/01',
+          },
+        ],
+      },
+    },
+  });
+
   const props = {
     tags: [],
     ...overProps,
   };
 
-  const wrapper = rtlRender(<DashboardDetails {...props} />);
+  const wrapper = rtlRender(
+    <Provider store={store}>
+      <DashboardDetails {...props} />
+    </Provider>
+  );
 
   return {
     props,
@@ -36,7 +57,7 @@ test('renders dashboard title', () => {
   expect(getByText(props.title)).toBeInTheDocument();
 });
 
-test('render "Public" marker', () => {
+test('renders "public" tag', () => {
   const {
     wrapper: { getByText },
   } = render({ isPublic: true });
@@ -68,4 +89,12 @@ test('allows user to back to dashboards list', () => {
   fireEvent.click(element);
 
   expect(props.onBack).toHaveBeenCalled();
+});
+
+test('renders public dashboard title', () => {
+  const {
+    wrapper: { getByTestId },
+  } = render({ useDashboardSwitcher: false });
+
+  expect(getByTestId('public-title')).toBeInTheDocument();
 });

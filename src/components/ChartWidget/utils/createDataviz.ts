@@ -2,7 +2,12 @@ import { KeenDataviz } from '@keen.io/dataviz';
 
 import { ChartWidget } from '../../../modules/widgets';
 
-const createDataviz = (widget: ChartWidget, theme, container) => {
+const createDataviz = (
+  widget: ChartWidget,
+  theme,
+  container,
+  presentationTimezone
+) => {
   const {
     settings: { visualizationType, chartSettings, widgetSettings },
   } = widget;
@@ -15,6 +20,7 @@ const createDataviz = (widget: ChartWidget, theme, container) => {
       theme,
     },
     widget: widgetSettings,
+    presentationTimezone,
   });
 };
 

@@ -41,6 +41,9 @@ const render = (storeState: any = {}, overProps: any = {}) => {
         dashboard: {},
       },
     },
+    queries: {
+      interimQueries: {},
+    },
     widgets: {
       items: {
         [id]: {

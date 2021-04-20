@@ -1,24 +1,15 @@
-import textEditorReducer from './reducer';
-import {
-  openEditor,
-  closeEditor,
-  setTextAlignment,
-  setEditorContent,
-  applyTextEditorSettings,
-} from './actions';
-import { getTextEditor } from './selectors';
-import { CLOSE_EDITOR, APPLY_TEXT_EDITOR_SETTINGS } from './constants';
+import textEditorSlice from './reducer';
+import { textEditorSagaActions } from './actions';
+import { textEditorSelectors } from './selectors';
 import { TextAlignment } from './types';
 
+const textEditorActions = textEditorSlice.actions;
+const textEditorReducer = textEditorSlice.reducer;
+
 export {
-  openEditor,
-  closeEditor,
-  setTextAlignment,
-  setEditorContent,
-  applyTextEditorSettings,
+  textEditorActions,
+  textEditorSagaActions,
   textEditorReducer,
-  getTextEditor,
+  textEditorSelectors,
   TextAlignment,
-  CLOSE_EDITOR,
-  APPLY_TEXT_EDITOR_SETTINGS,
 };

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { push } from 'connected-react-router';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -11,6 +11,8 @@ import {
   showDashboardSettingsModal,
 } from '../../modules/dashboards';
 import { setActiveDashboard, getUser } from '../../modules/app';
+import { removeInterimQueries } from '../../modules/queries';
+import { resetDatePickerWidgets } from '../../modules/widgets';
 
 import Grid from '../Grid';
 import GridLoader from '../GridLoader';
@@ -19,6 +21,11 @@ import DashboardDeleteConfirmation from '../DashboardDeleteConfirmation';
 
 import { ROUTES } from '../../constants';
 import { RootState } from '../../rootReducer';
+
+import {
+  clearInconsistentFiltersError,
+  resetFilterWidgets,
+} from '../../modules/widgets/actions';
 
 type Props = {
   /** Dashboard identifer */
@@ -47,6 +54,15 @@ const Viewer: FC<Props> = ({ dashboardId }) => {
   const { title, tags, isPublic } = useSelector((state: RootState) =>
     getDashboardMeta(state, dashboardId)
   );
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetDatePickerWidgets(dashboardId));
+      dispatch(resetFilterWidgets(dashboardId));
+      dispatch(clearInconsistentFiltersError(dashboardId));
+      dispatch(removeInterimQueries());
+    };
+  }, [dashboardId]);
 
   return (
     <>

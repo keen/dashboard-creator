@@ -17,7 +17,7 @@ export const DragHandle = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  cursor: grab;
+  flex-shrink: 0;
 `;
 
 export const EditorContainer = styled.div`
@@ -37,15 +37,28 @@ export const RemoveContainer = styled(motion.div)`
 
 export const ManagementContainer = styled(motion.div)`
   position: absolute;
+  left: 0;
+  right: 0;
   background: ${transparentize(0.4, colors.black[300])};
 
-  display: grid;
-  grid-template-columns: repeat(4, auto);
-  grid-column-gap: 10px;
+  display: flex;
   align-items: center;
 
   padding: 0 10px;
   height: 47px;
   min-width: 270px;
   z-index: ${UI_LAYERS.dropdown};
+
+  cursor: grab;
+`;
+
+export const ButtonsContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  flex: 1;
+  column-gap: 10px;
+`;
+
+export const ButtonWrapper = styled.div`
+  padding: 0 10px;
 `;

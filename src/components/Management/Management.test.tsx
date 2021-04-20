@@ -2,11 +2,13 @@
 import React, { forwardRef } from 'react';
 import {
   render as rtlRender,
-  waitFor,
   fireEvent,
+  cleanup,
 } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
+
+import { AppContext } from '../../contexts';
 
 import Management from './Management';
 import { dashboardsMeta } from '../../modules/dashboards/fixtures';
@@ -51,6 +53,11 @@ const render = (storeState: any = {}, overProps: any = {}) => {
         error: null,
         data: [],
       },
+      tagsPool: [],
+      tagsFilters: {
+        showOnlyPublicDashboards: false,
+        tags: [],
+      },
     },
     ...storeState,
   };
@@ -60,7 +67,15 @@ const render = (storeState: any = {}, overProps: any = {}) => {
 
   const wrapper = rtlRender(
     <Provider store={store}>
-      <Management {...props} />
+      <AppContext.Provider
+        value={
+          {
+            modalContainer: '#modal-root',
+          } as any
+        }
+      >
+        <Management {...props} />
+      </AppContext.Provider>
     </Provider>
   );
 
@@ -69,6 +84,19 @@ const render = (storeState: any = {}, overProps: any = {}) => {
     wrapper,
   };
 };
+
+afterEach(() => {
+  cleanup();
+});
+
+beforeEach(() => {
+  let modalRoot = document.getElementById('modal-root');
+  if (!modalRoot) {
+    modalRoot = document.createElement('div');
+    modalRoot.setAttribute('id', 'modal-root');
+    document.body.appendChild(modalRoot);
+  }
+});
 
 test('renders notification about creating first dashboard in project', async () => {
   const storeState = {
@@ -87,15 +115,21 @@ test('renders notification about creating first dashboard in project', async () 
         error: null,
         data: [],
       },
+      tagsPool: [],
+      tagsFilters: {
+        showOnlyPublicDashboards: false,
+        tags: [],
+      },
     },
   };
   const {
-    wrapper: { getByTestId },
+    wrapper: { findByText },
   } = render(storeState);
 
-  waitFor(() =>
-    expect(getByTestId('create-first-dashboard')).toBeInTheDocument()
+  const createDashboardNotification = await findByText(
+    'dashboard_management.empty_project'
   );
+  expect(createDashboardNotification).toBeInTheDocument();
 });
 
 test('renders dashboards loading placeholder', () => {
@@ -118,6 +152,11 @@ test('renders dashboards grid', () => {
         error: null,
         data: dashboardsMeta,
       },
+      tagsPool: [],
+      tagsFilters: {
+        showOnlyPublicDashboards: false,
+        tags: [],
+      },
     },
   };
   const {
@@ -138,6 +177,11 @@ test('allows user to search dashboards based on phrase', () => {
         isInitiallyLoaded: true,
         error: null,
         data: dashboardsMeta,
+      },
+      tagsPool: [],
+      tagsFilters: {
+        showOnlyPublicDashboards: false,
+        tags: [],
       },
     },
   };
@@ -167,6 +211,11 @@ test('renders empty search results message', () => {
         error: null,
         data: dashboardsMeta,
       },
+      tagsPool: [],
+      tagsFilters: {
+        showOnlyPublicDashboards: false,
+        tags: [],
+      },
     },
   };
 
@@ -183,4 +232,34 @@ test('renders empty search results message', () => {
     getByText('dashboard_management.empty_search_results')
   ).toBeInTheDocument();
   expect(dashboardItems.length).toEqual(0);
+});
+
+test('do not show filters and new dashboards button when dashboards are not loaded', () => {
+  const storeState = {
+    dashboards: {
+      deleteConfirmation: {
+        isVisible: false,
+        dashboardId: null,
+      },
+      metadata: {
+        isInitiallyLoaded: false,
+        error: null,
+        data: dashboardsMeta,
+      },
+      tagsPool: [],
+      tagsFilters: {
+        showOnlyPublicDashboards: false,
+        tags: [],
+      },
+    },
+  };
+
+  const {
+    wrapper: { queryByText },
+  } = render(storeState);
+
+  expect(
+    queryByText('dashboard_management.create_dashboard')
+  ).not.toBeInTheDocument();
+  expect(queryByText('tags_filters.title')).not.toBeInTheDocument();
 });

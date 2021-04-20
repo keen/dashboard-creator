@@ -15,11 +15,25 @@ import {
   setQueryDirty,
   setQueryResult,
   setQuerySettings,
+  setEditorSection,
   setVisualizationSettings,
   updateChartSettings,
+  updateWidgetSettings,
   showQueryUpdateConfirmation,
   hideQueryUpdateConfirmation,
 } from './actions';
+
+import { createWidgetSettings } from './utils';
+
+import { EditorSection } from './types';
+
+test('set editor section', () => {
+  const action = setEditorSection(EditorSection.SETTINGS);
+
+  const { editorSection } = chartEditorReducer(initialState, action);
+
+  expect(editorSection).toEqual(EditorSection.SETTINGS);
+});
 
 test('set query dirty state', () => {
   const action = setQueryDirty(true);
@@ -86,14 +100,16 @@ test('set state for successful query perform', () => {
   expect(analysisResult).toEqual(queryResult);
 });
 
-test('set perform state for unsuccessful query', () => {
-  const action = runQueryError();
-  const { isQueryPerforming } = chartEditorReducer(
-    { ...initialState, isQueryPerforming: true },
+test('set perform state and error message for unsuccessful query', () => {
+  const errorMessage = 'An error occurred';
+  const action = runQueryError(errorMessage);
+  const { isQueryPerforming, queryError } = chartEditorReducer(
+    { ...initialState, isQueryPerforming: true, queryError: null },
     action
   );
 
   expect(isQueryPerforming).toEqual(false);
+  expect(errorMessage).toEqual(queryError);
 });
 
 test('set correct query performing state', () => {
@@ -142,7 +158,7 @@ test('updates chart settings', () => {
         chartSettings: {
           layout: 'vertical',
         },
-        widgetSettings: {},
+        widgetSettings: createWidgetSettings(),
       },
     },
     action
@@ -154,7 +170,34 @@ test('updates chart settings', () => {
       layout: 'vertical',
       steps: ['purchases'],
     },
-    widgetSettings: {},
+    widgetSettings: createWidgetSettings(),
+  });
+});
+
+test('updates widget settings', () => {
+  const widgetSettings = createWidgetSettings({
+    title: { content: '@widget/title' },
+  });
+
+  const action = updateWidgetSettings(widgetSettings);
+  const { visualization } = chartEditorReducer(
+    {
+      ...initialState,
+      visualization: {
+        type: 'funnel',
+        chartSettings: {
+          layout: 'vertical',
+        },
+        widgetSettings: createWidgetSettings(),
+      },
+    },
+    action
+  );
+
+  expect(visualization).toMatchObject({
+    type: 'funnel',
+    chartSettings: {},
+    widgetSettings,
   });
 });
 

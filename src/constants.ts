@@ -3,6 +3,8 @@ export const TRANSLATIONS = 'I18N';
 export const KEEN_ANALYSIS = 'KEEN_ANALYSIS';
 export const PUBSUB = 'PUBSUB';
 export const NOTIFICATION_MANAGER = 'NOTIFICATION_MANAGER';
+export const ANALYTICS_API_HOST = 'ANALYTICS_API_HOST';
+export const DEFAULT_TIMEZONE = 'Etc/UTC';
 
 export const SHOW_TOAST_NOTIFICATION_EVENT =
   '@dashboard-creator/show-toast-notification';
@@ -15,9 +17,10 @@ export const ROUTES = {
 };
 
 export const TOOLTIP_MOTION = {
+  transition: { duration: 0.3 },
   initial: { opacity: 0 },
   animate: { opacity: 1 },
   exit: { opacity: 0 },
 };
 
-export const GRID_MAX_VALUE = 999999;
+export const TIMEFRAME_FORMAT = 'YYYY-MM-DD HH:mm';

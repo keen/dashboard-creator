@@ -26,9 +26,13 @@ import {
   updateAccessKeyOptions,
   regenerateAccessKey,
   exportDashboardToHtml,
+  prepareTagsPool,
+  clearTagsPool,
+  setTagsFilters,
+  setTagsFiltersPublic,
 } from './actions';
 
-import { createCodeSnippet } from './utils';
+import { createCodeSnippet, sortDashboards } from './utils';
 
 import {
   getDashboardsMetadata,
@@ -42,6 +46,9 @@ import {
   getTagsPool,
   getDashboardMetaSaving,
   getDashboardListOrder,
+  getTagsFilter,
+  getCurrentDashboardChartsCount,
+  getDashboardAccessKeyRegenerating,
 } from './selectors';
 import {
   DashboardMetaData,
@@ -91,10 +98,18 @@ export {
   getTagsPool,
   getDashboardMetaSaving,
   getDashboardListOrder,
+  getCurrentDashboardChartsCount,
+  getDashboardAccessKeyRegenerating,
   DashboardMetaData,
   DashboardModel,
   DashboardListOrder,
   DashboardError,
   DASHBOARDS_ORDER,
   ADD_WIDGET_TO_DASHBOARD,
+  sortDashboards,
+  prepareTagsPool,
+  clearTagsPool,
+  getTagsFilter,
+  setTagsFilters,
+  setTagsFiltersPublic,
 };

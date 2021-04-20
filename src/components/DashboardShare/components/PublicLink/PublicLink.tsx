@@ -23,6 +23,7 @@ import {
 import { TOOLTIP_MOTION } from '../../../../constants';
 
 import {
+  getDashboardAccessKeyRegenerating,
   getDashboardMeta,
   regenerateAccessKey,
 } from '../../../../modules/dashboards';
@@ -41,6 +42,9 @@ const PublicLink: FC<Props> = ({ dashboardId, isPublic = true }) => {
   const { publicAccessKey } = useSelector((state: RootState) =>
     getDashboardMeta(state, dashboardId)
   );
+  const isRegenerating = useSelector((state: RootState) =>
+    getDashboardAccessKeyRegenerating(state)
+  );
   const dispatch = useDispatch();
 
   const publicDashboardShareUrl = useMemo(
@@ -49,7 +53,7 @@ const PublicLink: FC<Props> = ({ dashboardId, isPublic = true }) => {
   );
 
   return (
-    <Container isActive={isPublic}>
+    <Container isActive={isPublic && !!publicAccessKey}>
       <ModalContent paddingTop="40px">
         <TitleWrapper>
           <Title>{t('dashboard_share.public_dashboard_link')}</Title>
@@ -72,7 +76,12 @@ const PublicLink: FC<Props> = ({ dashboardId, isPublic = true }) => {
               )}
             </AnimatePresence>
           </TooltipWrapper>
-          <Link onClick={() => dispatch(regenerateAccessKey(dashboardId))}>
+          <Link
+            isDisabled={isRegenerating}
+            onClick={() =>
+              isRegenerating ? null : dispatch(regenerateAccessKey(dashboardId))
+            }
+          >
             {t('dashboard_share.regenerate_link')}
           </Link>
         </TitleWrapper>
