@@ -4,7 +4,7 @@ import React, {
   useMemo,
   useCallback,
   useRef,
-  useContext,
+  // useContext,
 } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +15,7 @@ import { colors } from '@keen.io/colors';
 
 import { getEventPath } from '../../utils';
 
-import { AppContext } from '../../contexts';
+// import { AppContext } from '../../contexts';
 
 import { FilterItem, SearchTags } from './components';
 import {
@@ -107,7 +107,7 @@ const FilterDashboards = () => {
   const isEmptySearch = searchPhrase && !filteredTags.length;
   const filtersCount = tags.length + (showOnlyPublicDashboards ? 1 : 0);
 
-  const { modalContainer } = useContext(AppContext);
+  // const { modalContainer } = useContext(AppContext);
 
   return (
     <>
@@ -123,7 +123,7 @@ const FilterDashboards = () => {
           </BodyText>
         </Filter>
       </Container>
-      <Portal modalContainer={modalContainer}>
+      <Portal modalContainer={'#dropdown-container'}>
         <div ref={dropdownContainerRef}>
           <Dropdown
             isOpen={isOpen}
