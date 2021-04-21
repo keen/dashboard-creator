@@ -5,6 +5,7 @@ export const Container = styled.div`
   justify-content: center;
   width: 100%;
   background: #f1f5f8;
+  position: relative;
 `;
 
 export const Content = styled.div`

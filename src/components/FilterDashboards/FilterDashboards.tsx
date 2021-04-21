@@ -13,7 +13,7 @@ import { Dropdown, Portal } from '@keen.io/ui-core';
 import { BodyText } from '@keen.io/typography';
 import { colors } from '@keen.io/colors';
 
-import { getEventPath } from '../../utils';
+import { getEventPath, getRelativeBoundingRect } from '../../utils';
 
 // import { AppContext } from '../../contexts';
 
@@ -87,15 +87,18 @@ const FilterDashboards = () => {
   );
 
   useEffect(() => {
-    const {
-      left,
-      bottom,
-    }: ClientRect = containerRef.current.getBoundingClientRect();
+    // TODO: Get container via context API
+    const element = document.getElementById('dropdown-container');
+
+    const { left, bottom } = getRelativeBoundingRect(
+      element,
+      containerRef.current
+    );
 
     setDropdown((state) => ({
       ...state,
       x: left,
-      y: bottom + window.scrollY,
+      y: bottom,
     }));
   }, [isOpen]);
 

@@ -38,9 +38,10 @@ const App: FC<Props> = () => {
 
   return (
     <Container>
-      <div id="dropdown-container" style={{ position: 'relative' }}>
-        Dropdown container
-      </div>
+      <div
+        id="dropdown-container"
+        style={{ position: 'absolute', top: 0, left: 0 }}
+      />
       <Content>
         <Switch>
           <Route exact path="/" component={Management} />
