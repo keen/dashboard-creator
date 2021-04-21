@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import sagaHelper from 'redux-saga-testing';
-import { put, getContext, select } from 'redux-saga/effects';
+import { put, getContext, take, select } from 'redux-saga/effects';
 import {
   UPDATE_VISUALIZATION_TYPE,
   SET_CHART_SETTINGS,
@@ -13,6 +13,7 @@ import {
   restoreSavedQuery,
   updateVisualizationType,
   updateQuerySettings,
+  showUpdateConfirmation,
 } from './saga';
 import {
   setVisualizationSettings,
@@ -24,7 +25,16 @@ import {
 } from './actions';
 import { getChartEditor } from './selectors';
 
+import { QUERY_UPDATE_CONFIRMATION_MOUNTED } from './constants';
 import { PUBSUB } from '../../constants';
+
+describe('showUpdateConfirmation()', () => {
+  const test = sagaHelper(showUpdateConfirmation());
+
+  test('waits until update confirmation is presented on a screen', (result) => {
+    expect(result).toEqual(take(QUERY_UPDATE_CONFIRMATION_MOUNTED));
+  });
+});
 
 describe('updateQuerySettings()', () => {
   describe('Scenario 1: Query settings are equal initial settings', () => {
@@ -231,7 +241,9 @@ describe('runQuery()', () => {
       query: jest.fn(),
     };
 
-    test('get query settings', () => {
+    test('get query settings', (result) => {
+      expect(result).toEqual(select(getChartEditor));
+
       return { querySettings };
     });
 
@@ -261,7 +273,9 @@ describe('runQuery()', () => {
       showNotification: jest.fn(),
     };
 
-    test('get query settings', () => {
+    test('get query settings', (result) => {
+      expect(result).toEqual(select(getChartEditor));
+
       return { querySettings };
     });
 
@@ -290,6 +304,56 @@ describe('runQuery()', () => {
           type: 'error',
           translateMessage: false,
         })
+      );
+    });
+  });
+
+  describe('Scenario 3: User successfully runs funnel analysis', () => {
+    const test = sagaHelper(runQuery());
+    const keenAnalysis = {
+      query: jest.fn(),
+    };
+
+    const analysisResult = {
+      result: [120, 70],
+    };
+
+    const querySettings = {
+      analysis_type: 'funnel',
+      steps: [
+        {
+          event_collection: 'logins',
+        },
+        {
+          event_collection: 'purchases',
+        },
+      ],
+    };
+
+    test('get query settings', (result) => {
+      expect(result).toEqual(select(getChartEditor));
+
+      return { querySettings };
+    });
+
+    test('get keen analysis from context', () => {
+      return keenAnalysis;
+    });
+
+    test('performs query', () => {
+      expect(keenAnalysis.query).toHaveBeenCalledWith(querySettings);
+
+      return analysisResult;
+    });
+
+    test('dispatch run query success action', (result) => {
+      expect(result).toEqual(
+        put(
+          runQuerySuccess({
+            query: querySettings,
+            ...analysisResult,
+          })
+        )
       );
     });
   });

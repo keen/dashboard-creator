@@ -147,7 +147,16 @@ export function* runQuery() {
   const keenAnalysis = yield getContext(KEEN_ANALYSIS);
 
   try {
-    const analysisResult = yield keenAnalysis.query(querySettings);
+    let analysisResult = yield keenAnalysis.query(querySettings);
+
+    /** Funnel analysis do not return query settings in response */
+    if (querySettings.analysis_type === 'funnel') {
+      analysisResult = {
+        ...analysisResult,
+        query: querySettings,
+      };
+    }
+
     yield put(runQuerySuccess(analysisResult));
   } catch (error) {
     const { body } = error;
