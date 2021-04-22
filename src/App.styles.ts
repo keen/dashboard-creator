@@ -13,3 +13,9 @@ export const Content = styled.div`
   width: 100%;
   padding: 20px;
 `;
+
+export const DropdownContainer = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+`;

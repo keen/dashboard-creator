@@ -4,7 +4,6 @@ import React, {
   useMemo,
   useCallback,
   useRef,
-  // useContext,
 } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -14,8 +13,6 @@ import { BodyText } from '@keen.io/typography';
 import { colors } from '@keen.io/colors';
 
 import { getEventPath, getRelativeBoundingRect } from '../../utils';
-
-// import { AppContext } from '../../contexts';
 
 import { FilterItem, SearchTags } from './components';
 import {
@@ -35,6 +32,7 @@ import {
   setTagsFilters,
   setTagsFiltersPublic,
 } from '../../modules/dashboards';
+import { DROPDOWN_CONTAINER_ID } from '../../constants';
 
 const FilterDashboards = () => {
   const dispatch = useDispatch();
@@ -87,11 +85,8 @@ const FilterDashboards = () => {
   );
 
   useEffect(() => {
-    // TODO: Get container via context API
-    const element = document.getElementById('dropdown-container');
-
     const { left, bottom } = getRelativeBoundingRect(
-      element,
+      DROPDOWN_CONTAINER_ID,
       containerRef.current
     );
 
@@ -109,9 +104,6 @@ const FilterDashboards = () => {
 
   const isEmptySearch = searchPhrase && !filteredTags.length;
   const filtersCount = tags.length + (showOnlyPublicDashboards ? 1 : 0);
-
-  // const { modalContainer } = useContext(AppContext);
-
   return (
     <>
       <Container
@@ -126,7 +118,7 @@ const FilterDashboards = () => {
           </BodyText>
         </Filter>
       </Container>
-      <Portal modalContainer={'#dropdown-container'}>
+      <Portal modalContainer={`#${DROPDOWN_CONTAINER_ID}`}>
         <div ref={dropdownContainerRef}>
           <Dropdown
             isOpen={isOpen}

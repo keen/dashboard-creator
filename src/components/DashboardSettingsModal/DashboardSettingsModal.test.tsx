@@ -10,6 +10,7 @@ import configureStore from 'redux-mock-store';
 import DashboardSettingsModal from './DashboardSettingsModal';
 
 import { AppContext } from '../../contexts';
+import { createBodyElementById } from '../../utils/test/createBodyElementById';
 
 const render = (storeState: any = {}, overProps: any = {}) => {
   const mockStore = configureStore([]);
@@ -72,12 +73,7 @@ afterEach(() => {
 });
 
 beforeEach(() => {
-  let modalRoot = document.getElementById('modal-root');
-  if (!modalRoot) {
-    modalRoot = document.createElement('div');
-    modalRoot.setAttribute('id', 'modal-root');
-    document.body.appendChild(modalRoot);
-  }
+  createBodyElementById('modal-root');
 });
 
 test('allows user to close modal', () => {
