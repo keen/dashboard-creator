@@ -245,7 +245,6 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
                   itemData={filterItemData}
                   itemCount={filterItemData.items.length}
                   itemSize={30}
-                  width={180}
                 >
                   {Row}
                 </ReactWindowList>
