@@ -11,6 +11,7 @@ import {
   Navigation,
   Container,
   Content,
+  DropdownContainer,
 } from './PublicDashboardViewer.styles';
 
 import { getDashboard, getDashboardMeta } from '../../modules/dashboards';
@@ -81,6 +82,7 @@ const PublicDashboardViewer: FC<Props> = ({ dashboardId }) => {
           <Grid isEditorMode={false} widgetsId={widgetsId} />
         )}
       </Content>
+      <DropdownContainer id="dropdown-container" />
     </Container>
   );
 };

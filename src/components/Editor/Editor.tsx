@@ -1,8 +1,9 @@
-import React, { FC, useState, useCallback, useRef } from 'react';
+import React, { FC, useState, useCallback, useRef, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Layout as LayoutItem } from 'react-grid-layout';
 import { push } from 'connected-react-router';
 import { PubSub } from '@keen.io/pubsub';
+import { Portal } from '@keen.io/ui-core';
 
 import { Content, EditorContainer } from './Editor.styles';
 
@@ -24,7 +25,7 @@ import { getChartEditor } from '../../modules/chartEditor';
 import { textEditorSelectors } from '../../modules/textEditor';
 import { setActiveDashboard } from '../../modules/app';
 
-import { EditorContext } from '../../contexts';
+import { AppContext, EditorContext } from '../../contexts';
 
 import EditorNavigation from '../EditorNavigation';
 import QueryPickerModal from '../QueryPickerModal';
@@ -55,8 +56,8 @@ const Editor: FC<Props> = ({ dashboardId }) => {
 
   const editorPubSub = useRef(new PubSub());
   const [containerWidth, setContainerWidth] = useState(0);
-
   const [droppableWidget, setDroppableWidget] = useState(null);
+  const { modalContainer } = useContext(AppContext);
   const {
     isOpen: chartWidgetEditorOpen,
     changeQueryConfirmation,
@@ -172,18 +173,20 @@ const Editor: FC<Props> = ({ dashboardId }) => {
           <GridLoader />
         )}
       </Content>
-      <ChartWidgetEditor isOpen={chartWidgetEditorOpen} />
-      <TextWidgetEditor
-        editorTextAlignment={textAlignment}
-        textEditorContent={textEditorContent}
-        isOpen={textWidgetEditorOpen}
-      />
-      <ConfirmQueryChange isOpen={changeQueryConfirmation} />
-      <DashboardDeleteConfirmation />
-      <QueryPickerModal />
-      <DatePickerModal />
-      <ImagePickerModal />
-      <FilterModal />
+      <Portal modalContainer={modalContainer}>
+        <ChartWidgetEditor isOpen={chartWidgetEditorOpen} />
+        <TextWidgetEditor
+          editorTextAlignment={textAlignment}
+          textEditorContent={textEditorContent}
+          isOpen={textWidgetEditorOpen}
+        />
+        <ConfirmQueryChange isOpen={changeQueryConfirmation} />
+        <DashboardDeleteConfirmation />
+        <QueryPickerModal />
+        <DatePickerModal />
+        <ImagePickerModal />
+        <FilterModal />
+      </Portal>
     </EditorContext.Provider>
   );
 };
