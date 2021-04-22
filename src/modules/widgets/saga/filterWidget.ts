@@ -53,7 +53,6 @@ import {
 import { KEEN_ANALYSIS } from '../../../constants';
 
 import { getOldestTimeframe } from '../../../utils/getOldestTimeframe';
-// import {connect} from "react-redux";
 
 /**
  * Apply filter connections updates to connected widgets
