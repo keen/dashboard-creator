@@ -16,6 +16,7 @@ export const Content = styled.div`
   position: relative;
   max-width: 1200px;
   width: 100%;
+  z-index: 1;
 `;
 
 export const Message = styled.div`
@@ -36,4 +37,10 @@ export const ErrorContainer = styled(motion.div)`
   background: ${colors.white[500]};
   text-align: center;
   box-shadow: 0 10px 24px 0 rgba(29, 39, 41, 0.15);
+`;
+
+export const DropdownContainer = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
 `;
