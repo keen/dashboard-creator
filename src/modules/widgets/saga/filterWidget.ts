@@ -97,10 +97,16 @@ export function* setFilterWidget({
     widgets.map((id: string) => select(getWidget, id))
   );
 
-  const connectedWidgetsTimeframes = connectedWidgets.map(
-    (connectedWidget: Record<string, any>) =>
-      connectedWidget.data.query.timeframe
-  );
+  const connectedWidgetsTimeframes = connectedWidgets
+    .filter(
+      (connectedWidget: Record<string, any>) =>
+        connectedWidget.data && connectedWidget.data.query
+    )
+    .map(
+      (connectedWidget: Record<string, any>) =>
+        connectedWidget.data.query.timeframe
+    );
+
   const client = yield getContext(KEEN_ANALYSIS);
 
   yield put(

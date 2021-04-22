@@ -48,14 +48,14 @@ import {
 import { RootState } from '../../rootReducer';
 import { AppContext } from '../../contexts';
 
-import { getEventPath } from '../../utils';
+import { getEventPath, getRelativeBoundingRect } from '../../utils';
 
 import { DEFAULT_TIMEFRAME, ABSOLUTE_TAB, RELATIVE_TAB } from './constants';
 
 import { BodyText } from '@keen.io/typography';
 import { getTimezoneState } from '../../modules/timezone';
 import TimezoneLoader from './components/TimezoneLoader';
-import { DEFAULT_TIMEZONE } from '../../constants';
+import { DEFAULT_TIMEZONE, DROPDOWN_CONTAINER_ID } from '../../constants';
 
 type Props = {
   /** Widget identifier */
@@ -107,16 +107,15 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
 
   useEffect(() => {
     if (isOpen && containerRef.current) {
-      const {
-        left,
-        bottom,
-        width,
-      }: ClientRect = containerRef.current.getBoundingClientRect();
+      const { left, bottom, width } = getRelativeBoundingRect(
+        DROPDOWN_CONTAINER_ID,
+        containerRef.current
+      );
 
       setDropdown((state) => ({
         ...state,
         left,
-        top: bottom + window.scrollY,
+        top: bottom,
         width,
       }));
     }
@@ -173,7 +172,7 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
           </TitleContainer>
         )}
       </Container>
-      <Portal modalContainer={modalContainer}>
+      <Portal modalContainer={`#${DROPDOWN_CONTAINER_ID}`}>
         <div ref={dropdownContainerRef}>
           <Dropdown
             key={`${id} - ${dropdown.width}`}
@@ -182,7 +181,7 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
             motion={{
               initial: {
                 opacity: 0,
-                top: dropdown.top,
+                top: dropdown.top + 20,
                 left: dropdown.left,
                 width: dropdown.width,
               },
@@ -194,7 +193,7 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
               },
               exit: {
                 opacity: 0,
-                top: dropdown.top,
+                top: dropdown.top + 20,
                 left: dropdown.left,
                 width: dropdown.width,
               },

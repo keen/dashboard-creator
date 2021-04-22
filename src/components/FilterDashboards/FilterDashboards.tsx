@@ -4,7 +4,6 @@ import React, {
   useMemo,
   useCallback,
   useRef,
-  useContext,
 } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -13,9 +12,7 @@ import { Dropdown, Portal } from '@keen.io/ui-core';
 import { BodyText } from '@keen.io/typography';
 import { colors } from '@keen.io/colors';
 
-import { getEventPath } from '../../utils';
-
-import { AppContext } from '../../contexts';
+import { getEventPath, getRelativeBoundingRect } from '../../utils';
 
 import { FilterItem, SearchTags } from './components';
 import {
@@ -35,6 +32,7 @@ import {
   setTagsFilters,
   setTagsFiltersPublic,
 } from '../../modules/dashboards';
+import { DROPDOWN_CONTAINER_ID } from '../../constants';
 
 const FilterDashboards = () => {
   const dispatch = useDispatch();
@@ -87,15 +85,15 @@ const FilterDashboards = () => {
   );
 
   useEffect(() => {
-    const {
-      left,
-      bottom,
-    }: ClientRect = containerRef.current.getBoundingClientRect();
+    const { left, bottom } = getRelativeBoundingRect(
+      DROPDOWN_CONTAINER_ID,
+      containerRef.current
+    );
 
     setDropdown((state) => ({
       ...state,
       x: left,
-      y: bottom + window.scrollY,
+      y: bottom,
     }));
   }, [isOpen]);
 
@@ -106,9 +104,6 @@ const FilterDashboards = () => {
 
   const isEmptySearch = searchPhrase && !filteredTags.length;
   const filtersCount = tags.length + (showOnlyPublicDashboards ? 1 : 0);
-
-  const { modalContainer } = useContext(AppContext);
-
   return (
     <>
       <Container
@@ -123,7 +118,7 @@ const FilterDashboards = () => {
           </BodyText>
         </Filter>
       </Container>
-      <Portal modalContainer={modalContainer}>
+      <Portal modalContainer={`#${DROPDOWN_CONTAINER_ID}`}>
         <div ref={dropdownContainerRef}>
           <Dropdown
             isOpen={isOpen}

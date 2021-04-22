@@ -1,4 +1,4 @@
-import React, { FC, useRef, useState, useEffect, useContext } from 'react';
+import React, { FC, useRef, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { transparentize } from 'polished';
@@ -23,8 +23,7 @@ import {
 
 import { getWidget } from '../../modules/widgets';
 import { RootState } from '../../rootReducer';
-import { AppContext } from '../../contexts';
-import { getEventPath } from '../../utils';
+import { getEventPath, getRelativeBoundingRect } from '../../utils';
 import {
   applyFilterModifiers,
   applyFilterWidget,
@@ -33,6 +32,7 @@ import {
 } from '../../modules/widgets/actions';
 import { FilterItem, SearchTags } from '../FilterDashboards/components';
 import { FilterWidget } from '../../modules/widgets/types';
+import { DROPDOWN_CONTAINER_ID } from '../../constants';
 
 type Props = {
   /** Widget identifier */
@@ -62,7 +62,6 @@ const Row = ({ data, index, style }) => {
 const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { modalContainer } = useContext(AppContext);
 
   const widget = useSelector((state: RootState) => getWidget(state, id));
 
@@ -95,16 +94,15 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
     };
 
     if (isOpen && containerRef.current) {
-      const {
-        left,
-        bottom,
-        width,
-      }: ClientRect = containerRef.current.getBoundingClientRect();
+      const { left, bottom, width } = getRelativeBoundingRect(
+        DROPDOWN_CONTAINER_ID,
+        containerRef.current
+      );
 
       setDropdown((state) => ({
         ...state,
         x: left,
-        y: bottom + window.scrollY,
+        y: bottom,
         width,
       }));
     }
@@ -200,7 +198,7 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
           </TitleContainer>
         }
       </Container>
-      <Portal modalContainer={modalContainer}>
+      <Portal modalContainer={`#${DROPDOWN_CONTAINER_ID}`}>
         <DropdownContainer
           ref={dropdownContainerRef}
           customTransform={`translate(${dropdown.x}px, ${dropdown.y}px)`}
@@ -247,7 +245,6 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
                   itemData={filterItemData}
                   itemCount={filterItemData.items.length}
                   itemSize={30}
-                  width={180}
                 >
                   {Row}
                 </ReactWindowList>

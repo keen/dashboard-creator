@@ -1490,7 +1490,7 @@
   resolved "https://registry.yarnpkg.com/@keen.io/colors/-/colors-1.1.0.tgz#feda3fc31056cd67c9d36abfce30470b95ef6879"
   integrity sha512-ATUL4zpj6NNHZChCVfI3ellRIzfJMsYzSCqnkcd7AqZseSGVLe6A8yK0yqlzzYVtz3yunX9nDN1AMpJH2dFIfA==
 
-"@keen.io/dataviz@^2.11.18":
+"@keen.io/dataviz@^2.11.22":
   version "2.11.23"
   resolved "https://registry.yarnpkg.com/@keen.io/dataviz/-/dataviz-2.11.23.tgz#7748cc1575e10f541faea9464a8bac84acfe9dc7"
   integrity sha512-JHyN5nmt0mn4X9JmxY0xizbuaUUFL5PUuXn1L2WBTLzjaW1F8kdqjFM3OheA0yNUuQg7i8riJBDFysAqykoIqg==
@@ -1504,7 +1504,7 @@
     react "^16.12.0"
     react-dom "^16.12.0"
 
-"@keen.io/forms@^2.0.80":
+"@keen.io/forms@^2.0.82":
   version "2.0.82"
   resolved "https://registry.yarnpkg.com/@keen.io/forms/-/forms-2.0.82.tgz#55cc9d2acf4a968c38cb8397fa64bbd8eafb8bad"
   integrity sha512-4VXWm+2phHcWTTrVgCg9yekDD38D4Mg7sSPeMwH1qCE5TOC9JzwT2wIQGxS6n94vxo+Ws9DT3kw/nJQJqQDGtw==
@@ -1523,7 +1523,7 @@
   dependencies:
     "@keen.io/colors" "^1.1.0"
 
-"@keen.io/parser@^2.8.18", "@keen.io/parser@^2.8.23":
+"@keen.io/parser@^2.8.22", "@keen.io/parser@^2.8.23":
   version "2.8.23"
   resolved "https://registry.yarnpkg.com/@keen.io/parser/-/parser-2.8.23.tgz#cf596e776acb32938a3dadf015cf86d7c3f1cc1c"
   integrity sha512-SRdgHbT9dUU5OFizsK4nWBd6ETq7CSazNeg0ItvxS5O5CBi5TBucM1pfYdYSDaRkWT78zbQUDfhGdKFj1oLAtw==
@@ -1536,10 +1536,10 @@
   resolved "https://registry.yarnpkg.com/@keen.io/pubsub/-/pubsub-1.1.1.tgz#80dcb09a849ec665d279234c014e6815e1d075c0"
   integrity sha512-S9zhZNDSwsL6WXOtFqeZ3+vOdCzykL7pYifRm9dZ7ivLe/frAeyqIQsfRA8Z52DPnRN7d+gKbWrJtlZM22ErjQ==
 
-"@keen.io/query-creator@^1.5.5":
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/@keen.io/query-creator/-/query-creator-1.6.1.tgz#d8e38ad25bda9e62098642288e67fea89531eb4a"
-  integrity sha512-kmOHePsOjFZy3ZarWt3g1z21erWDIeRN7xvLw73H2JMfV0RZ1YZG7zcSICyq7acHacsoMcSmuryLSQSlAZI4HA==
+"@keen.io/query-creator@^1.6.1":
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/@keen.io/query-creator/-/query-creator-1.6.2.tgz#a707a49922fb6892577a51e21822dbf6d74f4cc4"
+  integrity sha512-jEBkDTgoeAZI8/xD/1viKlHm8pYCNZDfnNr4C/pQxA6o6qiY1/M6h3I1aGCpCLbURUicW2qgzee9uaVZLWEXrw==
   dependencies:
     "@keen.io/colors" "^1.1.0"
     "@keen.io/icons" "^1.2.1"
@@ -1592,7 +1592,7 @@
   dependencies:
     dayjs "^1.10.4"
 
-"@keen.io/toast-notifications@^1.1.62":
+"@keen.io/toast-notifications@^1.1.64":
   version "1.1.64"
   resolved "https://registry.yarnpkg.com/@keen.io/toast-notifications/-/toast-notifications-1.1.64.tgz#4de315ecda274e048877f5a7db1865286ca8d472"
   integrity sha512-QJtJf7tA7PURYasbjMUwyAjv8Pn5bkgM9fzEl9zhfki7sHLMq0RHs9I3BlJ77npaI1C5S8HY2G0Eb6Qy9YMPBg==
@@ -1612,7 +1612,7 @@
     "@keen.io/colors" "^1.0.0"
     styled-system "^5.1.5"
 
-"@keen.io/ui-core@^2.23.1", "@keen.io/ui-core@^2.23.3":
+"@keen.io/ui-core@^2.23.3":
   version "2.23.3"
   resolved "https://registry.yarnpkg.com/@keen.io/ui-core/-/ui-core-2.23.3.tgz#5919b574b8882478640caf48d83a3453417a5bec"
   integrity sha512-UXF+m5siQ99na7ii/DhkWLgkGYnkomZHAwDJnfmxzyPEaYxZFO7mLh2Wda9BcWgiEKdlfEy6vXB9mVnj5UB/iA==
@@ -1634,10 +1634,10 @@
     styled-system "^5.1.5"
     webfontloader "^1.6.28"
 
-"@keen.io/widget-customization@^0.0.15":
-  version "0.0.15"
-  resolved "https://registry.yarnpkg.com/@keen.io/widget-customization/-/widget-customization-0.0.15.tgz#ce8dc1f438b6ec1b3c9f981096e6b0d2473e870b"
-  integrity sha512-S4S9OmHUFWxiqV66hwGmb+ooi1BJjwi6Yk738MxDoYik5KOxccW3fj15Bvh26OE+cYhUR1fbY3IRjPrQRdMMSw==
+"@keen.io/widget-customization@^0.0.17":
+  version "0.0.17"
+  resolved "https://registry.yarnpkg.com/@keen.io/widget-customization/-/widget-customization-0.0.17.tgz#b8a51f67be6e2c2a5fa3bed385a4fc6e333c0d18"
+  integrity sha512-kRv9CBPUS+y09WJmDWTn4d8836An3ceqxaLrBgBw4u+PPVXhHFY8eTL16Ugwc2G7TC49s1VygQtqcLuytS2++w==
   dependencies:
     "@keen.io/colors" "^1.1.0"
     "@keen.io/query" "^1.2.0"
@@ -1646,7 +1646,7 @@
     polished "^3.4.4"
     react-use "^17.2.3"
 
-"@keen.io/widget-picker@^1.2.100":
+"@keen.io/widget-picker@^1.2.104":
   version "1.2.104"
   resolved "https://registry.yarnpkg.com/@keen.io/widget-picker/-/widget-picker-1.2.104.tgz#9ee1b9fe819734452d9254a5f7ff90d0608d1101"
   integrity sha512-j/uYPio/YfzSyo/GWx+D/YmGq2i32OV8uXC5JbNc6lUno0uk1zzQY0f00+pDEqnsImv4yYqaJOBZElbUyJMPng==

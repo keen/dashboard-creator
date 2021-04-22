@@ -6,6 +6,7 @@ import { render as rtlRender, cleanup } from '@testing-library/react';
 
 import { AppContext } from '../../contexts';
 import ChartWidgetFilter from './ChartWidgetFilter';
+import { createBodyElementById } from '../../utils/test/createBodyElementById';
 
 const widgetId = 'widget-1';
 const datePickerId = 'datePicker-1';
@@ -113,12 +114,7 @@ afterEach(() => {
 });
 
 beforeEach(() => {
-  let modalRoot = document.getElementById('modal-root');
-  if (!modalRoot) {
-    modalRoot = document.createElement('div');
-    modalRoot.setAttribute('id', 'modal-root');
-    document.body.appendChild(modalRoot);
-  }
+  createBodyElementById('modal-root');
 });
 
 test('renders widget filter for datepicker', () => {

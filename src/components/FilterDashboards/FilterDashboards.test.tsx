@@ -8,9 +8,9 @@ import {
 } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 
-import { AppContext } from '../../contexts';
-
 import FilterDashboards from './FilterDashboards';
+import { DROPDOWN_CONTAINER_ID } from '../../constants';
+import { createBodyElementById } from '../../utils/test/createBodyElementById';
 
 const render = (storeState: any = {}, overProps: any = {}) => {
   const mockStore = configureStore([]);
@@ -33,15 +33,7 @@ const render = (storeState: any = {}, overProps: any = {}) => {
 
   const wrapper = rtlRender(
     <Provider store={store}>
-      <AppContext.Provider
-        value={
-          {
-            modalContainer: '#modal-root',
-          } as any
-        }
-      >
-        <FilterDashboards {...overProps} />
-      </AppContext.Provider>
+      <FilterDashboards {...overProps} />
     </Provider>
   );
 
@@ -57,12 +49,7 @@ afterEach(() => {
 });
 
 beforeEach(() => {
-  let modalRoot = document.getElementById('modal-root');
-  if (!modalRoot) {
-    modalRoot = document.createElement('div');
-    modalRoot.setAttribute('id', 'modal-root');
-    document.body.appendChild(modalRoot);
-  }
+  createBodyElementById(DROPDOWN_CONTAINER_ID);
 });
 
 test('allows user to filter dashboards based on public criteria', async () => {
