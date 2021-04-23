@@ -1537,9 +1537,9 @@
   integrity sha512-S9zhZNDSwsL6WXOtFqeZ3+vOdCzykL7pYifRm9dZ7ivLe/frAeyqIQsfRA8Z52DPnRN7d+gKbWrJtlZM22ErjQ==
 
 "@keen.io/query-creator@^1.6.1":
-  version "1.6.2"
-  resolved "https://registry.yarnpkg.com/@keen.io/query-creator/-/query-creator-1.6.2.tgz#a707a49922fb6892577a51e21822dbf6d74f4cc4"
-  integrity sha512-jEBkDTgoeAZI8/xD/1viKlHm8pYCNZDfnNr4C/pQxA6o6qiY1/M6h3I1aGCpCLbURUicW2qgzee9uaVZLWEXrw==
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/@keen.io/query-creator/-/query-creator-1.6.3.tgz#63e13ecec0c8e136d3554bee99b1b614d7126d7f"
+  integrity sha512-ggP6X84D7xXVm5fqwW+3Fw76igRNGkfu4rlNU6lkYRJcNSV7BvM1uS79dBkgCC3KgSetmWr07l7sGXrl37GbXA==
   dependencies:
     "@keen.io/colors" "^1.1.0"
     "@keen.io/icons" "^1.2.1"
@@ -4348,9 +4348,9 @@ core-js@^3.6.1, core-js@^3.6.4:
   integrity sha512-MQx/7TLgmmDVamSyfE+O+5BHvG1aUGj/gHhLn1wVtm2B5u1eVIPvh7vkfjwWKNCjrTJB8+He99IntSQ1qP+vYQ==
 
 core-js@^3.6.5:
-  version "3.10.2"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.10.2.tgz#17cb038ce084522a717d873b63f2b3ee532e2cd5"
-  integrity sha512-W+2oVYeNghuBr3yTzZFQ5rfmjZtYB/Ubg87R5YOmlGrIb+Uw9f7qjUbhsj+/EkXhcV7eOD3jiM4+sgraX3FZUw==
+  version "3.11.0"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.11.0.tgz#05dac6aa70c0a4ad842261f8957b961d36eb8926"
+  integrity sha512-bd79DPpx+1Ilh9+30aT5O1sgpQd4Ttg8oqkqi51ZzhedMM1omD2e6IOF48Z/DzDCZ2svp49tN/3vneTK6ZBkXw==
 
 core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
@@ -8892,7 +8892,12 @@ media-typer@0.3.0:
   resolved "https://registry.yarnpkg.com/media-typer/-/media-typer-0.3.0.tgz#8710d7af0aa626f8fffa1ce00168545263255748"
   integrity sha1-hxDXrwqmJvj/+hzgAWhUUmMlV0g=
 
-"memoize-one@>=3.1.1 <6", memoize-one@^5.0.0:
+"memoize-one@>=3.1.1 <6":
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/memoize-one/-/memoize-one-5.2.0.tgz#65259224c44b59b9d6648af917108e6867d64d54"
+  integrity sha512-OiKwjWuxDPHRN5yL9gskqJHT1dr9N99AH95ceiwvpXjE6fpcwAtPHDRoe8CFL1+TMrLG9NzO5WerQ32Q35iD4w==
+
+memoize-one@^5.0.0:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/memoize-one/-/memoize-one-5.1.1.tgz#047b6e3199b508eaec03504de71229b8eb1d75c0"
   integrity sha512-HKeeBpWvqiVJD57ZUAsJNm71eHTykffzcLZVYWiVfQeI1rJtuEaS7hQiEpWfVVk18donPwJEcFKIkCmPJNOhHA==

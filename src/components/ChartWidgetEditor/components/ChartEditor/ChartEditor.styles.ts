@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
+import { transparentize } from 'polished';
 import { UI_LAYERS } from '@keen.io/ui-core';
 import { colors } from '@keen.io/colors';
 
@@ -9,7 +10,7 @@ export const Container = styled.div`
 `;
 
 export const NavBar = styled.div`
-  border-bottom: solid 1px ${colors.gray[500]};
+  border-bottom: solid 1px ${colors.gray[300]};
 `;
 
 export const NotificationBar = styled(motion.div)`
@@ -31,8 +32,8 @@ export const VisualizationContainer = styled.div`
   padding: 10px;
 `;
 
-export const QuerySettings = styled.div`
-  padding: 15px 15px 0 15px;
+export const SectionContainer = styled.div`
+  box-shadow: 0 2px 4px 0 ${transparentize(0.85, colors.black[500])};
 `;
 
 export const Cancel = styled.div`
