@@ -1613,9 +1613,9 @@
     styled-system "^5.1.5"
 
 "@keen.io/ui-core@^2.23.4":
-  version "2.23.4"
-  resolved "https://registry.yarnpkg.com/@keen.io/ui-core/-/ui-core-2.23.4.tgz#efbcfa044800fe3873fc47521332346185903135"
-  integrity sha512-wK113b0rfq6gNQVkfdExvv3PCGfk8YMC3f3IpZxecsZEyzAiVqixYr9z1SIqijItmJTpj1dRJ5Z9fmDDGhG66w==
+  version "2.23.5"
+  resolved "https://registry.yarnpkg.com/@keen.io/ui-core/-/ui-core-2.23.5.tgz#5c52d16b538771b0e30a987d1238e75a8f304d6f"
+  integrity sha512-BWdWBjtnszJcOc7eyiWqCDNeUgXeejDl8GFgBCykilnc/h0csgLJNHgp6m9zZaOWxMQBPJ0+t7/MbujLlvmQ0A==
   dependencies:
     "@keen.io/colors" "^1.1.0"
     "@keen.io/icons" "^1.4.1"
@@ -8892,15 +8892,10 @@ media-typer@0.3.0:
   resolved "https://registry.yarnpkg.com/media-typer/-/media-typer-0.3.0.tgz#8710d7af0aa626f8fffa1ce00168545263255748"
   integrity sha1-hxDXrwqmJvj/+hzgAWhUUmMlV0g=
 
-"memoize-one@>=3.1.1 <6":
+"memoize-one@>=3.1.1 <6", memoize-one@^5.0.0:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/memoize-one/-/memoize-one-5.2.0.tgz#65259224c44b59b9d6648af917108e6867d64d54"
   integrity sha512-OiKwjWuxDPHRN5yL9gskqJHT1dr9N99AH95ceiwvpXjE6fpcwAtPHDRoe8CFL1+TMrLG9NzO5WerQ32Q35iD4w==
-
-memoize-one@^5.0.0:
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/memoize-one/-/memoize-one-5.1.1.tgz#047b6e3199b508eaec03504de71229b8eb1d75c0"
-  integrity sha512-HKeeBpWvqiVJD57ZUAsJNm71eHTykffzcLZVYWiVfQeI1rJtuEaS7hQiEpWfVVk18donPwJEcFKIkCmPJNOhHA==
 
 memory-fs@^0.4.1:
   version "0.4.1"
