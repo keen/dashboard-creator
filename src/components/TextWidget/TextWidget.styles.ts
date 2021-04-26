@@ -20,13 +20,8 @@ export const Container = styled.div`
   flex: 1;
   overflow: hidden;
 
-  /* white-space: pre-wrap; */
   overflow-wrap: break-word;
   height: inherit;
-
-  /* br {
-    content: '';
-  } */
 `;
 
 export const Html = styled.div<{
