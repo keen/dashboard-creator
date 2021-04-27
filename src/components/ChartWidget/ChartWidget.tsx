@@ -20,7 +20,7 @@ import { getInterimQuery } from '../../modules/queries';
 import { getActiveDashboardTheme } from '../../modules/theme';
 import { RootState } from '../../rootReducer';
 
-import { OBSERVER_DELAY, OBSERVER_THRESHOLD } from './constants';
+import { OBSERVER_DELAY } from './constants';
 import { RESIZE_WIDGET_EVENT } from '../../constants';
 
 import getChartInput from '../../utils/getChartInput';
@@ -41,7 +41,6 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
 
   const [inViewRef, inView] = useInView({
     delay: OBSERVER_DELAY,
-    threshold: OBSERVER_THRESHOLD,
     triggerOnce: true,
   });
 
