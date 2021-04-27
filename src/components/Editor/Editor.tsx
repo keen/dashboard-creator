@@ -27,6 +27,8 @@ import { setActiveDashboard } from '../../modules/app';
 
 import { AppContext, EditorContext } from '../../contexts';
 
+import { useMarkerRef } from './custom-hooks';
+
 import EditorNavigation from '../EditorNavigation';
 import QueryPickerModal from '../QueryPickerModal';
 import DatePickerModal from '../DatePickerModal';
@@ -54,10 +56,12 @@ type Props = {
 const Editor: FC<Props> = ({ dashboardId }) => {
   const dispatch = useDispatch();
 
+  const markerRef = useRef(null);
   const editorPubSub = useRef(new PubSub());
+
   const [containerWidth, setContainerWidth] = useState(0);
   const [droppableWidget, setDroppableWidget] = useState(null);
-  const { modalContainer } = useContext(AppContext);
+  const { modalContainer, enableFixedEditorBar } = useContext(AppContext);
   const {
     isOpen: chartWidgetEditorOpen,
     changeQueryConfirmation,
@@ -86,6 +90,11 @@ const Editor: FC<Props> = ({ dashboardId }) => {
         isInitialized: false,
       };
     }
+  );
+
+  const { isSticky, setMarkerRef } = useMarkerRef(
+    markerRef,
+    enableFixedEditorBar
   );
 
   const addWidgetHandler = useCallback(
@@ -130,8 +139,10 @@ const Editor: FC<Props> = ({ dashboardId }) => {
           dispatch(push(ROUTES.MANAGEMENT));
         }}
       />
-      <EditorContainer>
+      {enableFixedEditorBar && <span ref={setMarkerRef}></span>}
+      <EditorContainer isFixed={enableFixedEditorBar}>
         <EditorBar
+          isSticky={isSticky}
           isSaving={isSaving}
           onFinishEdit={() => {
             dispatch(saveDashboard(dashboardId));

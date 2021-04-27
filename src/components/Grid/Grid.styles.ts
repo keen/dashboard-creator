@@ -42,6 +42,7 @@ export const Container = styled.div`
   .react-grid-item.react-grid-placeholder {
     background: none;
     border: 1px dashed ${colors.gray[500]};
+    box-sizing: border-box;
     transition-duration: 100ms;
     z-index: 2;
     -webkit-user-select: none;
