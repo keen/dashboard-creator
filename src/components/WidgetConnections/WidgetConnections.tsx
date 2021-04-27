@@ -1,7 +1,8 @@
 import React, { FC } from 'react';
 import { Checkbox } from '@keen.io/ui-core';
+import { BodyText } from '@keen.io/typography';
 
-import { Connections, ConnectionItem, Label } from './WidgetConnections.styles';
+import { Connections, ConnectionItem } from './WidgetConnections.styles';
 
 type Props = {
   connections: { title: string; id: string; isConnected: boolean }[];
@@ -18,7 +19,7 @@ const WidgetConnections: FC<Props> = ({ connections, onUpdateConnection }) => (
         onClick={() => onUpdateConnection(id, !isConnected)}
       >
         <Checkbox type="secondary" id={id} checked={isConnected} />
-        <Label>{title}</Label>
+        <BodyText variant="body2">{title}</BodyText>
       </ConnectionItem>
     ))}
   </Connections>

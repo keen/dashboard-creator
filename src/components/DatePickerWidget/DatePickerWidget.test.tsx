@@ -10,6 +10,8 @@ import configureStore from 'redux-mock-store';
 import { AppContext } from '../../contexts';
 
 import DatePickerWidget from './DatePickerWidget';
+import { createBodyElementById } from '../../utils/test/createBodyElementById';
+import { DROPDOWN_CONTAINER_ID } from '../../constants';
 
 const render = (
   storeState: any = {},
@@ -56,7 +58,6 @@ const render = (
 
   const contextValue = {
     ...contextValues,
-    modalContainer: '#modal-root',
     widgetsConfiguration: {
       datePicker: {
         disableTimezoneSelection: true,
@@ -85,12 +86,7 @@ afterEach(() => {
 });
 
 beforeEach(() => {
-  let modalRoot = document.getElementById('modal-root');
-  if (!modalRoot) {
-    modalRoot = document.createElement('div');
-    modalRoot.setAttribute('id', 'modal-root');
-    document.body.appendChild(modalRoot);
-  }
+  createBodyElementById(DROPDOWN_CONTAINER_ID);
 });
 
 test('should render timeframe for active widget', () => {

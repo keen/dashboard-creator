@@ -23,7 +23,7 @@ import { BodyText } from '@keen.io/typography';
 
 import {
   Container,
-  QuerySettings,
+  SectionContainer,
   VisualizationContainer,
   NotificationBar,
   Cancel,
@@ -189,35 +189,37 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
         />
       </NavBar>
       {editorSection === EditorSection.QUERY ? (
-        <QuerySettings>
+        <SectionContainer>
           <QueryEditor
             initialQueryInitialized={!!initialQuerySettings}
             isEditMode={isEditMode}
           />
-        </QuerySettings>
+        </SectionContainer>
       ) : (
-        <WidgetCustomization
-          customizationSections={customizationSections}
-          chartSettings={widgetCustomization.chart}
-          widgetSettings={widgetCustomization.widget}
-          savedQueryName={analysisResult?.query_name}
-          onUpdateWidgetSettings={(widgetSettings) => {
-            dispatch(updateWidgetSettings(widgetSettings));
-            setCustomizationSettings((state) => ({
-              ...state,
-              widget: widgetSettings,
-            }));
-          }}
-          onUpdateChartSettings={(chartSettings) => {
-            const chart = serializeOutputSettings(widgetType, chartSettings);
-            dispatch(updateChartSettings(chart));
-            setCustomizationSettings((state) => ({
-              ...state,
-              chart: chartSettings,
-            }));
-          }}
-          modalContainer={modalContainer}
-        />
+        <SectionContainer>
+          <WidgetCustomization
+            customizationSections={customizationSections}
+            chartSettings={widgetCustomization.chart}
+            widgetSettings={widgetCustomization.widget}
+            savedQueryName={analysisResult?.query_name}
+            onUpdateWidgetSettings={(widgetSettings) => {
+              dispatch(updateWidgetSettings(widgetSettings));
+              setCustomizationSettings((state) => ({
+                ...state,
+                widget: widgetSettings,
+              }));
+            }}
+            onUpdateChartSettings={(chartSettings) => {
+              const chart = serializeOutputSettings(widgetType, chartSettings);
+              dispatch(updateChartSettings(chart));
+              setCustomizationSettings((state) => ({
+                ...state,
+                chart: chartSettings,
+              }));
+            }}
+            modalContainer={modalContainer}
+          />
+        </SectionContainer>
       )}
       <Footer>
         <MousePositionedTooltip

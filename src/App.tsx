@@ -3,7 +3,7 @@ import Loadable from 'react-loadable';
 import { Route, Switch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Container, Content } from './App.styles';
+import { Container, Content, DropdownContainer } from './App.styles';
 
 import { getActiveDashboard } from './modules/app';
 import { DashboardMetaData, saveDashboardMeta } from './modules/dashboards';
@@ -60,6 +60,7 @@ const App: FC<Props> = () => {
         }
       />
       <DashboardShareModal />
+      <DropdownContainer id="dropdown-container" />
     </Container>
   );
 };

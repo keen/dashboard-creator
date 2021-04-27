@@ -63,6 +63,7 @@ export function* getFilterWidgetConnections(
     .filter(
       ({ widget, data }) =>
         widget.type === 'visualization' &&
+        data?.query &&
         data.query.analysis_type !== 'funnel' &&
         data.query.event_collection === eventStream
     )
@@ -114,7 +115,7 @@ export function* getDetachedFilterWidgetConnections(
       ({ widget, data }) =>
         widget.type === 'visualization' &&
         widget.filterIds?.includes(filterWidgetId) &&
-        data.query.event_collection !== eventStream
+        (!data?.query || data.query.event_collection !== eventStream)
     )
     .map(({ widget }) => {
       const {

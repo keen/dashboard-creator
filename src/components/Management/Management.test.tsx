@@ -8,10 +8,10 @@ import {
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 
-import { AppContext } from '../../contexts';
-
 import Management from './Management';
 import { dashboardsMeta } from '../../modules/dashboards/fixtures';
+import { createBodyElementById } from '../../utils/test/createBodyElementById';
+import { DROPDOWN_CONTAINER_ID } from '../../constants';
 
 jest.mock('framer-motion', () => {
   const AnimatePresence = jest.fn(({ children }) => children);
@@ -67,15 +67,7 @@ const render = (storeState: any = {}, overProps: any = {}) => {
 
   const wrapper = rtlRender(
     <Provider store={store}>
-      <AppContext.Provider
-        value={
-          {
-            modalContainer: '#modal-root',
-          } as any
-        }
-      >
-        <Management {...props} />
-      </AppContext.Provider>
+      <Management {...props} />
     </Provider>
   );
 
@@ -90,12 +82,7 @@ afterEach(() => {
 });
 
 beforeEach(() => {
-  let modalRoot = document.getElementById('modal-root');
-  if (!modalRoot) {
-    modalRoot = document.createElement('div');
-    modalRoot.setAttribute('id', 'modal-root');
-    document.body.appendChild(modalRoot);
-  }
+  createBodyElementById(DROPDOWN_CONTAINER_ID);
 });
 
 test('renders notification about creating first dashboard in project', async () => {

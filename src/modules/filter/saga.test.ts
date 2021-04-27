@@ -329,6 +329,80 @@ describe('getFilterWidgetConnections()', () => {
       ]);
     });
   });
+
+  describe('Scenario 2: Do not creates connection for widgets that are not initialized', () => {
+    const dashboardId = '@dashboard/01';
+    const filterWidgetId = '@filter/01';
+
+    const state = {
+      widgets: {
+        items: {
+          '@widget/01': {
+            widget: {
+              id: '@widget/01',
+              type: 'visualization',
+              position: { y: 10 },
+            },
+            data: null,
+          },
+          '@widget/02': {
+            widget: {
+              id: '@widget/02',
+              type: 'visualization',
+              filterIds: [filterWidgetId],
+              position: { y: 5 },
+              settings: {
+                widgetSettings: {},
+              },
+            },
+            data: {
+              query: {
+                analysis_type: 'count',
+                event_collection: 'purchases',
+              },
+            },
+          },
+        },
+      },
+      dashboards: {
+        items: {
+          [dashboardId]: {
+            settings: {
+              widgets: ['@widget/01', '@widget/02'],
+            },
+          },
+        },
+      },
+    };
+
+    function* wrapper() {
+      const result = yield* getFilterWidgetConnections(
+        dashboardId,
+        filterWidgetId,
+        'purchases'
+      );
+      return result;
+    }
+
+    const test = sagaHelper(wrapper());
+
+    test('get application state', (result) => {
+      expect(result).toEqual(select());
+
+      return state;
+    });
+
+    test('returns filter widget connections', (result) => {
+      expect(result).toEqual([
+        {
+          widgetId: '@widget/02',
+          isConnected: true,
+          title: null,
+          positionIndex: 2,
+        },
+      ]);
+    });
+  });
 });
 
 describe('getDetachedFilterWidgetConnections()', () => {
@@ -414,6 +488,82 @@ describe('getDetachedFilterWidgetConnections()', () => {
           isConnected: true,
           title: null,
           positionIndex: 1,
+        },
+      ]);
+    });
+  });
+
+  describe('Scenario 2: Add not initialized widget to detached filter widget connections', () => {
+    const dashboardId = '@dashboard/01';
+    const filterWidgetId = '@filter/01';
+
+    const state = {
+      widgets: {
+        items: {
+          '@widget/01': {
+            widget: {
+              id: '@widget/01',
+              type: 'visualization',
+              filterIds: [filterWidgetId],
+              position: { y: 10 },
+              settings: {
+                widgetSettings: {},
+              },
+            },
+            data: {
+              query: {
+                analysis_type: 'count_unique',
+                event_collection: 'purchases',
+              },
+            },
+          },
+          '@widget/02': {
+            widget: {
+              id: '@widget/02',
+              type: 'visualization',
+              filterIds: [filterWidgetId],
+              position: { y: 5 },
+              settings: {
+                widgetSettings: {},
+              },
+            },
+            data: null,
+          },
+        },
+      },
+      dashboards: {
+        items: {
+          [dashboardId]: {
+            settings: { widgets: ['@widget/01', '@widget/02'] },
+          },
+        },
+      },
+    };
+
+    function* wrapper() {
+      const result = yield* getDetachedFilterWidgetConnections(
+        dashboardId,
+        filterWidgetId,
+        'purchases'
+      );
+      return result;
+    }
+
+    const test = sagaHelper(wrapper());
+
+    test('get application state', (result) => {
+      expect(result).toEqual(select());
+
+      return state;
+    });
+
+    test('returns filter widget connections', (result) => {
+      expect(result).toEqual([
+        {
+          widgetId: '@widget/02',
+          isConnected: true,
+          title: null,
+          positionIndex: 2,
         },
       ]);
     });

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
+import { BodyText } from '@keen.io/typography';
 
-import Option from '../Option';
 import { Container, OptionContainer } from './FilterValue.styles';
 
 type Props = {
@@ -14,15 +14,21 @@ const FilterValue: FC<Props> = ({ propertyValue }) => {
       <Container>
         {propertyValue.map((value, index, arr) => (
           <OptionContainer key={value}>
-            <Option key={value}>{value}</Option>
-            {index < arr.length - 1 && <span>,&nbsp;</span>}
+            <BodyText variant="body2" enableTextEllipsis>
+              {value}
+              {index < arr.length - 1 && <span>,&nbsp;</span>}
+            </BodyText>
           </OptionContainer>
         ))}
       </Container>
     );
   }
 
-  return <Option>{propertyValue}</Option>;
+  return (
+    <BodyText variant="body2" enableTextEllipsis>
+      {propertyValue}
+    </BodyText>
+  );
 };
 
 export default FilterValue;
