@@ -241,7 +241,6 @@
     "tooltip_end": " data type)"
   },
   "query_creator_timeframe": {
-    "notification": "(Charts display time in UTC)",
     "label": "Timeframe",
     "relative": "Relative",
     "absolute": "Absolute"
