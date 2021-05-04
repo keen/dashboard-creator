@@ -1,6 +1,6 @@
 {
   "confirm_query_change": {
-    "title": "You edited Saved Query",
+    "title": "You Edited Saved Query",
     "message": "What do you want to update?",
     "connect_saved_query": "Connected Saved Query",
     "connect_saved_query_message": "If Saved Query is used in other places, it will change there too. Some charts may not work properly due to applied changes.",
@@ -17,7 +17,7 @@
   },
   "text_widget_editor": {
     "description": "Edit styling here and resize the text box on dashboard",
-    "update_button": "Update text",
+    "update_button": "Update Text",
     "cancel_button": "Cancel",
     "placeholder": "Enter text"
   },
@@ -39,7 +39,7 @@
     "untitled_chart": "Untitled Chart",
     "description": "What do you want to filter by?",
     "description_property_types": "(Only string properties can be used)",
-    "first_hint": "Filter will affect only  associated charts.",
+    "first_hint": "Filter will affect only associated charts.",
     "second_hint": "Filter can be connected only to charts that use the same Event Stream",
     "detached_widgets_description": "Detached charts (They will be automatically disconnected)",
     "detached_widgets_first_hint": "These charts no longer work with this filter. The query connected to the chart uses a different event stream.",
@@ -51,8 +51,8 @@
   },
   "filter_widget": {
     "search_value": "Search value",
-    "select_all": "Select all",
-    "unselect_all": "Unselect all",
+    "select_all": "Select All",
+    "unselect_all": "Unselect All",
     "apply": "Apply",
     "clear": "Clear",
     "no_properties_found": "No properties found"
@@ -63,15 +63,15 @@
   },
   "date_picker_settings": {
     "untitled_chart": "Untitled Chart",
-    "title": "Date Picker configuration",
+    "title": "Create Date Range Widget",
     "confirm_button": "Create",
     "cancel_button": "Cancel",
-    "empty_connections": "Add charts to the dashboard and then configure Date Picker",
-    "description": "Which charts should be associated with the Date Picker?",
-    "tooltip_hint": "Date Picker will affect only timeframes of associated charts."
+    "empty_connections": "Add charts to the dashboard and then configure Date Range widget",
+    "description": "Which charts should be associated with the Date Range widget?",
+    "tooltip_hint": "Date Range will affect only timeframes of associated charts."
   },
   "date_picker_widget": {
-    "name": "Date Picker",
+    "name": "Date Range",
     "apply": "Apply",
     "clear": "Clear",
     "time": "Last",
@@ -91,13 +91,13 @@
     "untitled_dashboard": "Untitled dashboard",
     "back": "All Dashboards",
     "public": "Public",
-    "new_dashboard": "New dashboard",
-    "all_dashboards": "All dashboards",
+    "new_dashboard": "New Dashboard",
+    "all_dashboards": "All Dashboards",
     "empty_search": "No dashboard found with this name"
   },
   "dashboard_tile": {
     "preview_dashboard": "View Dashboard",
-    "add_widgets": "Add widgets",
+    "add_widgets": "No Widgets",
     "queries": "Queries",
     "query": "Query",
     "no_queries": "No Queries",
@@ -120,15 +120,15 @@
     "clone_dashboard": "Clone"
   },
   "delete_dashboard": {
-    "title": "Deleting dashboard",
-    "untitled_dashboard": "Untitled Dashboard",
+    "title": "Deleting Dashboard",
+    "untitled_dashboard": "Untitled dashboard",
     "message": "Do you want to permanently delete dashboard {{name}} from your project?",
     "confirm": "Delete",
     "cancel": "Cancel",
     "public_dashboard_confirmation_error": "Mark all checkboxes to delete the Public dashboard"
   },
   "delete_public_dashboard": {
-    "title": "This dashboard is Public.",
+    "title": "This Dashboard is Public.",
     "share_links": "All share links will be inaccessible.",
     "access_keys": "Dashboard Access Key will be deleted.",
     "embedded_html": "Embedded HTML will not display the dashboard."
@@ -143,11 +143,11 @@
   },
   "tags_filters": {
     "title": "Filters",
-    "show_only_public_dashboards": "Public dashboards",
+    "show_only_public_dashboards": "Public Dashboards",
     "search_tags_input_placeholder": "Search tag",
     "search_label": "Tags",
     "empty_search_message": "No tags found with this name",
-    "clear": "Clear filters"
+    "clear": "Clear Filters"
   },
   "viewer": {
     "edit_dashboard_button": "Edit",
@@ -163,8 +163,8 @@
   },
   "query_picker": {
     "close": "Close",
-    "title": "What do you want to visualize?",
-    "new_query_button": "New query",
+    "title": "What Do You Want to Visualize?",
+    "new_query_button": "New Query",
     "new_query_description": "Create the query from scratch or select the saved query from the list",
     "search_query_placeholder": "Search saved query",
     "saved_queries_error": "We could not load your saved queries at the moment. Please close this window and try adding a chart again or create a New Query.",
@@ -172,25 +172,25 @@
     "empty_project": "There are no saved queries in this project. Create a New Query from scratch."
   },
   "image_picker": {
-    "title": "Insert image by URL",
+    "title": "Insert Image by URL",
     "image_url": "Image URL",
     "cancel_button": "Cancel",
-    "insert_button": "Insert image",
+    "insert_button": "Insert Image",
     "placeholder": "Paste URL of image here",
     "error": "Please, paste correct image url"
   },
   "widget": {
     "edit_chart": "Edit Chart",
-    "edit_image": "Change image",
+    "edit_image": "Change Image",
     "edit_text": "Text Options",
     "remove": "Remove",
-    "remove_confirm_button": "Yes, delete",
-    "remove_dismiss_button": "No, keep it",
+    "remove_confirm_button": "Yes, Delete",
+    "remove_dismiss_button": "No, Keep It",
     "remove_confirmation": "Are you sure you want to delete this widget?"
   },
   "widget_item": {
     "chart": "Chart",
-    "date_picker": "Date picker",
+    "date_picker": "Date Range",
     "filter": "Filter",
     "image": "Image",
     "text": "Text"
@@ -201,12 +201,8 @@
     "is_saving": "Is saving..."
   },
   "chart_widget_editor": {
-    "navigation_query": "QUERY",
-    "navigation_settings": "SETTINGS",
-    "run_query_first": "Run your query first",
-    "configuration_error": "Please, finish the chart widget configuration.",
     "add_to_dashboard": "Add to Dashboard",
-    "save": "Update widget",
+    "save": "Update Chart",
     "cancel": "Cancel",
     "run_query_placeholder": "Run Query to visualize your data",
     "run_query": "Run Query",
@@ -215,7 +211,11 @@
     "save_query_restore_hint": "You can also",
     "save_query_restore": "Restore Saved Query",
     "run_query_loading": "Loading",
-    "widget_error": "The selected visualization cannot be used with current query settings. Run query and select visualization."
+    "widget_error": "The selected visualization cannot be used with current query settings. Run query and select visualization.",
+    "navigation_query": "QUERY",
+    "navigation_settings": "SETTINGS",
+    "run_query_first": "Run your query first",
+    "configuration_error": "Please, finish the chart widget configuration."
   },
   "query_creator_analysis": {
     "placeholder": "Select analysis type",
@@ -228,7 +228,7 @@
     "empty_search_results": "No stream found with this name"
   },
   "query_creator_target_property": {
-    "label": "Target property",
+    "label": "Target Property",
     "placeholder": "Select event property",
     "search_placeholder": "Search",
     "empty_search_results": "No property found with this name",
@@ -243,7 +243,8 @@
   "query_creator_timeframe": {
     "label": "Timeframe",
     "relative": "Relative",
-    "absolute": "Absolute"
+    "absolute": "Absolute",
+    "notification": "(Charts display time in UTC)"
   },
   "query_creator_filters": {
     "filters": "Filters",
@@ -291,7 +292,7 @@
     "first_step_inverted_tooltip": "The first step cannot be inverted"
   },
   "query_creator_funnel_steps": {
-    "add_step": "Add step"
+    "add_step": "Add Step"
   },
   "query_creator_group_by": {
     "title": "Group by",
@@ -306,7 +307,7 @@
     "tooltip": "Select the frequency to view data across the specified timeframe"
   },
   "query_creator_limit": {
-    "label": "Limit results to",
+    "label": "Limit Results to",
     "placeholder": "Limit to",
     "select": "Select",
     "event_stream": "Event Stream",
@@ -351,12 +352,12 @@
     "empty_search_results": "No property found with this name"
   },
   "query_creator_timezone": {
-    "empty_search": "No timezone found with this criteria",
-    "selection_disabled_description": "Timezone for your metrics is the same as your site configuration.",
-    "loading": "Loading list of time zones",
-    "error": "We cannot load list of time zones. Try again later if you need to check data for specific time zone.",
     "placeholder": "Select timezone",
-    "label": "Timezone"
+    "label": "Timezone",
+    "empty_search": "No time zone found with this criteria",
+    "selection_disabled_description": "Time zone for your metrics is the same as your site configuration.",
+    "loading": "Loading the list of time zones",
+    "error": "We cannot load the list of time zones. Try again later if you need to check data for a specific time zone."
   },
   "query_creator_extraction_properties": {
     "select": "Select",
@@ -378,12 +379,12 @@
     "sum": "Sum of all numeric values for a given property.<br/><br/>Non-numeric values will be ignored."
   },
   "dashboard_settings": {
-    "modal_title": "Dashboard settings",
+    "modal_title": "Dashboard Settings",
     "dashboard_name_label": "Dashboard Name",
     "dashboard_name_error": "Dashboard name is required",
     "dashboard_unique_name_error": "Dashboard with this name already exists",
     "dashboard_name_input_placeholder": "Give your dashboard a name",
-    "save_dashboard_button": "Save changes",
+    "save_dashboard_button": "Save Changes",
     "cancel": "Cancel",
     "tags": "Tags",
     "new_tag": "(New tag)",
@@ -391,21 +392,21 @@
     "saving_dashboard": "Saving dashboard"
   },
   "dashboard_share": {
-    "modal_title": "Share dashboard",
+    "modal_title": "Share Dashboard",
     "make_public": "Make dashboard public",
     "make_public_tooltip": "The public dashboard can be viewed by people that do not have access to Keen.",
     "copy": "Copy",
     "public_dashboard_link": "Public dashboard link",
-    "regenerate_link": "Regenerate link",
-    "regenerate_link_tooltip": "The Access Key will be regenerated and the new link wil be created. The old link will no longer work.",
+    "regenerate_link": "Regenerate Link",
+    "regenerate_link_tooltip": "The Access Key will be regenerated and the new link will be created. The old link will no longer work.",
     "message": "Anyone with this link can view this dashboard and all connected data.",
-    "access_key_not_exist_error": "Access Key for this dashboard do not exist any more. Make it public again.",
+    "access_key_not_exist_error": "Access Key for this dashboard does not exist any more. Make it public again.",
     "access_key_api_error": "You cannot change anything here right now. We're having an issue with our API. Please try again later.",
     "access_key_limit_error": "You cannot make this dashboard public because you have reached the limit of Access Keys for your organization. Upgrade your plan",
-    "access_key_duplicate_error": "We were not able to create Access Key to make this dashboard public. Please try again.",
+    "access_key_duplicate_error": "We were not able to create an Access Key to make this dashboard public. Please try again.",
     "access_key_revoke_error": "Access Key for this dashboard has been revoked. Activate the key to make the dashboard public.",
     "embed_placeholder": "Only public dashboard is embeddable",
-    "download_code": "Download HTML file",
+    "download_code": "Download HTML File",
     "embed_title": "Embed the dashboard in your platform",
     "embed_text": "When you edit this dashboard in our UI, all changes will be automatically visible in your external platform too.",
     "embed_step_label": "Step",
@@ -432,9 +433,9 @@
     "share_tooltip": "Share"
   },
   "extraction": {
-    "preview_extraction": "Preview events",
+    "preview_extraction": "Preview Events",
     "email_extraction": "Extract to Email",
-    "limit_label": "Limit number of events",
+    "limit_label": "Limit Number of Events",
     "limit_placeholder": "Events limit",
     "maximum_events_limit": "The maximum number of events for preview is 100,000.",
     "maximum_email_events_limit": "Maximum number of events for email extraction is 10,000,000.",
@@ -444,7 +445,7 @@
     "title": "Properties to Extract",
     "full_extraction": "Select properties to extract. All will be extracted by default.",
     "filtered_extraction": " Extracting only selected properties.",
-    "clear_properties": "Clear to extract all."
+    "clear_properties": "Clear to Extract All."
   },
   "dashboard_timepicker": {
     "separator": "to",
@@ -463,20 +464,20 @@
     "subtitle_placeholder": "Enter subtitle"
   },
   "date_picker_widget_timezone": {
-    "timezone": "Timezone",
-    "timezone_empty_search": "No timezone found with this criteria",
-    "timezone_selection_disabled_description": "Timezone for your metrics is the same as your site configuration.",
-    "select_timezone": "Select timezone",
+    "timezone": "Time Zone",
+    "timezone_empty_search": "No time zone found with this criteria",
+    "timezone_selection_disabled_description": "Time zone for your metrics is the same as your site configuration.",
+    "select_timezone": "Select time zone",
     "loading": "Loading list of time zones",
-    "error": "We cannot load list of time zones. Try again later if you need to check data for specific time zone.",
-    "selection_disabled_description": "Timezone for your metrics is the same as your site configuration."
+    "error": "We cannot load a list of time zones. Try again later if you need to check data for specific time zone.",
+    "selection_disabled_description": "Time zone for your metrics is the same as your site configuration."
   },
   "widget_customization_heading_settings": {
     "section_title": "Basic Info",
     "section_description": "(Add context to your data by applying Title and Subtitle)",
-    "title_label": "Chart title",
+    "title_label": "Chart Title",
     "title_placeholder": "Enter title",
-    "subtitle_label": "Chart subtitle",
+    "subtitle_label": "Chart Subtitle",
     "subtitle_placeholder": "Enter subtitle",
     "saved_query_name_label": "Saved Query name:",
     "saved_query_name_tooltip": "Click to use as Chart Title"
