@@ -27,7 +27,7 @@ import { setActiveDashboard } from '../../modules/app';
 
 import { AppContext, EditorContext } from '../../contexts';
 
-import { useMarkerRef } from './custom-hooks';
+import { useMarkerRef } from './customHooks';
 
 import EditorNavigation from '../EditorNavigation';
 import QueryPickerModal from '../QueryPickerModal';
