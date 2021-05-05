@@ -22,6 +22,7 @@ module.exports = (env) => {
     output: {
       path: path.resolve(__dirname, 'dist', env.APP_NAME),
       filename: `[name].min.js`,
+      jsonpFunction: 'keen-dashboard-creator',
       libraryTarget: 'umd',
     },
 
