@@ -137,7 +137,7 @@
     "title": "Dashboards",
     "description": "This is a place for all your dashboards. Organize different queries in one view and share them with your colleagues.",
     "create_dashboard": "New Dashboard",
-    "empty_project": "Create your first dashboard in this project",
+    "empty_project": "Create your first dashboard",
     "search_input_placeholder": "Search name",
     "empty_search_results": "No dashboards found with this criteria."
   },
