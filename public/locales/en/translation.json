@@ -1,10 +1,4 @@
 {
-  "widget_heading_settings": {
-    "title_label": "Title",
-    "title_placeholder": "Enter title",
-    "subtitle_label": "Subtitle",
-    "subtitle_placeholder": "Enter subtitle"
-  },
   "confirm_query_change": {
     "title": "You edited Saved Query",
     "message": "What do you want to update?",
@@ -86,15 +80,6 @@
     "relativity_title_today": "Include Today",
     "relative": "Relative",
     "absolute": "Absolute"
-  },
-  "date_picker_widget_timezone": {
-    "timezone": "Timezone",
-    "timezone_empty_search": "No timezone found with this criteria",
-    "timezone_selection_disabled_description": "Timezone for your metrics is the same as your site configuration.",
-    "select_timezone": "Select timezone",
-    "loading": "Loading list of time zones",
-    "error": "We cannot load list of time zones. Try again later if you need to check data for specific time zone.",
-    "selection_disabled_description": "Timezone for your metrics is the same as your site configuration."
   },
   "widget_errors": {
     "detached_query_title": "Unable to present result in {{chart}} chart",
@@ -218,6 +203,8 @@
   "chart_widget_editor": {
     "navigation_query": "QUERY",
     "navigation_settings": "SETTINGS",
+    "run_query_first": "Run your query first",
+    "configuration_error": "Please, finish the chart widget configuration.",
     "add_to_dashboard": "Add to Dashboard",
     "save": "Update widget",
     "cancel": "Cancel",
@@ -228,9 +215,7 @@
     "save_query_restore_hint": "You can also",
     "save_query_restore": "Restore Saved Query",
     "run_query_loading": "Loading",
-    "run_query_first": "Run your query first",
-    "widget_error": "The selected visualization cannot be used with current query settings. Run query and select visualization.",
-    "configuration_error": "Please, finish the chart widget configuration."
+    "widget_error": "The selected visualization cannot be used with current query settings. Run query and select visualization."
   },
   "query_creator_analysis": {
     "placeholder": "Select analysis type",
@@ -258,8 +243,7 @@
   "query_creator_timeframe": {
     "label": "Timeframe",
     "relative": "Relative",
-    "absolute": "Absolute",
-    "notification": "(Charts display time in UTC)"
+    "absolute": "Absolute"
   },
   "query_creator_filters": {
     "filters": "Filters",
@@ -367,11 +351,11 @@
     "empty_search_results": "No property found with this name"
   },
   "query_creator_timezone": {
-    "placeholder": "Select timezone",
     "empty_search": "No timezone found with this criteria",
     "selection_disabled_description": "Timezone for your metrics is the same as your site configuration.",
     "loading": "Loading list of time zones",
     "error": "We cannot load list of time zones. Try again later if you need to check data for specific time zone.",
+    "placeholder": "Select timezone",
     "label": "Timezone"
   },
   "query_creator_extraction_properties": {
@@ -471,6 +455,21 @@
     "label": "Last",
     "today_includes": "(Includes today)",
     "relativity_title": "Includes current"
+  },
+  "widget_heading_settings": {
+    "title_label": "Title",
+    "title_placeholder": "Enter title",
+    "subtitle_label": "Subtitle",
+    "subtitle_placeholder": "Enter subtitle"
+  },
+  "date_picker_widget_timezone": {
+    "timezone": "Timezone",
+    "timezone_empty_search": "No timezone found with this criteria",
+    "timezone_selection_disabled_description": "Timezone for your metrics is the same as your site configuration.",
+    "select_timezone": "Select timezone",
+    "loading": "Loading list of time zones",
+    "error": "We cannot load list of time zones. Try again later if you need to check data for specific time zone.",
+    "selection_disabled_description": "Timezone for your metrics is the same as your site configuration."
   },
   "widget_customization_heading_settings": {
     "section_title": "Basic Info",
