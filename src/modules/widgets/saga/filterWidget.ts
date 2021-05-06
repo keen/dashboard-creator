@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import {
   all,
   call,
@@ -123,9 +124,14 @@ export function* setFilterWidget({
       timeframe: getOldestTimeframe(connectedWidgetsTimeframes),
       filters: [
         {
-          propertyName: targetProperty,
+          property_name: targetProperty,
+          operator: 'exists',
+          property_value: true,
+        },
+        {
+          property_name: targetProperty,
           operator: 'ne',
-          propertyValue: null,
+          property_value: null,
         },
       ],
     });

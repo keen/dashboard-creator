@@ -22,6 +22,8 @@ module.exports = (env) => {
     output: {
       path: path.resolve(__dirname, 'dist', env.APP_NAME),
       filename: `[name].min.js`,
+      /* Isolates jsonp context for multiple webpack apps */
+      // @TODO: Remove after migration to Webpack 5
       jsonpFunction: 'keen-dashboard-creator',
       libraryTarget: 'umd',
     },
