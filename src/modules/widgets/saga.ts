@@ -249,21 +249,9 @@ export function* selectQueryForWidget(widgetId: string) {
     const {
       query: {
         id: queryId,
-        displayName,
         visualization: { type: widgetType, chartSettings, widgetSettings },
       },
     } = action.payload as { query: SavedQuery };
-
-    let selectedWidgetSettings = { ...widgetSettings };
-    if (displayName) {
-      selectedWidgetSettings = {
-        ...widgetSettings,
-        title: {
-          ...widgetSettings.title,
-          content: displayName,
-        },
-      };
-    }
 
     yield put(hideQueryPicker());
     yield put(
@@ -272,7 +260,7 @@ export function* selectQueryForWidget(widgetId: string) {
         queryId,
         widgetType,
         chartSettings,
-        selectedWidgetSettings
+        widgetSettings
       )
     );
     yield put(initializeChartWidgetAction(widgetId));

@@ -279,24 +279,15 @@ describe('selectQueryForWidget()', () => {
     test('finishes chart widget configuration', (result) => {
       const {
         id: queryId,
-        displayName,
         visualization: { type, chartSettings, widgetSettings },
       } = savedQuery;
-
-      const selectedWidgetSettings = {
-        ...widgetSettings,
-        title: {
-          ...widgetSettings.title,
-          content: displayName,
-        },
-      };
 
       const action = finishChartWidgetConfiguration(
         widgetId,
         queryId,
         type,
         chartSettings,
-        selectedWidgetSettings
+        widgetSettings
       );
 
       expect(result).toEqual(put(action));
