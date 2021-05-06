@@ -7,6 +7,7 @@ import React, {
   useCallback,
 } from 'react';
 import { useSelector } from 'react-redux';
+import { useInView } from 'react-intersection-observer';
 import { Loader } from '@keen.io/ui-core';
 import { colors } from '@keen.io/colors';
 
@@ -19,6 +20,7 @@ import { getInterimQuery } from '../../modules/queries';
 import { getActiveDashboardTheme } from '../../modules/theme';
 import { RootState } from '../../rootReducer';
 
+import { OBSERVER_DELAY } from './constants';
 import { RESIZE_WIDGET_EVENT } from '../../constants';
 
 import getChartInput from '../../utils/getChartInput';
@@ -36,6 +38,11 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
   const containerRef = useRef(null);
   const loaderRef = useRef(null);
   const datavizRef = useRef(null);
+
+  const [inViewRef, inView] = useInView({
+    delay: OBSERVER_DELAY,
+    triggerOnce: true,
+  });
 
   const { editorPubSub } = useContext(EditorContext);
   const [placeholder, setPlaceholder] = useState({ width: 0, height: 0 });
@@ -69,8 +76,16 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
     return null;
   }, []);
 
+  const setContainerRef = useCallback(
+    (node: HTMLDivElement) => {
+      containerRef.current = node;
+      inViewRef(node);
+    },
+    [inViewRef]
+  );
+
   useEffect(() => {
-    if (showVisualization) {
+    if (showVisualization && inView) {
       datavizRef.current = createDataviz(
         widget as ChartWidget,
         theme,
@@ -84,7 +99,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
         datavizRef.current.render(getChartInput(chartData));
       }
     }
-  }, [showVisualization, error]);
+  }, [showVisualization, inView, error]);
 
   useEffect(() => {
     if (!editorPubSub) return;
@@ -114,8 +129,8 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
     <>
       {showVisualization ? (
         <Container
-          ref={containerRef}
           data-testid="chart-widget-container"
+          ref={setContainerRef}
           disableInteractions={disableInteractions}
         />
       ) : (

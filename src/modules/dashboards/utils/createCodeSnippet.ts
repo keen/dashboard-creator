@@ -12,22 +12,43 @@ const createCodeSnippet = ({
   type?: Snippet;
 }) => {
   if (type === 'head') {
-    return `<script crossorigin src="https://cdn.jsdelivr.net/npm/@keen.io/dashboard-creator@latest/dist/public-dashboard/main.min.js"></script>`;
+    return `
+    <link rel="stylesheet" type="text/css" href="https://static.keen.io/assets/keen-fonts.css" />
+    <script crossorigin src="https://cdn.jsdelivr.net/npm/@keen.io/dashboard-creator@latest/dist/public-dashboard/runtime.min.js"></script>
+    <script crossorigin src="https://cdn.jsdelivr.net/npm/@keen.io/dashboard-creator@latest/dist/public-dashboard/vendors.min.js"></script>
+    <script crossorigin src="https://cdn.jsdelivr.net/npm/@keen.io/dashboard-creator@latest/dist/public-dashboard/main.min.js"></script>
+    `;
   }
   if (type === 'body') {
     return `<div id="root"></div>
+    <div id="modal-root"></div>
 <script type="text/javascript">
   new KeenPublicDashboard({
     container: '#root',
-    dashboardId: '${dashboardId}',
-    backend: {
-      analyticsApiUrl: 'api.keen.io',
-      dashboardsApiUrl: 'https://blob-service.keen.io',
-    },
-    project: {
-      id: '${projectId}',
-      accessKey: '${userKey}' 
-    },
+      modalContainer: '#modal-root',
+      dashboardId: '${dashboardId}',
+      defaultTimezoneForQuery: "Etc/UTC",
+      disableTimezoneSelection: false,
+      widgetsConfiguration: {
+        datePicker: {
+          defaultTimezone: 'Etc/UTC',
+          disableTimezoneSelection: false
+        }
+      },
+      backend: {
+        analyticsApiUrl: 'api.keen.io',
+        dashboardsApiUrl: 'https://blob-service.keen.io',
+      },
+      project: {
+        id: '${projectId}',
+        accessKey: '${userKey}',
+        masterKey: '${userKey}',
+      },
+      translations: {
+        backend: {
+          loadPath: 'https://cdn.jsdelivr.net/npm/@keen.io/dashboard-creator@latest/dist/locales/\{\{lng}}/\{\{ns}}.json'
+        }
+      },
   }).render();
 </script>`;
   }
@@ -39,6 +60,8 @@ const createCodeSnippet = ({
     <meta http-equiv="X-UA-Compatible" content="IE=11" />
     <title>Public Dashboard</title>
     <link rel="stylesheet" type="text/css" href="https://static.keen.io/assets/keen-fonts.css" />
+    <script crossorigin src="https://cdn.jsdelivr.net/npm/@keen.io/dashboard-creator@latest/dist/public-dashboard/runtime.min.js"></script>
+    <script crossorigin src="https://cdn.jsdelivr.net/npm/@keen.io/dashboard-creator@latest/dist/public-dashboard/vendors.min.js"></script>
     <script crossorigin src="https://cdn.jsdelivr.net/npm/@keen.io/dashboard-creator@latest/dist/public-dashboard/main.min.js"></script>
     <style>
       body {
@@ -49,19 +72,35 @@ const createCodeSnippet = ({
   </head>
   <body>
     <div id="root"></div>
+    <div id="modal-root"></div>
   <script type="text/javascript">
-     new KeenPublicDashboard({
-       container: '#root',
-       dashboardId: '${dashboardId}',
-       backend: {
-         analyticsApiUrl: 'api.keen.io',
-         dashboardsApiUrl: 'https://blob-service.keen.io',
-       },
-       project: {
-         id: '${projectId}',
-         accessKey: '${userKey}' 
-       },
-     }).render();
+    new KeenPublicDashboard({
+      container: '#root',
+      modalContainer: '#modal-root',
+      dashboardId: '${dashboardId}',
+      defaultTimezoneForQuery: "Etc/UTC",
+      disableTimezoneSelection: false,
+      widgetsConfiguration: {
+        datePicker: {
+          defaultTimezone: 'Etc/UTC',
+          disableTimezoneSelection: false
+        }
+      },
+      backend: {
+        analyticsApiUrl: 'api.keen.io',
+        dashboardsApiUrl: 'https://blob-service.keen.io',
+      },
+      project: {
+        id: '${projectId}',
+        accessKey: '${userKey}',
+        masterKey: '${userKey}',
+      },
+      translations: {
+        backend: {
+          loadPath: 'https://cdn.jsdelivr.net/npm/@keen.io/dashboard-creator@latest/dist/locales/\{\{lng}}/\{\{ns}}.json'
+        }
+      },
+    }).render();
     </script>
     </body>
   </html>  
