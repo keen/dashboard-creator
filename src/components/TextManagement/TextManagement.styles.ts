@@ -6,6 +6,7 @@ import { colors } from '@keen.io/colors';
 
 export const Container = styled.div`
   position: relative;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   width: 100%;

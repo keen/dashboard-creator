@@ -20,6 +20,8 @@ type Props = {
   lastSaveTime: number | null;
   /** Saving indicator */
   isSaving: boolean;
+  /** Sticky bar indicator */
+  isSticky: boolean;
   /** React children nodes */
   children?: ReactNode;
 };
@@ -28,6 +30,7 @@ const EditorBar: FC<Props> = ({
   onFinishEdit,
   lastSaveTime,
   isSaving,
+  isSticky,
   children,
 }) => {
   const { t } = useTranslation();
@@ -39,7 +42,7 @@ const EditorBar: FC<Props> = ({
   );
 
   return (
-    <Container>
+    <Container isSticky={isSticky}>
       <ChildrenWrapper>{children}</ChildrenWrapper>
       <Aside>
         <SavingIndicator>

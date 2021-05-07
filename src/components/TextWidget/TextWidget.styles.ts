@@ -3,6 +3,7 @@ import { colors } from '@keen.io/colors';
 
 export const TextWidgetContainer = styled.div<{ isEditMode: boolean }>`
   position: relative;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   width: 100%;
