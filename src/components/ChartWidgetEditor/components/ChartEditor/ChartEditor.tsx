@@ -201,7 +201,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
             customizationSections={customizationSections}
             chartSettings={widgetCustomization.chart}
             widgetSettings={widgetCustomization.widget}
-            savedQueryName={analysisResult?.query_name}
+            savedQueryName={analysisResult?.metadata?.display_name}
             onUpdateWidgetSettings={(widgetSettings) => {
               dispatch(updateWidgetSettings(widgetSettings));
               setCustomizationSettings((state) => ({
