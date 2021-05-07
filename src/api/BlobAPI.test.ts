@@ -60,7 +60,7 @@ test('calls API to get dashboard blob object', () => {
 
 test('calls API to get dashboard blob object metadata', () => {
   (fetch as FetchMock).mockResponseOnce(JSON.stringify({}));
-  blobAPI.getDashboardMetaById(dashboardId);
+  blobAPI.getDashboardMetaDataById(dashboardId);
 
   expect(fetch).toHaveBeenCalledWith(
     `${baseUrl}/metadata/dashboard/${dashboardId}`,

@@ -571,7 +571,7 @@ export function* viewPublicDashboard({
 
   try {
     const blobApi = yield getContext(BLOB_API);
-    const dashboardMeta: DashboardMetaData = yield blobApi.getDashboardMetaById(
+    const dashboardMeta: DashboardMetaData = yield blobApi.getDashboardMetaDataById(
       dashboardId
     );
 
@@ -723,7 +723,7 @@ export function* cloneDashboard({
     const uniqueIdWidgets = createWidgetsUniqueIds(model.widgets);
 
     const newDashboardId = uuid();
-    const metaData = yield blobApi.getDashboardMetadataById(dashboardId);
+    const metaData = yield blobApi.getDashboardMetaDataById(dashboardId);
     const newMetaData = {
       ...metaData,
       id: newDashboardId,
