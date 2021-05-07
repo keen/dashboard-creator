@@ -127,6 +127,10 @@ export class DashboardCreator {
     this.enableFixedEditorBar = enableFixedEditorBar;
   }
 
+  destroy() {
+    ReactDOM.unmountComponentAtNode(document.querySelector(this.container));
+  }
+
   render() {
     const blobApi = new BlobAPI({
       projectId: this.projectId,
