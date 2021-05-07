@@ -65,7 +65,6 @@ import {
 } from '../widgets';
 
 import { getActiveDashboardTheme, setDashboardTheme } from '../theme';
-import { setActiveDashboard, getActiveDashboard } from '../app';
 
 import { serializeDashboard } from './serializers';
 import { createCodeSnippet } from './utils';
@@ -95,8 +94,8 @@ import {
 } from './selectors';
 import { removeConnectionFromFilter } from '../widgets/saga/filterWidget';
 
-import { getCachedDashboardsNumber } from '../app/selectors';
 import { unregisterWidget } from '../widgets/actions';
+import { appActions, appSelectors } from '../app';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
@@ -133,7 +132,7 @@ describe('viewPublicDashboard()', () => {
     });
 
     test('set active dashboard', (result) => {
-      expect(result).toEqual(put(setActiveDashboard(dashboardId)));
+      expect(result).toEqual(put(appActions.setActiveDashboard(dashboardId)));
     });
 
     test('gets BlobAPI instance from context', (result) => {
@@ -192,7 +191,7 @@ describe('viewPublicDashboard()', () => {
     });
 
     test('set active dashboard', (result) => {
-      expect(result).toEqual(put(setActiveDashboard(dashboardId)));
+      expect(result).toEqual(put(appActions.setActiveDashboard(dashboardId)));
     });
 
     test('gets BlobAPI instance from context', (result) => {
@@ -363,7 +362,7 @@ describe('deleteDashboard()', () => {
     });
 
     test('get active dashboard identifer', (result) => {
-      expect(result).toEqual(select(getActiveDashboard));
+      expect(result).toEqual(select(appSelectors.getActiveDashboard));
 
       return null;
     });
@@ -434,7 +433,7 @@ describe('deleteDashboard()', () => {
     });
 
     test('get active dashboard identifer', (result) => {
-      expect(result).toEqual(select(getActiveDashboard));
+      expect(result).toEqual(select(appSelectors.getActiveDashboard));
 
       return dashboardId;
     });
@@ -444,7 +443,7 @@ describe('deleteDashboard()', () => {
     });
 
     test('set active dashboard identifer', (result) => {
-      expect(result).toEqual(put(setActiveDashboard(null)));
+      expect(result).toEqual(put(appActions.setActiveDashboard(null)));
     });
 
     test('triggers dashboard delete success action with dashboard identifer', (result) => {
@@ -704,7 +703,7 @@ describe('cloneDashboard', () => {
     });
 
     test('set proper dashboard as active', (result) => {
-      expect(result).toEqual(put(setActiveDashboard(dashbboardId)));
+      expect(result).toEqual(put(appActions.setActiveDashboard(dashboardId)));
     });
 
     test('switch route to the cloned dashboard', (result) => {
@@ -987,7 +986,7 @@ describe('updateCachedDashboardsList()', () => {
       return [];
     });
     test('should get maximal cached dashboards number', (result) => {
-      expect(result).toEqual(select(getCachedDashboardsNumber));
+      expect(result).toEqual(select(appSelectors.getCachedDashboardsNumber));
       return 3;
     });
     test('should update state with the array containing the id of visited dashboard', (result) => {
@@ -1007,7 +1006,7 @@ describe('updateCachedDashboardsList()', () => {
       return cachedDashboardIds;
     });
     test('should get maximal cached dashboards number', (result) => {
-      expect(result).toEqual(select(getCachedDashboardsNumber));
+      expect(result).toEqual(select(appSelectors.getCachedDashboardsNumber));
       return 3;
     });
     test('should update state with array containing recent dashboard id at the end', (result) => {
@@ -1036,7 +1035,7 @@ describe('updateCachedDashboardsList()', () => {
       return cachedDashboardIds;
     });
     test('should get maximal cached dashboards number', (result) => {
-      expect(result).toEqual(select(getCachedDashboardsNumber));
+      expect(result).toEqual(select(appSelectors.getCachedDashboardsNumber));
       return 3;
     });
     test('should get dashboard to remove', (result) => {

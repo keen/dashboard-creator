@@ -11,8 +11,8 @@ import { getWidgetSettings } from '../selectors';
 
 import { saveDashboard } from '../../dashboards';
 
-import { getActiveDashboard } from '../../app';
 import { textEditorActions, textEditorSagaActions } from '../../textEditor';
+import { appSelectors } from '../../app';
 
 /**
  * Flow responsible for creating text widget.
@@ -76,7 +76,7 @@ export function* editTextWidget({
       })
     );
 
-    const dashboardId = yield select(getActiveDashboard);
+    const dashboardId = yield select(appSelectors.getActiveDashboard);
     yield put(saveDashboard(dashboardId));
 
     yield put(textEditorActions.closeEditor());
@@ -102,6 +102,6 @@ export function* editInlineTextWidget({
   const { id, content } = payload;
   yield put(setTextWidget(id, { content }));
 
-  const dashboardId = yield select(getActiveDashboard);
+  const dashboardId = yield select(appSelectors.getActiveDashboard);
   yield put(saveDashboard(dashboardId));
 }

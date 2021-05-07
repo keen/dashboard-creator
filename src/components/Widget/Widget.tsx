@@ -20,7 +20,6 @@ import TextManagement from '../TextManagement';
 import WidgetCover from './components/WidgetCover';
 
 import { editDatePickerWidget, getWidget } from '../../modules/widgets';
-import { getActiveDashboard } from '../../modules/app';
 import { getDashboardSettings } from '../../modules/dashboards';
 
 import { RootState } from '../../rootReducer';
@@ -29,6 +28,7 @@ import ChartWidgetFilter from '../ChartWidgetFilter';
 import FilterWidget from '../FilterWidget/FilterWidget';
 import FilterManagement from '../FilterManagement';
 import { editFilterWidget } from '../../modules/widgets/actions';
+import { appSelectors } from '../../modules/app';
 
 type Props = {
   /** Widget identifier */
@@ -157,7 +157,7 @@ const Widget: FC<Props> = ({
   const widgetTitle = useSelector((state: RootState) => {
     if (!isTitleCover) return;
 
-    const activeDashboard = getActiveDashboard(state);
+    const activeDashboard = appSelectors.getActiveDashboard(state);
     const { widgets } = getDashboardSettings(state, activeDashboard);
     const index = widgets.findIndex((item) => item === id);
 

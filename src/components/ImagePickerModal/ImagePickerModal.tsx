@@ -5,16 +5,19 @@ import { Modal, ModalHeader } from '@keen.io/ui-core';
 
 import ImagePicker from '../ImagePicker';
 
-import { getImagePicker, hideImagePicker } from '../../modules/app';
 import { Content } from './ImagePickerModal.styles';
+import { appActions, appSelectors } from '../../modules/app';
 
 const ImagePickerModal: FC<{}> = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { isVisible } = useSelector(getImagePicker);
+  const { isVisible } = useSelector(appSelectors.getImagePicker);
 
   return (
-    <Modal isOpen={isVisible} onClose={() => dispatch(hideImagePicker())}>
+    <Modal
+      isOpen={isVisible}
+      onClose={() => dispatch(appActions.hideImagePicker())}
+    >
       {(_, closeHandler) => (
         <>
           <ModalHeader onClose={closeHandler}>

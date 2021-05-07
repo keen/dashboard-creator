@@ -68,12 +68,6 @@ import {
 } from './saga/filterWidget';
 
 import { SELECT_SAVED_QUERY, CREATE_QUERY, SavedQuery } from '../queries';
-import {
-  getActiveDashboard,
-  showQueryPicker,
-  hideQueryPicker,
-  HIDE_QUERY_PICKER,
-} from '../app';
 import { createWidgetId } from './utils';
 
 import {
@@ -101,6 +95,7 @@ import {
 
 import { ChartWidget, WidgetErrors, WidgetItem } from './types';
 import { findBiggestYPositionOfWidgets } from '../dashboards/utils/findBiggestYPositionOfWidgets';
+import { appActions, appSelectors } from '../app';
 
 /**
  * Flow responsible for re-initializing widgets after updating saved query.
@@ -113,7 +108,7 @@ export function* reinitializeWidgets({
   payload,
 }: ReturnType<typeof savedQueryUpdated>) {
   const { widgetId, queryId } = payload;
-  const dashboardId = yield select(getActiveDashboard);
+  const dashboardId = yield select(appSelectors.getActiveDashboard);
 
   const { widgets } = yield select(getDashboardSettings, dashboardId);
   const widgetState: Partial<WidgetItem> = {
@@ -179,7 +174,7 @@ export function* initializeWidget({
 }
 
 function* cancelWidgetConfiguration(widgetId: string) {
-  const dashboardId = yield select(getActiveDashboard);
+  const dashboardId = yield select(appSelectors.getActiveDashboard);
   yield put(removeWidgetFromDashboard(dashboardId, widgetId));
 }
 
@@ -220,7 +215,7 @@ export function* createQueryForWidget(widgetId: string) {
 
     yield put(initializeChartWidgetAction(widgetId));
 
-    const dashboardId = yield select(getActiveDashboard);
+    const dashboardId = yield select(appSelectors.getActiveDashboard);
     yield put(saveDashboard(dashboardId));
   }
 }
@@ -233,17 +228,17 @@ export function* createQueryForWidget(widgetId: string) {
  *
  */
 export function* selectQueryForWidget(widgetId: string) {
-  yield put(showQueryPicker());
+  yield put(appActions.showQueryPicker());
   const action = yield take([
     SELECT_SAVED_QUERY,
     CREATE_QUERY,
-    HIDE_QUERY_PICKER,
+    appActions.hideQueryPicker.type,
   ]);
 
-  if (action.type === HIDE_QUERY_PICKER) {
+  if (action.type === appActions.hideQueryPicker.type) {
     yield* cancelWidgetConfiguration(widgetId);
   } else if (action.type === CREATE_QUERY) {
-    yield put(hideQueryPicker());
+    yield put(appActions.hideQueryPicker());
     yield call(createQueryForWidget, widgetId);
   } else if (action.type === SELECT_SAVED_QUERY) {
     const {
@@ -253,7 +248,7 @@ export function* selectQueryForWidget(widgetId: string) {
       },
     } = action.payload as { query: SavedQuery };
 
-    yield put(hideQueryPicker());
+    yield put(appActions.hideQueryPicker());
     yield put(
       finishChartWidgetConfiguration(
         widgetId,
@@ -266,7 +261,7 @@ export function* selectQueryForWidget(widgetId: string) {
     yield put(initializeChartWidgetAction(widgetId));
     yield put(updateAccessKeyOptions());
 
-    const dashboardId = yield select(getActiveDashboard);
+    const dashboardId = yield select(appSelectors.getActiveDashboard);
     yield put(saveDashboard(dashboardId));
   }
 }
@@ -282,7 +277,7 @@ export function* createWidget({
   } else if (widgetType === 'text') {
     yield fork(createTextWidget, id);
     yield take(ADD_WIDGET_TO_DASHBOARD);
-    const dashboardId = yield select(getActiveDashboard);
+    const dashboardId = yield select(appSelectors.getActiveDashboard);
     yield put(saveDashboard(dashboardId));
   } else if (widgetType === 'filter') {
     yield fork(setupFilterWidget, id);
@@ -297,7 +292,7 @@ export function* cloneWidget({
   const { widgetId } = payload;
   const clonedWidgetId = createWidgetId();
   const widgetItem: WidgetItem = yield select(getWidget, widgetId);
-  const dashboardId = yield select(getActiveDashboard);
+  const dashboardId = yield select(appSelectors.getActiveDashboard);
   const dashboard = yield select(getDashboard, dashboardId);
 
   const widgets = yield all(

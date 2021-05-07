@@ -26,8 +26,6 @@ import {
   updateAccessKeyOptions,
 } from '../../../modules/dashboards';
 
-import { getActiveDashboard } from '../../../modules/app';
-
 import {
   openEditor,
   closeEditor,
@@ -57,6 +55,7 @@ import {
 } from '../../../constants';
 
 import { WidgetItem, ChartWidget, WidgetErrors } from '../types';
+import { appSelectors } from '../../app';
 
 /**
  * Creates ad-hoc query with date picker and filters modifiers.
@@ -364,7 +363,7 @@ export function* editChartSavedQuery(widgetId: string) {
       yield put(initializeChartWidgetAction(widgetId));
       yield put(updateAccessKeyOptions());
 
-      const dashboardId = yield select(getActiveDashboard);
+      const dashboardId = yield select(appSelectors.getActiveDashboard);
       yield put(saveDashboard(dashboardId));
       yield put(resetEditor());
     } else if (action.type === CONFIRM_SAVE_QUERY_UPDATE) {
@@ -394,7 +393,7 @@ export function* editChartSavedQuery(widgetId: string) {
 
         yield put(initializeChartWidgetAction(widgetId));
 
-        const dashboardId = yield select(getActiveDashboard);
+        const dashboardId = yield select(appSelectors.getActiveDashboard);
         yield put(saveDashboard(dashboardId));
         yield put(savedQueryUpdated(widgetId, queryName));
       } catch (err) {
@@ -429,7 +428,7 @@ export function* editChartSavedQuery(widgetId: string) {
 
     yield put(initializeChartWidgetAction(widgetId));
 
-    const dashboardId = yield select(getActiveDashboard);
+    const dashboardId = yield select(appSelectors.getActiveDashboard);
     yield put(saveDashboard(dashboardId));
   }
 }
@@ -522,7 +521,7 @@ export function* editChartWidget({
       yield take(EDITOR_UNMOUNTED);
       yield put(resetEditor());
 
-      const dashboardId = yield select(getActiveDashboard);
+      const dashboardId = yield select(appSelectors.getActiveDashboard);
       yield put(saveDashboard(dashboardId));
     }
   }

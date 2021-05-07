@@ -29,7 +29,6 @@ import {
 
 import { getWidgetSettings } from '../selectors';
 
-import { getActiveDashboard } from '../../app';
 import {
   getDashboard,
   saveDashboard,
@@ -43,6 +42,7 @@ import {
   APPLY_EDITOR_SETTINGS,
   CLOSE_EDITOR,
 } from '../../datePicker';
+import { appSelectors } from '../../app';
 
 describe('clearDatePickerModifiers()', () => {
   describe('Scenario 1: Resets date picker state and re-initialize connected chart widgets', () => {
@@ -186,7 +186,7 @@ describe('setupDatePicker()', () => {
     const test = sagaHelper(setupDatePicker(datePickerId));
 
     test('gets active dashboard identifer', (result) => {
-      expect(result).toEqual(select(getActiveDashboard));
+      expect(result).toEqual(select(appSelectors.getActiveDashboard));
 
       return '@dashboard/01';
     });
@@ -308,7 +308,7 @@ describe('editDatePickerWidget()', () => {
     const test = sagaHelper(editDatePickerWidget(action));
 
     test('gets active dashboard identifer', (result) => {
-      expect(result).toEqual(select(getActiveDashboard));
+      expect(result).toEqual(select(appSelectors.getActiveDashboard));
 
       return '@dashboard/01';
     });

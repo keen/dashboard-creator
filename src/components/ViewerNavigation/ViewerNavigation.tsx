@@ -16,11 +16,11 @@ import {
 
 import DashboardDetails from '../DashboardDetails';
 
-import { getActiveDashboard } from '../../modules/app';
 import { showDashboardShareModal } from '../../modules/dashboards';
 
 import ActionsMenu from './components/ActionsMenu';
 import { TOOLTIP_MOTION } from '../../constants';
+import { appSelectors } from '../../modules/app';
 
 type Props = {
   /** Dashboard Id */
@@ -60,7 +60,7 @@ const ViewerNavigation: FC<Props> = ({
   onEditDashboard,
 }) => {
   const { t } = useTranslation();
-  const activeDashboard = useSelector(getActiveDashboard);
+  const activeDashboard = useSelector(appSelectors.getActiveDashboard);
   const dispatch = useDispatch();
 
   const [actionsOpen, setActionsOpen] = useState(false);

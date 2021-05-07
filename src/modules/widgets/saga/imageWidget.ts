@@ -10,14 +10,8 @@ import { getWidget } from '../selectors';
 
 import { saveDashboard, removeWidgetFromDashboard } from '../../dashboards';
 
-import {
-  getActiveDashboard,
-  showImagePicker,
-  hideImagePicker,
-  HIDE_IMAGE_PICKER,
-} from '../../app';
-
 import { SAVE_IMAGE } from '../constants';
+import { appActions, appSelectors } from '../../app';
 
 /**
  * Flow responsible for image widget setup
@@ -27,11 +21,11 @@ import { SAVE_IMAGE } from '../constants';
  *
  */
 export function* selectImageWidget(widgetId: string) {
-  yield put(showImagePicker());
-  const action = yield take([SAVE_IMAGE, HIDE_IMAGE_PICKER]);
+  yield put(appActions.showImagePicker());
+  const action = yield take([SAVE_IMAGE, appActions.hideImagePicker.type]);
 
-  if (action.type === HIDE_IMAGE_PICKER) {
-    const dashboardId = yield select(getActiveDashboard);
+  if (action.type === appActions.hideImagePicker.type) {
+    const dashboardId = yield select(appSelectors.getActiveDashboard);
     yield put(removeWidgetFromDashboard(dashboardId, widgetId));
   } else {
     yield put(setImageWidget(widgetId, action.payload.link));
@@ -40,8 +34,8 @@ export function* selectImageWidget(widgetId: string) {
         isConfigured: true,
       })
     );
-    yield put(hideImagePicker());
-    const dashboardId = yield select(getActiveDashboard);
+    yield put(appActions.hideImagePicker());
+    const dashboardId = yield select(appSelectors.getActiveDashboard);
     yield put(saveDashboard(dashboardId));
   }
 }
@@ -61,14 +55,14 @@ export function* editImageWidget({
   const state = yield select();
   const widgetId = getWidget(state, id).widget.id;
 
-  yield put(showImagePicker());
-  const action = yield take([SAVE_IMAGE, HIDE_IMAGE_PICKER]);
+  yield put(appActions.showImagePicker());
+  const action = yield take([SAVE_IMAGE, appActions.hideImagePicker.type]);
 
   if (action.type === SAVE_IMAGE) {
     yield put(setImageWidget(widgetId, action.payload.link));
-    yield put(hideImagePicker());
+    yield put(appActions.hideImagePicker());
 
-    const dashboardId = yield select(getActiveDashboard);
+    const dashboardId = yield select(appSelectors.getActiveDashboard);
     yield put(saveDashboard(dashboardId));
   }
 }

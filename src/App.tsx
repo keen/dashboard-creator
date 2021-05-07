@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { Container, Content, DropdownContainer } from './App.styles';
 
-import { getActiveDashboard } from './modules/app';
 import { DashboardMetaData, saveDashboardMeta } from './modules/dashboards';
 
 import PageLoader from './components/PageLoader';
@@ -13,6 +12,7 @@ import ToastNotifications from './components/ToastNotifications';
 import DashboardSettingsModal from './components/DashboardSettingsModal';
 import DashboardShareModal from './components/DashboardShareModal';
 import { ROUTES } from './constants';
+import { appSelectors } from './modules/app';
 
 type Props = {};
 
@@ -33,7 +33,7 @@ const Management = Loadable({
 });
 
 const App: FC<Props> = () => {
-  const activeDashboard = useSelector(getActiveDashboard);
+  const activeDashboard = useSelector(appSelectors.getActiveDashboard);
   const dispatch = useDispatch();
 
   return (

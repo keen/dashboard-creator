@@ -23,13 +23,6 @@ import {
 import { getWidget, getWidgetSettings } from './selectors';
 
 import {
-  getActiveDashboard,
-  showQueryPicker,
-  hideQueryPicker,
-  HIDE_QUERY_PICKER,
-} from '../app';
-
-import {
   getDashboardSettings,
   saveDashboard,
   removeWidgetFromDashboard,
@@ -58,6 +51,7 @@ import {
 
 import { widget as widgetItem } from './fixtures';
 import { findBiggestYPositionOfWidgets } from '../dashboards/utils/findBiggestYPositionOfWidgets';
+import { appActions, appSelectors } from '../app';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
@@ -80,7 +74,7 @@ describe('reinitializeWidgets()', () => {
     const test = sagaHelper(reinitializeWidgets(action));
 
     test('get active dashboard idenfitier', (result) => {
-      expect(result).toEqual(select(getActiveDashboard));
+      expect(result).toEqual(select(appSelectors.getActiveDashboard));
 
       return dashboardId;
     });
@@ -261,19 +255,23 @@ describe('selectQueryForWidget()', () => {
     };
 
     test('shows query picker', (result) => {
-      expect(result).toEqual(put(showQueryPicker()));
+      expect(result).toEqual(put(appActions.showQueryPicker()));
     });
 
     test('waits until user select saved query', (result) => {
       expect(result).toEqual(
-        take([SELECT_SAVED_QUERY, CREATE_QUERY, HIDE_QUERY_PICKER])
+        take([
+          SELECT_SAVED_QUERY,
+          CREATE_QUERY,
+          appActions.hideQueryPicker.type,
+        ])
       );
 
       return selectSavedQuery(savedQuery);
     });
 
     test('hides query picker', (result) => {
-      expect(result).toEqual(put(hideQueryPicker()));
+      expect(result).toEqual(put(appActions.hideQueryPicker()));
     });
 
     test('finishes chart widget configuration', (result) => {
@@ -314,15 +312,19 @@ describe('selectQueryForWidget()', () => {
     const test = sagaHelper(selectQueryForWidget(widgetId));
 
     test('shows query picker', (result) => {
-      expect(result).toEqual(put(showQueryPicker()));
+      expect(result).toEqual(put(appActions.showQueryPicker()));
     });
 
     test('waits until user close query picker', (result) => {
       expect(result).toEqual(
-        take([SELECT_SAVED_QUERY, CREATE_QUERY, HIDE_QUERY_PICKER])
+        take([
+          SELECT_SAVED_QUERY,
+          CREATE_QUERY,
+          appActions.hideQueryPicker.type,
+        ])
       );
 
-      return hideQueryPicker();
+      return appActions.hideQueryPicker();
     });
 
     test('gets active dashboard identifier', () => {
@@ -340,19 +342,23 @@ describe('selectQueryForWidget()', () => {
     const test = sagaHelper(selectQueryForWidget(widgetId));
 
     test('shows query picker', (result) => {
-      expect(result).toEqual(put(showQueryPicker()));
+      expect(result).toEqual(put(appActions.showQueryPicker()));
     });
 
     test('waits for specific user action', (result) => {
       expect(result).toEqual(
-        take([SELECT_SAVED_QUERY, CREATE_QUERY, HIDE_QUERY_PICKER])
+        take([
+          SELECT_SAVED_QUERY,
+          CREATE_QUERY,
+          appActions.hideQueryPicker.type,
+        ])
       );
 
       return createQuery();
     });
 
     test('hides query picker', (result) => {
-      expect(result).toEqual(put(hideQueryPicker()));
+      expect(result).toEqual(put(appActions.hideQueryPicker()));
     });
 
     test('runs create query flow', (result) => {
@@ -399,7 +405,7 @@ describe('cloneWidget()', () => {
     });
 
     test('select active dashboard id', (result) => {
-      expect(result).toEqual(select(getActiveDashboard));
+      expect(result).toEqual(select(appSelectors.getActiveDashboard));
       return dashboardId;
     });
 

@@ -74,12 +74,11 @@ test('allows user to cancel image edit', () => {
 
   const button = getByText('image_picker.cancel_button');
   fireEvent.click(button);
-
   expect(store.getActions()).toMatchInlineSnapshot(`
     Array [
       Object {
         "payload": undefined,
-        "type": "@app/HIDE_IMAGE_PICKER",
+        "type": "app/hideImagePicker",
       },
     ]
   `);
