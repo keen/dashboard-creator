@@ -21,7 +21,7 @@ import { Theme } from '@keen.io/charts';
 import App from './App';
 import { APIContext, AppContext } from './contexts';
 import { BlobAPI } from './api';
-import { appStart } from './modules/app';
+import { appActions } from './modules/app';
 import { NotificationManager } from './modules/notifications';
 
 import createI18n from './i18n';
@@ -176,12 +176,13 @@ export class DashboardCreator {
     const rootSaga = createRootSaga(this.editPrivileges);
 
     sagaMiddleware.run(rootSaga);
+
     store.dispatch(
-      appStart(
-        this.themeSettings,
-        this.editPrivileges,
-        this.cachedDashboardsNumber
-      )
+      appActions.appStart({
+        baseTheme: this.themeSettings,
+        editPrivileges: this.editPrivileges,
+        cachedDashboardsNumber: this.cachedDashboardsNumber,
+      })
     );
 
     const projectSettings = {

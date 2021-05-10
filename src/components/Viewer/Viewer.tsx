@@ -10,7 +10,6 @@ import {
   editDashboard,
   showDashboardSettingsModal,
 } from '../../modules/dashboards';
-import { setActiveDashboard, getUser } from '../../modules/app';
 import { removeInterimQueries } from '../../modules/queries';
 import { resetDatePickerWidgets } from '../../modules/widgets';
 
@@ -26,6 +25,7 @@ import {
   clearInconsistentFiltersError,
   resetFilterWidgets,
 } from '../../modules/widgets/actions';
+import { appActions, appSelectors } from '../../modules/app';
 
 type Props = {
   /** Dashboard identifer */
@@ -35,7 +35,7 @@ type Props = {
 const Viewer: FC<Props> = ({ dashboardId }) => {
   const dispatch = useDispatch();
 
-  const { editPrivileges } = useSelector(getUser);
+  const { editPrivileges } = useSelector(appSelectors.getUser);
   const { widgetsId, isInitialized } = useSelector((state: RootState) => {
     const dashboard = getDashboard(state, dashboardId);
     if (dashboard?.initialized) {
@@ -74,7 +74,7 @@ const Viewer: FC<Props> = ({ dashboardId }) => {
           isPublic={isPublic}
           onEditDashboard={() => dispatch(editDashboard(dashboardId))}
           onBack={() => {
-            dispatch(setActiveDashboard(null));
+            dispatch(appActions.setActiveDashboard(null));
             dispatch(push(ROUTES.MANAGEMENT));
           }}
           onShowSettings={() => {

@@ -54,7 +54,6 @@ import {
   SET_EVENT_STREAM,
 } from '../../filter';
 import { getWidgetSettings, getWidget } from '../../widgets';
-import { getActiveDashboard } from '../../app';
 import {
   saveDashboard,
   getDashboard,
@@ -63,6 +62,7 @@ import {
 } from '../../dashboards';
 
 import { KEEN_ANALYSIS } from '../../../constants';
+import { appSelectors } from '../../app';
 
 describe('applyFilterModifiers()', () => {
   describe('Scenario 1: Apply filter widget modifiers on connected charts', () => {
@@ -562,7 +562,7 @@ describe('editFilterWidget()', () => {
     ];
 
     test('get active dashboard identifier', (result) => {
-      expect(result).toEqual(select(getActiveDashboard));
+      expect(result).toEqual(select(appSelectors.getActiveDashboard));
 
       return dashboardId;
     });
@@ -735,7 +735,7 @@ describe('setupFilterWidget()', () => {
     const test = sagaHelper(setupFilterWidget(widgetId));
 
     test('get active dashboard identifier', (result) => {
-      expect(result).toEqual(select(getActiveDashboard));
+      expect(result).toEqual(select(appSelectors.getActiveDashboard));
 
       return dashboardId;
     });
@@ -824,7 +824,7 @@ describe('setupFilterWidget()', () => {
     const test = sagaHelper(setupFilterWidget(widgetId));
 
     test('get active dashboard identifier', (result) => {
-      expect(result).toEqual(select(getActiveDashboard));
+      expect(result).toEqual(select(appSelectors.getActiveDashboard));
 
       return dashboardId;
     });

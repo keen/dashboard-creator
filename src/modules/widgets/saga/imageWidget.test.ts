@@ -11,9 +11,8 @@ import { selectImageWidget } from './imageWidget';
 
 import { SAVE_IMAGE } from '../constants';
 
-import { showImagePicker, HIDE_IMAGE_PICKER, hideImagePicker } from '../../app';
-
 import { saveDashboard, removeWidgetFromDashboard } from '../../dashboards';
+import { appActions } from '../../app';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
@@ -24,11 +23,13 @@ describe('selectImageWidget()', () => {
     const link = 'https://example.com/image-1.jpg';
 
     test('shows query picker', (result) => {
-      expect(result).toEqual(put(showImagePicker()));
+      expect(result).toEqual(put(appActions.showImagePicker()));
     });
 
     test('waits until user save new image', (result) => {
-      expect(result).toEqual(take([SAVE_IMAGE, HIDE_IMAGE_PICKER]));
+      expect(result).toEqual(
+        take([SAVE_IMAGE, appActions.hideImagePicker.type])
+      );
 
       return saveImage(link);
     });
@@ -46,7 +47,7 @@ describe('selectImageWidget()', () => {
     });
 
     test('hides Image picker', (result) => {
-      expect(result).toEqual(put(hideImagePicker()));
+      expect(result).toEqual(put(appActions.hideImagePicker()));
     });
 
     test('gets active dashboard identifier', () => {
@@ -62,13 +63,15 @@ describe('selectImageWidget()', () => {
     const test = sagaHelper(selectImageWidget(widgetId));
 
     test('shows image picker', (result) => {
-      expect(result).toEqual(put(showImagePicker()));
+      expect(result).toEqual(put(appActions.showImagePicker()));
     });
 
     test('waits until user close image picker', (result) => {
-      expect(result).toEqual(take([SAVE_IMAGE, HIDE_IMAGE_PICKER]));
+      expect(result).toEqual(
+        take([SAVE_IMAGE, appActions.hideImagePicker.type])
+      );
 
-      return hideImagePicker();
+      return appActions.hideImagePicker();
     });
 
     test('gets active dashboard identifier', () => {

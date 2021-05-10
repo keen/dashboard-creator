@@ -1,12 +1,20 @@
 import { RootState } from '../../rootReducer';
 
-export const getActiveDashboard = ({ app }: RootState) => app.activeDashboardId;
+const getActiveDashboard = ({ app }: RootState) => app.activeDashboardId;
 
-export const getUser = ({ app }: RootState) => app.user;
+const getUser = ({ app }: RootState) => app.user;
 
-export const getQueryPicker = ({ app }: RootState) => app.queryPicker;
+const getQueryPicker = ({ app }: RootState) => app.queryPicker;
 
-export const getImagePicker = ({ app }: RootState) => app.imagePicker;
+const getImagePicker = ({ app }: RootState) => app.imagePicker;
 
-export const getCachedDashboardsNumber = ({ app }: RootState) =>
+const getCachedDashboardsNumber = ({ app }: RootState) =>
   app.cachedDashboardsNumber;
+
+export const appSelectors = {
+  getActiveDashboard,
+  getUser,
+  getQueryPicker,
+  getImagePicker,
+  getCachedDashboardsNumber,
+};

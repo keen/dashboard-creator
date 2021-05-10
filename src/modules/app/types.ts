@@ -1,3 +1,5 @@
+import { Theme } from '@keen.io/charts';
+
 export type ViewMode = 'editor' | 'viewer' | 'management';
 
 export type ReducerState = {
@@ -8,12 +10,18 @@ export type ReducerState = {
     editPrivileges: boolean;
   };
   imagePicker: {
-    isVisible: false;
+    isVisible: boolean;
   };
   visualizationEditor: {
-    isVisible: false;
+    isVisible: boolean;
   };
   queryPicker: {
     isVisible: boolean;
   };
+};
+
+export type AppStartPayload = {
+  baseTheme: Partial<Theme>;
+  editPrivileges: boolean;
+  cachedDashboardsNumber: number;
 };

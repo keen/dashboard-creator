@@ -64,8 +64,6 @@ import {
 } from './selectors';
 import { getBaseTheme, getActiveDashboardTheme } from '../theme/selectors';
 
-import { setActiveDashboard, getActiveDashboard } from '../app';
-
 import {
   initializeWidget,
   registerWidgets,
@@ -129,7 +127,6 @@ import {
   DashboardError,
 } from './types';
 import { unregisterWidget } from '../widgets/actions';
-import { getCachedDashboardsNumber } from '../app/selectors';
 import {
   removeConnectionFromFilter,
   removeFilterConnections,
@@ -137,6 +134,7 @@ import {
 import { clearFilterData } from '../widgets/actions';
 import { getDroppingItemSize } from '../../utils';
 import { findBiggestYPositionOfWidgets } from './utils/findBiggestYPositionOfWidgets';
+import { appActions, appSelectors } from '../app';
 
 export function* fetchDashboardList() {
   const blobApi = yield getContext(BLOB_API);
@@ -279,7 +277,7 @@ export function* deleteAccessKey(publicAcessKey: string) {
 
 export function* updateAccessKeyOptions() {
   const state: RootState = yield select();
-  const dashboardId = yield select(getActiveDashboard);
+  const dashboardId = yield select(appSelectors.getActiveDashboard);
   const { isPublic } = yield getDashboardMeta(state, dashboardId);
 
   if (isPublic) {
@@ -359,7 +357,7 @@ export function* createDashboard({
   yield put(updateDashboard(dashboardId, serializedDashboard));
   yield put(setDashboardTheme(dashboardId, baseTheme));
 
-  yield put(setActiveDashboard(dashboardId));
+  yield put(appActions.setActiveDashboard(dashboardId));
   yield put(push(ROUTES.EDITOR));
 
   yield put(saveDashboardAction(dashboardId));
@@ -384,10 +382,10 @@ export function* deleteDashboard({
       const blobApi = yield getContext(BLOB_API);
       yield blobApi.deleteDashboard(dashboardId);
 
-      const activeDashboardId = yield select(getActiveDashboard);
+      const activeDashboardId = yield select(appSelectors.getActiveDashboard);
       if (activeDashboardId) {
         yield put(push(ROUTES.MANAGEMENT));
-        yield put(setActiveDashboard(null));
+        yield put(appActions.setActiveDashboard(null));
       }
 
       yield put(deleteDashboardSuccess(dashboardId));
@@ -468,7 +466,7 @@ export function* editDashboard({
   if (!dashboard) {
     yield put(registerDashboard(dashboardId));
 
-    yield put(setActiveDashboard(dashboardId));
+    yield put(appActions.setActiveDashboard(dashboardId));
     yield put(push(ROUTES.EDITOR));
 
     const blobApi = yield getContext(BLOB_API);
@@ -507,7 +505,7 @@ export function* editDashboard({
         filtersToReset.map((filter) => put(clearFilterData(filter.widget.id)))
       );
     }
-    yield put(setActiveDashboard(dashboardId));
+    yield put(appActions.setActiveDashboard(dashboardId));
     yield put(push(ROUTES.EDITOR));
   }
 }
@@ -521,7 +519,7 @@ export function* viewDashboard({
 
   if (!dashboard) {
     yield put(registerDashboard(dashboardId));
-    yield put(setActiveDashboard(dashboardId));
+    yield put(appActions.setActiveDashboard(dashboardId));
     yield put(push(ROUTES.VIEWER));
 
     const blobApi = yield getContext(BLOB_API);
@@ -549,7 +547,7 @@ export function* viewDashboard({
       console.error(err);
     }
   } else {
-    yield put(setActiveDashboard(dashboardId));
+    yield put(appActions.setActiveDashboard(dashboardId));
     yield put(push(ROUTES.VIEWER));
   }
 }
@@ -567,7 +565,7 @@ export function* viewPublicDashboard({
   const { dashboardId } = payload;
 
   yield put(registerDashboard(dashboardId));
-  yield put(setActiveDashboard(dashboardId));
+  yield put(appActions.setActiveDashboard(dashboardId));
 
   try {
     const blobApi = yield getContext(BLOB_API);
@@ -748,7 +746,7 @@ export function* cloneDashboard({
     });
 
     const state: RootState = yield select();
-    const activeDashboard = getActiveDashboard(state);
+    const activeDashboard = appSelectors.getActiveDashboard(state);
 
     if (activeDashboard) {
       const serializedDashboard = serializeDashboard(newModel);
@@ -761,7 +759,7 @@ export function* cloneDashboard({
         )
       );
 
-      yield put(setActiveDashboard(newDashboardId));
+      yield put(appActions.setActiveDashboard(newDashboardId));
       yield put(push(ROUTES.EDITOR));
     }
   } catch (err) {
@@ -797,7 +795,9 @@ export function* updateCachedDashboardsList({
 }: ReturnType<typeof viewDashboardAction | typeof editDashboardAction>) {
   const { dashboardId } = payload;
   let [...cachedDashboardIds] = yield select(getCachedDashboardIds);
-  const cachedDashboardsNumber = yield select(getCachedDashboardsNumber);
+  const cachedDashboardsNumber = yield select(
+    appSelectors.getCachedDashboardsNumber
+  );
   if (cachedDashboardIds.includes(dashboardId)) {
     cachedDashboardIds.push(
       cachedDashboardIds.splice(cachedDashboardIds.indexOf(dashboardId), 1)[0]

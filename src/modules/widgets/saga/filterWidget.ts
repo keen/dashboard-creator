@@ -19,7 +19,6 @@ import {
 import { getWidget, getWidgetSettings } from '../selectors';
 
 import { FilterConnection, ReducerState } from '../../filter/types';
-import { getActiveDashboard } from '../../app';
 import { ChartWidget, FilterWidget } from '../types';
 
 import {
@@ -54,6 +53,7 @@ import {
 import { KEEN_ANALYSIS } from '../../../constants';
 
 import { getOldestTimeframe } from '../../../utils/getOldestTimeframe';
+import { appSelectors } from '../../app';
 
 /**
  * Apply filter connections updates to connected widgets
@@ -417,7 +417,7 @@ export function* editFilterWidget({
   payload,
 }: ReturnType<typeof editFilterWidgetAction>) {
   const { id: filterWidgetId } = payload;
-  const dashboardId = yield select(getActiveDashboard);
+  const dashboardId = yield select(appSelectors.getActiveDashboard);
 
   yield put(setupDashboardEventStreams(dashboardId));
 
@@ -516,7 +516,7 @@ export function* editFilterWidget({
  */
 export function* setupFilterWidget(widgetId: string) {
   const filterWidgetId = widgetId;
-  const dashboardId = yield select(getActiveDashboard);
+  const dashboardId = yield select(appSelectors.getActiveDashboard);
 
   yield put(setupDashboardEventStreams(dashboardId));
   yield take(ADD_WIDGET_TO_DASHBOARD);

@@ -23,7 +23,6 @@ import {
 } from '../../modules/widgets';
 import { getChartEditor } from '../../modules/chartEditor';
 import { textEditorSelectors } from '../../modules/textEditor';
-import { setActiveDashboard } from '../../modules/app';
 
 import { AppContext, EditorContext } from '../../contexts';
 
@@ -47,6 +46,7 @@ import { ROUTES, RESIZE_WIDGET_EVENT } from '../../constants';
 
 import { RootState } from '../../rootReducer';
 import { calculateYPositionAndAddWidget } from '../../modules/dashboards/actions';
+import { appActions } from '../../modules/app';
 
 type Props = {
   /** Dashboard identifer */
@@ -135,7 +135,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
         tags={tags}
         isPublic={isPublic}
         onBack={() => {
-          dispatch(setActiveDashboard(null));
+          dispatch(appActions.setActiveDashboard(null));
           dispatch(push(ROUTES.MANAGEMENT));
         }}
       />

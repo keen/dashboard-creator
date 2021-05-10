@@ -30,7 +30,7 @@ import {
   getDashboardListOrder,
   getTagsFilter,
 } from '../../modules/dashboards';
-import { getUser } from '../../modules/app';
+import { appSelectors } from '../../modules/app';
 
 type Props = {};
 
@@ -40,7 +40,7 @@ const Management: FC<Props> = () => {
   const dashboards = useSelector(getDashboardsMetadata);
   const dashboardsLoaded = useSelector(getDashboardsLoadState);
   const dashboardListOrder = useSelector(getDashboardListOrder);
-  const { editPrivileges } = useSelector(getUser);
+  const { editPrivileges } = useSelector(appSelectors.getUser);
   const dashboardsFilters = useSelector(getTagsFilter);
 
   const [searchPhrase, setSearchPhrase] = useState('');

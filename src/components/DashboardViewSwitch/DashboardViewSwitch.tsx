@@ -16,7 +16,6 @@ import { colors } from '@keen.io/colors';
 
 import SearchInput from '../SearchInput';
 
-import { setActiveDashboard, getActiveDashboard } from '../../modules/app';
 import {
   getDashboardsMetadata,
   sortDashboards,
@@ -41,6 +40,7 @@ import {
 } from './DashboardViewSwitch.styles';
 
 import { ROUTES } from '../../constants';
+import { appActions, appSelectors } from '../../modules/app';
 
 type Props = {
   /** Dashboard title */
@@ -51,7 +51,7 @@ const DashboardViewSwitch: FC<Props> = ({ title }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  const dashboardId = useSelector(getActiveDashboard);
+  const dashboardId = useSelector(appSelectors.getActiveDashboard);
   const dashboards = useSelector(getDashboardsMetadata);
 
   const [isOpen, setOpen] = useState(false);
@@ -173,7 +173,7 @@ const DashboardViewSwitch: FC<Props> = ({ title }) => {
               </NewDashboard>
               <AllDashboards
                 onClick={() => {
-                  dispatch(setActiveDashboard(null));
+                  dispatch(appActions.setActiveDashboard(null));
                   dispatch(push(ROUTES.MANAGEMENT));
                 }}
               >

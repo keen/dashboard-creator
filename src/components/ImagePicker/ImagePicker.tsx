@@ -15,7 +15,7 @@ import {
 import { isLink } from '../../utils';
 
 import { saveImage } from '../../modules/widgets';
-import { hideImagePicker } from '../../modules/app';
+import { appActions } from '../../modules/app';
 
 const ImagePicker: FC<{}> = () => {
   const dispatch = useDispatch();
@@ -57,7 +57,10 @@ const ImagePicker: FC<{}> = () => {
           {t('image_picker.insert_button')}
         </Button>
         <CancelButton>
-          <Button variant="blank" onClick={() => dispatch(hideImagePicker())}>
+          <Button
+            variant="blank"
+            onClick={() => dispatch(appActions.hideImagePicker())}
+          >
             {t('image_picker.cancel_button')}
           </Button>
         </CancelButton>

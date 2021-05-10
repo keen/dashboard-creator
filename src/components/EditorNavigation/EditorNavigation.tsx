@@ -6,7 +6,6 @@ import { CircleButton, Tooltip } from '@keen.io/ui-core';
 import { Icon } from '@keen.io/icons';
 import { colors } from '@keen.io/colors';
 
-import { getActiveDashboard } from '../../modules/app';
 import {
   showDashboardShareModal,
   showDashboardSettingsModal,
@@ -24,6 +23,7 @@ import DashboardDetails from '../DashboardDetails';
 
 import { TOOLTIP_MOTION } from '../../constants';
 import { TOOLTIP } from './constants';
+import { appSelectors } from '../../modules/app';
 
 type Props = {
   /** Back to management view */
@@ -40,7 +40,7 @@ const EditorNavigation: FC<Props> = ({ title, tags, isPublic, onBack }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
-  const activeDashboard = useSelector(getActiveDashboard);
+  const activeDashboard = useSelector(appSelectors.getActiveDashboard);
 
   const [tooltip, setTooltip] = useState(null);
 

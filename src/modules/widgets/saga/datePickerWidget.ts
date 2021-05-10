@@ -29,9 +29,9 @@ import {
   removeWidgetFromDashboard,
   ADD_WIDGET_TO_DASHBOARD,
 } from '../../dashboards';
-import { getActiveDashboard } from '../../app';
 
 import { ChartWidget } from '../types';
+import { appSelectors } from '../../app';
 
 /**
  * Apply date picker connections updates to connected widgets
@@ -210,7 +210,7 @@ export function* editDatePickerWidget({
 }: ReturnType<typeof editDatePickerWidgetAction>) {
   const { id: datePickerWidgetId } = payload;
 
-  const dashboardId = yield select(getActiveDashboard);
+  const dashboardId = yield select(appSelectors.getActiveDashboard);
   const widgetConnections = yield call(
     getDatePickerWidgetConnections,
     dashboardId,
@@ -279,7 +279,7 @@ export function* editDatePickerWidget({
  */
 export function* setupDatePicker(widgetId: string) {
   const datePickerWidgetId = widgetId;
-  const dashboardId = yield select(getActiveDashboard);
+  const dashboardId = yield select(appSelectors.getActiveDashboard);
 
   yield take(ADD_WIDGET_TO_DASHBOARD);
   const {
