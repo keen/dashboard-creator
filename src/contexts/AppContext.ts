@@ -13,6 +13,7 @@ export const AppContext = React.createContext<{
   };
   createSharedDashboardUrl?: (accessKey: string, dashboardId: string) => string;
   widgetsConfiguration?: WidgetsConfiguration;
+  enableFixedEditorBar?: boolean;
 }>({
   notificationPubSub: null,
   modalContainer: null,
@@ -24,4 +25,5 @@ export const AppContext = React.createContext<{
   },
   createSharedDashboardUrl: () => '',
   widgetsConfiguration: {},
+  enableFixedEditorBar: false,
 });

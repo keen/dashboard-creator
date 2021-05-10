@@ -83,6 +83,9 @@ export class DashboardCreator {
   /** Widgets configuration **/
   private widgetsConfiguration = {};
 
+  /** Enable fixed Editor bar */
+  private enableFixedEditorBar = false;
+
   constructor(config: DashboardCreatorOptions) {
     const {
       container,
@@ -97,6 +100,7 @@ export class DashboardCreator {
       disableTimezoneSelection,
       defaultTimezoneForQuery,
       widgetsConfiguration,
+      enableFixedEditorBar,
     } = config;
 
     const { id, masterKey, accessKey } = project;
@@ -120,6 +124,11 @@ export class DashboardCreator {
     this.defaultTimezoneForQuery = defaultTimezoneForQuery;
     this.disableTimezoneSelection = disableTimezoneSelection;
     this.widgetsConfiguration = widgetsConfiguration;
+    this.enableFixedEditorBar = enableFixedEditorBar;
+  }
+
+  destroy() {
+    ReactDOM.unmountComponentAtNode(document.querySelector(this.container));
   }
 
   render() {
@@ -199,6 +208,7 @@ export class DashboardCreator {
                   modalContainer: this.modalContainer,
                   createSharedDashboardUrl: this.createSharedDashboardUrl,
                   widgetsConfiguration: this.widgetsConfiguration,
+                  enableFixedEditorBar: this.enableFixedEditorBar,
                 }}
               >
                 <APIContext.Provider value={{ blobApi, keenAnalysis }}>

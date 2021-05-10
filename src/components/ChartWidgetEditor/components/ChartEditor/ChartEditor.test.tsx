@@ -424,6 +424,9 @@ test('allows user use chart name from saved query', async () => {
       ...chartEditorState,
       analysisResult: {
         query_name: 'QUERY_NAME',
+        metadata: {
+          display_name: 'QUERY NAME',
+        },
         query: {
           analysis_type: 'count',
         },

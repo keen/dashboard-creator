@@ -22,6 +22,7 @@ export type DashboardCreatorOptions = {
   disableTimezoneSelection?: boolean;
   defaultTimezoneForQuery?: string;
   widgetsConfiguration?: WidgetsConfiguration;
+  enableFixedEditorBar?: boolean;
 };
 
 export type PublicDashboardOptions = {
