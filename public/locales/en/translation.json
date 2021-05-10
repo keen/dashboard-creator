@@ -243,8 +243,7 @@
   "query_creator_timeframe": {
     "label": "Timeframe",
     "relative": "Relative",
-    "absolute": "Absolute",
-    "notification": "(Charts display time in UTC)"
+    "absolute": "Absolute"
   },
   "query_creator_filters": {
     "filters": "Filters",
