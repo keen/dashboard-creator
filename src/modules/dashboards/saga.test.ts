@@ -124,7 +124,7 @@ describe('viewPublicDashboard()', () => {
   describe('Scenario 1: User access public dashboard', () => {
     const test = sagaHelper(viewPublicDashboard(action));
     const blobApiMock = {
-      getDashboardMetaById: jest.fn(),
+      getDashboardMetaDataById: jest.fn(),
       getDashboardById: jest.fn(),
     };
 
@@ -143,7 +143,7 @@ describe('viewPublicDashboard()', () => {
     });
 
     test('fetch dashboard metadata', () => {
-      expect(blobApiMock.getDashboardMetaById).toHaveBeenCalledWith(
+      expect(blobApiMock.getDashboardMetaDataById).toHaveBeenCalledWith(
         dashboardId
       );
 
@@ -184,7 +184,7 @@ describe('viewPublicDashboard()', () => {
   describe('Scenario 2: User access not public dashboard', () => {
     const test = sagaHelper(viewPublicDashboard(action));
     const blobApiMock = {
-      getDashboardMetaById: jest.fn(),
+      getDashboardMetaDataById: jest.fn(),
     };
 
     test('accessed dashboard is registered', (result) => {
@@ -202,7 +202,7 @@ describe('viewPublicDashboard()', () => {
     });
 
     test('fetch dashboard metadata', () => {
-      expect(blobApiMock.getDashboardMetaById).toHaveBeenCalledWith(
+      expect(blobApiMock.getDashboardMetaDataById).toHaveBeenCalledWith(
         dashboardId
       );
 
@@ -558,7 +558,7 @@ describe('cloneDashboard', () => {
 
   const blobApiMock = {
     getDashboardById: jest.fn(),
-    getDashboardMetadataById: jest.fn(),
+    getDashboardMetaDataById: jest.fn(),
     saveDashboard: jest.fn(),
   };
 
@@ -593,8 +593,8 @@ describe('cloneDashboard', () => {
       return model;
     });
 
-    test('calls getDashboardMetadataById with dashboard identifer', () => {
-      expect(blobApiMock.getDashboardMetadataById).toHaveBeenCalledWith(
+    test('calls getDashboardMetaDataById with dashboard identifer', () => {
+      expect(blobApiMock.getDashboardMetaDataById).toHaveBeenCalledWith(
         dashbboardId
       );
 
@@ -655,8 +655,8 @@ describe('cloneDashboard', () => {
       return model;
     });
 
-    test('calls getDashboardMetadataById with dashboard identifer', () => {
-      expect(blobApiMock.getDashboardMetadataById).toHaveBeenCalledWith(
+    test('calls getDashboardMetaDataById with dashboard identifer', () => {
+      expect(blobApiMock.getDashboardMetaDataById).toHaveBeenCalledWith(
         dashbboardId
       );
 
@@ -733,8 +733,8 @@ describe('cloneDashboard', () => {
       return model;
     });
 
-    test('calls getDashboardMetadataById with dashboard identifer', () => {
-      expect(blobApiMock.getDashboardMetadataById).toHaveBeenCalledWith(
+    test('calls getDashboardMetaDataById with dashboard identifer', () => {
+      expect(blobApiMock.getDashboardMetaDataById).toHaveBeenCalledWith(
         dashbboardId
       );
 
