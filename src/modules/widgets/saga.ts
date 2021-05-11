@@ -32,15 +32,6 @@ import {
   ADD_WIDGET_TO_DASHBOARD,
   getDashboard,
 } from '../dashboards';
-import {
-  openEditor,
-  closeEditor,
-  resetEditor,
-  getChartEditor,
-  CLOSE_EDITOR as CLOSE_CHART_EDITOR,
-  EDITOR_UNMOUNTED,
-  APPLY_CONFIGURATION,
-} from '../chartEditor';
 
 import {
   setupDatePicker,
@@ -96,6 +87,7 @@ import {
 import { ChartWidget, WidgetErrors, WidgetItem } from './types';
 import { findBiggestYPositionOfWidgets } from '../dashboards/utils/findBiggestYPositionOfWidgets';
 import { appActions, appSelectors } from '../app';
+import { chartEditorActions, chartEditorSelectors } from '../chartEditor';
 
 /**
  * Flow responsible for re-initializing widgets after updating saved query.
@@ -186,18 +178,20 @@ function* cancelWidgetConfiguration(widgetId: string) {
  *
  */
 export function* createQueryForWidget(widgetId: string) {
-  yield put(openEditor());
-  const action = yield take([CLOSE_CHART_EDITOR, APPLY_CONFIGURATION]);
-
-  if (action.type === CLOSE_CHART_EDITOR) {
+  yield put(chartEditorActions.openEditor());
+  const action = yield take([
+    chartEditorActions.closeEditor.type,
+    chartEditorActions.applyConfiguration.type,
+  ]);
+  if (action.type === chartEditorActions.closeEditor.type) {
     yield* cancelWidgetConfiguration(widgetId);
-    yield take(EDITOR_UNMOUNTED);
-    yield put(resetEditor());
+    yield take(chartEditorActions.editorUnmounted.type);
+    yield put(chartEditorActions.resetEditor());
   } else {
     const {
       querySettings,
       visualization: { type, chartSettings, widgetSettings },
-    } = yield select(getChartEditor);
+    } = yield select(chartEditorSelectors.getChartEditor);
 
     yield put(
       finishChartWidgetConfiguration(
@@ -209,9 +203,9 @@ export function* createQueryForWidget(widgetId: string) {
       )
     );
 
-    yield put(closeEditor());
-    yield take(EDITOR_UNMOUNTED);
-    yield put(resetEditor());
+    yield put(chartEditorActions.closeEditor());
+    yield take(chartEditorActions.editorUnmounted.type);
+    yield put(chartEditorActions.resetEditor());
 
     yield put(initializeChartWidgetAction(widgetId));
 

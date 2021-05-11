@@ -12,13 +12,13 @@ import { PubSub } from '@keen.io/pubsub';
 
 import ChartEditor from './ChartEditor';
 
-import {
-  initialState as chartEditorState,
-  EDITOR_MOUNTED,
-  EditorSection,
-} from '../../../../modules/chartEditor';
 import { AppContext } from '../../../../contexts';
 import { createBodyElementById } from '../../../../utils/test/createBodyElementById';
+import {
+  chartEditorActions,
+  chartEditorInitialState,
+  EditorSection,
+} from '../../../../modules/chartEditor';
 
 const render = (storeState: any = {}, overProps: any = {}) => {
   const props = {
@@ -29,7 +29,7 @@ const render = (storeState: any = {}, overProps: any = {}) => {
   const state = {
     app: { activeDashboardId: '@dashboard-id' },
     theme: { dashboards: {} },
-    chartEditor: chartEditorState,
+    chartEditor: chartEditorInitialState,
     timezone: {
       defaultTimezoneForQuery: 'Africa/Nairobi',
       timezoneSelectionDisabled: false,
@@ -93,7 +93,7 @@ test('allows user to run query', () => {
     Array [
       Object {
         "payload": undefined,
-        "type": "@chart-editor/RUN_QUERY",
+        "type": "chartEditor/runQuery",
       },
     ]
   `);
@@ -106,7 +106,7 @@ test('triggers action after editor is mounted', async () => {
     expect(store.getActions()).toEqual(
       expect.arrayContaining([
         {
-          type: EDITOR_MOUNTED,
+          type: chartEditorActions.editorMounted.type,
         },
       ])
     );
@@ -116,7 +116,7 @@ test('triggers action after editor is mounted', async () => {
 test('do not allows user to apply incomplete chart settings', () => {
   const storeState = {
     chartEditor: {
-      ...chartEditorState,
+      ...chartEditorInitialState,
       analysisResult: null,
       visualization: {
         type: 'metric',
@@ -142,7 +142,7 @@ test('do not allows user to apply incomplete chart settings', () => {
 test('allows user to apply chart editor configuration', () => {
   const storeState = {
     chartEditor: {
-      ...chartEditorState,
+      ...chartEditorInitialState,
       analysisResult: {
         query: {
           analysis_type: 'count',
@@ -171,7 +171,7 @@ test('allows user to apply chart editor configuration', () => {
     Array [
       Object {
         "payload": undefined,
-        "type": "@chart-editor/APPLY_CONFIGURATION",
+        "type": "chartEditor/applyConfiguration",
       },
     ]
   `);
@@ -180,7 +180,7 @@ test('allows user to apply chart editor configuration', () => {
 test('renders visualization settings error', () => {
   const storeState = {
     chartEditor: {
-      ...chartEditorState,
+      ...chartEditorInitialState,
       analysisResult: {
         query: {
           analysis_type: 'count',
@@ -222,7 +222,7 @@ test('calls "onClose" event handler', () => {
 test('shows saved query updated message', () => {
   const storeState = {
     chartEditor: {
-      ...chartEditorState,
+      ...chartEditorInitialState,
       hasQueryChanged: true,
       isSavedQuery: true,
     },
@@ -237,7 +237,7 @@ test('shows saved query updated message', () => {
 test('allows user to restore saved query settings', async () => {
   const storeState = {
     chartEditor: {
-      ...chartEditorState,
+      ...chartEditorInitialState,
       hasQueryChanged: true,
       isSavedQuery: true,
     },
@@ -260,7 +260,7 @@ test('allows user to restore saved query settings', async () => {
     Array [
       Object {
         "payload": undefined,
-        "type": "@chart-editor/RESTORE_SAVED_QUERY",
+        "type": "chartEditor/restoreSavedQuery",
       },
     ]
   `);
@@ -269,7 +269,7 @@ test('allows user to restore saved query settings', async () => {
 test('shows placeholder with run query button', () => {
   const storeState = {
     chartEditor: {
-      ...chartEditorState,
+      ...chartEditorInitialState,
       analysisResult: null,
     },
   };
@@ -283,7 +283,7 @@ test('shows placeholder with run query button', () => {
 test('does not allow user to apply chart editor configuration when query has error', () => {
   const storeState = {
     chartEditor: {
-      ...chartEditorState,
+      ...chartEditorInitialState,
       analysisResult: {
         query: {
           analysis_type: 'count',
@@ -314,7 +314,7 @@ test('does not allow user to apply chart editor configuration when query has err
 test('does not allow user to apply chart editor configuration when query is dirty', () => {
   const storeState = {
     chartEditor: {
-      ...chartEditorState,
+      ...chartEditorInitialState,
       analysisResult: {
         query: {
           analysis_type: 'count',
@@ -346,7 +346,7 @@ test('allows user to set chart title', async () => {
   const chartTitle = 'CHART_TITLE';
   const storeState = {
     chartEditor: {
-      ...chartEditorState,
+      ...chartEditorInitialState,
       analysisResult: {
         query: {
           analysis_type: 'count',
@@ -384,7 +384,7 @@ test('allows user to set chart subtitle', async () => {
   const chartSubtitle = 'CHART_SUBTITLE';
   const storeState = {
     chartEditor: {
-      ...chartEditorState,
+      ...chartEditorInitialState,
       analysisResult: {
         query: {
           analysis_type: 'count',
@@ -421,7 +421,7 @@ test('allows user to set chart subtitle', async () => {
 test('allows user use chart name from saved query', async () => {
   const storeState = {
     chartEditor: {
-      ...chartEditorState,
+      ...chartEditorInitialState,
       analysisResult: {
         query_name: 'QUERY_NAME',
         metadata: {

@@ -15,24 +15,17 @@ import {
   updateQuerySettings,
   showUpdateConfirmation,
 } from './saga';
-import {
-  setVisualizationSettings,
-  runQuerySuccess,
-  runQueryError,
-  setQuerySettings,
-  setQueryResult,
-  setQueryChange,
-} from './actions';
-import { getChartEditor } from './selectors';
 
-import { QUERY_UPDATE_CONFIRMATION_MOUNTED } from './constants';
 import { PUBSUB } from '../../constants';
+import { chartEditorActions, chartEditorSelectors } from './index';
 
 describe('showUpdateConfirmation()', () => {
   const test = sagaHelper(showUpdateConfirmation());
 
   test('waits until update confirmation is presented on a screen', (result) => {
-    expect(result).toEqual(take(QUERY_UPDATE_CONFIRMATION_MOUNTED));
+    expect(result).toEqual(
+      take(chartEditorActions.queryUpdateConfirmationMounted.type)
+    );
   });
 });
 
@@ -45,11 +38,11 @@ describe('updateQuerySettings()', () => {
       order_by: null,
     };
 
-    const action = setQuerySettings(query);
+    const action = chartEditorActions.setQuerySettings(query);
     const test = sagaHelper(updateQuerySettings(action));
 
     test('get chart editor state', (result) => {
-      expect(result).toEqual(select(getChartEditor));
+      expect(result).toEqual(select(chartEditorSelectors.getChartEditor));
 
       return {
         initialQuerySettings: query,
@@ -57,7 +50,7 @@ describe('updateQuerySettings()', () => {
     });
 
     test('set query change state', (result) => {
-      expect(result).toEqual(put(setQueryChange(false)));
+      expect(result).toEqual(put(chartEditorActions.setQueryChange(false)));
     });
   });
 
@@ -69,11 +62,11 @@ describe('updateQuerySettings()', () => {
       order_by: null,
     };
 
-    const action = setQuerySettings(query);
+    const action = chartEditorActions.setQuerySettings(query);
     const test = sagaHelper(updateQuerySettings(action));
 
     test('get chart editor state', (result) => {
-      expect(result).toEqual(select(getChartEditor));
+      expect(result).toEqual(select(chartEditorSelectors.getChartEditor));
 
       return {
         initialQuerySettings: {
@@ -84,7 +77,7 @@ describe('updateQuerySettings()', () => {
     });
 
     test('set query change state', (result) => {
-      expect(result).toEqual(put(setQueryChange(true)));
+      expect(result).toEqual(put(chartEditorActions.setQueryChange(true)));
     });
   });
 
@@ -96,11 +89,11 @@ describe('updateQuerySettings()', () => {
       order_by: null,
     };
 
-    const action = setQuerySettings(query);
+    const action = chartEditorActions.setQuerySettings(query);
     const test = sagaHelper(updateQuerySettings(action));
 
     test('get chart editor state', (result) => {
-      expect(result).toEqual(select(getChartEditor));
+      expect(result).toEqual(select(chartEditorSelectors.getChartEditor));
 
       return {
         initialQuerySettings: null,
@@ -140,13 +133,13 @@ describe('restoreSavedQuery()', () => {
     });
 
     test('get chart editor state', (result) => {
-      expect(result).toEqual(select(getChartEditor));
+      expect(result).toEqual(select(chartEditorSelectors.getChartEditor));
 
       return chartEditor;
     });
 
     test('set query settings in chart editor', (result) => {
-      expect(result).toEqual(put(setQuerySettings(query)));
+      expect(result).toEqual(put(chartEditorActions.setQuerySettings(query)));
     });
 
     test('publish event to update query creator', () => {
@@ -154,7 +147,7 @@ describe('restoreSavedQuery()', () => {
     });
 
     test('reset query results in chart editor', (result) => {
-      expect(result).toEqual(put(setQueryResult(null)));
+      expect(result).toEqual(put(chartEditorActions.setQueryResult(null)));
     });
   });
 
@@ -186,7 +179,7 @@ describe('restoreSavedQuery()', () => {
     });
 
     test('get chart editor state', (result) => {
-      expect(result).toEqual(select(getChartEditor));
+      expect(result).toEqual(select(chartEditorSelectors.getChartEditor));
 
       return chartEditor;
     });
@@ -203,7 +196,11 @@ describe('restoreSavedQuery()', () => {
 
 describe('updateVisualizationType()', () => {
   describe('Scenario 1: Query Creator is notified about visualization change', () => {
-    const action = setVisualizationSettings('bar', {}, {});
+    const action = chartEditorActions.setVisualizationSettings({
+      type: 'bar',
+      chartSettings: {},
+      widgetSettings: {},
+    });
     const test = sagaHelper(updateVisualizationType(action));
 
     const pubsub = {
@@ -212,7 +209,6 @@ describe('updateVisualizationType()', () => {
 
     test('get PubSub from context', (result) => {
       expect(result).toEqual(getContext(PUBSUB));
-
       return pubsub;
     });
 
@@ -242,7 +238,7 @@ describe('runQuery()', () => {
     };
 
     test('get query settings', (result) => {
-      expect(result).toEqual(select(getChartEditor));
+      expect(result).toEqual(select(chartEditorSelectors.getChartEditor));
 
       return { querySettings };
     });
@@ -258,7 +254,9 @@ describe('runQuery()', () => {
     });
 
     test('dispatch run query success action', (result) => {
-      expect(result).toEqual(put(runQuerySuccess(analysisResult)));
+      expect(result).toEqual(
+        put(chartEditorActions.runQuerySuccess(analysisResult))
+      );
     });
   });
 
@@ -274,7 +272,7 @@ describe('runQuery()', () => {
     };
 
     test('get query settings', (result) => {
-      expect(result).toEqual(select(getChartEditor));
+      expect(result).toEqual(select(chartEditorSelectors.getChartEditor));
 
       return { querySettings };
     });
@@ -291,7 +289,7 @@ describe('runQuery()', () => {
     });
 
     test('dispatch run query error action', (result) => {
-      expect(result).toEqual(put(runQueryError(queryError)));
+      expect(result).toEqual(put(chartEditorActions.runQueryError(queryError)));
     });
 
     test('get notification manager from context', () => {
@@ -331,7 +329,7 @@ describe('runQuery()', () => {
     };
 
     test('get query settings', (result) => {
-      expect(result).toEqual(select(getChartEditor));
+      expect(result).toEqual(select(chartEditorSelectors.getChartEditor));
 
       return { querySettings };
     });
@@ -349,7 +347,7 @@ describe('runQuery()', () => {
     test('dispatch run query success action', (result) => {
       expect(result).toEqual(
         put(
-          runQuerySuccess({
+          chartEditorActions.runQuerySuccess({
             query: querySettings,
             ...analysisResult,
           })
