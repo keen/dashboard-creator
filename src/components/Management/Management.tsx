@@ -74,7 +74,8 @@ const Management: FC<Props> = () => {
   }, [searchPhrase, dashboards, dashboardListOrder, dashboardsFilters]);
 
   const isEmptyProject = dashboardsLoaded && dashboards.length === 0;
-  const isEmptySearch = dashboardsLoaded && filteredDashboards.length === 0;
+  const isEmptySearch =
+    dashboardsLoaded && !!dashboards.length && filteredDashboards.length === 0;
   const showPlaceholders = isEmptyProject || isEmptySearch || !dashboardsLoaded;
 
   return (
@@ -85,20 +86,24 @@ const Management: FC<Props> = () => {
           showCreateDashboardButton={editPrivileges && dashboardsLoaded}
           onCreateDashboard={createDashbord}
         />
-        <Filters>
-          <Search>
-            <SearchInputContainer>
-              <SearchInput
-                searchPhrase={searchPhrase}
-                placeholder={t('dashboard_management.search_input_placeholder')}
-                onChangePhrase={(phrase) => setSearchPhrase(phrase)}
-                onClearSearch={() => setSearchPhrase('')}
-              />
-            </SearchInputContainer>
-            {dashboardsLoaded && <FilterDashboards />}
-          </Search>
-          <DashboardListOrder />
-        </Filters>
+        {!isEmptyProject && (
+          <Filters data-testid="management-filters">
+            <Search>
+              <SearchInputContainer>
+                <SearchInput
+                  searchPhrase={searchPhrase}
+                  placeholder={t(
+                    'dashboard_management.search_input_placeholder'
+                  )}
+                  onChangePhrase={(phrase) => setSearchPhrase(phrase)}
+                  onClearSearch={() => setSearchPhrase('')}
+                />
+              </SearchInputContainer>
+              {dashboardsLoaded && <FilterDashboards />}
+            </Search>
+            <DashboardListOrder />
+          </Filters>
+        )}
       </div>
       <Content>
         {showPlaceholders ? (

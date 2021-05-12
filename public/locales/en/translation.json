@@ -141,6 +141,12 @@
     "search_input_placeholder": "Search name",
     "empty_search_results": "No dashboards found with this criteria."
   },
+  "dashboard_list_order": {
+    "recent": "Recent",
+    "oldest": "Oldest",
+    "az": "A - Z",
+    "za": "Z - A"
+  },
   "tags_filters": {
     "title": "Filters",
     "show_only_public_dashboards": "Public Dashboards",
