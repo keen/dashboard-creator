@@ -352,7 +352,7 @@
   },
   "query_creator_timezone": {
     "placeholder": "Select timezone",
-    "label": "Timezone",
+    "label": "Time Zone",
     "empty_search": "No time zone found with this criteria",
     "selection_disabled_description": "Time zone for your metrics is the same as your site configuration.",
     "loading": "Loading the list of time zones",
@@ -412,7 +412,7 @@
     "embed_step_first": "Paste the code into the {{tag}} of the page where you will place the dashboard",
     "embed_step_second": "Paste this dashboard code into the {{tag}} where you want to display it",
     "embed_full_page": "Do you need full page code?",
-    "public_link": "Public link",
+    "public_link": "Public Link",
     "embed_html": "Embed HTML",
     "copied": "Copied to clipboard"
   },
