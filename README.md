@@ -25,7 +25,7 @@ The Dashboard Creator components configuration could be specified during creatio
 The Dashboard Creator `@keen.io/dataviz` theme could be overridden during initialization of application instance.
 
 ```typescript
-const explorer = new KeenExplorer({
+const explorer = new KeenDashboardCreator({
   theme: {
     colors: ['green', 'navy', 'orange'],
     metric: {
