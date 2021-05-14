@@ -36,7 +36,7 @@ test('notifies after mounting component', () => {
     Array [
       Object {
         "payload": undefined,
-        "type": "@chart-editor/QUERY_UPDATE_CONFIRMATION_MOUNTED",
+        "type": "chartEditor/queryUpdateConfirmationMounted",
       },
     ]
   `);
@@ -57,7 +57,7 @@ test('allows user to update saved query', () => {
     Array [
       Object {
         "payload": undefined,
-        "type": "@chart-editor/CONFIRM_SAVE_QUERY_UPDATE",
+        "type": "chartEditor/confirmSaveQueryUpdate",
       },
     ]
   `);
@@ -81,7 +81,7 @@ test('allows user to convert saved query to ad-hoc query', () => {
     Array [
       Object {
         "payload": undefined,
-        "type": "@chart-editor/USE_QUERY_FOR_WIDGET",
+        "type": "chartEditor/useQueryForWidget",
       },
     ]
   `);
@@ -102,7 +102,7 @@ test('allows user to close query change confirmation modal', () => {
     Array [
       Object {
         "payload": undefined,
-        "type": "@chart-editor/HIDE_QUERY_UPDATE_CONFIRMATION",
+        "type": "chartEditor/hideQueryUpdateConfirmation",
       },
     ]
   `);

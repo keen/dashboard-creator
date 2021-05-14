@@ -21,7 +21,6 @@ import {
   updateWidgetsPosition,
   WidgetsPosition,
 } from '../../modules/widgets';
-import { getChartEditor } from '../../modules/chartEditor';
 import { textEditorSelectors } from '../../modules/textEditor';
 
 import { AppContext, EditorContext } from '../../contexts';
@@ -47,6 +46,7 @@ import { ROUTES, RESIZE_WIDGET_EVENT } from '../../constants';
 import { RootState } from '../../rootReducer';
 import { calculateYPositionAndAddWidget } from '../../modules/dashboards/actions';
 import { appActions } from '../../modules/app';
+import { chartEditorSelectors } from '../../modules/chartEditor';
 
 type Props = {
   /** Dashboard identifer */
@@ -65,7 +65,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
   const {
     isOpen: chartWidgetEditorOpen,
     changeQueryConfirmation,
-  } = useSelector(getChartEditor);
+  } = useSelector(chartEditorSelectors.getChartEditor);
 
   const {
     isOpen: textWidgetEditorOpen,

@@ -7,29 +7,8 @@ import {
 } from '@keen.io/query-creator';
 import { isElementInViewport } from '@keen.io/ui-core';
 
-import {
-  setVisualizationSettings,
-  setQueryChange,
-  setQueryResult,
-  setQuerySettings,
-  runQuerySuccess,
-  runQueryError,
-  setEditorSection,
-} from './actions';
+import { chartEditorActions, chartEditorSelectors } from './index';
 
-import { getChartEditor } from './selectors';
-
-import {
-  RUN_QUERY,
-  RESTORE_SAVED_QUERY,
-  SET_VISUALIZATION_SETTINGS,
-  SET_QUERY_SETTINGS,
-  OPEN_EDITOR,
-  EDITOR_MOUNTED,
-  QUERY_UPDATE_CONFIRMATION_MOUNTED,
-  SHOW_QUERY_UPDATE_CONFIRMATION,
-  SET_EDITOR_SECTION,
-} from './constants';
 import { KEEN_ANALYSIS, NOTIFICATION_MANAGER, PUBSUB } from '../../constants';
 
 import { EditorSection } from './types';
@@ -41,7 +20,7 @@ function* scrollToElement(element: HTMLElement) {
 }
 
 export function* openEditor() {
-  yield take(EDITOR_MOUNTED);
+  yield take(chartEditorActions.editorMounted.type);
   const element = document.getElementById('chart-editor');
 
   if (element) {
@@ -51,14 +30,14 @@ export function* openEditor() {
 
 export function* updateVisualizationType({
   payload,
-}: ReturnType<typeof setVisualizationSettings>) {
+}: ReturnType<typeof chartEditorActions.setVisualizationSettings>) {
   const { type } = payload;
   const pubsub = yield getContext(PUBSUB);
   yield pubsub.publish(UPDATE_VISUALIZATION_TYPE, { type });
 }
 
 export function* showUpdateConfirmation() {
-  yield take(QUERY_UPDATE_CONFIRMATION_MOUNTED);
+  yield take(chartEditorActions.queryUpdateConfirmationMounted.type);
   const element = document.getElementById('confirm-query-update');
   if (element) {
     yield scrollToElement(element);
@@ -66,17 +45,15 @@ export function* showUpdateConfirmation() {
 }
 
 export function* updateEditorSection({
-  payload,
-}: ReturnType<typeof setEditorSection>) {
-  const { editorSection } = payload;
-
+  payload: editorSection,
+}: ReturnType<typeof chartEditorActions.setEditorSection>) {
   if (editorSection === EditorSection.QUERY) {
-    yield take(EDITOR_MOUNTED);
+    yield take(chartEditorActions.editorMounted.type);
     const pubsub = yield getContext(PUBSUB);
     const {
       querySettings,
       visualization: { chartSettings },
-    } = yield select(getChartEditor);
+    } = yield select(chartEditorSelectors.getChartEditor);
 
     if (chartSettings?.stepLabels && chartSettings.stepLabels.length) {
       const { stepLabels } = chartSettings;
@@ -100,7 +77,7 @@ export function* restoreSavedQuery() {
   const {
     initialQuerySettings,
     visualization: { chartSettings },
-  } = yield select(getChartEditor);
+  } = yield select(chartEditorSelectors.getChartEditor);
 
   if (chartSettings?.stepLabels && chartSettings.stepLabels.length) {
     const { stepLabels } = chartSettings;
@@ -109,10 +86,10 @@ export function* restoreSavedQuery() {
     });
   }
 
-  yield put(setQuerySettings(initialQuerySettings));
+  yield put(chartEditorActions.setQuerySettings(initialQuerySettings));
   yield pubsub.publish(SET_QUERY_EVENT, { query: initialQuerySettings });
 
-  yield put(setQueryResult(null));
+  yield put(chartEditorActions.setQueryResult(null));
 }
 
 /**
@@ -123,16 +100,16 @@ export function* restoreSavedQuery() {
  *
  */
 export function* updateQuerySettings({
-  payload,
-}: ReturnType<typeof setQuerySettings>) {
-  const { query } = payload;
-  const { initialQuerySettings } = yield select(getChartEditor);
-
+  payload: query,
+}: ReturnType<typeof chartEditorActions.setQuerySettings>) {
+  const { initialQuerySettings } = yield select(
+    chartEditorSelectors.getChartEditor
+  );
   if (initialQuerySettings) {
     const hasQueryChanged = !deepEqual(initialQuerySettings, query, {
       strict: true,
     });
-    yield put(setQueryChange(hasQueryChanged));
+    yield put(chartEditorActions.setQueryChange(hasQueryChanged));
   }
 }
 
@@ -143,7 +120,7 @@ export function* updateQuerySettings({
  *
  */
 export function* runQuery() {
-  const { querySettings } = yield select(getChartEditor);
+  const { querySettings } = yield select(chartEditorSelectors.getChartEditor);
   const keenAnalysis = yield getContext(KEEN_ANALYSIS);
 
   try {
@@ -157,10 +134,10 @@ export function* runQuery() {
       };
     }
 
-    yield put(runQuerySuccess(analysisResult));
+    yield put(chartEditorActions.runQuerySuccess(analysisResult));
   } catch (error) {
     const { body } = error;
-    yield put(runQueryError(body));
+    yield put(chartEditorActions.runQueryError(body));
     const notificationManager = yield getContext(NOTIFICATION_MANAGER);
     yield notificationManager.showNotification({
       type: 'error',
@@ -171,11 +148,26 @@ export function* runQuery() {
 }
 
 export function* chartEditorSaga() {
-  yield takeLatest(SET_EDITOR_SECTION, updateEditorSection);
-  yield takeLatest(RESTORE_SAVED_QUERY, restoreSavedQuery);
-  yield takeLatest(SET_QUERY_SETTINGS, updateQuerySettings);
-  yield takeLatest(RUN_QUERY, runQuery);
-  yield takeLatest(OPEN_EDITOR, openEditor);
-  yield takeLatest(SHOW_QUERY_UPDATE_CONFIRMATION, showUpdateConfirmation);
-  yield takeLatest(SET_VISUALIZATION_SETTINGS, updateVisualizationType);
+  yield takeLatest(
+    chartEditorActions.setEditorSection.type,
+    updateEditorSection
+  );
+  yield takeLatest(
+    chartEditorActions.restoreSavedQuery.type,
+    restoreSavedQuery
+  );
+  yield takeLatest(
+    chartEditorActions.setQuerySettings.type,
+    updateQuerySettings
+  );
+  yield takeLatest(chartEditorActions.runQuery.type, runQuery);
+  yield takeLatest(chartEditorActions.openEditor.type, openEditor);
+  yield takeLatest(
+    chartEditorActions.showQueryUpdateConfirmation.type,
+    showUpdateConfirmation
+  );
+  yield takeLatest(
+    chartEditorActions.setVisualizationSettings.type,
+    updateVisualizationType
+  );
 }

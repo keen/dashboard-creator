@@ -39,19 +39,10 @@ import {
   SavedQuery,
 } from '../queries';
 
-import {
-  openEditor,
-  closeEditor,
-  resetEditor,
-  applyConfiguration,
-  EDITOR_UNMOUNTED,
-  CLOSE_EDITOR,
-  APPLY_CONFIGURATION,
-} from '../chartEditor';
-
 import { widget as widgetItem } from './fixtures';
 import { findBiggestYPositionOfWidgets } from '../dashboards/utils/findBiggestYPositionOfWidgets';
 import { appActions, appSelectors } from '../app';
+import { chartEditorActions } from '../chartEditor';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
@@ -146,13 +137,18 @@ describe('createQueryForWidget()', () => {
     const test = sagaHelper(createQueryForWidget(widgetId));
 
     test('opens chart editor', (result) => {
-      expect(result).toEqual(put(openEditor()));
+      expect(result).toEqual(put(chartEditorActions.openEditor()));
     });
 
     test('waits until user close chart editor', (result) => {
-      expect(result).toEqual(take([CLOSE_EDITOR, APPLY_CONFIGURATION]));
+      expect(result).toEqual(
+        take([
+          chartEditorActions.closeEditor.type,
+          chartEditorActions.applyConfiguration.type,
+        ])
+      );
 
-      return closeEditor();
+      return chartEditorActions.closeEditor();
     });
 
     test('gets active dashboard identifier', () => {
@@ -184,13 +180,18 @@ describe('createQueryForWidget()', () => {
     };
 
     test('opens chart editor', (result) => {
-      expect(result).toEqual(put(openEditor()));
+      expect(result).toEqual(put(chartEditorActions.openEditor()));
     });
 
     test('waits until user close chart editor', (result) => {
-      expect(result).toEqual(take([CLOSE_EDITOR, APPLY_CONFIGURATION]));
+      expect(result).toEqual(
+        take([
+          chartEditorActions.closeEditor.type,
+          chartEditorActions.applyConfiguration.type,
+        ])
+      );
 
-      return applyConfiguration();
+      return chartEditorActions.applyConfiguration();
     });
 
     test('gets chart editor settings', () => {
@@ -215,15 +216,15 @@ describe('createQueryForWidget()', () => {
     });
 
     test('closes chart editor', (result) => {
-      expect(result).toEqual(put(closeEditor()));
+      expect(result).toEqual(put(chartEditorActions.closeEditor()));
     });
 
     test('waits until editor is closed', (result) => {
-      expect(result).toEqual(take(EDITOR_UNMOUNTED));
+      expect(result).toEqual(take(chartEditorActions.editorUnmounted.type));
     });
 
     test('reset chart editor', (result) => {
-      expect(result).toEqual(put(resetEditor()));
+      expect(result).toEqual(put(chartEditorActions.resetEditor()));
     });
 
     test('initializes chart widget', (result) => {

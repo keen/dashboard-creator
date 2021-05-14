@@ -1,42 +1,22 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { Query } from '@keen.io/query';
 import { ChartSettings } from '@keen.io/widget-picker';
-import chartEditorReducer, { initialState } from './reducer';
-
-import {
-  openEditor,
-  closeEditor,
-  resetEditor,
-  runQueryError,
-  runQuerySuccess,
-  runQuery,
-  setQueryType,
-  setQueryChange,
-  setQueryDirty,
-  setQueryResult,
-  setQuerySettings,
-  setEditorSection,
-  setVisualizationSettings,
-  updateChartSettings,
-  updateWidgetSettings,
-  showQueryUpdateConfirmation,
-  hideQueryUpdateConfirmation,
-} from './actions';
 
 import { createWidgetSettings } from './utils';
 
 import { EditorSection } from './types';
+import { chartEditorActions, chartEditorReducer } from './index';
+import { initialState } from './reducer';
 
 test('set editor section', () => {
-  const action = setEditorSection(EditorSection.SETTINGS);
-
+  const action = chartEditorActions.setEditorSection(EditorSection.SETTINGS);
   const { editorSection } = chartEditorReducer(initialState, action);
 
   expect(editorSection).toEqual(EditorSection.SETTINGS);
 });
 
 test('set query dirty state', () => {
-  const action = setQueryDirty(true);
+  const action = chartEditorActions.setQueryDirty(true);
   const { isDirtyQuery } = chartEditorReducer(
     { ...initialState, isDirtyQuery: false },
     action
@@ -46,7 +26,7 @@ test('set query dirty state', () => {
 });
 
 test('shows query update confirmation', () => {
-  const action = showQueryUpdateConfirmation();
+  const action = chartEditorActions.showQueryUpdateConfirmation();
   const { changeQueryConfirmation } = chartEditorReducer(
     { ...initialState, changeQueryConfirmation: false },
     action
@@ -56,7 +36,7 @@ test('shows query update confirmation', () => {
 });
 
 test('hides query update confirmation', () => {
-  const action = hideQueryUpdateConfirmation();
+  const action = chartEditorActions.hideQueryUpdateConfirmation();
   const { changeQueryConfirmation } = chartEditorReducer(
     { ...initialState, changeQueryConfirmation: true },
     action
@@ -66,7 +46,7 @@ test('hides query update confirmation', () => {
 });
 
 test('set query type', () => {
-  const action = setQueryType(false);
+  const action = chartEditorActions.setQueryType(false);
   const { isSavedQuery } = chartEditorReducer(
     { ...initialState, isSavedQuery: true },
     action
@@ -76,7 +56,7 @@ test('set query type', () => {
 });
 
 test('set query change indicator', () => {
-  const action = setQueryChange(false);
+  const action = chartEditorActions.setQueryChange(false);
   const { hasQueryChanged } = chartEditorReducer(
     { ...initialState, hasQueryChanged: true },
     action
@@ -90,7 +70,7 @@ test('set state for successful query perform', () => {
     result: 100,
   };
 
-  const action = runQuerySuccess(queryResult);
+  const action = chartEditorActions.runQuerySuccess(queryResult);
   const { isQueryPerforming, analysisResult } = chartEditorReducer(
     { ...initialState, isQueryPerforming: true },
     action
@@ -102,7 +82,7 @@ test('set state for successful query perform', () => {
 
 test('set perform state and error message for unsuccessful query', () => {
   const errorMessage = 'An error occurred';
-  const action = runQueryError(errorMessage);
+  const action = chartEditorActions.runQueryError(errorMessage);
   const { isQueryPerforming, queryError } = chartEditorReducer(
     { ...initialState, isQueryPerforming: true, queryError: null },
     action
@@ -113,7 +93,7 @@ test('set perform state and error message for unsuccessful query', () => {
 });
 
 test('set correct query performing state', () => {
-  const action = runQuery();
+  const action = chartEditorActions.runQuery();
   const { isQueryPerforming } = chartEditorReducer(initialState, action);
 
   expect(isQueryPerforming).toEqual(true);
@@ -127,7 +107,7 @@ test('set query settings', () => {
     order_by: null,
   };
 
-  const action = setQuerySettings(query);
+  const action = chartEditorActions.setQuerySettings(query);
   const { querySettings } = chartEditorReducer(initialState, action);
 
   expect(querySettings).toEqual(query);
@@ -138,7 +118,11 @@ test('set visualization settings', () => {
     layout: 'vertical',
   };
 
-  const action = setVisualizationSettings('bar', chartSettings, {});
+  const action = chartEditorActions.setVisualizationSettings({
+    type: 'bar',
+    chartSettings,
+    widgetSettings: {},
+  });
   const { visualization } = chartEditorReducer(initialState, action);
 
   expect(visualization).toMatchObject({
@@ -149,7 +133,9 @@ test('set visualization settings', () => {
 });
 
 test('updates chart settings', () => {
-  const action = updateChartSettings({ steps: ['purchases'] });
+  const action = chartEditorActions.updateChartSettings({
+    steps: ['purchases'],
+  });
   const { visualization } = chartEditorReducer(
     {
       ...initialState,
@@ -179,7 +165,7 @@ test('updates widget settings', () => {
     title: { content: '@widget/title' },
   });
 
-  const action = updateWidgetSettings(widgetSettings);
+  const action = chartEditorActions.updateWidgetSettings(widgetSettings);
   const { visualization } = chartEditorReducer(
     {
       ...initialState,
@@ -206,14 +192,14 @@ test('set query results', () => {
     result: 100,
   };
 
-  const action = setQueryResult(queryResult);
+  const action = chartEditorActions.setQueryResult(queryResult);
   const { analysisResult } = chartEditorReducer(initialState, action);
 
   expect(analysisResult).toEqual(queryResult);
 });
 
 test('opens chart editor', () => {
-  const action = openEditor();
+  const action = chartEditorActions.openEditor();
   const { isOpen } = chartEditorReducer(
     { ...initialState, isOpen: false },
     action
@@ -223,7 +209,7 @@ test('opens chart editor', () => {
 });
 
 test('closes chart editor', () => {
-  const action = closeEditor();
+  const action = chartEditorActions.closeEditor();
   const { isOpen } = chartEditorReducer(
     { ...initialState, isOpen: true },
     action
@@ -233,7 +219,7 @@ test('closes chart editor', () => {
 });
 
 test('restore initial state', () => {
-  const action = resetEditor();
+  const action = chartEditorActions.resetEditor();
   const state = chartEditorReducer({ ...initialState, isOpen: true }, action);
 
   expect(state).toEqual({

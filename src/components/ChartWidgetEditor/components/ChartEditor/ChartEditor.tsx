@@ -32,18 +32,11 @@ import {
 } from './ChartEditor.styles';
 
 import {
-  applyConfiguration,
-  setEditorSection,
-  runQuery,
-  setQueryDirty,
-  setVisualizationSettings,
-  restoreSavedQuery,
-  updateWidgetSettings,
-  getChartEditor,
-  editorUnmounted,
+  chartEditorActions,
+  chartEditorSelectors,
   EditorSection,
-  updateChartSettings,
 } from '../../../../modules/chartEditor';
+
 import { getActiveDashboardTheme } from '../../../../modules/theme';
 import { AppContext } from '../../../../contexts';
 
@@ -81,7 +74,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
     isQueryPerforming,
     queryError,
     hasQueryChanged,
-  } = useSelector(getChartEditor);
+  } = useSelector(chartEditorSelectors.getChartEditor);
 
   const baseTheme = useSelector(getActiveDashboardTheme);
 
@@ -106,7 +99,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
     const availableWidgets = getAvailableWidgets(querySettings);
     if (availableWidgets.includes(widgetType) && analysisResult) {
       setError(null);
-      return dispatch(applyConfiguration());
+      return dispatch(chartEditorActions.applyConfiguration());
     }
     setError(ChartEditorError.WIDGET);
   }, [widgetType, querySettings, analysisResult]);
@@ -117,7 +110,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
         strict: true,
       });
       if (isDirty) setLocalQuery(querySettings);
-      dispatch(setQueryDirty(isDirty));
+      dispatch(chartEditorActions.setQueryDirty(isDirty));
     } else if (initialQuerySettings && !localQuery) {
       setLocalQuery(querySettings);
     }
@@ -125,7 +118,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
 
   useEffect(() => {
     return () => {
-      dispatch(editorUnmounted());
+      dispatch(chartEditorActions.editorUnmounted());
     };
   }, []);
 
@@ -150,7 +143,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
           querySettings={querySettings}
           onRunQuery={() => {
             setError(null);
-            dispatch(runQuery());
+            dispatch(chartEditorActions.runQuery());
           }}
           onChangeVisualization={({
             type,
@@ -162,17 +155,17 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
               widgetCustomization.chart
             );
             dispatch(
-              setVisualizationSettings(
+              chartEditorActions.setVisualizationSettings({
                 type,
-                {
+                chartSettings: {
                   ...chartSettings,
                   ...chart,
                 },
-                {
+                widgetSettings: {
                   ...defaultWidgetSettings,
                   ...(widgetCustomization.widget as WidgetSettings),
-                }
-              )
+                },
+              })
             );
           }}
         />
@@ -183,7 +176,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
             if (section !== EditorSection.QUERY) {
               setLocalQuery(null);
             }
-            dispatch(setEditorSection(section));
+            dispatch(chartEditorActions.setEditorSection(section));
           }}
           activeSection={editorSection}
         />
@@ -203,7 +196,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
             widgetSettings={widgetCustomization.widget}
             savedQueryName={analysisResult?.metadata?.display_name}
             onUpdateWidgetSettings={(widgetSettings) => {
-              dispatch(updateWidgetSettings(widgetSettings));
+              dispatch(chartEditorActions.updateWidgetSettings(widgetSettings));
               setCustomizationSettings((state) => ({
                 ...state,
                 widget: widgetSettings,
@@ -211,7 +204,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
             }}
             onUpdateChartSettings={(chartSettings) => {
               const chart = serializeOutputSettings(widgetType, chartSettings);
-              dispatch(updateChartSettings(chart));
+              dispatch(chartEditorActions.updateChartSettings(chart));
               setCustomizationSettings((state) => ({
                 ...state,
                 chart: chartSettings,
@@ -256,7 +249,9 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
         </Cancel>
         {isSavedQuery && hasQueryChanged && (
           <SaveQueryWarning
-            onRestoreQuery={() => dispatch(restoreSavedQuery())}
+            onRestoreQuery={() =>
+              dispatch(chartEditorActions.restoreSavedQuery())
+            }
           />
         )}
       </Footer>

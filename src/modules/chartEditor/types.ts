@@ -35,3 +35,9 @@ export type ReducerState = {
     widgetSettings: EditorWidgetSettings;
   };
 };
+
+export type VisualisationSettingsPayload = {
+  type: PickerWidgets;
+  chartSettings: ChartSettings;
+  widgetSettings: Record<string, any>;
+};
