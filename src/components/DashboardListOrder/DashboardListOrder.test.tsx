@@ -34,7 +34,7 @@ test('allows user sort dashboards as A - Z', () => {
   const container = getByTestId('dropable-container');
   fireEvent.click(container);
 
-  const order = getByText('A - Z');
+  const order = getByText('dashboard_list_order.az');
   fireEvent.click(order);
 
   expect(store.getActions()).toMatchInlineSnapshot(`

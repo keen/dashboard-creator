@@ -110,13 +110,16 @@ test('renders notification about creating first dashboard in project', async () 
     },
   };
   const {
-    wrapper: { findByText },
+    wrapper: { findByText, queryByTestId },
   } = render(storeState);
 
   const createDashboardNotification = await findByText(
     'dashboard_management.empty_project'
   );
+  const filters = queryByTestId('management-filters');
+
   expect(createDashboardNotification).toBeInTheDocument();
+  expect(filters).toBeNull();
 });
 
 test('renders dashboards loading placeholder', () => {
@@ -151,6 +154,7 @@ test('renders dashboards grid', () => {
   } = render(storeState);
 
   expect(getByTestId('dashboards-grid')).toBeInTheDocument();
+  expect(getByTestId('management-filters')).toBeInTheDocument();
 });
 
 test('allows user to search dashboards based on phrase', () => {

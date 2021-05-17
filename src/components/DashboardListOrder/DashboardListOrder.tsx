@@ -1,4 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { transparentize } from 'polished';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -22,6 +23,7 @@ import {
 } from '../../modules/dashboards';
 
 const DashboardListOrder = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const dashboardListOrder = useSelector(getDashboardListOrder);
 
@@ -59,7 +61,7 @@ const DashboardListOrder = () => {
         isOpen={isOpen}
       >
         <BodyText variant="body2" fontWeight="bold">
-          {DASHBOARDS_ORDER[dashboardListOrder]}
+          {t(DASHBOARDS_ORDER[dashboardListOrder])}
         </BodyText>
         <DropIndicator>
           <Icon
@@ -85,7 +87,9 @@ const DashboardListOrder = () => {
                   setSelected(order);
                 }}
               >
-                <BodyText variant="body2">{DASHBOARDS_ORDER[order]}</BodyText>
+                <BodyText variant="body2">
+                  {t(DASHBOARDS_ORDER[order])}
+                </BodyText>
               </ListItem>
             ))}
           </List>
