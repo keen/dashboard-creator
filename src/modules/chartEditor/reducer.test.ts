@@ -220,7 +220,18 @@ test('closes chart editor', () => {
 
 test('restore initial state', () => {
   const action = chartEditorActions.resetEditor();
-  const state = chartEditorReducer({ ...initialState, isOpen: true }, action);
+  const state = chartEditorReducer(
+    {
+      ...initialState,
+      visualization: {
+        type: 'bar',
+        chartSettings: {},
+        widgetSettings: createWidgetSettings(),
+      },
+      isOpen: true,
+    },
+    action
+  );
 
   expect(state).toEqual({
     ...initialState,

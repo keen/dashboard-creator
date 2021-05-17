@@ -1,4 +1,7 @@
 /*eslint-disable @typescript-eslint/no-unused-vars*/
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { PickerWidgets } from '@keen.io/widget-picker';
+import { Query } from '@keen.io/query';
 
 import { createWidgetSettings } from './utils';
 
@@ -8,9 +11,6 @@ import {
   EditorWidgetSettings,
   VisualisationSettingsPayload,
 } from './types';
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { PickerWidgets } from '@keen.io/widget-picker';
-import { Query } from '@keen.io/query';
 
 export const initialState: ReducerState = {
   editorSection: EditorSection.QUERY,
@@ -89,7 +89,7 @@ const chartEditorSlice = createSlice({
         isOpen,
         ...initialEditorState
       } = initialState;
-      state = { ...state, ...initialEditorState };
+      return { ...state, ...initialEditorState };
     },
     setQueryResult: (
       state,
