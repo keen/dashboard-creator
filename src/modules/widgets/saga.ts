@@ -183,6 +183,7 @@ export function* createQueryForWidget(widgetId: string) {
     chartEditorActions.closeEditor.type,
     chartEditorActions.applyConfiguration.type,
   ]);
+
   if (action.type === chartEditorActions.closeEditor.type) {
     yield* cancelWidgetConfiguration(widgetId);
     yield take(chartEditorActions.editorUnmounted.type);
