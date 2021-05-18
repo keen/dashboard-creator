@@ -37,7 +37,7 @@ import {
   EditorSection,
 } from '../../../../modules/chartEditor';
 
-import { getActiveDashboardTheme } from '../../../../modules/theme';
+import { themeSelectors } from '../../../../modules/theme';
 import { AppContext } from '../../../../contexts';
 
 import WidgetVisualization from '../WidgetVisualization';
@@ -76,7 +76,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
     hasQueryChanged,
   } = useSelector(chartEditorSelectors.getChartEditor);
 
-  const baseTheme = useSelector(getActiveDashboardTheme);
+  const baseTheme = useSelector(themeSelectors.getActiveDashboardTheme);
 
   const { modalContainer } = useContext(AppContext);
 

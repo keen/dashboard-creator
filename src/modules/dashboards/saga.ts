@@ -79,7 +79,7 @@ import {
   removeConnectionFromDatePicker,
 } from '../widgets/saga/datePickerWidget';
 
-import { removeDashboardTheme, setDashboardTheme } from '../theme';
+import { themeActions } from '../theme';
 import {
   createPublicDashboardKeyName,
   createCodeSnippet,
@@ -355,7 +355,7 @@ export function* createDashboard({
   };
   yield put(registerDashboard(dashboardId));
   yield put(updateDashboard(dashboardId, serializedDashboard));
-  yield put(setDashboardTheme(dashboardId, baseTheme));
+  yield put(themeActions.setDashboardTheme({ dashboardId, theme: baseTheme }));
 
   yield put(appActions.setActiveDashboard(dashboardId));
   yield put(push(ROUTES.EDITOR));
@@ -389,7 +389,7 @@ export function* deleteDashboard({
       }
 
       yield put(deleteDashboardSuccess(dashboardId));
-      yield put(removeDashboardTheme(dashboardId));
+      yield put(themeActions.removeDashboardTheme({ dashboardId }));
 
       yield notificationManager.showNotification({
         type: 'info',
@@ -481,7 +481,9 @@ export function* editDashboard({
 
       yield put(registerWidgets(widgets));
       yield put(updateDashboard(dashboardId, serializedDashboard));
-      yield put(setDashboardTheme(dashboardId, baseTheme));
+      yield put(
+        themeActions.setDashboardTheme({ dashboardId, theme: baseTheme })
+      );
 
       yield put(
         initializeDashboardWidgetsAction(
@@ -535,7 +537,9 @@ export function* viewDashboard({
 
       yield put(registerWidgets(widgets));
       yield put(updateDashboard(dashboardId, serializedDashboard));
-      yield put(setDashboardTheme(dashboardId, baseTheme));
+      yield put(
+        themeActions.setDashboardTheme({ dashboardId, theme: baseTheme })
+      );
 
       yield put(
         initializeDashboardWidgetsAction(
@@ -587,7 +591,9 @@ export function* viewPublicDashboard({
 
       yield put(registerWidgets(widgets));
       yield put(updateDashboard(dashboardId, serializedDashboard));
-      yield put(setDashboardTheme(dashboardId, baseTheme));
+      yield put(
+        themeActions.setDashboardTheme({ dashboardId, theme: baseTheme })
+      );
 
       yield put(
         initializeDashboardWidgetsAction(

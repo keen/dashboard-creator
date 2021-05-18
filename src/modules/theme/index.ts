@@ -1,19 +1,13 @@
-import themeReducer from './reducer';
-import {
-  setBaseTheme,
-  setDashboardTheme,
-  removeDashboardTheme,
-} from './actions';
+import themeSlice from './reducer';
 
 import { getBaseTheme, getActiveDashboardTheme } from './selectors';
-import { SET_BASE_THEME } from './constants';
 
-export {
-  themeReducer,
-  setBaseTheme,
-  setDashboardTheme,
-  removeDashboardTheme,
+const themeReducer = themeSlice.reducer;
+const themeActions = themeSlice.actions;
+
+const themeSelectors = {
   getBaseTheme,
   getActiveDashboardTheme,
-  SET_BASE_THEME,
 };
+
+export { themeReducer, themeActions, themeSelectors };
