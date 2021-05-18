@@ -1,11 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ThemeActions } from './actions';
-
-import {
-  SET_BASE_THEME,
-  SET_DASHBOARD_THEME,
-  REMOVE_DASHBOARD_THEME,
-} from './constants';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Theme } from '@keen.io/charts';
 
 import { ReducerState } from './types';
 
@@ -14,36 +9,30 @@ export const initialState: ReducerState = {
   dashboards: {},
 };
 
-const themeReducer = (
-  state: ReducerState = initialState,
-  action: ThemeActions
-) => {
-  switch (action.type) {
-    case SET_BASE_THEME:
-      return {
-        ...state,
-        base: action.payload.theme,
-      };
-    case SET_DASHBOARD_THEME:
-      return {
-        ...state,
-        dashboards: {
-          ...state.dashboards,
-          [action.payload.dashboardId]: action.payload.theme,
-        },
-      };
-    case REMOVE_DASHBOARD_THEME:
-      const {
-        [action.payload.dashboardId]: _value,
-        ...dashboards
-      } = state.dashboards;
-      return {
-        ...state,
-        dashboards,
-      };
-    default:
-      return state;
-  }
-};
+const themeSlice = createSlice({
+  name: 'theme',
+  initialState,
+  reducers: {
+    setBaseTheme: (state, { payload }: PayloadAction<Partial<Theme>>) => {
+      state.base = payload;
+    },
+    setDashboardTheme: (
+      state,
+      { payload }: PayloadAction<{ dashboardId: string; theme: Partial<Theme> }>
+    ) => {
+      const { dashboardId, theme } = payload;
+      state.dashboards[dashboardId] = theme;
+    },
+    removeDashboardTheme: (
+      state,
+      { payload }: PayloadAction<{ dashboardId: string }>
+    ) => {
+      const { dashboardId } = payload;
+      const { [dashboardId]: _value, ...dashboards } = state.dashboards;
 
-export default themeReducer;
+      state.dashboards = dashboards;
+    },
+  },
+});
+
+export default themeSlice;

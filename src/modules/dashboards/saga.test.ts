@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable @typescript-eslint/camelcase, @typescript-eslint/no-unused-vars */
 import sagaHelper from 'redux-saga-testing';
 import { put, take, select, getContext, call, all } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
@@ -39,7 +39,7 @@ import {
   regenerateAccessKeySuccess,
   regenerateAccessKeyError,
 } from './actions';
-import { removeDashboardTheme } from '../theme/actions';
+import { themeActions, themeSelectors } from '../theme';
 import {
   deleteAccessKey,
   deleteDashboard,
@@ -63,8 +63,6 @@ import {
   getWidget,
   createWidget,
 } from '../widgets';
-
-import { getActiveDashboardTheme, setDashboardTheme } from '../theme';
 
 import { serializeDashboard } from './serializers';
 import { createCodeSnippet } from './utils';
@@ -118,6 +116,9 @@ describe('viewPublicDashboard()', () => {
   const dashboard: DashboardModel = {
     version: '0.0.1',
     widgets: [],
+    baseTheme: {
+      colors: ['navyblue'],
+    },
   };
 
   describe('Scenario 1: User access public dashboard', () => {
@@ -164,15 +165,22 @@ describe('viewPublicDashboard()', () => {
     });
 
     test('updates dashboard', (result) => {
-      const serializedDashboard = serializeDashboard(dashboard);
+      const { baseTheme, ...dashboardSettings } = serializeDashboard(dashboard);
 
       expect(result).toEqual(
-        put(updateDashboard(dashboardId, serializedDashboard))
+        put(updateDashboard(dashboardId, dashboardSettings))
       );
     });
 
     test('set dashboard theme', (result) => {
-      expect(result).toEqual(put(setDashboardTheme(dashboardId, undefined)));
+      expect(result).toEqual(
+        put(
+          themeActions.setDashboardTheme({
+            dashboardId,
+            theme: dashboard.baseTheme,
+          })
+        )
+      );
     });
 
     test('initializes dashboard widgets', (result) => {
@@ -372,7 +380,9 @@ describe('deleteDashboard()', () => {
     });
 
     test('triggers dashboard theme removal action with dashboard identifer', (result) => {
-      expect(result).toEqual(put(removeDashboardTheme(dashboardId)));
+      expect(result).toEqual(
+        put(themeActions.removeDashboardTheme({ dashboardId }))
+      );
     });
 
     test('calls show notification method', () => {
@@ -451,7 +461,9 @@ describe('deleteDashboard()', () => {
     });
 
     test('triggers dashboard theme removal action with dashboard identifer', (result) => {
-      expect(result).toEqual(put(removeDashboardTheme(dashboardId)));
+      expect(result).toEqual(
+        put(themeActions.removeDashboardTheme({ dashboardId }))
+      );
     });
 
     test('calls show notification method', () => {
@@ -937,7 +949,7 @@ describe('saveDashboard()', () => {
   });
 
   test('get dashboard theme', (result) => {
-    expect(result).toEqual(select(getActiveDashboardTheme));
+    expect(result).toEqual(select(themeSelectors.getActiveDashboardTheme));
 
     return {};
   });

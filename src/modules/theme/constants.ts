@@ -1,3 +1,0 @@
-export const SET_BASE_THEME = '@theme/SET_BASE_THEME';
-export const SET_DASHBOARD_THEME = '@theme/SET_DASHBOARD_THEME';
-export const REMOVE_DASHBOARD_THEME = '@theme/REMOVE_DASHBOARD_THEME';

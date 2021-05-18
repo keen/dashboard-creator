@@ -1,12 +1,7 @@
 import { Theme } from '@keen.io/charts';
-import themeReducer, { initialState } from './reducer';
-import { ReducerState } from './types';
 
-import {
-  setBaseTheme,
-  setDashboardTheme,
-  removeDashboardTheme,
-} from './actions';
+import themeSlice, { initialState } from './reducer';
+import { ReducerState } from './types';
 
 const theme = {
   metric: {
@@ -20,8 +15,8 @@ const theme = {
 } as Partial<Theme>;
 
 test('set base theme', () => {
-  const action = setBaseTheme(theme);
-  const { base } = themeReducer(initialState, action);
+  const action = themeSlice.actions.setBaseTheme(theme);
+  const { base } = themeSlice.reducer(initialState, action);
 
   expect(base).toMatchInlineSnapshot(`
     Object {
@@ -39,8 +34,8 @@ test('set base theme', () => {
 
 test('set dashboard theme', () => {
   const dashboardId = '@dashboard/01';
-  const action = setDashboardTheme(dashboardId, theme);
-  const { dashboards } = themeReducer(initialState, action);
+  const action = themeSlice.actions.setDashboardTheme({ dashboardId, theme });
+  const { dashboards } = themeSlice.reducer(initialState, action);
 
   expect(dashboards[dashboardId]).toMatchInlineSnapshot(`
     Object {
@@ -96,8 +91,8 @@ test('remove dashboard theme', () => {
     },
   };
 
-  const action = removeDashboardTheme(dashboardId);
-  const { dashboards } = themeReducer(state, action);
+  const action = themeSlice.actions.removeDashboardTheme({ dashboardId });
+  const { dashboards } = themeSlice.reducer(state, action);
 
   expect(dashboards).toMatchInlineSnapshot(`
     Object {

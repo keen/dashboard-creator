@@ -17,7 +17,7 @@ import { Container, LoaderWrapper } from './ChartWidget.styles';
 import { EditorContext } from '../../contexts';
 import { getWidget, ChartWidget } from '../../modules/widgets';
 import { getInterimQuery } from '../../modules/queries';
-import { getActiveDashboardTheme } from '../../modules/theme';
+import { themeSelectors } from '../../modules/theme';
 import { RootState } from '../../rootReducer';
 
 import { OBSERVER_DELAY } from './constants';
@@ -59,7 +59,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
     getInterimQuery(state, id)
   );
   const theme = useSelector((state: RootState) =>
-    getActiveDashboardTheme(state)
+    themeSelectors.getActiveDashboardTheme(state)
   );
 
   const showVisualization = isConfigured && isInitialized && !isLoading;
