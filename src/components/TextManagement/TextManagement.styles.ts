@@ -1,8 +1,10 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { motion } from 'framer-motion';
 import { transparentize } from 'polished';
 import { UI_LAYERS } from '@keen.io/ui-core';
 import { colors } from '@keen.io/colors';
+
+import { WIDGET_MIN_WIDTH } from './constants';
 
 export const Container = styled.div`
   position: relative;
@@ -25,10 +27,18 @@ export const EditorContainer = styled.div`
   overflow: hidden;
 `;
 
-export const RemoveContainer = styled(motion.div)`
+export const RemoveContainer = styled(motion.div)<{ isOverflow: boolean }>`
   position: absolute;
+  left: 0;
+  ${({ isOverflow }) =>
+    isOverflow &&
+    css`
+      right: 0;
+      left: auto;
+    `};
   padding: 5px;
-  width: 420px;
+  min-width: ${WIDGET_MIN_WIDTH}px;
+  width: 100%;
   box-sizing: border-box;
 
   background-color: ${transparentize(0.1, colors.white[500])};
@@ -36,10 +46,15 @@ export const RemoveContainer = styled(motion.div)`
   z-index: ${UI_LAYERS.dropdown};
 `;
 
-export const ManagementContainer = styled(motion.div)`
+export const ManagementContainer = styled(motion.div)<{ isOverflow: boolean }>`
   position: absolute;
   left: 0;
-  right: 0;
+  ${({ isOverflow }) =>
+    isOverflow &&
+    css`
+      right: 0;
+      left: auto;
+    `};
   background: ${transparentize(0.4, colors.black[300])};
 
   display: flex;
@@ -47,7 +62,9 @@ export const ManagementContainer = styled(motion.div)`
 
   padding: 0 10px;
   height: 47px;
-  min-width: 270px;
+  min-width: ${WIDGET_MIN_WIDTH}px;
+  width: 100%;
+  box-sizing: border-box;
   z-index: ${UI_LAYERS.dropdown};
 
   cursor: grab;

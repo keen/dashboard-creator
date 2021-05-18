@@ -34,6 +34,8 @@ import { settingsMotion } from './motions';
 
 import { RootState } from '../../rootReducer';
 
+import { WIDGET_MIN_WIDTH } from './constants';
+
 type Props = {
   /** Widget identifier */
   id: string;
@@ -55,6 +57,7 @@ const TextManagement: FC<Props> = ({
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const updateWidget = useRef(null);
+  const containerRef = useRef(null);
 
   const { widget, isInitialized } = useSelector((state: RootState) =>
     getWidget(state, id)
@@ -67,6 +70,7 @@ const TextManagement: FC<Props> = ({
   const [editorState, setEditorState] = useState(
     EditorState.createWithContent(convertFromRaw(content))
   );
+  const [settingsOverflow, setSettingsOverflow] = useState(false);
 
   useEffect(() => {
     if (isInitialized) {
@@ -78,13 +82,19 @@ const TextManagement: FC<Props> = ({
     if (!isHoverActive) {
       setRemoveConfirmation(false);
     }
+    if (isHoverActive && containerRef.current) {
+      setSettingsOverflow(
+        containerRef.current.getBoundingClientRect().left + WIDGET_MIN_WIDTH >
+          document.body.offsetWidth
+      );
+    }
   }, [isHoverActive]);
 
   const showManagementSettings = isHoverActive && !removeConfirmation;
   const showRemoveConfirmation = isHoverActive && removeConfirmation;
 
   return (
-    <Container>
+    <Container ref={containerRef}>
       <EditorContainer>
         <TextEditor
           placeholder={t('text_management.placeholder')}
@@ -106,7 +116,7 @@ const TextManagement: FC<Props> = ({
       </EditorContainer>
       <AnimatePresence>
         {showRemoveConfirmation && (
-          <RemoveContainer {...settingsMotion}>
+          <RemoveContainer isOverflow={settingsOverflow} {...settingsMotion}>
             <RemoveWidget
               onConfirm={onRemoveWidget}
               onDismiss={() => setRemoveConfirmation(false)}
@@ -120,6 +130,7 @@ const TextManagement: FC<Props> = ({
         {showManagementSettings && (
           <ManagementContainer
             className={DRAG_HANDLE_ELEMENT}
+            isOverflow={settingsOverflow}
             {...settingsMotion}
           >
             <DragHandle>
