@@ -36,12 +36,10 @@ export const RemoveContainer = styled(motion.div)<{ isOverflow: boolean }>`
       right: 0;
       left: auto;
     `};
-  padding: 5px;
   min-width: ${WIDGET_MIN_WIDTH}px;
   width: 100%;
   box-sizing: border-box;
 
-  background-color: ${transparentize(0.1, colors.white[500])};
   box-shadow: 0 2px 4px 0 rgba(29, 39, 41, 0.15);
   z-index: ${UI_LAYERS.dropdown};
 `;
@@ -62,7 +60,7 @@ export const ManagementContainer = styled(motion.div)<{ isOverflow: boolean }>`
 
   padding: 0 10px;
   height: 47px;
-  min-width: ${WIDGET_MIN_WIDTH}px;
+  min-width: 285px;
   width: 100%;
   box-sizing: border-box;
   z-index: ${UI_LAYERS.dropdown};
