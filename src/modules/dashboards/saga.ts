@@ -62,7 +62,7 @@ import {
   getDashboardSettings,
   getDashboardsMetadata,
 } from './selectors';
-import { getBaseTheme, getActiveDashboardTheme } from '../theme/selectors';
+import { themeSelectors } from '../theme/selectors';
 
 import {
   initializeWidget,
@@ -296,7 +296,7 @@ export function* saveDashboard({
       getDashboardSettings,
       dashboardId
     );
-    const dashboardTheme = yield select(getActiveDashboardTheme);
+    const dashboardTheme = yield select(themeSelectors.getActiveDashboardTheme);
     const serializedDashboard = {
       ...dashboard,
       widgets: dashboard.widgets.map((widgetId) =>
@@ -346,9 +346,8 @@ export function* createDashboard({
   payload,
 }: ReturnType<typeof createDashboardAction>) {
   const { dashboardId } = payload;
-  const state: RootState = yield select();
 
-  const baseTheme: Partial<Theme> = yield getBaseTheme(state);
+  const baseTheme: Partial<Theme> = yield select(themeSelectors.getBaseTheme);
   const serializedDashboard: Dashboard = {
     version: __APP_VERSION__,
     widgets: [],

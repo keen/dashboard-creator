@@ -21,6 +21,7 @@ import {
   updateWidgetsPosition,
   WidgetsPosition,
 } from '../../modules/widgets';
+import { themeSagaActions } from '../../modules/theme';
 import { textEditorSelectors } from '../../modules/textEditor';
 
 import { AppContext, EditorContext } from '../../contexts';
@@ -31,6 +32,7 @@ import EditorNavigation from '../EditorNavigation';
 import QueryPickerModal from '../QueryPickerModal';
 import DatePickerModal from '../DatePickerModal';
 import ImagePickerModal from '../ImagePickerModal';
+import ThemeEditorModal from '../ThemeEditorModal';
 import FilterModal from '../FilterModal';
 import ChartWidgetEditor from '../ChartWidgetEditor';
 import TextWidgetEditor from '../TextWidgetEditor';
@@ -144,6 +146,9 @@ const Editor: FC<Props> = ({ dashboardId }) => {
         <EditorBar
           isSticky={isSticky}
           isSaving={isSaving}
+          onEditTheme={() =>
+            dispatch(themeSagaActions.editDashboardTheme(dashboardId))
+          }
           onFinishEdit={() => {
             dispatch(saveDashboard(dashboardId));
             dispatch(viewDashboard(dashboardId));
@@ -195,6 +200,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
         <DashboardDeleteConfirmation />
         <QueryPickerModal />
         <DatePickerModal />
+        <ThemeEditorModal />
         <ImagePickerModal />
         <FilterModal />
       </Portal>

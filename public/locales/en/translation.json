@@ -1,4 +1,11 @@
 {
+  "theme_editor": {
+    "save": "Save Changes",
+    "title": "Dashboard Theming",
+    "preview": "Preview",
+    "cancel": "Cancel",
+    "expand": "Expand"
+  },
   "confirm_query_change": {
     "title": "You Edited Saved Query",
     "message": "What do you want to update?",
@@ -202,6 +209,7 @@
     "text": "Text"
   },
   "editor_bar": {
+    "theming": "Theming",
     "finish_edition": "Finish Edition",
     "saved": "Saved",
     "is_saving": "Is saving..."

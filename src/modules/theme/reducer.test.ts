@@ -14,11 +14,25 @@ const theme = {
   },
 } as Partial<Theme>;
 
+test('set modal visibility state', () => {
+  const action = themeSlice.actions.setModalVisibility({
+    isOpen: true,
+    inPreviewMode: true,
+  });
+
+  const { modal } = themeSlice.reducer(initialState, action);
+
+  expect(modal).toEqual({
+    isOpen: true,
+    inPreviewMode: true,
+  });
+});
+
 test('set base theme', () => {
   const action = themeSlice.actions.setBaseTheme(theme);
-  const { base } = themeSlice.reducer(initialState, action);
+  const { defaultTheme } = themeSlice.reducer(initialState, action);
 
-  expect(base).toMatchInlineSnapshot(`
+  expect(defaultTheme).toMatchInlineSnapshot(`
     Object {
       "metric": Object {
         "value": Object {
@@ -54,7 +68,8 @@ test('set dashboard theme', () => {
 test('remove dashboard theme', () => {
   const dashboardId = '@dashboard/01';
   const state: ReducerState = {
-    base: {},
+    ...initialState,
+    defaultTheme: {},
     dashboards: {
       [dashboardId]: {
         metric: {

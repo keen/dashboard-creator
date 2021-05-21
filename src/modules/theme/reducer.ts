@@ -5,16 +5,41 @@ import { Theme } from '@keen.io/charts';
 import { ReducerState } from './types';
 
 export const initialState: ReducerState = {
-  base: {},
   dashboards: {},
+  defaultTheme: {},
+  initialTheme: {},
+  currentEditTheme: {},
+  modal: {
+    inPreviewMode: false,
+    isOpen: false,
+  },
 };
 
 const themeSlice = createSlice({
   name: 'theme',
   initialState,
   reducers: {
+    setModalVisibility: (
+      state,
+      { payload }: PayloadAction<{ isOpen: boolean; inPreviewMode: boolean }>
+    ) => {
+      state.modal.isOpen = payload.isOpen;
+      state.modal.inPreviewMode = payload.inPreviewMode;
+    },
+    setInitialDashboardTheme: (
+      state,
+      { payload }: PayloadAction<Partial<Theme>>
+    ) => {
+      state.initialTheme = payload;
+    },
+    setCurrentEditTheme: (
+      state,
+      { payload }: PayloadAction<Partial<Theme>>
+    ) => {
+      state.currentEditTheme = payload;
+    },
     setBaseTheme: (state, { payload }: PayloadAction<Partial<Theme>>) => {
-      state.base = payload;
+      state.defaultTheme = payload;
     },
     setDashboardTheme: (
       state,
@@ -22,6 +47,10 @@ const themeSlice = createSlice({
     ) => {
       const { dashboardId, theme } = payload;
       state.dashboards[dashboardId] = theme;
+    },
+    resetDashboardEdit: (state) => {
+      state.initialTheme = {};
+      state.currentEditTheme = {};
     },
     removeDashboardTheme: (
       state,

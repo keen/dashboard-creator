@@ -99,7 +99,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
         datavizRef.current.render(getChartInput(chartData));
       }
     }
-  }, [showVisualization, inView, error]);
+  }, [showVisualization, inView, error, theme]);
 
   useEffect(() => {
     if (!editorPubSub) return;

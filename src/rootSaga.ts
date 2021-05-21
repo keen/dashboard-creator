@@ -7,6 +7,7 @@ import { chartEditorSaga } from './modules/chartEditor';
 import { datePickerSaga } from './modules/datePicker';
 import { filterSaga } from './modules/filter';
 import { timezoneSaga } from './modules/timezone';
+import { themeSaga } from './modules/theme';
 
 export const createRootSaga = (editPrivileges = false) => {
   const sagaFlows = [
@@ -18,7 +19,7 @@ export const createRootSaga = (editPrivileges = false) => {
   ];
 
   if (editPrivileges) {
-    sagaFlows.push(chartEditorSaga(), datePickerSaga());
+    sagaFlows.push(chartEditorSaga(), datePickerSaga(), themeSaga());
   }
 
   return function* () {

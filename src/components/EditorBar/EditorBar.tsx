@@ -2,12 +2,14 @@ import React, { FC, ReactNode, useMemo } from 'react';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import { Loader } from '@keen.io/ui-core';
+import { BodyText } from '@keen.io/typography';
 
 import {
   Aside,
   Container,
   ChildrenWrapper,
   Message,
+  EditTheme,
   SavingIndicator,
 } from './EditorBar.styles';
 
@@ -16,6 +18,8 @@ import SubmitButton from '../SubmitButton';
 type Props = {
   /** Finish edit event handler */
   onFinishEdit: () => void;
+  /** Edit theme event handler */
+  onEditTheme: () => void;
   /** Last save time */
   lastSaveTime: number | null;
   /** Saving indicator */
@@ -28,6 +32,7 @@ type Props = {
 
 const EditorBar: FC<Props> = ({
   onFinishEdit,
+  onEditTheme,
   lastSaveTime,
   isSaving,
   isSticky,
@@ -55,6 +60,11 @@ const EditorBar: FC<Props> = ({
             <Message>{timeAgo}</Message>
           )}
         </SavingIndicator>
+        <EditTheme role="button" onClick={onEditTheme}>
+          <BodyText variant="body2" fontWeight={600}>
+            {t('editor_bar.theming')}
+          </BodyText>
+        </EditTheme>
         <SubmitButton onClick={onFinishEdit}>
           {t('editor_bar.finish_edition')}
         </SubmitButton>
