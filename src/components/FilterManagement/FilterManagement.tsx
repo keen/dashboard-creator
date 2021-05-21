@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState, useRef } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { colors } from '@keen.io/colors';
@@ -17,6 +17,11 @@ import PreventDragPropagation from '../PreventDragPropagation';
 import { DRAG_HANDLE_ELEMENT } from '../Widget';
 
 import { settingsMotion } from './motions';
+import {
+  REMOVE_MIN_WIDTH,
+  MANAGEMENT_MIN_WIDTH,
+  INITIAL_OVERFLOW_SETTINGS,
+} from './constants';
 
 type Props = {
   /** Widget identifier */
@@ -35,11 +40,26 @@ const FilterManagement: FC<Props> = ({
   onEditWidget,
 }) => {
   const { t } = useTranslation();
+  const containerRef = useRef(null);
   const [removeConfirmation, setRemoveConfirmation] = useState(false);
+  const [overflowSettings, setOverflowSettings] = useState(
+    INITIAL_OVERFLOW_SETTINGS
+  );
 
   useEffect(() => {
     if (!isHoverActive) {
       setRemoveConfirmation(false);
+    }
+    if (isHoverActive && containerRef.current) {
+      setOverflowSettings({
+        management:
+          containerRef.current.getBoundingClientRect().left +
+            MANAGEMENT_MIN_WIDTH >
+          document.body.offsetWidth,
+        remove:
+          containerRef.current.getBoundingClientRect().left + REMOVE_MIN_WIDTH >
+          document.body.offsetWidth,
+      });
     }
   }, [isHoverActive]);
 
@@ -47,10 +67,13 @@ const FilterManagement: FC<Props> = ({
   const showRemoveConfirmation = isHoverActive && removeConfirmation;
 
   return (
-    <>
+    <div ref={containerRef}>
       <AnimatePresence>
         {showRemoveConfirmation && (
-          <RemoveContainer {...settingsMotion}>
+          <RemoveContainer
+            isOverflow={overflowSettings.remove}
+            {...settingsMotion}
+          >
             <RemoveWidget
               onConfirm={onRemoveWidget}
               onDismiss={() => setRemoveConfirmation(false)}
@@ -63,6 +86,7 @@ const FilterManagement: FC<Props> = ({
       <AnimatePresence>
         {showManagementSettings && (
           <ManagementContainer
+            isOverflow={overflowSettings.management}
             className={DRAG_HANDLE_ELEMENT}
             {...settingsMotion}
           >
@@ -93,7 +117,7 @@ const FilterManagement: FC<Props> = ({
           </ManagementContainer>
         )}
       </AnimatePresence>
-    </>
+    </div>
   );
 };
 

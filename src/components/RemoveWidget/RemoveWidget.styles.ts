@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { transparentize } from 'polished';
 import { colors } from '@keen.io/colors';
 
 export const Container = styled.div`
@@ -13,7 +12,6 @@ export const Container = styled.div`
   padding: 10px;
   box-sizing: border-box;
 
-  background: ${transparentize(0.1, colors.white[500])};
   cursor: default;
 `;
 
