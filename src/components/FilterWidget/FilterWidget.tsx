@@ -183,9 +183,9 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
           <TitleContainer>
             <Icon
               type="funnel-widget-vertical"
-              fill={transparentize(0.5, colors.black[100])}
-              width={15}
-              height={15}
+              fill={transparentize(0.6, colors.blue[500])}
+              width={13}
+              height={13}
             />
             <Title role="heading">
               {targetProperty}
