@@ -8,6 +8,8 @@ import { extendTheme } from '../utils';
 
 import { saveDashboard } from '../../dashboards';
 
+import { ThemeSettings } from '../types';
+
 /**
  * Flow responsible for dashboard theme edition
  *
@@ -19,17 +21,24 @@ export function* editDashboardTheme({
   payload,
 }: ReturnType<typeof themeSagaActions.editDashboardTheme>) {
   const { dashboardId } = payload;
-  const dashboardTheme = yield select(
+  const dashboardTheme: ThemeSettings = yield select(
     themeSelectors.getThemeByDashboardId,
     dashboardId
   );
 
+  const { theme, settings } = dashboardTheme;
+
   yield put(themeSlice.actions.setInitialDashboardTheme(dashboardTheme));
 
   const baseTheme = yield select(themeSelectors.getBaseTheme);
-  const currentThemeInEdit = extendTheme(dashboardTheme, baseTheme);
+  const currentThemeInEdit = extendTheme(theme, baseTheme);
 
-  yield put(themeSlice.actions.setCurrentEditTheme(currentThemeInEdit));
+  yield put(
+    themeSlice.actions.setCurrentEditTheme({
+      theme: currentThemeInEdit,
+      settings,
+    })
+  );
 
   yield put(
     themeSlice.actions.setModalVisibility({
@@ -47,15 +56,19 @@ export function* editDashboardTheme({
     yield put(
       themeSlice.actions.setDashboardTheme({
         dashboardId,
-        theme: dashboardTheme,
+        settings,
+        theme,
       })
     );
   } else {
-    const currentTheme = yield select(themeSelectors.getCurrentEditTheme);
+    const currentTheme: ThemeSettings = yield select(
+      themeSelectors.getCurrentEditTheme
+    );
     yield put(
       themeSlice.actions.setDashboardTheme({
         dashboardId,
-        theme: currentTheme,
+        theme: currentTheme.theme,
+        settings: currentTheme.settings,
       })
     );
 

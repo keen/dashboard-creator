@@ -2,7 +2,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Theme } from '@keen.io/charts';
 
-import { ReducerState } from './types';
+import { ReducerState, ThemeSettings } from './types';
+
+import { DashboardSettings } from '../dashboards';
 
 export const initialState: ReducerState = {
   dashboards: {},
@@ -28,14 +30,11 @@ const themeSlice = createSlice({
     },
     setInitialDashboardTheme: (
       state,
-      { payload }: PayloadAction<Partial<Theme>>
+      { payload }: PayloadAction<ThemeSettings>
     ) => {
       state.initialTheme = payload;
     },
-    setCurrentEditTheme: (
-      state,
-      { payload }: PayloadAction<Partial<Theme>>
-    ) => {
+    setCurrentEditTheme: (state, { payload }: PayloadAction<ThemeSettings>) => {
       state.currentEditTheme = payload;
     },
     setBaseTheme: (state, { payload }: PayloadAction<Partial<Theme>>) => {
@@ -43,10 +42,19 @@ const themeSlice = createSlice({
     },
     setDashboardTheme: (
       state,
-      { payload }: PayloadAction<{ dashboardId: string; theme: Partial<Theme> }>
+      {
+        payload,
+      }: PayloadAction<{
+        dashboardId: string;
+        theme: Partial<Theme>;
+        settings: DashboardSettings;
+      }>
     ) => {
-      const { dashboardId, theme } = payload;
-      state.dashboards[dashboardId] = theme;
+      const { dashboardId, settings, theme } = payload;
+      state.dashboards[dashboardId] = {
+        theme: theme,
+        settings: settings,
+      };
     },
     resetDashboardEdit: (state) => {
       state.initialTheme = {};

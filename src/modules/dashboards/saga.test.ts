@@ -65,9 +65,14 @@ import {
 } from '../widgets';
 
 import { serializeDashboard } from './serializers';
-import { createCodeSnippet } from './utils';
+import { createCodeSnippet, createDashboardSettings } from './utils';
 
-import { DashboardModel, DashboardMetaData, DashboardError } from './types';
+import {
+  DashboardModel,
+  DashboardSettings,
+  DashboardMetaData,
+  DashboardError,
+} from './types';
 
 import rootReducer from '../../rootReducer';
 
@@ -116,7 +121,8 @@ describe('viewPublicDashboard()', () => {
   const dashboard: DashboardModel = {
     version: '0.0.1',
     widgets: [],
-    baseTheme: {
+    settings: createDashboardSettings(),
+    theme: {
       colors: ['navyblue'],
     },
   };
@@ -165,7 +171,9 @@ describe('viewPublicDashboard()', () => {
     });
 
     test('updates dashboard', (result) => {
-      const { baseTheme, ...dashboardSettings } = serializeDashboard(dashboard);
+      const { theme, settings, ...dashboardSettings } = serializeDashboard(
+        dashboard
+      );
 
       expect(result).toEqual(
         put(updateDashboard(dashboardId, dashboardSettings))
@@ -177,7 +185,8 @@ describe('viewPublicDashboard()', () => {
         put(
           themeActions.setDashboardTheme({
             dashboardId,
-            theme: dashboard.baseTheme,
+            theme: dashboard.theme,
+            settings: dashboard.settings,
           })
         )
       );
@@ -899,7 +908,6 @@ describe('exportDashboardToHtml()', () => {
 describe('saveDashboard()', () => {
   const dashboardId = '@dashboard/01';
   const dashboard: DashboardModel = {
-    baseTheme: {},
     version: '0.0.1',
     widgets: [],
   };
@@ -914,7 +922,18 @@ describe('saveDashboard()', () => {
       },
     },
     theme: {
-      dashboards: {},
+      dashboards: {
+        [dashboardId]: {
+          theme: {
+            colors: ['navybule'],
+          },
+          settings: {
+            page: {
+              gridGap: 40,
+            },
+          } as DashboardSettings,
+        },
+      },
     },
   };
 
@@ -949,9 +968,11 @@ describe('saveDashboard()', () => {
   });
 
   test('get dashboard theme', (result) => {
-    expect(result).toEqual(select(themeSelectors.getActiveDashboardTheme));
+    expect(result).toEqual(
+      select(themeSelectors.getThemeByDashboardId, dashboardId)
+    );
 
-    return {};
+    return state.theme.dashboards[dashboardId];
   });
 
   test('get dashboards meta data', (result) => {
@@ -971,7 +992,7 @@ describe('saveDashboard()', () => {
 
     expect(blobApiMock.saveDashboard).toHaveBeenCalledWith(
       dashboardId,
-      serializedDashboard,
+      { ...serializedDashboard, ...state.theme.dashboards[dashboardId] },
       updatedMetadata
     );
   });

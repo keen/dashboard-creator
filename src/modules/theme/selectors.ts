@@ -18,7 +18,7 @@ const getActiveDashboardTheme = (state: RootState) => {
     app: { activeDashboardId },
     theme: { dashboards },
   } = state;
-  return dashboards[activeDashboardId] || {};
+  return dashboards[activeDashboardId]?.theme || {};
 };
 
 export const themeSelectors = {

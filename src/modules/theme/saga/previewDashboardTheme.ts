@@ -12,12 +12,13 @@ import themeSlice from '../reducer';
  */
 export function* previewDashboardTheme() {
   const dashboardId = yield select(appSelectors.getActiveDashboard);
-  const currentTheme = yield select(themeSelectors.getCurrentEditTheme);
+  const { theme, settings } = yield select(themeSelectors.getCurrentEditTheme);
 
   yield put(
     themeSlice.actions.setDashboardTheme({
       dashboardId,
-      theme: currentTheme,
+      settings,
+      theme,
     })
   );
 }

@@ -32,7 +32,11 @@ import {
   setTagsFiltersPublic,
 } from './actions';
 
-import { createCodeSnippet, sortDashboards } from './utils';
+import {
+  createCodeSnippet,
+  createDashboardSettings,
+  sortDashboards,
+} from './utils';
 
 import {
   getDashboardsMetadata,
@@ -51,6 +55,7 @@ import {
   getDashboardAccessKeyRegenerating,
 } from './selectors';
 import {
+  DashboardSettings,
   DashboardMetaData,
   DashboardModel,
   DashboardError,
@@ -103,6 +108,7 @@ export {
   DashboardMetaData,
   DashboardModel,
   DashboardListOrder,
+  DashboardSettings,
   DashboardError,
   DASHBOARDS_ORDER,
   ADD_WIDGET_TO_DASHBOARD,
@@ -112,4 +118,5 @@ export {
   getTagsFilter,
   setTagsFilters,
   setTagsFiltersPublic,
+  createDashboardSettings,
 };
