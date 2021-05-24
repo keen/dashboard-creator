@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { transparentize } from 'polished';
 import { colors } from '@keen.io/colors';
 
 export const Container = styled.div`
@@ -6,6 +7,8 @@ export const Container = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  padding: 5px;
+  background-color: ${transparentize(0.1, colors.white[500])};
 
   width: 100%;
   height: 100%;
