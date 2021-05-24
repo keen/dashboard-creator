@@ -73,7 +73,6 @@ export function* editDashboardTheme({
     );
 
     yield put(saveDashboard(dashboardId));
-    yield put(themeSlice.actions.resetDashboardEdit());
   }
 
   yield put(
@@ -82,4 +81,7 @@ export function* editDashboardTheme({
       inPreviewMode: false,
     })
   );
+
+  yield take(themeSagaActions.editorUnmounted.type);
+  yield put(themeSlice.actions.resetDashboardEdit());
 }

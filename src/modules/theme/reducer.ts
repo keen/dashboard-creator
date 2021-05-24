@@ -2,7 +2,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Theme } from '@keen.io/charts';
 
-import { ReducerState, ThemeSettings } from './types';
+import { ReducerState, ThemeSettings, ThemeEditorSection } from './types';
 
 import { DashboardSettings } from '../dashboards';
 
@@ -11,6 +11,7 @@ export const initialState: ReducerState = {
   defaultTheme: {},
   initialTheme: {},
   currentEditTheme: {},
+  editorSection: ThemeEditorSection.Main,
   modal: {
     inPreviewMode: false,
     isOpen: false,
@@ -21,6 +22,12 @@ const themeSlice = createSlice({
   name: 'theme',
   initialState,
   reducers: {
+    setEditorSection: (
+      state,
+      { payload }: PayloadAction<ThemeEditorSection>
+    ) => {
+      state.editorSection = payload;
+    },
     setModalVisibility: (
       state,
       { payload }: PayloadAction<{ isOpen: boolean; inPreviewMode: boolean }>

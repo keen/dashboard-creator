@@ -4,7 +4,10 @@
     "title": "Dashboard Theming",
     "preview": "Preview",
     "cancel": "Cancel",
-    "expand": "Expand"
+    "expand": "Expand",
+    "main_section_title": "General",
+    "color_palette_title": "Data Color Palette",
+    "color_palette_description": "Make sure the colors are diverse to increase the readability of the data"
   },
   "confirm_query_change": {
     "title": "You Edited Saved Query",

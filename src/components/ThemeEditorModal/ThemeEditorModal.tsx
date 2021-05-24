@@ -28,6 +28,7 @@ const ThemeEditorModal: FC<{}> = () => {
   return (
     <Modal
       adjustPositionToScroll={false}
+      closeOnFadeMaskClick={false}
       isOpen={isOpen}
       useMask={!inPreviewMode}
       onClose={() =>

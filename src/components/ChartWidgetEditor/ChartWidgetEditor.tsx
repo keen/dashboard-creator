@@ -19,6 +19,7 @@ const ChartWidgetEditor: FC<Props> = ({ isOpen }) => {
     <Modal
       isOpen={isOpen}
       adjustPositionToScroll={false}
+      closeOnFadeMaskClick={false}
       onClose={() => dispatch(chartEditorActions.closeEditor())}
     >
       {(_, closeHandler) => (

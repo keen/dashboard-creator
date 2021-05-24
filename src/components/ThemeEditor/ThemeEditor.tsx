@@ -1,47 +1,82 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
+import { Theme } from '@keen.io/charts';
+import { Accordion } from '@keen.io/ui-core';
 
-import { themeActions, themeSelectors, extendTheme } from '../../modules/theme';
+import { Container, SectionConatainer } from './ThemeEditor.styles';
+import { MainSettings } from './components';
+
+import {
+  themeActions,
+  themeSelectors,
+  themeSagaActions,
+  extendTheme,
+  ThemeEditorSection,
+} from '../../modules/theme';
+import {
+  DashboardSettings,
+  extendDashboardSettings,
+} from '../../modules/dashboards';
 
 type Props = {};
 
 const ThemeEditor: FC<Props> = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
+
   const { theme, settings } = useSelector(themeSelectors.getCurrentEditTheme);
+  const editorSection = useSelector(themeSelectors.getEditorSection);
+
+  const onSectionChange = useCallback(
+    (editorSection: ThemeEditorSection, isOpen: boolean) => {
+      if (isOpen) {
+        dispatch(themeActions.setEditorSection(editorSection));
+      } else {
+        dispatch(themeActions.setEditorSection(null));
+      }
+    },
+    []
+  );
+
+  const updateThemeSettings = useCallback(
+    (
+      themeSettings: Partial<Theme>,
+      dashboardSettings: Partial<DashboardSettings>
+    ) => {
+      dispatch(
+        themeActions.setCurrentEditTheme({
+          settings: extendDashboardSettings(dashboardSettings, settings),
+          theme: extendTheme(themeSettings, theme),
+        })
+      );
+    },
+    [theme, settings]
+  );
+
+  useEffect(() => {
+    return () => {
+      dispatch(themeSagaActions.editorUnmounted());
+    };
+  }, []);
 
   return (
-    <div>
-      <button
-        onClick={() => {
-          dispatch(
-            themeActions.setCurrentEditTheme({
-              settings,
-              theme: extendTheme(
-                {
-                  colors: [
-                    '#94003a',
-                    '#a4535e',
-                    '#af8181',
-                    '#b8a79f',
-                    '#c0c7b8',
-                    '#cadfcb',
-                    '#d8f1d8',
-                    '#eafcdf',
-                    '#ffffe0',
-                  ],
-                },
-                theme
-              ),
-            })
-          );
-        }}
-      >
-        Update colors
-      </button>
-      {JSON.stringify(settings)}
-      <hr />
-      {JSON.stringify(theme)}
-    </div>
+    <Container>
+      <SectionConatainer>
+        <Accordion
+          title={t('theme_editor.main_section_title')}
+          isOpen={editorSection === ThemeEditorSection.Main}
+          onChange={(isOpen) =>
+            onSectionChange(ThemeEditorSection.Main, isOpen)
+          }
+        >
+          <MainSettings
+            currentSettings={{ theme, settings }}
+            onUpdateSettings={updateThemeSettings}
+          />
+        </Accordion>
+      </SectionConatainer>
+    </Container>
   );
 };
 
