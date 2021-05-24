@@ -13,7 +13,7 @@ export const Container = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
-  border: dashed 1px ${colors.black[100]};
+  border: dashed 1px ${colors.gray[500]};
 `;
 
 export const DragHandle = styled.div`
