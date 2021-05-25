@@ -15,6 +15,7 @@ import {
 } from './PublicDashboardViewer.styles';
 
 import { getDashboard, getDashboardMeta } from '../../modules/dashboards';
+import { themeSelectors } from '../../modules/theme';
 import { modalMotion } from './motion';
 
 import Grid from '../Grid';
@@ -32,21 +33,34 @@ type Props = {
 
 const PublicDashboardViewer: FC<Props> = ({ dashboardId }) => {
   const { t } = useTranslation();
-  const { widgetsId, isInitialized, error } = useSelector(
+  const { widgetsId, isInitialized, gridGap, error } = useSelector(
     (state: RootState) => {
       const dashboard = getDashboard(state, dashboardId);
-      if (dashboard) {
+      const themeSettings = themeSelectors.getThemeByDashboardId(
+        state,
+        dashboardId
+      );
+
+      if (dashboard && themeSettings) {
         const { initialized, error } = dashboard;
+        const {
+          settings: {
+            page: { gridGap },
+          },
+        } = themeSettings;
+
         return {
           isInitialized: initialized,
           error,
           widgetsId: dashboard.settings?.widgets,
+          gridGap,
         };
       }
 
       return {
         widgetsId: [],
         error: null,
+        gridGap: null,
         isInitialized: false,
       };
     }
@@ -79,7 +93,7 @@ const PublicDashboardViewer: FC<Props> = ({ dashboardId }) => {
         </AnimatePresence>
         {error && <GridPlaceholder />}
         {isInitialized && !error && (
-          <Grid isEditorMode={false} widgetsId={widgetsId} />
+          <Grid isEditorMode={false} gridGap={gridGap} widgetsId={widgetsId} />
         )}
       </Content>
       <DropdownContainer id="dropdown-container" />

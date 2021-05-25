@@ -23,11 +23,20 @@ const getActiveDashboardTheme = (state: RootState) => {
   return dashboards[activeDashboardId]?.theme || {};
 };
 
+const getActiveDashboardThemeSettings = (state: RootState) => {
+  const {
+    app: { activeDashboardId },
+    theme: { dashboards },
+  } = state;
+  return dashboards[activeDashboardId];
+};
+
 export const themeSelectors = {
   getBaseTheme,
   getThemeModal,
   getEditorSection,
   getCurrentEditTheme,
   getThemeByDashboardId,
+  getActiveDashboardThemeSettings,
   getActiveDashboardTheme,
 };

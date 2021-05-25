@@ -5,7 +5,10 @@ import configureStore from 'redux-mock-store';
 
 import PublicDashboardViewer from './PublicDashboardViewer';
 
-import { DashboardError } from '../../modules/dashboards';
+import {
+  DashboardError,
+  createDashboardSettings,
+} from '../../modules/dashboards';
 
 const render = (storeState: any = {}, overProps: any = {}) => {
   const props = {
@@ -15,7 +18,7 @@ const render = (storeState: any = {}, overProps: any = {}) => {
 
   const state = {
     app: {
-      activeDashboardId: 'dashboard',
+      activeDashboardId: '@dashboard/01',
     },
     dashboards: {
       items: {
@@ -45,7 +48,10 @@ const render = (storeState: any = {}, overProps: any = {}) => {
     },
     theme: {
       dashboards: {
-        dashboard: {},
+        '@dashboard/01': {
+          theme: {},
+          settings: createDashboardSettings(),
+        },
       },
     },
     widgets: {

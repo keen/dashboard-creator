@@ -10,6 +10,7 @@ import {
   editDashboard,
   showDashboardSettingsModal,
 } from '../../modules/dashboards';
+import { themeSelectors } from '../../modules/theme';
 import { removeInterimQueries } from '../../modules/queries';
 import { resetDatePickerWidgets } from '../../modules/widgets';
 
@@ -36,20 +37,35 @@ const Viewer: FC<Props> = ({ dashboardId }) => {
   const dispatch = useDispatch();
 
   const { editPrivileges } = useSelector(appSelectors.getUser);
-  const { widgetsId, isInitialized } = useSelector((state: RootState) => {
-    const dashboard = getDashboard(state, dashboardId);
-    if (dashboard?.initialized) {
+  const { widgetsId, isInitialized, gridGap } = useSelector(
+    (state: RootState) => {
+      const dashboard = getDashboard(state, dashboardId);
+      const themeSettings = themeSelectors.getThemeByDashboardId(
+        state,
+        dashboardId
+      );
+
+      if (dashboard?.initialized && themeSettings) {
+        const {
+          settings: {
+            page: { gridGap },
+          },
+        } = themeSettings;
+
+        return {
+          isInitialized: true,
+          gridGap: gridGap,
+          widgetsId: dashboard.settings.widgets,
+        };
+      }
+
       return {
-        isInitialized: true,
-        widgetsId: dashboard.settings.widgets,
+        widgetsId: [],
+        gridGap: null,
+        isInitialized: false,
       };
     }
-
-    return {
-      widgetsId: [],
-      isInitialized: false,
-    };
-  });
+  );
 
   const { title, tags, isPublic } = useSelector((state: RootState) =>
     getDashboardMeta(state, dashboardId)
@@ -86,7 +102,11 @@ const Viewer: FC<Props> = ({ dashboardId }) => {
       <Content>
         {isInitialized ? (
           <>
-            <Grid isEditorMode={false} widgetsId={widgetsId} />
+            <Grid
+              isEditorMode={false}
+              gridGap={gridGap}
+              widgetsId={widgetsId}
+            />
           </>
         ) : (
           <GridLoader />

@@ -3,12 +3,15 @@ import { useSelector } from 'react-redux';
 import { Theme } from '@keen.io/charts';
 
 import { Container } from './MainSettings.styles';
-import ColorPalette from '../ColorPalette';
+import ColorManager from '../ColorManager';
+import DashboardPage from '../DashboardPage';
+import WidgetTiles from '../WidgetTiles';
+import SettingsDivider from '../SettingsDivider';
 
 import {
   themeSelectors,
   ThemeSettings,
-  CUSTOM_COLOR_THEME,
+  CUSTOM_COLOR_PALETTE,
 } from '../../../../modules/theme';
 import { DashboardSettings } from '../../../../modules/dashboards';
 
@@ -28,14 +31,14 @@ const MainSettings: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
 
   return (
     <Container>
-      <ColorPalette
+      <ColorManager
         defaultColors={defaultColors}
         colorPaletteName={settings.colorPalette}
         colors={theme.colors}
-        onUpdateColors={(colors) =>
-          onUpdateSettings({ colors }, { colorPalette: CUSTOM_COLOR_THEME })
+        onUpdateColors={(colors: string[]) =>
+          onUpdateSettings({ colors }, { colorPalette: CUSTOM_COLOR_PALETTE })
         }
-        onUpdatePalette={(colorPalette, colors) =>
+        onSelectPalette={(colorPalette: string, colors: string[]) =>
           onUpdateSettings(
             {
               colors,
@@ -45,6 +48,20 @@ const MainSettings: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
             }
           )
         }
+      />
+      <SettingsDivider />
+      <DashboardPage
+        onUpdateSettings={(pageSettings) =>
+          onUpdateSettings(theme, { ...pageSettings })
+        }
+        settings={settings}
+      />
+      <SettingsDivider />
+      <WidgetTiles
+        onUpdateSettings={(pageSettings) =>
+          onUpdateSettings(theme, { ...pageSettings })
+        }
+        settings={settings}
       />
     </Container>
   );

@@ -3,7 +3,11 @@ import themeSlice from './reducer';
 import { themeSagaActions } from './actions';
 import { themeSaga } from './themeSaga';
 
-import { CUSTOM_COLOR_THEME } from './constants';
+import {
+  CUSTOM_COLOR_PALETTE,
+  DEFAULT_COLOR_PALETTE,
+  COLOR_PALETTES,
+} from './constants';
 import { themeSelectors } from './selectors';
 import { extendTheme } from './utils';
 
@@ -19,7 +23,9 @@ export {
   themeSagaActions,
   themeSelectors,
   extendTheme,
-  CUSTOM_COLOR_THEME,
+  DEFAULT_COLOR_PALETTE,
+  CUSTOM_COLOR_PALETTE,
+  COLOR_PALETTES,
   ThemeEditorSection,
   ThemeSettings,
 };
