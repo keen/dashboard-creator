@@ -6,6 +6,6 @@ export const Container = styled.div`
   width: 100%;
 `;
 
-export const SectionConatainer = styled.section`
+export const SectionContainer = styled.section`
   width: 100%;
 `;

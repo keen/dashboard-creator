@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Theme } from '@keen.io/charts';
 import { Accordion } from '@keen.io/ui-core';
 
-import { Container, SectionConatainer } from './ThemeEditor.styles';
+import { Container, SectionContainer } from './ThemeEditor.styles';
 import { MainSettings } from './components';
 
 import {
@@ -62,7 +62,7 @@ const ThemeEditor: FC<Props> = () => {
 
   return (
     <Container>
-      <SectionConatainer>
+      <SectionContainer>
         <Accordion
           title={t('theme_editor.main_section_title')}
           isOpen={editorSection === ThemeEditorSection.Main}
@@ -75,7 +75,7 @@ const ThemeEditor: FC<Props> = () => {
             onUpdateSettings={updateThemeSettings}
           />
         </Accordion>
-      </SectionConatainer>
+      </SectionContainer>
     </Container>
   );
 };
