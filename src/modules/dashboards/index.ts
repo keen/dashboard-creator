@@ -34,6 +34,7 @@ import {
 
 import {
   createCodeSnippet,
+  extendDashboardSettings,
   createDashboardSettings,
   sortDashboards,
 } from './utils';
@@ -119,4 +120,5 @@ export {
   setTagsFilters,
   setTagsFiltersPublic,
   createDashboardSettings,
+  extendDashboardSettings,
 };

@@ -15,9 +15,12 @@ const saveDashboardTheme = createAction('theme/saveDashboardTheme');
 
 const cancelEdition = createAction('theme/cancelEdition');
 
+const editorUnmounted = createAction('theme/editorUnmounted');
+
 export const themeSagaActions = {
   previewTheme,
   editDashboardTheme,
   saveDashboardTheme,
+  editorUnmounted,
   cancelEdition,
 };

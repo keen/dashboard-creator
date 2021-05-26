@@ -21,7 +21,7 @@ import {
   updateWidgetsPosition,
   WidgetsPosition,
 } from '../../modules/widgets';
-import { themeSagaActions } from '../../modules/theme';
+import { themeSagaActions, themeSelectors } from '../../modules/theme';
 import { textEditorSelectors } from '../../modules/textEditor';
 
 import { AppContext, EditorContext } from '../../contexts';
@@ -75,12 +75,24 @@ const Editor: FC<Props> = ({ dashboardId }) => {
     textAlignment,
   } = useSelector(textEditorSelectors.getTextEditor);
 
-  const { widgetsId, isInitialized, isSaving } = useSelector(
+  const { widgetsId, isInitialized, gridGap, isSaving } = useSelector(
     (state: RootState) => {
       const dashboard = getDashboard(state, dashboardId);
-      if (dashboard?.initialized) {
+      const themeSettings = themeSelectors.getThemeByDashboardId(
+        state,
+        dashboardId
+      );
+
+      if (dashboard?.initialized && themeSettings) {
+        const {
+          settings: {
+            page: { gridGap },
+          },
+        } = themeSettings;
+
         return {
           isInitialized: true,
+          gridGap,
           isSaving: dashboard.isSaving,
           widgetsId: dashboard.settings.widgets,
         };
@@ -89,6 +101,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
       return {
         widgetsId: [],
         isSaving: false,
+        gridGap: null,
         isInitialized: false,
       };
     }
@@ -168,6 +181,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
           <Grid
             isEditorMode={true}
             widgetsId={widgetsId}
+            gridGap={gridGap}
             onWidgetDrop={addWidgetHandler}
             onWidgetDrag={(gridPositions) => {
               dispatch(updateWidgetsPosition(gridPositions));

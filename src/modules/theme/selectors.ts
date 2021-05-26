@@ -4,6 +4,8 @@ const getBaseTheme = ({ theme }: RootState) => theme.defaultTheme;
 
 const getThemeModal = ({ theme }: RootState) => theme.modal;
 
+const getEditorSection = ({ theme }: RootState) => theme.editorSection;
+
 const getThemeByDashboardId = (state: RootState, dashboardId: string) => {
   const {
     theme: { dashboards },
@@ -21,10 +23,20 @@ const getActiveDashboardTheme = (state: RootState) => {
   return dashboards[activeDashboardId]?.theme || {};
 };
 
+const getActiveDashboardThemeSettings = (state: RootState) => {
+  const {
+    app: { activeDashboardId },
+    theme: { dashboards },
+  } = state;
+  return dashboards[activeDashboardId];
+};
+
 export const themeSelectors = {
   getBaseTheme,
   getThemeModal,
+  getEditorSection,
   getCurrentEditTheme,
   getThemeByDashboardId,
+  getActiveDashboardThemeSettings,
   getActiveDashboardTheme,
 };
