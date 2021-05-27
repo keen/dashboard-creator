@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { DropableContainer, Dropdown } from '@keen.io/ui-core';
+import { ColorPalette, DropableContainer, Dropdown } from '@keen.io/ui-core';
 import { BodyText } from '@keen.io/typography';
 import { colors as keenColors } from '@keen.io/colors';
 
@@ -14,11 +14,15 @@ import {
   ColorsList,
   ColorItem,
   ColorRectangle,
+  ColorPaletteWrapper,
 } from './ColorManager.styles';
 import SettingsHeadline from '../SettingsHeadline';
 
 import { createColorPalettes } from './utils';
 import { COLORS_IN_LIST } from './constants';
+import { themeSelectors } from '../../../../modules/theme';
+import { useSelector } from 'react-redux';
+import { getNestedObjectKeysAndValues } from '../../../../utils';
 
 type Props = {
   /** Current color palette name */
@@ -38,9 +42,20 @@ const ColorManager: FC<Props> = ({
   colors,
   defaultColors,
   onSelectPalette,
+  onUpdateColors,
 }) => {
   const { t } = useTranslation();
   const [isOpen, setOpen] = useState(false);
+
+  const currentEditTheme = useSelector(themeSelectors.getCurrentEditTheme);
+  const colorSuggestions = [
+    ...new Set([
+      ...colors,
+      ...getNestedObjectKeysAndValues(currentEditTheme, (keychain) =>
+        keychain.endsWith('fontColor')
+      ).values,
+    ]),
+  ];
 
   return (
     <Container>
@@ -90,14 +105,13 @@ const ColorManager: FC<Props> = ({
             )}
           </ColorsList>
         </Dropdown>
-        <div style={{ display: 'flex' }}>
-          {colors.map((color, idx) => (
-            <div
-              key={`${color}-${idx}`}
-              style={{ background: color, width: 20, height: 20 }}
-            />
-          ))}
-        </div>
+        <ColorPaletteWrapper>
+          <ColorPalette
+            colors={colors}
+            colorSuggestions={colorSuggestions}
+            onColorsChange={(colors) => onUpdateColors(colors)}
+          />
+        </ColorPaletteWrapper>
       </Settings>
     </Container>
   );

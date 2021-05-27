@@ -44,3 +44,7 @@ export const Divider = styled.div`
   height: 1px;
   background: ${colors.white[300]};
 `;
+
+export const ColorPaletteWrapper = styled.div`
+  margin-top: 10px;
+`;

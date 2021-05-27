@@ -4,6 +4,7 @@ import isLink from './isLink';
 import getCustomTimeframe from './getCustomTimeframe';
 import { getEventPath } from './getEventPath';
 import { getRelativeBoundingRect } from './getRelativeBoundingRect';
+import { getNestedObjectKeysAndValues } from './getNestedObjectKeys';
 
 export {
   getDroppingItemSize,
@@ -12,4 +13,5 @@ export {
   isLink,
   getCustomTimeframe,
   getEventPath,
+  getNestedObjectKeysAndValues,
 };
