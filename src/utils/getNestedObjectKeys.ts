@@ -11,7 +11,7 @@ const concatKeychain = (previousKeys, key) => {
  */
 export const getNestedObjectKeysAndValues = (
   obj: Record<string, any>,
-  filter: (keychain) => {}
+  filter?: (keychain) => {}
 ) => {
   const nestedObjectKeys = [];
   const nestedObjectValues = [];

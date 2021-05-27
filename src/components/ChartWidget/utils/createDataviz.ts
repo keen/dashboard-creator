@@ -47,6 +47,10 @@ const createDataviz = ({
       ...widgetSettings,
       card: {
         backgroundColor: tiles.background,
+        borderColor: tiles.borderColor,
+        borderWidth: tiles.borderWidth,
+        borderRadius: tiles.borderRadius,
+        hasShadow: tiles.hasShadow,
       },
     },
     presentationTimezone,

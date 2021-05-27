@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 import { themeSelectors } from '../../../../modules/theme';
 import { getNestedObjectKeysAndValues } from '../../../../utils';
 
-import { DropableContainer, Dropdown } from '@keen.io/ui-core';
+import { DropableContainer, Dropdown, Toggle } from '@keen.io/ui-core';
 import { BodyText } from '@keen.io/typography';
 import { colors as keenColors } from '@keen.io/colors/dist/colors';
 import {
@@ -25,19 +25,19 @@ type Props = {
   settings: Pick<DashboardSettings, 'tiles' | 'colorPalette'>;
   /** Update dashboard settings event handler */
   onUpdateSettings: (settings: Partial<DashboardSettings>) => void;
+  colors: string[];
 };
 
-const WidgetTiles: FC<Props> = ({ settings, onUpdateSettings }) => {
+const WidgetTiles: FC<Props> = ({ settings, onUpdateSettings, colors }) => {
   const { t } = useTranslation();
   const {
-    tiles: { background, borderColor, borderWidth },
-    colorPalette,
+    tiles: { background, borderColor, borderWidth, hasShadow },
   } = settings;
 
   const currentEditTheme = useSelector(themeSelectors.getCurrentEditTheme);
   const colorSuggestions = [
     ...new Set([
-      ...colorPalette,
+      ...colors,
       ...getNestedObjectKeysAndValues(currentEditTheme, (keychain) =>
         keychain.endsWith('fontColor')
       ).values,
@@ -123,7 +123,19 @@ const WidgetTiles: FC<Props> = ({ settings, onUpdateSettings }) => {
 
       <SettingsSubcategory title={'Inner Margin'}>Slider</SettingsSubcategory>
 
-      <SettingsSubcategory title={'Shadow'}>Shadow</SettingsSubcategory>
+      <SettingsSubcategory title={'Shadow'}>
+        <Toggle
+          isOn={hasShadow}
+          onChange={(isSet) =>
+            onUpdateSettings({
+              tiles: {
+                ...settings.tiles,
+                hasShadow: isSet,
+              },
+            })
+          }
+        />
+      </SettingsSubcategory>
     </SettingsCategory>
   );
 };
