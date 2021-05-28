@@ -1,4 +1,4 @@
-import Section, { SectionRow } from './Section';
+import Section, { SectionRow, TextWrapper } from './Section';
 
-export { SectionRow };
+export { SectionRow, TextWrapper };
 export default Section;

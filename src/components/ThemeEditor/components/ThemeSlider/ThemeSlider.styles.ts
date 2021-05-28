@@ -7,4 +7,5 @@ export const LabelWrapper = styled.div`
 
 export const Container = styled.div`
   width: ${DIMENSION}px;
+  min-height: 45px;
 `;

@@ -4,13 +4,12 @@ import { BodyText } from '@keen.io/typography';
 
 import SettingsHeadline from '../SettingsHeadline';
 import FontSelector from '../FontSelector';
-import Section, { SectionRow } from '../Section';
+import Section, { SectionRow, TextWrapper } from '../Section';
 import ThemeSlider, { generateRulerSettings } from '../ThemeSlider';
 
 import { DashboardSettings } from '../../../../modules/dashboards';
 
-import { TextWrapper } from './DashboardPage.styles';
-import { SPACING_INTERVALS } from './constants';
+import { SPACING_INTERVALS } from '../../constants';
 
 type Props = {
   /** Dashboard page settings */

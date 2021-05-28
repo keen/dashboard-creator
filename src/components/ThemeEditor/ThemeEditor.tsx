@@ -4,8 +4,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Theme } from '@keen.io/charts';
 import { Accordion } from '@keen.io/ui-core';
 
-import { Container, SectionContainer } from './ThemeEditor.styles';
 import { MainSettings } from './components';
+import { Container, SectionContainer } from './ThemeEditor.styles';
 
 import {
   themeActions,

@@ -1,25 +1,29 @@
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import SettingsHeadline from '../SettingsHeadline';
-
-import { DashboardSettings } from '../../../../modules/dashboards';
-import { ColorSelector } from '../ColorSelector';
-import { SettingsCategory } from '../SettingsCategory';
-import { SettingsSubcategory } from '../SettingsSubCategory';
 import { useSelector } from 'react-redux';
-import { themeSelectors } from '../../../../modules/theme';
-
 import { DropableContainer, Dropdown, Toggle } from '@keen.io/ui-core';
 import { BodyText } from '@keen.io/typography';
 import { colors as keenColors } from '@keen.io/colors/dist/colors';
+
+import SettingsHeadline from '../SettingsHeadline';
+import Section, { SectionRow, TextWrapper } from '../Section';
+import { ColorSelector } from '../ColorSelector';
+import ThemeSlider, { generateRulerSettings } from '../ThemeSlider';
+
+import { DashboardSettings } from '../../../../modules/dashboards';
+import { themeSelectors } from '../../../../modules/theme';
+
 import {
   BorderOption,
   BorderWidthDropdownWrapper,
   BorderSettingsWrapper,
 } from './WidgetTiles.styles';
 import { getColorSuggestions } from '../../utils';
-import { TILE_BORDER_WIDTHS } from '../../constants';
+import {
+  TILE_BORDER_WIDTHS,
+  SPACING_INTERVALS,
+  ROUNDING_INTERVALS,
+} from '../../constants';
 
 type Props = {
   /** Dashboard page settings */
@@ -42,94 +46,134 @@ const WidgetTiles: FC<Props> = ({ settings, onUpdateSettings, colors }) => {
   );
 
   return (
-    <SettingsCategory
-      title={<SettingsHeadline title={t('theme_editor.widget_tiles_title')} />}
-    >
-      <SettingsSubcategory title={'Tile color'}>
-        <ColorSelector
-          color={background}
-          colorSuggestions={colorSuggestions}
-          onColorChange={(color) =>
-            onUpdateSettings({
-              tiles: {
-                ...settings.tiles,
-                background: color,
-              },
-            })
-          }
-        />
-      </SettingsSubcategory>
-
-      <SettingsSubcategory title={'Border'}>
-        <BorderSettingsWrapper>
+    <Section>
+      <SettingsHeadline title={t('theme_editor.widget_tiles_title')} />
+      <div>
+        <SectionRow>
+          <TextWrapper>
+            <BodyText variant="body2" fontWeight="bold">
+              {t('theme_editor.tile_color')}
+            </BodyText>
+          </TextWrapper>
           <ColorSelector
-            color={borderColor}
+            color={background}
             colorSuggestions={colorSuggestions}
             onColorChange={(color) =>
               onUpdateSettings({
                 tiles: {
                   ...settings.tiles,
-                  borderColor: color,
+                  background: color,
                 },
               })
             }
           />
-          <BorderWidthDropdownWrapper>
-            <DropableContainer
-              isActive={borderWidthDropdownIsOpen}
-              onClick={() =>
-                !borderWidthDropdownIsOpen && setBorderWidthDropdownIsOpen(true)
+        </SectionRow>
+        <SectionRow>
+          <TextWrapper>
+            <BodyText variant="body2" fontWeight="bold">
+              {t('theme_editor.border')}
+            </BodyText>
+          </TextWrapper>
+          <BorderSettingsWrapper>
+            <ColorSelector
+              color={borderColor}
+              colorSuggestions={colorSuggestions}
+              onColorChange={(color) =>
+                onUpdateSettings({
+                  tiles: {
+                    ...settings.tiles,
+                    borderColor: color,
+                  },
+                })
               }
-              onDefocus={() => setBorderWidthDropdownIsOpen(false)}
-              dropIndicator
-              variant="secondary"
-              value={borderWidth.toString()}
-            >
-              {borderWidth}
-            </DropableContainer>
-            <Dropdown isOpen={borderWidthDropdownIsOpen} fullWidth={true}>
-              {TILE_BORDER_WIDTHS.map((borderWidth, index) => (
-                <BorderOption
-                  key={borderWidth + index}
-                  onClick={() =>
-                    onUpdateSettings({
-                      tiles: {
-                        ...settings.tiles,
-                        borderWidth: borderWidth,
-                      },
-                    })
-                  }
-                >
-                  <BodyText variant="body2" color={keenColors.blue[500]}>
-                    {borderWidth}
-                  </BodyText>
-                </BorderOption>
-              ))}
-            </Dropdown>
-          </BorderWidthDropdownWrapper>
-        </BorderSettingsWrapper>
-      </SettingsSubcategory>
-
-      <SettingsSubcategory title={'Corner Rounding'}>
-        Slider
-      </SettingsSubcategory>
-
-      <SettingsSubcategory title={'Inner Margin'}>Slider</SettingsSubcategory>
-
-      <SettingsSubcategory title={'Shadow'}>
-        <Toggle
-          isOn={hasShadow}
-          onChange={(isSet) =>
-            onUpdateSettings({
-              tiles: {
-                ...settings.tiles,
-                hasShadow: isSet,
-              },
-            })
-          }
-        />
-      </SettingsSubcategory>
-    </SettingsCategory>
+            />
+            <BorderWidthDropdownWrapper>
+              <DropableContainer
+                isActive={borderWidthDropdownIsOpen}
+                onClick={() =>
+                  setBorderWidthDropdownIsOpen(!borderWidthDropdownIsOpen)
+                }
+                onDefocus={() => setBorderWidthDropdownIsOpen(false)}
+                dropIndicator
+                variant="secondary"
+                value={borderWidth.toString()}
+              >
+                {borderWidth}
+              </DropableContainer>
+              <Dropdown isOpen={borderWidthDropdownIsOpen} fullWidth={true}>
+                {TILE_BORDER_WIDTHS.map((borderWidth, index) => (
+                  <BorderOption
+                    key={borderWidth + index}
+                    onClick={() =>
+                      onUpdateSettings({
+                        tiles: {
+                          ...settings.tiles,
+                          borderWidth: borderWidth,
+                        },
+                      })
+                    }
+                  >
+                    <BodyText variant="body2" color={keenColors.blue[500]}>
+                      {borderWidth}
+                    </BodyText>
+                  </BorderOption>
+                ))}
+              </Dropdown>
+            </BorderWidthDropdownWrapper>
+          </BorderSettingsWrapper>
+        </SectionRow>
+        <SectionRow alignItems="flex-start">
+          <TextWrapper>
+            <BodyText variant="body2" fontWeight="bold">
+              {t('theme_editor.corner_rounding')}
+            </BodyText>
+          </TextWrapper>
+          <ThemeSlider
+            initialValue={10}
+            intervals={ROUNDING_INTERVALS}
+            ticks={generateRulerSettings({
+              minimum: ROUNDING_INTERVALS[0].minimum,
+              maximum: ROUNDING_INTERVALS[0].maximum,
+              step: 2,
+            })}
+          />
+        </SectionRow>
+        <SectionRow alignItems="flex-start">
+          <TextWrapper>
+            <BodyText variant="body2" fontWeight="bold">
+              {t('theme_editor.inner_margin')}
+            </BodyText>
+          </TextWrapper>
+          <ThemeSlider
+            initialValue={20}
+            intervals={SPACING_INTERVALS}
+            ticks={generateRulerSettings({
+              minimum: SPACING_INTERVALS[0].minimum,
+              maximum: SPACING_INTERVALS[0].maximum,
+              step: 5,
+            })}
+          />
+        </SectionRow>
+        <SectionRow>
+          <TextWrapper>
+            <BodyText variant="body2" fontWeight="bold">
+              {t('theme_editor.shadow')}
+            </BodyText>
+          </TextWrapper>
+          <Toggle
+            isOn={hasShadow}
+            onChange={(isSet) =>
+              onUpdateSettings({
+                tiles: {
+                  ...settings.tiles,
+                  hasShadow: isSet,
+                },
+              })
+            }
+          />
+        </SectionRow>
+      </div>
+    </Section>
   );
 };
 

@@ -1,7 +1,7 @@
 import React, { FC, useRef, useState } from 'react';
-import { Color, DropdownWrapper, ColorWrapper } from './ColorSelector.styles';
 import { ColorPicker, Dropdown } from '@keen.io/ui-core';
 import { useOnClickOutside } from '@keen.io/react-hooks';
+import { Color, DropdownWrapper, ColorWrapper } from './ColorSelector.styles';
 
 type Props = {
   color: string;

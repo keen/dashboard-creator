@@ -1,13 +1,14 @@
 import React, { FC, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { ColorPalette, DropableContainer, Dropdown } from '@keen.io/ui-core';
 import { BodyText } from '@keen.io/typography';
 import { colors as keenColors } from '@keen.io/colors';
 
+import SettingsHeadline from '../SettingsHeadline';
+import Section from '../Section';
 import {
-  Container,
   Heading,
-  Settings,
   Palette,
   Divider,
   SelectColorPalette,
@@ -16,13 +17,11 @@ import {
   ColorRectangle,
   ColorPaletteWrapper,
 } from './ColorManager.styles';
-import SettingsHeadline from '../SettingsHeadline';
 
 import { createColorPalettes } from './utils';
+import { getColorSuggestions } from '../../utils';
 import { COLORS_IN_LIST } from './constants';
 import { themeSelectors } from '../../../../modules/theme';
-import { useSelector } from 'react-redux';
-import { getColorSuggestions } from '../../utils';
 
 type Props = {
   /** Current color palette name */
@@ -51,14 +50,14 @@ const ColorManager: FC<Props> = ({
   const colorSuggestions = getColorSuggestions(colors, currentEditTheme);
 
   return (
-    <Container>
+    <Section>
       <Heading>
         <SettingsHeadline
           title={t('theme_editor.color_palette_title')}
           description={t('theme_editor.color_palette_description')}
         />
       </Heading>
-      <Settings>
+      <div>
         <SelectColorPalette>
           <DropableContainer
             isActive={isOpen}
@@ -105,8 +104,8 @@ const ColorManager: FC<Props> = ({
             onColorsChange={(colors) => onUpdateColors(colors)}
           />
         </ColorPaletteWrapper>
-      </Settings>
-    </Container>
+      </div>
+    </Section>
   );
 };
 

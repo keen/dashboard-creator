@@ -1,16 +1,8 @@
 import styled from 'styled-components';
 import { colors } from '@keen.io/colors';
 
-export const Container = styled.div`
-  display: flex;
-`;
-
 export const Heading = styled.div`
   margin-top: 8px;
-`;
-
-export const Settings = styled.div`
-  width: 100%;
 `;
 
 export const SelectColorPalette = styled.div`

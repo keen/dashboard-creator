@@ -14,7 +14,12 @@
     "chart_titles_font": "Chart Titles Font",
     "data_visualization_font": "Data Visualizations Font",
     "space_between_widgets": "Space Between Widgets",
-    "empty_search_results": "No font found with this name"
+    "empty_search_results": "No font found with this name",
+    "tile_color": "Tile color",
+    "border": "Border",
+    "corner_rounding": "Corner Rounding",
+    "inner_margin": "Inner margin",
+    "shadow": "Shadow"
   },
   "confirm_query_change": {
     "title": "You Edited Saved Query",
