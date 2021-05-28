@@ -22,7 +22,7 @@ import { createColorPalettes } from './utils';
 import { COLORS_IN_LIST } from './constants';
 import { themeSelectors } from '../../../../modules/theme';
 import { useSelector } from 'react-redux';
-import { getNestedObjectKeysAndValues } from '../../../../utils';
+import { getColorSuggestions } from '../../utils';
 
 type Props = {
   /** Current color palette name */
@@ -48,14 +48,7 @@ const ColorManager: FC<Props> = ({
   const [isOpen, setOpen] = useState(false);
 
   const currentEditTheme = useSelector(themeSelectors.getCurrentEditTheme);
-  const colorSuggestions = [
-    ...new Set([
-      ...colors,
-      ...getNestedObjectKeysAndValues(currentEditTheme, (keychain) =>
-        keychain.endsWith('fontColor')
-      ).values,
-    ]),
-  ];
+  const colorSuggestions = getColorSuggestions(colors, currentEditTheme);
 
   return (
     <Container>

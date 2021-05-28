@@ -9,7 +9,6 @@ import { SettingsCategory } from '../SettingsCategory';
 import { SettingsSubcategory } from '../SettingsSubCategory';
 import { useSelector } from 'react-redux';
 import { themeSelectors } from '../../../../modules/theme';
-import { getNestedObjectKeysAndValues } from '../../../../utils';
 
 import { DropableContainer, Dropdown, Toggle } from '@keen.io/ui-core';
 import { BodyText } from '@keen.io/typography';
@@ -19,6 +18,8 @@ import {
   BorderWidthDropdownWrapper,
   BorderSettingsWrapper,
 } from './WidgetTiles.styles';
+import { getColorSuggestions } from '../../utils';
+import { TILE_BORDER_WIDTHS } from '../../constants';
 
 type Props = {
   /** Dashboard page settings */
@@ -35,19 +36,11 @@ const WidgetTiles: FC<Props> = ({ settings, onUpdateSettings, colors }) => {
   } = settings;
 
   const currentEditTheme = useSelector(themeSelectors.getCurrentEditTheme);
-  const colorSuggestions = [
-    ...new Set([
-      ...colors,
-      ...getNestedObjectKeysAndValues(currentEditTheme, (keychain) =>
-        keychain.endsWith('fontColor')
-      ).values,
-    ]),
-  ];
+  const colorSuggestions = getColorSuggestions(colors, currentEditTheme);
   const [borderWidthDropdownIsOpen, setBorderWidthDropdownIsOpen] = useState(
     false
   );
 
-  const availableBorderWidths = [0, 1, 2, 4, 6, 8];
   return (
     <SettingsCategory
       title={<SettingsHeadline title={t('theme_editor.widget_tiles_title')} />}
@@ -95,7 +88,7 @@ const WidgetTiles: FC<Props> = ({ settings, onUpdateSettings, colors }) => {
               {borderWidth}
             </DropableContainer>
             <Dropdown isOpen={borderWidthDropdownIsOpen} fullWidth={true}>
-              {availableBorderWidths.map((borderWidth, index) => (
+              {TILE_BORDER_WIDTHS.map((borderWidth, index) => (
                 <BorderOption
                   key={borderWidth + index}
                   onClick={() =>
