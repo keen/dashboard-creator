@@ -9,9 +9,8 @@ import { SettingsCategory } from '../SettingsCategory';
 import { SettingsSubcategory } from '../SettingsSubCategory';
 import { useSelector } from 'react-redux';
 import { themeSelectors } from '../../../../modules/theme';
-import { getNestedObjectKeysAndValues } from '../../../../utils';
 
-import { DropableContainer, Dropdown } from '@keen.io/ui-core';
+import { DropableContainer, Dropdown, Toggle } from '@keen.io/ui-core';
 import { BodyText } from '@keen.io/typography';
 import { colors as keenColors } from '@keen.io/colors/dist/colors';
 import {
@@ -19,35 +18,29 @@ import {
   BorderWidthDropdownWrapper,
   BorderSettingsWrapper,
 } from './WidgetTiles.styles';
+import { getColorSuggestions } from '../../utils';
+import { TILE_BORDER_WIDTHS } from '../../constants';
 
 type Props = {
   /** Dashboard page settings */
   settings: Pick<DashboardSettings, 'tiles' | 'colorPalette'>;
   /** Update dashboard settings event handler */
   onUpdateSettings: (settings: Partial<DashboardSettings>) => void;
+  colors: string[];
 };
 
-const WidgetTiles: FC<Props> = ({ settings, onUpdateSettings }) => {
+const WidgetTiles: FC<Props> = ({ settings, onUpdateSettings, colors }) => {
   const { t } = useTranslation();
   const {
-    tiles: { background, borderColor, borderWidth },
-    colorPalette,
+    tiles: { background, borderColor, borderWidth, hasShadow },
   } = settings;
 
   const currentEditTheme = useSelector(themeSelectors.getCurrentEditTheme);
-  const colorSuggestions = [
-    ...new Set([
-      ...colorPalette,
-      ...getNestedObjectKeysAndValues(currentEditTheme, (keychain) =>
-        keychain.endsWith('fontColor')
-      ).values,
-    ]),
-  ];
+  const colorSuggestions = getColorSuggestions(colors, currentEditTheme);
   const [borderWidthDropdownIsOpen, setBorderWidthDropdownIsOpen] = useState(
     false
   );
 
-  const availableBorderWidths = [0, 1, 2, 4, 6, 8];
   return (
     <SettingsCategory
       title={<SettingsHeadline title={t('theme_editor.widget_tiles_title')} />}
@@ -95,7 +88,7 @@ const WidgetTiles: FC<Props> = ({ settings, onUpdateSettings }) => {
               {borderWidth}
             </DropableContainer>
             <Dropdown isOpen={borderWidthDropdownIsOpen} fullWidth={true}>
-              {availableBorderWidths.map((borderWidth, index) => (
+              {TILE_BORDER_WIDTHS.map((borderWidth, index) => (
                 <BorderOption
                   key={borderWidth + index}
                   onClick={() =>
@@ -123,7 +116,19 @@ const WidgetTiles: FC<Props> = ({ settings, onUpdateSettings }) => {
 
       <SettingsSubcategory title={'Inner Margin'}>Slider</SettingsSubcategory>
 
-      <SettingsSubcategory title={'Shadow'}>Shadow</SettingsSubcategory>
+      <SettingsSubcategory title={'Shadow'}>
+        <Toggle
+          isOn={hasShadow}
+          onChange={(isSet) =>
+            onUpdateSettings({
+              tiles: {
+                ...settings.tiles,
+                hasShadow: isSet,
+              },
+            })
+          }
+        />
+      </SettingsSubcategory>
     </SettingsCategory>
   );
 };

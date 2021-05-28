@@ -1,14 +1,17 @@
 import React from 'react';
 import {
   StyledSettingsCategory,
-  StyledTitle,
+  TitleWrapper,
   StyledSettings,
 } from './SettingsSubcategory.styles';
+import { Title } from '@keen.io/ui-core';
 
 export const SettingsSubcategory = ({ title, children }) => {
   return (
     <StyledSettingsCategory>
-      <StyledTitle>{title}</StyledTitle>
+      <TitleWrapper>
+        <Title variant="body-bold">{title}</Title>
+      </TitleWrapper>
       <StyledSettings>{children}</StyledSettings>
     </StyledSettingsCategory>
   );

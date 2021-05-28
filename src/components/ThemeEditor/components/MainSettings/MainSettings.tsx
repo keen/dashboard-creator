@@ -28,7 +28,6 @@ type Props = {
 const MainSettings: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
   const { theme, settings } = currentSettings;
   const { colors: defaultColors } = useSelector(themeSelectors.getBaseTheme);
-
   return (
     <Container>
       <ColorManager
@@ -62,6 +61,7 @@ const MainSettings: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
           onUpdateSettings(theme, { ...pageSettings })
         }
         settings={settings}
+        colors={theme.colors}
       />
     </Container>
   );

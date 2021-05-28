@@ -5,8 +5,8 @@ export const StyledSettingsCategory = styled.div`
   align-items: center;
 `;
 
-export const StyledTitle = styled.div`
-  width: 135px;
+export const TitleWrapper = styled.div`
+  width: 150px;
 `;
 
 export const StyledSettings = styled.div`

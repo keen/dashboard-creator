@@ -85,3 +85,5 @@ export const KEYBOARD_KEYS = {
   ENTER: 13,
   ESCAPE: 27,
 };
+
+export const TILE_BORDER_WIDTHS = [0, 1, 2, 3, 4, 5];
