@@ -58,6 +58,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
   const interimQuery = useSelector((state: RootState) =>
     getInterimQuery(state, id)
   );
+
   const {
     theme,
     settings: dashboardWidgetSettings,

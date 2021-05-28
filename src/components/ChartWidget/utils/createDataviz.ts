@@ -50,6 +50,7 @@ const createDataviz = ({
         borderColor: tiles.borderColor,
         borderWidth: tiles.borderWidth,
         borderRadius: tiles.borderRadius,
+        padding: tiles.padding,
         hasShadow: tiles.hasShadow,
       },
     },
