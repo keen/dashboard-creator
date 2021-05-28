@@ -9,7 +9,12 @@
     "color_palette_title": "Data Color Palette",
     "color_palette_description": "Make sure the colors are diverse to increase the readability of the data",
     "dashboard_page_title": "Dashboard Page",
-    "widget_tiles_title": "Widget Tiles"
+    "widget_tiles_title": "Widget Tiles",
+    "background_color": "Background color",
+    "chart_titles_font": "Chart Titles Font",
+    "data_visualization_font": "Data Visualizations Font",
+    "space_between_widgets": "Space Between Widgets",
+    "empty_search_results": "No font found with this name"
   },
   "confirm_query_change": {
     "title": "You Edited Saved Query",

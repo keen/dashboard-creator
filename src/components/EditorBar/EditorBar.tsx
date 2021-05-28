@@ -61,9 +61,7 @@ const EditorBar: FC<Props> = ({
           )}
         </SavingIndicator>
         <EditTheme role="button" onClick={onEditTheme}>
-          <BodyText variant="body2" fontWeight={600}>
-            {t('editor_bar.theming')}
-          </BodyText>
+          <BodyText variant="body2">{t('editor_bar.theming')}</BodyText>
         </EditTheme>
         <SubmitButton onClick={onFinishEdit}>
           {t('editor_bar.finish_edition')}

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { colors } from '@keen.io/colors';
 
 const SettingsDivider = styled.div`
-  margin: 10px 0;
+  margin: 15px 0;
   height: 1px;
   background: ${colors.white[300]};
 `;
