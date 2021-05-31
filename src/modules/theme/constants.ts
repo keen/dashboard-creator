@@ -1,31 +1,11 @@
-import { colors } from '@keen.io/colors';
-
 export const CUSTOM_COLOR_PALETTE = 'custom';
 export const DEFAULT_COLOR_PALETTE = 'default';
 
 export const COLOR_PALETTES = [
   {
-    name: 'keen default',
-    colors: [
-      colors.lightBlue[500],
-      colors.green[500],
-      colors.orange[400],
-      colors.blue[500],
-      colors.yellow[500],
-      colors.red[400],
-      colors.purple[500],
-      colors.green[200],
-      colors.pink[500],
-      colors.blue[200],
-      colors.yellow[200],
-      colors.purple[100],
-      colors.lightBlue[100],
-      colors.pink[200],
-    ],
-  },
-  {
     name: 'fresh',
     colors: [
+      '#FDBF6F',
       '#FF7F00',
       '#B2DF8A',
       '#33A02C',
