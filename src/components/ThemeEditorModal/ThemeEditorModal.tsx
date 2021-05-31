@@ -30,7 +30,7 @@ const ThemeEditorModal: FC<{}> = () => {
       adjustPositionToScroll={false}
       closeOnFadeMaskClick={false}
       isOpen={isOpen}
-      useMask={!inPreviewMode}
+      isMaskTransparent={inPreviewMode}
       onClose={() =>
         dispatch(
           themeActions.setModalVisibility({

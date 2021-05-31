@@ -8,6 +8,7 @@ type Props = {
   iconType?: IconType;
   width?: number;
   height?: number;
+  backgroundColor?: string;
 };
 
 const ICON_FACTOR = 0.3;
@@ -16,8 +17,14 @@ const WidgetPlaceholder: FC<Props> = ({
   iconType,
   width = 100,
   height = 100,
+  backgroundColor,
 }) => (
-  <Container width={width} height={height} data-testid="widget-placeholder">
+  <Container
+    width={width}
+    height={height}
+    data-testid="widget-placeholder"
+    backgroundColor={backgroundColor}
+  >
     <Icon
       type={iconType}
       width={Math.floor(ICON_FACTOR * width)}

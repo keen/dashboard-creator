@@ -2,13 +2,11 @@ import { KeenDataviz } from '@keen.io/dataviz';
 import { Theme } from '@keen.io/charts';
 
 import { ChartWidget } from '../../../modules/widgets';
-import { DashboardSettings } from '../../../modules/dashboards';
 
 type Options = {
   widget: ChartWidget;
   theme: Partial<Theme>;
   container: HTMLElement;
-  dashboardSettings: Pick<DashboardSettings, 'tiles'>;
   presentationTimezone?: string | number;
 };
 
@@ -19,7 +17,6 @@ type Options = {
  * @param theme - chart theme
  * @param container - DOM element used to mount component
  * @param presentationTimezone - named timezone or offset
- * @param dashboardSettings - dashboard settings for tiles
  * @return dataviz instance
  *
  */
@@ -27,14 +24,11 @@ const createDataviz = ({
   widget,
   theme,
   container,
-  dashboardSettings,
   presentationTimezone,
 }: Options) => {
   const {
     settings: { visualizationType, chartSettings, widgetSettings },
   } = widget;
-
-  const { tiles } = dashboardSettings;
 
   return new KeenDataviz({
     container,
@@ -46,12 +40,12 @@ const createDataviz = ({
     widget: {
       ...widgetSettings,
       card: {
-        backgroundColor: tiles.background,
-        borderColor: tiles.borderColor,
-        borderWidth: tiles.borderWidth,
-        borderRadius: tiles.borderRadius,
-        padding: tiles.padding,
-        hasShadow: tiles.hasShadow,
+        backgroundColor: 'transparent',
+        borderColor: 'transparent',
+        borderWidth: 0,
+        borderRadius: 0,
+        padding: 0,
+        hasShadow: false,
       },
     },
     presentationTimezone,

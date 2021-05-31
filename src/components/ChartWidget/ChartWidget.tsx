@@ -59,10 +59,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
     getInterimQuery(state, id)
   );
 
-  const {
-    theme,
-    settings: dashboardWidgetSettings,
-  } = useSelector((state: RootState) =>
+  const { theme } = useSelector((state: RootState) =>
     themeSelectors.getActiveDashboardThemeSettings(state)
   );
 
@@ -94,7 +91,6 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
         widget: widget as ChartWidget,
         theme,
         container: containerRef.current,
-        dashboardSettings: dashboardWidgetSettings,
         presentationTimezone: getTimezone(chartData),
       });
 
@@ -104,7 +100,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
         datavizRef.current.render(getChartInput(chartData));
       }
     }
-  }, [showVisualization, inView, error, theme, dashboardWidgetSettings]);
+  }, [showVisualization, inView, error, theme]);
 
   useEffect(() => {
     if (!editorPubSub) return;
