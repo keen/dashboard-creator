@@ -143,7 +143,13 @@ test('renders visualization', () => {
         theme: {},
       },
       widget: {
-        card: { backgroundColor: '#ffffff' },
+        card: {
+          backgroundColor: '#ffffff',
+          borderColor: 'none',
+          borderRadius: 0,
+          borderWidth: 0,
+          hasShadow: true,
+        },
       },
     })
   );

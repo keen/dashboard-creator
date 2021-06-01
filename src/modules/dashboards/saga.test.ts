@@ -39,7 +39,7 @@ import {
   regenerateAccessKeySuccess,
   regenerateAccessKeyError,
 } from './actions';
-import { themeActions, themeSelectors } from '../theme';
+import { themeActions, themeSelectors, themeSagaActions } from '../theme';
 import {
   deleteAccessKey,
   deleteDashboard,
@@ -190,6 +190,10 @@ describe('viewPublicDashboard()', () => {
           })
         )
       );
+    });
+
+    test('load dashboard fonts', (result) => {
+      expect(result).toEqual(put(themeSagaActions.loadDashboardFonts()));
     });
 
     test('initializes dashboard widgets', (result) => {

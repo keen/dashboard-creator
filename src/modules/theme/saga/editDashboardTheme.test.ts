@@ -109,6 +109,10 @@ describe('Scenario 1: User successfuly updates dashboard theme', () => {
     );
   });
 
+  test('load dashboard fonts', (result) => {
+    expect(result).toEqual(put(themeSagaActions.loadDashboardFonts()));
+  });
+
   test('save dashboard', (result) => {
     expect(result).toEqual(put(saveDashboard(dashboardId)));
   });
