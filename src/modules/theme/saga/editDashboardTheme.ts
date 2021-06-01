@@ -72,6 +72,8 @@ export function* editDashboardTheme({
       })
     );
 
+    yield put(themeSagaActions.loadDashboardFonts());
+
     yield put(saveDashboard(dashboardId));
   }
 

@@ -1,6 +1,7 @@
 import { put, select } from 'redux-saga/effects';
 
 import { themeSelectors } from '../selectors';
+import { themeSagaActions } from '../actions';
 import { appSelectors } from '../../app';
 import themeSlice from '../reducer';
 
@@ -21,4 +22,6 @@ export function* previewDashboardTheme() {
       theme,
     })
   );
+
+  yield put(themeSagaActions.loadDashboardFonts());
 }

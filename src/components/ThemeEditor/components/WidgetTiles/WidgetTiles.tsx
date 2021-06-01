@@ -36,7 +36,14 @@ type Props = {
 const WidgetTiles: FC<Props> = ({ settings, onUpdateSettings, colors }) => {
   const { t } = useTranslation();
   const {
-    tiles: { background, borderColor, borderWidth, hasShadow },
+    tiles: {
+      background,
+      borderColor,
+      borderWidth,
+      borderRadius,
+      padding,
+      hasShadow,
+    },
   } = settings;
 
   const currentEditTheme = useSelector(themeSelectors.getCurrentEditTheme);
@@ -129,13 +136,21 @@ const WidgetTiles: FC<Props> = ({ settings, onUpdateSettings, colors }) => {
             </BodyText>
           </TextWrapper>
           <ThemeSlider
-            initialValue={10}
+            initialValue={borderRadius}
             intervals={ROUNDING_INTERVALS}
             ticks={generateRulerSettings({
               minimum: ROUNDING_INTERVALS[0].minimum,
               maximum: ROUNDING_INTERVALS[0].maximum,
               step: 2,
             })}
+            onChange={(radius) =>
+              onUpdateSettings({
+                tiles: {
+                  ...settings.tiles,
+                  borderRadius: radius,
+                },
+              })
+            }
           />
         </SectionRow>
         <SectionRow alignItems="flex-start">
@@ -145,13 +160,21 @@ const WidgetTiles: FC<Props> = ({ settings, onUpdateSettings, colors }) => {
             </BodyText>
           </TextWrapper>
           <ThemeSlider
-            initialValue={20}
+            initialValue={padding}
             intervals={SPACING_INTERVALS}
             ticks={generateRulerSettings({
               minimum: SPACING_INTERVALS[0].minimum,
               maximum: SPACING_INTERVALS[0].maximum,
               step: 5,
             })}
+            onChange={(padding) =>
+              onUpdateSettings({
+                tiles: {
+                  ...settings.tiles,
+                  padding,
+                },
+              })
+            }
           />
         </SectionRow>
         <SectionRow>

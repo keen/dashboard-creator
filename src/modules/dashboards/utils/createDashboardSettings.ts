@@ -1,4 +1,5 @@
 import { DashboardSettings } from '../types';
+import { FONTS } from '../../../modules/theme';
 
 /**
  * Creates default dashboard configuration settings
@@ -11,8 +12,8 @@ const createDashboardSettings = (): DashboardSettings => ({
   page: {
     gridGap: 20,
     background: '#f1f5f8',
-    chartTitlesFont: 'default',
-    visualizationsFont: 'default',
+    chartTitlesFont: FONTS[1].name,
+    visualizationsFont: FONTS[0].name,
   },
   tiles: {
     background: '#ffffff',

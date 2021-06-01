@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import { BodyText } from '@keen.io/typography';
 import {
   IntervalSlider,
@@ -20,11 +20,15 @@ type Props = {
   /** Initial value */
   initialValue?: number;
   /** Slider value change handler */
-  onChange?: (value: number) => void;
+  onChange: (value: number) => void;
 };
 
-const ThemeSlider: FC<Props> = ({ intervals, ticks, initialValue = 0 }) => {
-  const [intervalOffset, setIntervalOffset] = useState(initialValue);
+const ThemeSlider: FC<Props> = ({
+  intervals,
+  ticks,
+  initialValue = 0,
+  onChange,
+}) => {
   const onRulerClick = (position: string) => {
     const controlPosition = Math.round(
       (parseFloat(position) / 100) * DIMENSION
@@ -38,7 +42,7 @@ const ThemeSlider: FC<Props> = ({ intervals, ticks, initialValue = 0 }) => {
       stepDimension,
     });
 
-    setIntervalOffset(value);
+    onChange(value);
   };
 
   return (
@@ -48,13 +52,13 @@ const ThemeSlider: FC<Props> = ({ intervals, ticks, initialValue = 0 }) => {
         colorSteps={0}
         colors={[colors.gray[400]]}
         intervals={intervals}
-        initialValue={intervalOffset}
+        initialValue={initialValue}
         controlSettings={{
           size: 18,
           backgroundColor: colors.white[500],
           borderColor: colors.green[500],
         }}
-        onChange={(offset: number) => setIntervalOffset(offset)}
+        onChange={(offset: number) => onChange(offset)}
       />
       <Ruler
         layout="horizontal"
@@ -64,7 +68,7 @@ const ThemeSlider: FC<Props> = ({ intervals, ticks, initialValue = 0 }) => {
           <LabelWrapper>
             <BodyText
               variant="body3"
-              fontWeight={label == intervalOffset ? 'bold' : 'normal'}
+              fontWeight={label == initialValue ? 'bold' : 'normal'}
             >
               {label}
             </BodyText>

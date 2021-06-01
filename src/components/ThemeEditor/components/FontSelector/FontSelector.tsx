@@ -21,7 +21,8 @@ import { colors } from '@keen.io/colors';
 
 import { Container } from './FontSelector.styles';
 
-import { FONTS, KEYBOARD_KEYS } from '../../constants';
+import { FONTS } from '../../../../modules/theme';
+import { KEYBOARD_KEYS } from '../../constants';
 
 type Props = {
   /** List of fonts to display identifer */

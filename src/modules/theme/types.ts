@@ -22,3 +22,10 @@ export type ReducerState = {
     inPreviewMode: boolean;
   };
 };
+
+export type FontVariant = 'serif' | 'sans-serif';
+
+export type Font = {
+  name: string;
+  variant: FontVariant;
+};

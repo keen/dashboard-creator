@@ -1,6 +1,10 @@
 import { takeLatest } from 'redux-saga/effects';
 
-import { editDashboardTheme, previewDashboardTheme } from './saga';
+import {
+  editDashboardTheme,
+  previewDashboardTheme,
+  loadDashboardFonts,
+} from './saga';
 import { themeSagaActions } from './actions';
 
 export function* themeSaga() {
@@ -9,4 +13,8 @@ export function* themeSaga() {
     editDashboardTheme
   );
   yield takeLatest(themeSagaActions.previewTheme.type, previewDashboardTheme);
+  yield takeLatest(
+    themeSagaActions.loadDashboardFonts.type,
+    loadDashboardFonts
+  );
 }

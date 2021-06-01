@@ -21,7 +21,7 @@ type Props = {
 const DashboardPage: FC<Props> = ({ settings, onUpdateSettings }) => {
   const { t } = useTranslation();
   const {
-    page: { gridGap },
+    page: { gridGap, chartTitlesFont, visualizationsFont },
   } = settings;
 
   return (
@@ -42,7 +42,14 @@ const DashboardPage: FC<Props> = ({ settings, onUpdateSettings }) => {
               {t('theme_editor.chart_titles_font')}
             </BodyText>
           </TextWrapper>
-          <FontSelector font="Lato" onChange={(font) => console.log(font)} />
+          <FontSelector
+            font={chartTitlesFont}
+            onChange={(font) =>
+              onUpdateSettings({
+                page: { ...settings.page, chartTitlesFont: font },
+              })
+            }
+          />
         </SectionRow>
         <SectionRow>
           <TextWrapper>
@@ -50,7 +57,14 @@ const DashboardPage: FC<Props> = ({ settings, onUpdateSettings }) => {
               {t('theme_editor.data_visualization_font')}
             </BodyText>
           </TextWrapper>
-          <FontSelector font="Lato" onChange={(font) => console.log(font)} />
+          <FontSelector
+            font={visualizationsFont}
+            onChange={(font) =>
+              onUpdateSettings({
+                page: { ...settings.page, visualizationsFont: font },
+              })
+            }
+          />
         </SectionRow>
         <SectionRow>
           <TextWrapper>
@@ -59,23 +73,18 @@ const DashboardPage: FC<Props> = ({ settings, onUpdateSettings }) => {
             </BodyText>
           </TextWrapper>
           <ThemeSlider
-            initialValue={20}
+            initialValue={gridGap}
             intervals={SPACING_INTERVALS}
             ticks={generateRulerSettings({
               minimum: SPACING_INTERVALS[0].minimum,
               maximum: SPACING_INTERVALS[0].maximum,
               step: 5,
             })}
+            onChange={(gridGap) =>
+              onUpdateSettings({ page: { ...settings.page, gridGap } })
+            }
           />
         </SectionRow>
-        <div>{gridGap}</div>
-        <div
-          onClick={() =>
-            onUpdateSettings({ page: { ...settings.page, gridGap: 40 } })
-          }
-        >
-          Set Grid Gap 40
-        </div>
       </div>
     </Section>
   );

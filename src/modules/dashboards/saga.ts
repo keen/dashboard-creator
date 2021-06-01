@@ -79,7 +79,7 @@ import {
   removeConnectionFromDatePicker,
 } from '../widgets/saga/datePickerWidget';
 
-import { themeActions } from '../theme';
+import { themeActions, themeSagaActions } from '../theme';
 import {
   enhanceDashboard,
   createDashboardSettings,
@@ -498,6 +498,8 @@ export function* editDashboard({
         themeActions.setDashboardTheme({ dashboardId, theme, settings })
       );
 
+      yield put(themeSagaActions.loadDashboardFonts());
+
       yield put(
         initializeDashboardWidgetsAction(
           dashboardId,
@@ -554,6 +556,8 @@ export function* viewDashboard({
         themeActions.setDashboardTheme({ dashboardId, settings, theme })
       );
 
+      yield put(themeSagaActions.loadDashboardFonts());
+
       yield put(
         initializeDashboardWidgetsAction(
           dashboardId,
@@ -607,6 +611,8 @@ export function* viewPublicDashboard({
       yield put(
         themeActions.setDashboardTheme({ dashboardId, settings, theme })
       );
+
+      yield put(themeSagaActions.loadDashboardFonts());
 
       yield put(
         initializeDashboardWidgetsAction(

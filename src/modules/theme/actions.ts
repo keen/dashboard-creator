@@ -17,10 +17,13 @@ const cancelEdition = createAction('theme/cancelEdition');
 
 const editorUnmounted = createAction('theme/editorUnmounted');
 
+const loadDashboardFonts = createAction('theme/loadDashboardFonts');
+
 export const themeSagaActions = {
   previewTheme,
   editDashboardTheme,
   saveDashboardTheme,
   editorUnmounted,
   cancelEdition,
+  loadDashboardFonts,
 };

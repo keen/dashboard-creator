@@ -7,6 +7,7 @@ import {
   CUSTOM_COLOR_PALETTE,
   DEFAULT_COLOR_PALETTE,
   COLOR_PALETTES,
+  FONTS,
 } from './constants';
 import { themeSelectors } from './selectors';
 import { extendTheme } from './utils';
@@ -26,6 +27,7 @@ export {
   DEFAULT_COLOR_PALETTE,
   CUSTOM_COLOR_PALETTE,
   COLOR_PALETTES,
+  FONTS,
   ThemeEditorSection,
   ThemeSettings,
 };

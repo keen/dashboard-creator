@@ -74,11 +74,8 @@ const ColorManager: FC<Props> = ({
           <ColorsList>
             {createColorPalettes(defaultColors).map(
               ({ name, colors }, idx, arr) => (
-                <>
-                  <ColorItem
-                    key={name}
-                    onClick={() => onSelectPalette(name, colors)}
-                  >
+                <React.Fragment key={name}>
+                  <ColorItem onClick={() => onSelectPalette(name, colors)}>
                     <BodyText variant="body2" color={keenColors.blue[500]}>
                       {name}
                     </BodyText>
@@ -92,7 +89,7 @@ const ColorManager: FC<Props> = ({
                     </Palette>
                   </ColorItem>
                   {idx !== arr.length - 1 && <Divider />}
-                </>
+                </React.Fragment>
               )
             )}
           </ColorsList>
