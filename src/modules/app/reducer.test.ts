@@ -1,17 +1,19 @@
 import { appActions, appReducer } from './index';
 import { initialState } from './reducer';
 
+import { Scopes } from './types';
+
 test('set user edit privileges', () => {
   const action = appActions.appStart({
     baseTheme: {},
-    editPrivileges: true,
+    userPermissions: [Scopes.SHARE_DASHBOARD],
     cachedDashboardsNumber: 3,
   });
   const {
-    user: { editPrivileges },
+    user: { permissions },
   } = appReducer(initialState, action);
 
-  expect(editPrivileges).toEqual(true);
+  expect(permissions).toEqual([Scopes.SHARE_DASHBOARD]);
 });
 
 test('shows query picker', () => {

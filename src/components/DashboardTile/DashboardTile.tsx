@@ -12,8 +12,11 @@ import {
   PreviewButton,
 } from './DashboardTile.styles';
 
+import PermissionGate from '../PermissionGate';
 import { ActionsMenu, Header, Thumbnail } from './components';
 import { actionsMotion, actionsMenuMotion, previewMotion } from './motions';
+
+import { Scopes } from '../../modules/app';
 
 type Props = {
   /** Dashboard identifer */
@@ -34,8 +37,6 @@ type Props = {
   onPreview: () => void;
   /** Show dashboard settings event handler */
   onShowSettings: () => void;
-  /** User edit privilages */
-  editPrivileges?: boolean;
 };
 
 const DashboardTile: FC<Props> = ({
@@ -45,7 +46,6 @@ const DashboardTile: FC<Props> = ({
   lastModificationDate,
   useDefaultThumbnail,
   isPublic,
-  editPrivileges,
   tags,
   onPreview,
   onShowSettings,
@@ -102,35 +102,37 @@ const DashboardTile: FC<Props> = ({
         tags={tags}
       >
         <AnimatePresence>
-          {isActive && editPrivileges && (
-            <ActionsMotion data-testid="dashboard-actions" {...actionsMotion}>
-              <CircleButton
-                variant="success"
-                icon={<Icon type="settings" />}
-                onClick={onShowSettings}
-              />
-              <div
-                ref={actionsMenuContainer}
-                style={{ zIndex: UI_LAYERS.dropdown }}
-              >
+          {isActive && (
+            <PermissionGate scopes={[Scopes.EDIT_DASHBOARD]}>
+              <ActionsMotion data-testid="dashboard-actions" {...actionsMotion}>
                 <CircleButton
                   variant="success"
-                  icon={<Icon type="actions" />}
-                  onClick={() => setActionsMenuVisibility(!showActionsMenu)}
+                  icon={<Icon type="settings" />}
+                  onClick={onShowSettings}
                 />
-
-                <Dropdown
-                  isOpen={showActionsMenu}
-                  fullWidth={false}
-                  motion={actionsMenuMotion}
+                <div
+                  ref={actionsMenuContainer}
+                  style={{ zIndex: UI_LAYERS.dropdown }}
                 >
-                  <ActionsMenu
-                    dashboardId={id}
-                    onClose={() => setActionsMenuVisibility(false)}
+                  <CircleButton
+                    variant="success"
+                    icon={<Icon type="actions" />}
+                    onClick={() => setActionsMenuVisibility(!showActionsMenu)}
                   />
-                </Dropdown>
-              </div>
-            </ActionsMotion>
+
+                  <Dropdown
+                    isOpen={showActionsMenu}
+                    fullWidth={false}
+                    motion={actionsMenuMotion}
+                  >
+                    <ActionsMenu
+                      dashboardId={id}
+                      onClose={() => setActionsMenuVisibility(false)}
+                    />
+                  </Dropdown>
+                </div>
+              </ActionsMotion>
+            </PermissionGate>
           )}
         </AnimatePresence>
       </Header>

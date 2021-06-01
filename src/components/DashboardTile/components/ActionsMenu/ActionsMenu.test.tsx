@@ -4,8 +4,9 @@ import { render as rtlRender, fireEvent } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 
 import ActionsMenu from './ActionsMenu';
+import { Scopes } from '../../../../modules/app';
 
-const render = (overProps: any = {}) => {
+const render = (overProps: any = {}, storeState: any = {}) => {
   const props = {
     dashboardId: '@dashboard/id',
     onClose: jest.fn(),
@@ -13,7 +14,14 @@ const render = (overProps: any = {}) => {
   };
 
   const mockStore = configureStore([]);
-  const store = mockStore({});
+  const store = mockStore({
+    app: {
+      user: {
+        permissions: [Scopes.SHARE_DASHBOARD],
+      },
+    },
+    ...storeState,
+  });
 
   const wrapper = rtlRender(
     <Provider store={store}>
@@ -110,4 +118,23 @@ test('allows user to share dashbord', () => {
       },
     ]
   `);
+});
+
+test('do not renders share dashbord for user without privilege', () => {
+  const {
+    wrapper: { queryByText },
+  } = render(
+    {},
+    {
+      app: {
+        user: {
+          permissions: [],
+        },
+      },
+    }
+  );
+
+  const shareLink = queryByText('actions_menu.share_dashboard');
+
+  expect(shareLink).not.toBeInTheDocument();
 });

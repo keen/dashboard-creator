@@ -6,7 +6,7 @@ export const initialState: ReducerState = {
   activeDashboardId: null,
   cachedDashboardsNumber: null,
   user: {
-    editPrivileges: false,
+    permissions: [],
   },
   imagePicker: {
     isVisible: false,
@@ -25,7 +25,7 @@ export const appSlice = createSlice({
   reducers: {
     appStart: (state, { payload }: PayloadAction<AppStartPayload>) => {
       state.cachedDashboardsNumber = payload.cachedDashboardsNumber;
-      state.user.editPrivileges = payload.editPrivileges;
+      state.user.permissions = payload.userPermissions;
     },
     hideQueryPicker: (state) => {
       state.queryPicker.isVisible = false;

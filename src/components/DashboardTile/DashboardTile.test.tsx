@@ -1,9 +1,12 @@
 import React from 'react';
 import { render as rtlRender, fireEvent } from '@testing-library/react';
+import configureStore from 'redux-mock-store';
+import { Provider } from 'react-redux';
 
 import DashboardTile from './DashboardTile';
+import { Scopes } from '../../modules/app';
 
-const render = (overProps: any = {}) => {
+const render = (overProps: any = {}, storeState: any = {}) => {
   const props = {
     id: 'id',
     lastModificationDate: '1/1/2021',
@@ -12,11 +15,24 @@ const render = (overProps: any = {}) => {
     useDefaultThumbnail: true,
     onPreview: jest.fn(),
     onShowSettings: jest.fn(),
-    editPrivileges: true,
     ...overProps,
   };
 
-  const wrapper = rtlRender(<DashboardTile {...props} />);
+  const mockStore = configureStore([]);
+  const store = mockStore({
+    app: {
+      user: {
+        permissions: [Scopes.EDIT_DASHBOARD],
+      },
+    },
+    ...storeState,
+  });
+
+  const wrapper = rtlRender(
+    <Provider store={store}>
+      <DashboardTile {...props} />
+    </Provider>
+  );
 
   return {
     props,
@@ -90,7 +106,7 @@ test('renders count for no query', () => {
   expect(getByText(/dashboard_tile.no_queries/i)).toBeInTheDocument();
 });
 
-test('renders actions buttons for user with edit privileges', () => {
+test('renders actions buttons for user with edit dashboard privileges', () => {
   const {
     wrapper: { getByTestId, getByRole },
   } = render();
@@ -100,12 +116,19 @@ test('renders actions buttons for user with edit privileges', () => {
   expect(getByTestId('dashboard-actions')).toBeInTheDocument();
 });
 
-test('do not renders actions buttons for user without edit privileges', () => {
+test('do not renders actions buttons for user without edit dashboard privileges', () => {
   const {
     wrapper: { queryByTestId, getByRole },
-  } = render({
-    editPrivileges: false,
-  });
+  } = render(
+    {},
+    {
+      app: {
+        user: {
+          permissions: [],
+        },
+      },
+    }
+  );
   const element = getByRole('article');
   fireEvent.mouseEnter(element);
 
