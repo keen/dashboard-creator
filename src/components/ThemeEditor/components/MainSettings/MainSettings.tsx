@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
+import deepMerge from 'deepmerge';
 import { Theme } from '@keen.io/charts';
 
 import { Container } from './MainSettings.styles';
@@ -14,6 +15,7 @@ import {
   CUSTOM_COLOR_PALETTE,
 } from '../../../../modules/theme';
 import { DashboardSettings } from '../../../../modules/dashboards';
+import { transformToNestedObject } from '../../../../utils';
 
 type Props = {
   /** Curent theme settings */
@@ -50,9 +52,14 @@ const MainSettings: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
       />
       <SettingsDivider />
       <DashboardPage
-        onUpdateSettings={(pageSettings) =>
-          onUpdateSettings(theme, { ...pageSettings })
-        }
+        onUpdateSettings={(pageSettings, themeSettings = {}) => {
+          const nestedObjects = Object.keys(themeSettings).map((obj) =>
+            transformToNestedObject(obj, themeSettings[obj])
+          );
+          const mergedTheme = deepMerge.all([theme, ...nestedObjects]);
+
+          onUpdateSettings(mergedTheme, { ...pageSettings });
+        }}
         settings={settings}
       />
       <SettingsDivider />
