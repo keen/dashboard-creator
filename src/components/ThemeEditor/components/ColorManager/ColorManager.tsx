@@ -1,6 +1,6 @@
-import React, { FC, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { FC, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 import { ColorPalette, DropableContainer, Dropdown } from '@keen.io/ui-core';
 import { BodyText } from '@keen.io/typography';
 import { colors as keenColors } from '@keen.io/colors';
@@ -22,6 +22,7 @@ import { createColorPalettes } from './utils';
 import { getColorSuggestions } from '../../utils';
 import { COLORS_IN_LIST } from './constants';
 import { themeSelectors } from '../../../../modules/theme';
+import { ThemeModalContext } from '../../../ThemeEditorModal/ThemeEditorModal';
 
 type Props = {
   /** Current color palette name */
@@ -48,7 +49,7 @@ const ColorManager: FC<Props> = ({
 
   const currentEditTheme = useSelector(themeSelectors.getCurrentEditTheme);
   const colorSuggestions = getColorSuggestions(colors, currentEditTheme);
-
+  const { modalContentRef } = useContext(ThemeModalContext);
   return (
     <Section>
       <Heading>
@@ -99,6 +100,7 @@ const ColorManager: FC<Props> = ({
             colors={colors}
             colorSuggestions={colorSuggestions}
             onColorsChange={(colors) => onUpdateColors(colors)}
+            scrollableParentRef={modalContentRef}
           />
         </ColorPaletteWrapper>
       </div>

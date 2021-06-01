@@ -12,6 +12,7 @@ import { Container } from './DataViz.styles';
 import getChartInput from '../../../../utils/getChartInput';
 
 import { CONTAINER_ID } from './constants';
+import { DashboardSettings } from '../../../../modules/dashboards';
 
 type Props = {
   /** Query execution results */
@@ -26,6 +27,8 @@ type Props = {
   visualizationTheme?: Partial<Theme>;
   /** Presentation timezone */
   presentationTimezone?: string | number;
+  /** Dashboard settings for tiles */
+  dashboardSettings?: Pick<DashboardSettings, 'tiles'>;
 };
 
 const Dataviz: FC<Props> = ({
@@ -35,9 +38,11 @@ const Dataviz: FC<Props> = ({
   widgetSettings,
   visualizationTheme,
   presentationTimezone,
+  dashboardSettings,
 }) => {
   const datavizRef = useRef(null);
   const containerRef = useRef(null);
+  const { tiles } = dashboardSettings;
   useEffect(() => {
     const themeSettings = visualizationTheme
       ? {
@@ -52,7 +57,17 @@ const Dataviz: FC<Props> = ({
         ...chartSettings,
         ...themeSettings,
       },
-      widget: widgetSettings,
+      widget: {
+        ...widgetSettings,
+        card: {
+          backgroundColor: tiles.background,
+          borderColor: tiles.borderColor,
+          borderWidth: tiles.borderWidth,
+          borderRadius: tiles.borderRadius,
+          padding: tiles.padding,
+          hasShadow: tiles.hasShadow,
+        },
+      },
       presentationTimezone,
     });
 

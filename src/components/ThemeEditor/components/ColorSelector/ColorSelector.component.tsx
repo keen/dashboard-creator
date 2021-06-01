@@ -1,6 +1,8 @@
-import React, { FC, useRef, useState } from 'react';
-import { ColorPicker, Dropdown } from '@keen.io/ui-core';
+import React, { FC, useContext, useEffect, useRef, useState } from 'react';
+import { ColorPicker, Dropdown, DynamicPortal } from '@keen.io/ui-core';
 import { useOnClickOutside } from '@keen.io/react-hooks';
+import { ThemeModalContext } from '../../../ThemeEditorModal/ThemeEditorModal';
+
 import { Color, DropdownWrapper, ColorWrapper } from './ColorSelector.styles';
 
 type Props = {
@@ -16,13 +18,22 @@ const ColorSelector: FC<Props> = ({
 }) => {
   const [colorPickerVisible, setColorPickerVisible] = useState(false);
   const [color, setColor] = useState(initialColor);
+  const [colorPickerPosition, setColorPickerPosition] = useState({
+    x: 0,
+    y: 0,
+  });
+  const [modalScrollY, setModalScrollY] = useState(0);
   const dropdownRef = useRef(null);
+  const pickerRef = useRef(null);
+  const { modalContentRef } = useContext(ThemeModalContext);
 
   const onClickOutsideColorPicker = () => {
-    setColorPickerVisible(false);
+    if (colorPickerVisible) {
+      setColorPickerVisible(false);
+    }
   };
 
-  useOnClickOutside(dropdownRef, onClickOutsideColorPicker);
+  useOnClickOutside(pickerRef, onClickOutsideColorPicker);
 
   const changeColor = (color: string) => {
     setColor(color);
@@ -30,22 +41,56 @@ const ColorSelector: FC<Props> = ({
     setColorPickerVisible(false);
   };
 
+  const setPickerPosition = () => {
+    const dropdownRect = dropdownRef.current.getBoundingClientRect();
+    setColorPickerPosition({
+      x: dropdownRect.x,
+      y: dropdownRect.y + window.scrollY + dropdownRect.height + modalScrollY,
+    });
+  };
+
+  const hidePicker = () => {
+    setColorPickerVisible(false);
+  };
+
+  useEffect(() => {
+    modalContentRef?.current?.addEventListener('scroll', hidePicker);
+    return () => {
+      modalContentRef?.current?.removeEventListener('scroll', hidePicker);
+    };
+  }, [modalContentRef]);
+
   return (
-    <ColorWrapper ref={dropdownRef}>
+    <ColorWrapper
+      ref={dropdownRef}
+      onMouseEnter={() => {
+        setModalScrollY(0);
+        setPickerPosition();
+      }}
+    >
       <Color
         background={color}
-        onClick={() => setColorPickerVisible(true)}
+        onClick={() => {
+          setPickerPosition();
+          setColorPickerVisible(true);
+        }}
       ></Color>
-      <DropdownWrapper>
-        <Dropdown isOpen={colorPickerVisible}>
-          <ColorPicker
-            color={color}
-            colorSuggestions={colorSuggestions}
-            onColorChange={(color) => changeColor(color)}
-            onClosePicker={() => setColorPickerVisible(false)}
-          />
-        </Dropdown>
-      </DropdownWrapper>
+      <DynamicPortal>
+        <DropdownWrapper
+          x={colorPickerPosition.x}
+          y={colorPickerPosition.y}
+          ref={pickerRef}
+        >
+          <Dropdown isOpen={colorPickerVisible}>
+            <ColorPicker
+              color={color}
+              colorSuggestions={colorSuggestions}
+              onColorChange={(color) => changeColor(color)}
+              onClosePicker={() => setColorPickerVisible(false)}
+            />
+          </Dropdown>
+        </DropdownWrapper>
+      </DynamicPortal>
     </ColorWrapper>
   );
 };
