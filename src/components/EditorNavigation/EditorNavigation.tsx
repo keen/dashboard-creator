@@ -80,6 +80,7 @@ const EditorNavigation: FC<Props> = ({ title, tags, isPublic, onBack }) => {
         </ButtonContainer>
         <PermissionGate scopes={[Scopes.SHARE_DASHBOARD]}>
           <ButtonContainer
+            data-testid="share-dashboard"
             marginLeft="10px"
             onMouseEnter={() => setTooltip(TOOLTIP.share)}
             onMouseLeave={() => setTooltip(null)}

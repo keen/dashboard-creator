@@ -120,7 +120,7 @@ test('allows user to share dashbord', () => {
   `);
 });
 
-test('do not renders share dashbord for user without privilege', () => {
+test('do not renders share dashbord for user without required privileges', () => {
   const {
     wrapper: { queryByText },
   } = render(
