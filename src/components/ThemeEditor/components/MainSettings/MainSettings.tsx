@@ -18,7 +18,7 @@ import { DashboardSettings } from '../../../../modules/dashboards';
 import { transformToNestedObject } from '../../../../utils';
 
 type Props = {
-  /** Curent theme settings */
+  /** Current theme settings */
   currentSettings: ThemeSettings;
   /** Update theme settings event handler */
   onUpdateSettings: (
@@ -61,6 +61,7 @@ const MainSettings: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
           onUpdateSettings(mergedTheme, { ...pageSettings });
         }}
         settings={settings}
+        colors={theme.colors}
       />
       <SettingsDivider />
       <WidgetTiles

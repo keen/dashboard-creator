@@ -16,6 +16,8 @@ import { getFontFallback } from './utils';
 import { getNestedObjectKeysAndValues } from '../../../../utils';
 
 import { SPACING_INTERVALS } from '../../constants';
+import { ColorSelector } from '../ColorSelector';
+import { getColorSuggestions } from '../../utils';
 
 type Props = {
   /** Dashboard page settings */
@@ -25,18 +27,23 @@ type Props = {
     settings: Partial<DashboardSettings>,
     theme?: Partial<Theme>
   ) => void;
+  colors: string[];
 };
 
-const DashboardPage: FC<Props> = ({ settings, onUpdateSettings }) => {
+const DashboardPage: FC<Props> = ({ settings, onUpdateSettings, colors }) => {
   const { t } = useTranslation();
   const { theme } = useSelector(themeSelectors.getCurrentEditTheme);
+
   const {
-    page: { gridGap, chartTitlesFont, visualizationsFont },
+    page: { gridGap, chartTitlesFont, visualizationsFont, background },
   } = settings;
 
   const { keys } = getNestedObjectKeysAndValues(theme, (keychain) =>
     keychain.endsWith('fontFamily')
   );
+
+  const currentEditTheme = useSelector(themeSelectors.getCurrentEditTheme);
+  const colorSuggestions = getColorSuggestions(colors, currentEditTheme);
 
   return (
     <Section>
@@ -48,7 +55,18 @@ const DashboardPage: FC<Props> = ({ settings, onUpdateSettings }) => {
               {t('theme_editor.background_color')}
             </BodyText>
           </TextWrapper>
-          <div>color picker</div>
+          <ColorSelector
+            color={background}
+            colorSuggestions={colorSuggestions}
+            onColorChange={(color) =>
+              onUpdateSettings({
+                page: {
+                  ...settings.page,
+                  background: color,
+                },
+              })
+            }
+          />
         </SectionRow>
         <SectionRow>
           <TextWrapper>

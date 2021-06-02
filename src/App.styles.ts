@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 
-export const Container = styled.div`
+export const Container = styled.div<{ background?: string }>`
   display: flex;
   justify-content: center;
   width: 100%;
-  background: #f1f5f8;
+  background: ${(props) => props.background || '#f1f5f8'};
   position: relative;
 `;
 
