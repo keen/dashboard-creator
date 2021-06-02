@@ -144,11 +144,22 @@ test('renders visualization', () => {
       },
       widget: {
         card: {
-          backgroundColor: '#ffffff',
-          borderColor: 'none',
+          backgroundColor: 'transparent',
+          borderColor: 'transparent',
           borderRadius: 0,
           borderWidth: 0,
-          hasShadow: true,
+          hasShadow: false,
+          padding: 0,
+        },
+        subtitle: {
+          typography: {
+            fontFamily: 'Gangster Grotesk, Arial, Helvetica, sans-serif',
+          },
+        },
+        title: {
+          typography: {
+            fontFamily: 'Gangster Grotesk, Arial, Helvetica, sans-serif',
+          },
         },
       },
     })
