@@ -42,7 +42,7 @@ const explorer = new KeenDashboardCreator({
 
 ##### Define user privileges
 
-By default all users are allowed edit and share dashboards. To restrict privileges - specify scopes by using `userPermissions` argument. In example below user will be able to edit dashboards - however the share feature will be not available.
+By default all users are allowed to edit and share dashboards. To restrict privileges - specify scopes by using `userPermissions` argument. In example below user will be able to edit dashboards - however the share feature will be not available.
 
 ```typescript
 type Scopes = 'share-dashboard' | 'edit-dashboard';
