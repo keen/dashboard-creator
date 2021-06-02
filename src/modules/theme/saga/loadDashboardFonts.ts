@@ -15,6 +15,5 @@ export function* loadDashboardFonts() {
       page: { chartTitlesFont, visualizationsFont },
     },
   } = yield select(themeSelectors.getActiveDashboardThemeSettings);
-  console.log('saga loading fonts');
   FontLoader.loadFont([chartTitlesFont, visualizationsFont]);
 }

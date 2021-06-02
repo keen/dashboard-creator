@@ -38,7 +38,7 @@ const Dataviz: FC<Props> = ({
   widgetSettings,
   visualizationTheme,
   presentationTimezone,
-  dashboardSettings,
+  dashboardSettings = {},
 }) => {
   const datavizRef = useRef(null);
   const containerRef = useRef(null);

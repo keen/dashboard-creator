@@ -18,14 +18,14 @@ import { EditorContext } from '../../contexts';
 import { getWidget, ChartWidget } from '../../modules/widgets';
 import { getInterimQuery } from '../../modules/queries';
 import { themeSelectors } from '../../modules/theme';
+import { getPresentationTimezone } from '../../modules/timezone';
 import { RootState } from '../../rootReducer';
 
 import { OBSERVER_DELAY } from './constants';
 import { RESIZE_WIDGET_EVENT } from '../../constants';
 
 import getChartInput from '../../utils/getChartInput';
-import createDataviz from './utils/createDataviz';
-import { getPresentationTimezone } from '../../modules/timezone';
+import { createDataviz, mergeWidgetSettingsWithFont } from './utils';
 
 type Props = {
   /** Widget identifier */
@@ -59,7 +59,12 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
     getInterimQuery(state, id)
   );
 
-  const { theme } = useSelector((state: RootState) =>
+  const {
+    theme,
+    settings: {
+      page: { chartTitlesFont },
+    },
+  } = useSelector((state: RootState) =>
     themeSelectors.getActiveDashboardThemeSettings(state)
   );
 
@@ -87,8 +92,12 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
 
   useEffect(() => {
     if (showVisualization && inView) {
+      const widgetWithTheming = mergeWidgetSettingsWithFont(
+        chartTitlesFont,
+        widget as ChartWidget
+      );
       datavizRef.current = createDataviz({
-        widget: widget as ChartWidget,
+        widget: widgetWithTheming,
         theme,
         container: containerRef.current,
         presentationTimezone: getTimezone(chartData),
