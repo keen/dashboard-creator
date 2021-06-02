@@ -25,7 +25,7 @@ import { FONTS } from '../../../../modules/theme';
 import { KEYBOARD_KEYS } from '../../constants';
 
 type Props = {
-  /** List of fonts to display identifer */
+  /** Selector initial value */
   font: string;
   /** Container variant */
   variant?: Variant;

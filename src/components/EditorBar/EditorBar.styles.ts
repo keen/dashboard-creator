@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components';
 import { transparentize } from 'polished';
 import { colors } from '@keen.io/colors';
+import { DEFAULT_BACKGROUND_COLOR } from '../../constants';
 
 export const Container = styled.div<{ isSticky: boolean }>`
   height: 47px;
@@ -24,7 +25,7 @@ export const Container = styled.div<{ isSticky: boolean }>`
         left: 0;
         right: 0;
         height: 10px;
-        background-color: #f1f5f8;
+        background-color: ${DEFAULT_BACKGROUND_COLOR};
       }
     `};
 `;

@@ -3,9 +3,10 @@ import { motion } from 'framer-motion';
 import { transparentize } from 'polished';
 import { UI_LAYERS } from '@keen.io/ui-core';
 import { colors } from '@keen.io/colors';
+import { DEFAULT_BACKGROUND_COLOR } from '../../../../constants';
 
 export const Container = styled.div`
-  background: #f1f5f8;
+  background: ${DEFAULT_BACKGROUND_COLOR};
   position: relative;
 `;
 

@@ -25,3 +25,5 @@ export const TOOLTIP_MOTION = {
 };
 
 export const TIMEFRAME_FORMAT = 'YYYY-MM-DD HH:mm';
+
+export const DEFAULT_BACKGROUND_COLOR = '#f1f5f8';

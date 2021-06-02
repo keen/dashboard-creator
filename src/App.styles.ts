@@ -1,10 +1,11 @@
 import styled from 'styled-components';
+import { DEFAULT_BACKGROUND_COLOR } from './constants';
 
 export const Container = styled.div<{ background?: string }>`
   display: flex;
   justify-content: center;
   width: 100%;
-  background: ${(props) => props.background || '#f1f5f8'};
+  background: ${(props) => props.background || DEFAULT_BACKGROUND_COLOR};
   position: relative;
 `;
 
