@@ -69,6 +69,7 @@ const ColorSelector: FC<Props> = ({
       }}
     >
       <Color
+        data-testid="color-selector"
         background={color}
         onClick={() => {
           setPickerPosition();

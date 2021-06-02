@@ -1,3 +1,3 @@
-import ColorSelector from './ColorSelector.component';
+import ColorSelector from './ColorSelector';
 
 export { ColorSelector };

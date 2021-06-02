@@ -146,7 +146,7 @@ const FontSelector: FC<Props> = ({
         placeholder={t('query_creator_event_collection.placeholder')}
         onClick={() => !isOpen && setOpen(true)}
         isActive={isOpen}
-        value={FONTS[0].name}
+        value={font}
         searchable
         dropIndicator
         onSearch={searchHandler}
