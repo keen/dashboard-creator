@@ -1,4 +1,5 @@
 import { getColorSuggestions } from './getColorSuggestions';
+import { DEFAULT_BACKGROUND_COLOR } from '../../../constants';
 
 test('generate color suggestions from theme', () => {
   const currentColors = ['red', 'white', 'blue'];
@@ -63,13 +64,12 @@ test('generate color suggestions from theme', () => {
     },
   };
 
-  expect(getColorSuggestions(currentColors, theme)).toMatchInlineSnapshot(`
-    Array [
-      "red",
-      "white",
-      "blue",
-      "green",
-      "yellow",
-    ]
-  `);
+  expect(getColorSuggestions(currentColors, theme)).toStrictEqual([
+    'red',
+    'white',
+    'blue',
+    'green',
+    'yellow',
+    DEFAULT_BACKGROUND_COLOR,
+  ]);
 });
