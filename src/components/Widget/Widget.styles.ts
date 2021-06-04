@@ -51,7 +51,3 @@ export const FilterContainer = styled.div<{ isFadeOut?: boolean }>`
 
   ${(props) => props.isFadeOut && getFadeOutStyles()}
 `;
-
-StyledCard.defaultProps = {
-  padding: 20,
-};
