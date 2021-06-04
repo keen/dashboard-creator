@@ -62,6 +62,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
 
   const {
     theme,
+    settings,
     settings: {
       page: { chartTitlesFont },
     },
@@ -110,7 +111,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
         datavizRef.current.render(getChartInput(chartData));
       }
     }
-  }, [showVisualization, inView, error, theme]);
+  }, [showVisualization, inView, error, theme, settings]);
 
   useEffect(() => {
     if (!editorPubSub) return;
