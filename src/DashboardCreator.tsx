@@ -21,7 +21,7 @@ import { Theme } from '@keen.io/charts';
 import App from './App';
 import { APIContext, AppContext } from './contexts';
 import { BlobAPI } from './api';
-import { appActions } from './modules/app';
+import { appActions, Scopes } from './modules/app';
 import { NotificationManager } from './modules/notifications';
 
 import createI18n from './i18n';
@@ -41,8 +41,11 @@ export class DashboardCreator {
   /** Container used to mount application modals */
   private modalContainer: string;
 
-  /** User edit privileges */
-  private readonly editPrivileges: boolean;
+  /** User privileges */
+  private readonly userPermissions: Scopes[] = [
+    Scopes.EDIT_DASHBOARD,
+    Scopes.SHARE_DASHBOARD,
+  ];
 
   /** Master key for Keen project */
   private readonly masterKey: string;
@@ -90,7 +93,7 @@ export class DashboardCreator {
     const {
       container,
       modalContainer,
-      editPrivileges,
+      userPermissions,
       backend,
       project,
       translations,
@@ -108,7 +111,7 @@ export class DashboardCreator {
       this.analyticsApiUrl = backend.analyticsApiUrl;
     if (backend?.dashboardsApiUrl)
       this.dashboardsApiUrl = backend.dashboardsApiUrl;
-    if (editPrivileges) this.editPrivileges = editPrivileges;
+    if (userPermissions) this.userPermissions = userPermissions;
 
     this.container = container;
     this.modalContainer = modalContainer;
@@ -173,14 +176,14 @@ export class DashboardCreator {
       middleware: [sagaMiddleware, routerMiddleware(history)],
     });
 
-    const rootSaga = createRootSaga(this.editPrivileges);
+    const rootSaga = createRootSaga(this.userPermissions);
 
     sagaMiddleware.run(rootSaga);
 
     store.dispatch(
       appActions.appStart({
         baseTheme: this.themeSettings,
-        editPrivileges: this.editPrivileges,
+        userPermissions: this.userPermissions,
         cachedDashboardsNumber: this.cachedDashboardsNumber,
       })
     );

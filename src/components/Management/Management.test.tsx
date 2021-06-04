@@ -9,7 +9,10 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 
 import Management from './Management';
+
 import { dashboardsMeta } from '../../modules/dashboards/fixtures';
+import { Scopes } from '../../modules/app';
+
 import { createBodyElementById } from '../../utils/test/createBodyElementById';
 import { DROPDOWN_CONTAINER_ID } from '../../constants';
 
@@ -40,7 +43,7 @@ const render = (storeState: any = {}, overProps: any = {}) => {
   const state = {
     app: {
       user: {
-        editPrivileges: false,
+        permissions: [],
       },
     },
     dashboards: {
@@ -89,7 +92,7 @@ test('renders notification about creating first dashboard in project', async () 
   const storeState = {
     app: {
       user: {
-        editPrivileges: true,
+        permissions: [Scopes.EDIT_DASHBOARD],
       },
     },
     dashboards: {

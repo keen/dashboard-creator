@@ -7,23 +7,24 @@ import { Icon } from '@keen.io/icons';
 import { colors } from '@keen.io/colors';
 
 import {
-  showDashboardShareModal,
-  showDashboardSettingsModal,
-} from '../../modules/dashboards';
-
-import TooltipContent from '../TooltipContent';
-import {
   Aside,
   Container,
   TooltipMotion,
   ButtonContainer,
 } from './EditorNavigation.styles';
 
+import TooltipContent from '../TooltipContent';
 import DashboardDetails from '../DashboardDetails';
+import PermissionGate from '../PermissionGate';
+
+import {
+  showDashboardShareModal,
+  showDashboardSettingsModal,
+} from '../../modules/dashboards';
+import { appSelectors, Scopes } from '../../modules/app';
 
 import { TOOLTIP_MOTION } from '../../constants';
 import { TOOLTIP } from './constants';
-import { appSelectors } from '../../modules/app';
 
 type Props = {
   /** Back to management view */
@@ -77,31 +78,34 @@ const EditorNavigation: FC<Props> = ({ title, tags, isPublic, onBack }) => {
             )}
           </AnimatePresence>
         </ButtonContainer>
-        <ButtonContainer
-          marginLeft="10px"
-          onMouseEnter={() => setTooltip(TOOLTIP.share)}
-          onMouseLeave={() => setTooltip(null)}
-        >
-          <CircleButton
-            variant="secondary"
-            icon={<Icon type="share" />}
-            onClick={() => {
-              setTooltip(null);
-              dispatch(showDashboardShareModal(activeDashboard));
-            }}
-          />
-          <AnimatePresence>
-            {tooltip === TOOLTIP.share && (
-              <TooltipMotion {...TOOLTIP_MOTION}>
-                <Tooltip hasArrow={false} mode="light">
-                  <TooltipContent color={colors.black[500]}>
-                    {t('editor_navigation.share_tooltip')}
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipMotion>
-            )}
-          </AnimatePresence>
-        </ButtonContainer>
+        <PermissionGate scopes={[Scopes.SHARE_DASHBOARD]}>
+          <ButtonContainer
+            data-testid="share-dashboard"
+            marginLeft="10px"
+            onMouseEnter={() => setTooltip(TOOLTIP.share)}
+            onMouseLeave={() => setTooltip(null)}
+          >
+            <CircleButton
+              variant="secondary"
+              icon={<Icon type="share" />}
+              onClick={() => {
+                setTooltip(null);
+                dispatch(showDashboardShareModal(activeDashboard));
+              }}
+            />
+            <AnimatePresence>
+              {tooltip === TOOLTIP.share && (
+                <TooltipMotion {...TOOLTIP_MOTION}>
+                  <Tooltip hasArrow={false} mode="light">
+                    <TooltipContent color={colors.black[500]}>
+                      {t('editor_navigation.share_tooltip')}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipMotion>
+              )}
+            </AnimatePresence>
+          </ButtonContainer>
+        </PermissionGate>
       </Aside>
     </Container>
   );

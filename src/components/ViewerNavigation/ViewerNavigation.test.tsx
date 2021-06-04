@@ -4,12 +4,16 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 
 import ViewerNavigation from './ViewerNavigation';
+import { Scopes } from '../../modules/app';
 
-const render = (overProps: any = {}) => {
+const render = (overProps: any = {}, storeState: any = {}) => {
   const mockStore = configureStore([]);
   const store = mockStore({
     app: {
       activeDashboard: '@dashboard/01',
+      user: {
+        permissions: [],
+      },
     },
     dashboards: {
       metadata: {
@@ -20,10 +24,10 @@ const render = (overProps: any = {}) => {
         ],
       },
     },
+    ...storeState,
   });
 
   const props = {
-    editPrivileges: false,
     onShowSettings: jest.fn(),
     onEditDashboard: jest.fn(),
     tags: [],
@@ -64,7 +68,17 @@ test('allows user with privilages to open dashboard settings', () => {
   const {
     props,
     wrapper: { container },
-  } = render({ editPrivileges: true });
+  } = render(
+    {},
+    {
+      app: {
+        activeDashboard: '@dashboard/01',
+        user: {
+          permissions: [Scopes.EDIT_DASHBOARD],
+        },
+      },
+    }
+  );
 
   const button = container.querySelector(
     '[data-testid="dashboard-settings"] > *'
@@ -78,7 +92,17 @@ test('allows user with privilages to edit dashboard ', () => {
   const {
     props,
     wrapper: { getByText },
-  } = render({ editPrivileges: true });
+  } = render(
+    {},
+    {
+      app: {
+        activeDashboard: '@dashboard/01',
+        user: {
+          permissions: [Scopes.EDIT_DASHBOARD, Scopes.SHARE_DASHBOARD],
+        },
+      },
+    }
+  );
 
   const button = getByText('viewer.edit_dashboard_button');
   fireEvent.click(button);
