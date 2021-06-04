@@ -10,14 +10,16 @@ import Section, { SectionRow, TextWrapper } from '../Section';
 import ThemeSlider, { generateRulerSettings } from '../ThemeSlider';
 
 import { DashboardSettings } from '../../../../modules/dashboards';
-import { themeSelectors } from '../../../../modules/theme';
+import {
+  themeSelectors,
+  getColorSuggestions,
+  getFontFallback,
+} from '../../../../modules/theme';
 
-import { getFontFallback } from './utils';
 import { getNestedObjectKeysAndValues } from '../../../../utils';
 
 import { SPACING_INTERVALS } from '../../constants';
 import { ColorSelector } from '../ColorSelector';
-import { getColorSuggestions } from '../../utils';
 
 type Props = {
   /** Dashboard page settings */

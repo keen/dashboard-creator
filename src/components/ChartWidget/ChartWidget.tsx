@@ -17,7 +17,10 @@ import { Container, LoaderWrapper } from './ChartWidget.styles';
 import { EditorContext } from '../../contexts';
 import { getWidget, ChartWidget } from '../../modules/widgets';
 import { getInterimQuery } from '../../modules/queries';
-import { themeSelectors } from '../../modules/theme';
+import {
+  themeSelectors,
+  mergeSettingsWithFontFallback,
+} from '../../modules/theme';
 import { getPresentationTimezone } from '../../modules/timezone';
 import { RootState } from '../../rootReducer';
 
@@ -26,7 +29,6 @@ import { RESIZE_WIDGET_EVENT } from '../../constants';
 
 import getChartInput from '../../utils/getChartInput';
 import { createDataviz } from './utils';
-import { mergeSettingsWithFontFallback } from '../ThemeEditor';
 
 type Props = {
   /** Widget identifier */

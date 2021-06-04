@@ -1,5 +1,3 @@
-import deepMerge from 'deepmerge';
-
 /**
  * Transforms object with dot notation keys to nested object
  *
@@ -8,21 +6,15 @@ import deepMerge from 'deepmerge';
  */
 
 export const transformDotNotationToNested = (obj: Record<string, any>) => {
-  let result = {};
-
-  Object.keys(obj).forEach((key) => {
-    const entries = key.split('.');
-    const nestedObject = entries.reverse().reduce((acc, entry, idx) => {
-      if (idx === 0) {
-        acc[entry] = obj[key];
-        return acc;
-      } else {
-        acc = { [entry]: { ...acc } };
-        return acc;
-      }
-    }, {});
-    result = deepMerge(result, nestedObject);
-  });
-
-  return result;
+  return Object.keys(obj).reduce((result, cur) => {
+    cur
+      .split('.')
+      .reduce(
+        (acc, key, idx, arr) =>
+          (acc[key] =
+            idx === arr.length - 1 ? obj[cur] : acc[key] ? acc[key] : {}),
+        result
+      );
+    return result;
+  }, {});
 };

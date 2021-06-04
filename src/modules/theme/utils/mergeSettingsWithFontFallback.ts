@@ -3,7 +3,7 @@ import {
   getNestedObjectKeysAndValues,
   transformDotNotationToNested,
 } from '../../../utils';
-import { getFontFallback } from '../components/DashboardPage';
+import { getFontFallback } from './getFontFallback';
 
 /**
  * Merges widget settings with font

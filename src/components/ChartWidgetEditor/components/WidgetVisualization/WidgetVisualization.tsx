@@ -19,7 +19,6 @@ import {
 
 import Dataviz from '../DataViz';
 import { getDefaultSettings } from '../../utils';
-import { mergeSettingsWithFontFallback } from '../../../ThemeEditor';
 
 import { fadeMaskMotion } from './motion';
 import { DISABLE_WIDGETS } from './constants';
@@ -27,7 +26,10 @@ import { DISABLE_WIDGETS } from './constants';
 import { VisualizationSettings } from './types';
 import { getPresentationTimezone } from '../../../../modules/timezone';
 import { useSelector } from 'react-redux';
-import { themeSelectors } from '../../../../modules/theme';
+import {
+  themeSelectors,
+  mergeSettingsWithFontFallback,
+} from '../../../../modules/theme';
 
 type Props = {
   /** Query run indocator */

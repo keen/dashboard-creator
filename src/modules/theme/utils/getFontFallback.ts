@@ -1,4 +1,4 @@
-import { FONTS } from '../../../../../modules/theme';
+import { FONTS } from '../constants';
 
 export const getFontFallback = (font: string) => {
   const option = FONTS.find((f) => font === f.name);
