@@ -25,7 +25,8 @@ import { OBSERVER_DELAY } from './constants';
 import { RESIZE_WIDGET_EVENT } from '../../constants';
 
 import getChartInput from '../../utils/getChartInput';
-import { createDataviz, mergeWidgetSettingsWithFont } from './utils';
+import { createDataviz } from './utils';
+import { mergeSettingsWithFontFallback } from '../ThemeEditor';
 
 type Props = {
   /** Widget identifier */
@@ -92,7 +93,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
 
   useEffect(() => {
     if (showVisualization && inView) {
-      const widgetWithTheming = mergeWidgetSettingsWithFont(
+      const widgetWithTheming = mergeSettingsWithFontFallback(
         chartTitlesFont,
         widget as ChartWidget
       );

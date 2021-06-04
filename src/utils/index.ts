@@ -5,7 +5,7 @@ import getCustomTimeframe from './getCustomTimeframe';
 import { getEventPath } from './getEventPath';
 import { getRelativeBoundingRect } from './getRelativeBoundingRect';
 import { getNestedObjectKeysAndValues } from './getNestedObjectKeys';
-import { transformToNestedObject } from './transformToNestedObject';
+import { transformDotNotationToNested } from './transformDotNotationToNested';
 
 export {
   getDroppingItemSize,
@@ -15,5 +15,5 @@ export {
   getCustomTimeframe,
   getEventPath,
   getNestedObjectKeysAndValues,
-  transformToNestedObject,
+  transformDotNotationToNested,
 };

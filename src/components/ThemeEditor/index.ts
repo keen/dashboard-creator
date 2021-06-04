@@ -1,5 +1,6 @@
 import ThemeEditor from './ThemeEditor';
 import { getFontFallback } from './components/DashboardPage';
+import { mergeSettingsWithFontFallback } from './utils';
 
-export { getFontFallback };
+export { getFontFallback, mergeSettingsWithFontFallback };
 export default ThemeEditor;
