@@ -743,6 +743,7 @@ export function* cloneDashboard({
     const blobApi = yield getContext(BLOB_API);
 
     const model: DashboardModel = yield blobApi.getDashboardById(dashboardId);
+    const { theme, settings } = model;
     const uniqueIdWidgets = createWidgetsUniqueIds(model.widgets);
 
     const newDashboardId = uuid();
@@ -763,6 +764,16 @@ export function* cloneDashboard({
     yield blobApi.saveDashboard(newDashboardId, newModel, newMetaData);
 
     yield put(addClonedDashboard(newMetaData));
+
+    if (theme && settings) {
+      yield put(
+        themeActions.setDashboardTheme({
+          dashboardId: newDashboardId,
+          theme,
+          settings,
+        })
+      );
+    }
 
     yield notificationManager.showNotification({
       type: 'info',

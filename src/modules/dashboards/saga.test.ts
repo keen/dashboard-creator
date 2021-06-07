@@ -567,6 +567,24 @@ describe('cloneDashboard', () => {
   const model = {
     version: '1',
     widgets: [],
+    settings: {
+      colorPalette: 'default',
+      page: {
+        gridGap: 20,
+        background: 'transparent',
+        chartTitlesFont: 'Lato',
+        visualizationsFont: 'Lato',
+      },
+      tiles: {
+        background: 'white',
+        borderColor: 'transparent',
+        borderRadius: 0,
+        borderWidth: 1,
+        padding: 20,
+        hasShadow: false,
+      },
+    },
+    theme: {},
   };
 
   const metaData = {
@@ -617,7 +635,7 @@ describe('cloneDashboard', () => {
       return model;
     });
 
-    test('calls getDashboardMetaDataById with dashboard identifer', () => {
+    test('calls getDashboardMetaDataById with dashboard identifier', () => {
       expect(blobApiMock.getDashboardMetaDataById).toHaveBeenCalledWith(
         dashbboardId
       );
@@ -632,6 +650,18 @@ describe('cloneDashboard', () => {
     test('triggers addClonedDashboard action', (result) => {
       expect(result).toEqual(
         put(addClonedDashboard({ ...metaData, title: 'Clone' }))
+      );
+    });
+
+    test('set theme for cloned dashboard', (result) => {
+      expect(result).toEqual(
+        put(
+          themeActions.setDashboardTheme({
+            dashboardId,
+            theme: model.theme,
+            settings: model.settings,
+          })
+        )
       );
     });
 
@@ -697,6 +727,18 @@ describe('cloneDashboard', () => {
       );
     });
 
+    test('set theme for cloned dashboard', (result) => {
+      expect(result).toEqual(
+        put(
+          themeActions.setDashboardTheme({
+            dashboardId,
+            theme: model.theme,
+            settings: model.settings,
+          })
+        )
+      );
+    });
+
     test('calls show notification method', () => {
       expect(notificationManagerMock.showNotification).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -736,7 +778,7 @@ describe('cloneDashboard', () => {
     });
   });
 
-  describe('Scenario 3: User fail to clone dashboard', () => {
+  describe('Scenario 3: User fails to clone dashboard', () => {
     const test = sagaHelper(cloneDashboard(action));
 
     test('gets NotificationManager from context', (result) => {
