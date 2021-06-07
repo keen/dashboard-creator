@@ -2,14 +2,17 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { colors } from '@keen.io/colors';
 
+import { DEFAULT_BACKGROUND_COLOR } from '../../constants';
+
 export const Navigation = styled.div`
   padding: 30px 0;
 `;
 
-export const Container = styled.div`
+export const Container = styled.div<{ background?: string }>`
   display: flex;
   justify-content: center;
   width: 100%;
+  background: ${(props) => props.background || DEFAULT_BACKGROUND_COLOR};
 `;
 
 export const Content = styled.div`
