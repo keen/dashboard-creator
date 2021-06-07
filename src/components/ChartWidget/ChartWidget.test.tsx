@@ -151,16 +151,6 @@ test('renders visualization', () => {
           hasShadow: false,
           padding: 0,
         },
-        subtitle: {
-          typography: {
-            fontFamily: 'Gangster Grotesk, Arial, Helvetica, sans-serif',
-          },
-        },
-        title: {
-          typography: {
-            fontFamily: 'Gangster Grotesk, Arial, Helvetica, sans-serif',
-          },
-        },
       },
     })
   );

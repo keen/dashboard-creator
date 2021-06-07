@@ -124,7 +124,9 @@ const Grid: FC<Props> = ({
         containerPadding={GRID_CONTAINER_PADDING as [number, number]}
         rowHeight={ROW_HEIGHT}
         margin={
-          gridGap ? [gridGap, gridGap] : (GRID_MARGIN as [number, number])
+          gridGap
+            ? [gridGap, GRID_MARGIN[1]]
+            : (GRID_MARGIN as [number, number])
         }
         resizeHandle={
           <div className="react-resizable-handle react-resizable-handle-se">

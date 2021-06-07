@@ -15,7 +15,7 @@ import {
   CUSTOM_COLOR_PALETTE,
 } from '../../../../modules/theme';
 import { DashboardSettings } from '../../../../modules/dashboards';
-import { transformToNestedObject } from '../../../../utils';
+import { transformDotNotationToNested } from '../../../../utils';
 
 type Props = {
   /** Current theme settings */
@@ -53,10 +53,10 @@ const MainSettings: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
       <SettingsDivider />
       <DashboardPage
         onUpdateSettings={(pageSettings, themeSettings = {}) => {
-          const nestedObjects = Object.keys(themeSettings).map((obj) =>
-            transformToNestedObject(obj, themeSettings[obj])
+          const formattedThemeSettings = transformDotNotationToNested(
+            themeSettings
           );
-          const mergedTheme = deepMerge.all([theme, ...nestedObjects]);
+          const mergedTheme = deepMerge(theme, formattedThemeSettings);
 
           onUpdateSettings(mergedTheme, { ...pageSettings });
         }}

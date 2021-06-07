@@ -26,7 +26,10 @@ import { DISABLE_WIDGETS } from './constants';
 import { VisualizationSettings } from './types';
 import { getPresentationTimezone } from '../../../../modules/timezone';
 import { useSelector } from 'react-redux';
-import { themeSelectors } from '../../../../modules/theme';
+import {
+  themeSelectors,
+  mergeSettingsWithFontFallback,
+} from '../../../../modules/theme';
 
 type Props = {
   /** Query run indocator */
@@ -97,6 +100,9 @@ const WidgetVisualization: FC<Props> = ({
   const { settings: dashboardWidgetSettings } = useSelector(
     themeSelectors.getActiveDashboardThemeSettings
   );
+  const {
+    page: { chartTitlesFont },
+  } = dashboardWidgetSettings;
 
   return (
     <Container>
@@ -124,7 +130,10 @@ const WidgetVisualization: FC<Props> = ({
                 visualization={type}
                 visualizationTheme={baseTheme}
                 chartSettings={chartSettings}
-                widgetSettings={widgetSettings}
+                widgetSettings={mergeSettingsWithFontFallback(
+                  chartTitlesFont,
+                  widgetSettings
+                )}
                 analysisResults={analysisResult}
                 presentationTimezone={getTimezone(analysisResult)}
                 dashboardSettings={dashboardWidgetSettings}

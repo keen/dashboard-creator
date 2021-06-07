@@ -17,7 +17,10 @@ import { Container, LoaderWrapper } from './ChartWidget.styles';
 import { EditorContext } from '../../contexts';
 import { getWidget, ChartWidget } from '../../modules/widgets';
 import { getInterimQuery } from '../../modules/queries';
-import { themeSelectors } from '../../modules/theme';
+import {
+  themeSelectors,
+  mergeSettingsWithFontFallback,
+} from '../../modules/theme';
 import { getPresentationTimezone } from '../../modules/timezone';
 import { RootState } from '../../rootReducer';
 
@@ -25,7 +28,7 @@ import { OBSERVER_DELAY } from './constants';
 import { RESIZE_WIDGET_EVENT } from '../../constants';
 
 import getChartInput from '../../utils/getChartInput';
-import { createDataviz, mergeWidgetSettingsWithFont } from './utils';
+import { createDataviz } from './utils';
 
 type Props = {
   /** Widget identifier */
@@ -61,6 +64,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
 
   const {
     theme,
+    settings,
     settings: {
       page: { chartTitlesFont },
     },
@@ -92,7 +96,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
 
   useEffect(() => {
     if (showVisualization && inView) {
-      const widgetWithTheming = mergeWidgetSettingsWithFont(
+      const widgetWithTheming = mergeSettingsWithFontFallback(
         chartTitlesFont,
         widget as ChartWidget
       );
@@ -109,7 +113,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
         datavizRef.current.render(getChartInput(chartData));
       }
     }
-  }, [showVisualization, inView, error, theme]);
+  }, [showVisualization, inView, error, theme, settings]);
 
   useEffect(() => {
     if (!editorPubSub) return;

@@ -19,9 +19,8 @@ import {
 } from './ColorManager.styles';
 
 import { createColorPalettes } from './utils';
-import { getColorSuggestions } from '../../utils';
 import { COLORS_IN_LIST } from './constants';
-import { themeSelectors } from '../../../../modules/theme';
+import { themeSelectors, getColorSuggestions } from '../../../../modules/theme';
 import { ThemeModalContext } from '../../../ThemeEditorModal/ThemeEditorModal';
 
 type Props = {

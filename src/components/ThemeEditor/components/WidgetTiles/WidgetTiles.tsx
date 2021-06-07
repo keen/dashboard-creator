@@ -11,14 +11,13 @@ import { ColorSelector } from '../ColorSelector';
 import ThemeSlider, { generateRulerSettings } from '../ThemeSlider';
 
 import { DashboardSettings } from '../../../../modules/dashboards';
-import { themeSelectors } from '../../../../modules/theme';
+import { themeSelectors, getColorSuggestions } from '../../../../modules/theme';
 
 import {
   BorderOption,
   BorderWidthDropdownWrapper,
   BorderSettingsWrapper,
 } from './WidgetTiles.styles';
-import { getColorSuggestions } from '../../utils';
 import {
   TILE_BORDER_WIDTHS,
   SPACING_INTERVALS,

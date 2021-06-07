@@ -26,7 +26,6 @@ test('should render color selector with defined color', () => {
 
   const element = getByTestId('color-selector');
   const style = window.getComputedStyle(element);
-  console.log(style);
 
   expect(element).toBeInTheDocument();
   expect(style.backgroundColor).toEqual(props.color);
