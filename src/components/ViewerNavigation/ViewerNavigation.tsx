@@ -14,9 +14,11 @@ import {
   TooltipMotion,
 } from './ViewerNavigation.styles';
 
+import PermissionGate from '../PermissionGate';
 import DashboardDetails from '../DashboardDetails';
 
 import { showDashboardShareModal } from '../../modules/dashboards';
+import { Scopes } from '../../modules/app';
 
 import ActionsMenu from './components/ActionsMenu';
 import { TOOLTIP_MOTION } from '../../constants';
@@ -29,8 +31,6 @@ type Props = {
   tags: string[];
   /** Dashboard title */
   title?: string;
-  /** User privilages */
-  editPrivileges?: boolean;
   /** Dashboard is public identifier */
   isPublic?: boolean;
   /** Edit dashboard event handler */
@@ -55,7 +55,6 @@ const ViewerNavigation: FC<Props> = ({
   tags,
   isPublic,
   onBack,
-  editPrivileges,
   onShowSettings,
   onEditDashboard,
 }) => {
@@ -94,33 +93,33 @@ const ViewerNavigation: FC<Props> = ({
         onBack={onBack}
       />
       <Aside>
-        {editPrivileges && (
-          <>
-            <ButtonWrapper
-              onMouseEnter={() => setTooltip('settings')}
-              onMouseLeave={() => setTooltip(null)}
-              data-testid="dashboard-settings"
-            >
-              <CircleButton
-                variant="secondary"
-                icon={<Icon type="settings" />}
-                onClick={() => {
-                  setTooltip(null);
-                  onShowSettings();
-                }}
-              />
-              <AnimatePresence>
-                {tooltip === 'settings' && (
-                  <TooltipMotion {...TOOLTIP_MOTION}>
-                    <Tooltip hasArrow={false} mode="light">
-                      <TooltipContent color={colors.black[500]}>
-                        {t('viewer.settings_tooltip')}
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipMotion>
-                )}
-              </AnimatePresence>
-            </ButtonWrapper>
+        <PermissionGate scopes={[Scopes.EDIT_DASHBOARD]}>
+          <ButtonWrapper
+            onMouseEnter={() => setTooltip('settings')}
+            onMouseLeave={() => setTooltip(null)}
+            data-testid="dashboard-settings"
+          >
+            <CircleButton
+              variant="secondary"
+              icon={<Icon type="settings" />}
+              onClick={() => {
+                setTooltip(null);
+                onShowSettings();
+              }}
+            />
+            <AnimatePresence>
+              {tooltip === 'settings' && (
+                <TooltipMotion {...TOOLTIP_MOTION}>
+                  <Tooltip hasArrow={false} mode="light">
+                    <TooltipContent color={colors.black[500]}>
+                      {t('viewer.settings_tooltip')}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipMotion>
+              )}
+            </AnimatePresence>
+          </ButtonWrapper>
+          <PermissionGate scopes={[Scopes.SHARE_DASHBOARD]}>
             <ButtonWrapper
               onMouseEnter={() => setTooltip('share')}
               onMouseLeave={() => setTooltip(null)}
@@ -145,47 +144,47 @@ const ViewerNavigation: FC<Props> = ({
                 )}
               </AnimatePresence>
             </ButtonWrapper>
-            <ButtonWrapper
-              onMouseEnter={() => setTooltip('actions')}
-              onMouseLeave={() => setTooltip(null)}
-              data-testid="dashboard-actions"
-              ref={containerRef}
+          </PermissionGate>
+          <ButtonWrapper
+            onMouseEnter={() => setTooltip('actions')}
+            onMouseLeave={() => setTooltip(null)}
+            data-testid="dashboard-actions"
+            ref={containerRef}
+          >
+            <CircleButton
+              variant="secondary"
+              icon={<Icon type="actions" />}
+              onClick={() => {
+                setTooltip(null);
+                setActionsOpen(true);
+              }}
+            />
+            <Dropdown
+              isOpen={actionsOpen}
+              fullWidth={false}
+              motion={actionsMenuMotion}
             >
-              <CircleButton
-                variant="secondary"
-                icon={<Icon type="actions" />}
-                onClick={() => {
-                  setTooltip(null);
-                  setActionsOpen(true);
-                }}
+              <ActionsMenu
+                dashboardId={dashboardId}
+                onClose={() => setActionsOpen(false)}
               />
-              <Dropdown
-                isOpen={actionsOpen}
-                fullWidth={false}
-                motion={actionsMenuMotion}
-              >
-                <ActionsMenu
-                  dashboardId={dashboardId}
-                  onClose={() => setActionsOpen(false)}
-                />
-              </Dropdown>
-              <AnimatePresence>
-                {tooltip === 'actions' && !actionsOpen && (
-                  <TooltipMotion {...TOOLTIP_MOTION}>
-                    <Tooltip hasArrow={false} mode="light">
-                      <TooltipContent color={colors.black[500]}>
-                        {t('viewer.actions_tooltip')}
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipMotion>
-                )}
-              </AnimatePresence>
-            </ButtonWrapper>
-            <Button variant="secondary" onClick={onEditDashboard}>
-              {t('viewer.edit_dashboard_button')}
-            </Button>
-          </>
-        )}
+            </Dropdown>
+            <AnimatePresence>
+              {tooltip === 'actions' && !actionsOpen && (
+                <TooltipMotion {...TOOLTIP_MOTION}>
+                  <Tooltip hasArrow={false} mode="light">
+                    <TooltipContent color={colors.black[500]}>
+                      {t('viewer.actions_tooltip')}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipMotion>
+              )}
+            </AnimatePresence>
+          </ButtonWrapper>
+          <Button variant="secondary" onClick={onEditDashboard}>
+            {t('viewer.edit_dashboard_button')}
+          </Button>
+        </PermissionGate>
       </Aside>
     </Container>
   );

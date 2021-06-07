@@ -79,9 +79,9 @@ const WidgetFilter: FC<Props> = ({ icon, children }) => {
       >
         <Icon
           type={icon}
-          fill={colors.black[500]}
-          width={15}
-          height={15}
+          fill={colors.black[100]}
+          width={13}
+          height={13}
           opacity={0.5}
         />
       </IconContainer>

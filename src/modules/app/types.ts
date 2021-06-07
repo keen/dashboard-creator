@@ -2,12 +2,17 @@ import { Theme } from '@keen.io/charts';
 
 export type ViewMode = 'editor' | 'viewer' | 'management';
 
+export enum Scopes {
+  EDIT_DASHBOARD = 'edit-dashboard',
+  SHARE_DASHBOARD = 'share-dashboard',
+}
+
 export type ReducerState = {
   view: ViewMode;
   activeDashboardId: string | null;
   cachedDashboardsNumber: number;
   user: {
-    editPrivileges: boolean;
+    permissions: Scopes[];
   };
   imagePicker: {
     isVisible: boolean;
@@ -22,6 +27,6 @@ export type ReducerState = {
 
 export type AppStartPayload = {
   baseTheme: Partial<Theme>;
-  editPrivileges: boolean;
+  userPermissions: Scopes[];
   cachedDashboardsNumber: number;
 };

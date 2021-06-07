@@ -12,13 +12,10 @@ type Props = {
   onPreviewDashboard: (id: string) => void;
   /** Show dashboard settings event handler */
   onShowDashboardSettings: (id: string) => void;
-  /** User edit privileges */
-  editPrivileges: boolean;
 };
 
 const DashboardsList: FC<Props> = ({
   dashboards,
-  editPrivileges,
   onPreviewDashboard,
   onShowDashboardSettings,
 }) => {
@@ -45,7 +42,6 @@ const DashboardsList: FC<Props> = ({
               onPreview={() => onPreviewDashboard(id)}
               onShowSettings={() => onShowDashboardSettings(id)}
               useDefaultThumbnail={widgets === 0}
-              editPrivileges={editPrivileges}
               tags={tags}
               isPublic={isPublic}
             />

@@ -30,7 +30,7 @@ import {
   getDashboardListOrder,
   getTagsFilter,
 } from '../../modules/dashboards';
-import { appSelectors } from '../../modules/app';
+import { appSelectors, Scopes } from '../../modules/app';
 
 type Props = {};
 
@@ -40,7 +40,7 @@ const Management: FC<Props> = () => {
   const dashboards = useSelector(getDashboardsMetadata);
   const dashboardsLoaded = useSelector(getDashboardsLoadState);
   const dashboardListOrder = useSelector(getDashboardListOrder);
-  const { editPrivileges } = useSelector(appSelectors.getUser);
+  const { permissions: userPermissions } = useSelector(appSelectors.getUser);
   const dashboardsFilters = useSelector(getTagsFilter);
 
   const [searchPhrase, setSearchPhrase] = useState('');
@@ -83,7 +83,9 @@ const Management: FC<Props> = () => {
       <div>
         <ManagementNavigation
           attractCreateDashboardButton={isEmptyProject}
-          showCreateDashboardButton={editPrivileges && dashboardsLoaded}
+          showCreateDashboardButton={
+            userPermissions.includes(Scopes.EDIT_DASHBOARD) && dashboardsLoaded
+          }
           onCreateDashboard={createDashbord}
         />
         {!isEmptyProject && (
@@ -110,7 +112,6 @@ const Management: FC<Props> = () => {
           <DashboardsPlaceholder />
         ) : (
           <DashboardsList
-            editPrivileges={editPrivileges}
             onPreviewDashboard={(id) => dispatch(viewDashboard(id))}
             onShowDashboardSettings={(id) => {
               dispatch(showDashboardSettingsModal(id));
@@ -123,7 +124,7 @@ const Management: FC<Props> = () => {
             {t('dashboard_management.empty_search_results')}
           </EmptySearch>
         )}
-        {editPrivileges && (
+        {userPermissions.includes(Scopes.EDIT_DASHBOARD) && (
           <>
             <DashboardDeleteConfirmation />
             <CreateFirstDashboard

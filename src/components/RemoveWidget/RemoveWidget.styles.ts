@@ -7,13 +7,14 @@ export const Container = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  padding: 5px;
+  background-color: ${transparentize(0.1, colors.white[500])};
 
   width: 100%;
   height: 100%;
   padding: 10px;
   box-sizing: border-box;
 
-  background: ${transparentize(0.1, colors.white[500])};
   cursor: default;
 `;
 

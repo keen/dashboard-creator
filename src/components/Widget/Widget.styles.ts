@@ -40,6 +40,10 @@ export const StyledCard = styled.div<{
 export const TextManagementContainer = styled.div<{ isFadeOut?: boolean }>`
   ${(props) => props.isFadeOut && getFadeOutStyles()}
   height: 100%;
+
+  & + .react-resizable-handle path {
+    fill: ${colors.gray[500]};
+  }
 `;
 
 export const FilterContainer = styled.div<{ isFadeOut?: boolean }>`

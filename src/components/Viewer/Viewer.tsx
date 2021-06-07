@@ -13,6 +13,7 @@ import {
 import { themeSelectors } from '../../modules/theme';
 import { removeInterimQueries } from '../../modules/queries';
 import { resetDatePickerWidgets } from '../../modules/widgets';
+import { Scopes } from '../../modules/app';
 
 import Grid from '../Grid';
 import GridLoader from '../GridLoader';
@@ -36,7 +37,7 @@ type Props = {
 const Viewer: FC<Props> = ({ dashboardId }) => {
   const dispatch = useDispatch();
 
-  const { editPrivileges } = useSelector(appSelectors.getUser);
+  const { permissions: userPermissions } = useSelector(appSelectors.getUser);
   const { widgetsId, isInitialized, gridGap } = useSelector(
     (state: RootState) => {
       const dashboard = getDashboard(state, dashboardId);
@@ -60,9 +61,9 @@ const Viewer: FC<Props> = ({ dashboardId }) => {
       }
 
       return {
-        widgetsId: [],
-        gridGap: null,
         isInitialized: false,
+        gridGap: null,
+        widgetsId: [],
       };
     }
   );
@@ -96,7 +97,6 @@ const Viewer: FC<Props> = ({ dashboardId }) => {
           onShowSettings={() => {
             dispatch(showDashboardSettingsModal(dashboardId));
           }}
-          editPrivileges={editPrivileges}
         />
       </Navigation>
       <Content>
@@ -112,7 +112,7 @@ const Viewer: FC<Props> = ({ dashboardId }) => {
           <GridLoader />
         )}
       </Content>
-      {editPrivileges && (
+      {userPermissions.includes(Scopes.EDIT_DASHBOARD) && (
         <>
           <DashboardDeleteConfirmation />
         </>

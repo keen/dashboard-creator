@@ -164,9 +164,9 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
           <TitleContainer>
             <Icon
               type="date-picker"
-              fill={transparentize(0.5, colors.black[100])}
-              width={15}
-              height={15}
+              fill={transparentize(0.6, colors.blue[500])}
+              width={13}
+              height={13}
             />
             <Title role="heading">{t('date_picker_widget.name')}</Title>
           </TitleContainer>

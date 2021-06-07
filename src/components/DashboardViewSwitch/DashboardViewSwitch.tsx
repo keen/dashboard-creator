@@ -15,6 +15,7 @@ import { Dropdown, Button, EmptySearch } from '@keen.io/ui-core';
 import { colors } from '@keen.io/colors';
 
 import SearchInput from '../SearchInput';
+import PermissionGate from '../PermissionGate';
 
 import {
   getDashboardsMetadata,
@@ -40,7 +41,7 @@ import {
 } from './DashboardViewSwitch.styles';
 
 import { ROUTES } from '../../constants';
-import { appActions, appSelectors } from '../../modules/app';
+import { appActions, appSelectors, Scopes } from '../../modules/app';
 
 type Props = {
   /** Dashboard title */
@@ -166,11 +167,13 @@ const DashboardViewSwitch: FC<Props> = ({ title }) => {
               </List>
             </OverflowContainer>
             <DropdownFooter>
-              <NewDashboard>
-                <Button variant="secondary" onClick={createDashboard}>
-                  {t('dashboard_details.new_dashboard')}
-                </Button>
-              </NewDashboard>
+              <PermissionGate scopes={[Scopes.EDIT_DASHBOARD]}>
+                <NewDashboard>
+                  <Button variant="secondary" onClick={createDashboard}>
+                    {t('dashboard_details.new_dashboard')}
+                  </Button>
+                </NewDashboard>
+              </PermissionGate>
               <AllDashboards
                 onClick={() => {
                   dispatch(appActions.setActiveDashboard(null));

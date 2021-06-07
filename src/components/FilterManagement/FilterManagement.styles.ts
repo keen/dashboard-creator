@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { motion } from 'framer-motion';
 import { transparentize } from 'polished';
 import { UI_LAYERS } from '@keen.io/ui-core';
@@ -10,22 +10,33 @@ export const DragHandle = styled.div`
   align-items: center;
 `;
 
-export const RemoveContainer = styled(motion.div)`
+export const RemoveContainer = styled(motion.div)<{ isOverflow: boolean }>`
   position: absolute;
-  padding: 5px;
+  left: 0;
+  ${({ isOverflow }) =>
+    isOverflow &&
+    css`
+      left: auto;
+      right: 0;
+    `};
   width: 420px;
   box-sizing: border-box;
 
-  background-color: ${transparentize(0.1, colors.white[500])};
   box-shadow: 0 2px 4px 0 rgba(29, 39, 41, 0.15);
   z-index: ${UI_LAYERS.dropdown};
 `;
 
-export const ManagementContainer = styled(motion.div)`
+export const ManagementContainer = styled(motion.div)<{ isOverflow: boolean }>`
   position: absolute;
   background: ${transparentize(0.4, colors.black[300])};
   left: 0;
-  right: 0;
+  left: 0;
+  ${({ isOverflow }) =>
+    isOverflow &&
+    css`
+      left: auto;
+      right: 0;
+    `};
 
   display: grid;
   grid-template-columns: auto 1fr;
@@ -34,10 +45,12 @@ export const ManagementContainer = styled(motion.div)`
 
   padding: 0 10px;
   height: 47px;
+  width: 100%;
   min-width: 200px;
   z-index: ${UI_LAYERS.dropdown};
 
   cursor: grab;
+  box-sizing: border-box;
 `;
 
 export const ButtonsContainer = styled.div`

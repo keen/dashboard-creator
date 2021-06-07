@@ -5,12 +5,15 @@ import { DropdownMenu } from '@keen.io/ui-core';
 
 import { Container, DeleteDashboard } from './ActionsMenu.styles';
 
+import PermissionGate from '../../../PermissionGate';
+
 import {
   cloneDashboard,
   editDashboard,
   deleteDashboard,
   showDashboardShareModal,
 } from '../../../../modules/dashboards';
+import { Scopes } from '../../../../modules/app';
 
 type Props = {
   /** Dashboard identifer */
@@ -26,15 +29,17 @@ const ActionsMenu: FC<Props> = ({ dashboardId, onClose }) => {
   return (
     <Container>
       <DropdownMenu.Container>
-        <DropdownMenu.Item
-          onClick={() => {
-            onClose();
-            dispatch(showDashboardShareModal(dashboardId));
-          }}
-        >
-          {t('actions_menu.share_dashboard')}
-        </DropdownMenu.Item>
-        <DropdownMenu.Divider />
+        <PermissionGate scopes={[Scopes.SHARE_DASHBOARD]}>
+          <DropdownMenu.Item
+            onClick={() => {
+              onClose();
+              dispatch(showDashboardShareModal(dashboardId));
+            }}
+          >
+            {t('actions_menu.share_dashboard')}
+          </DropdownMenu.Item>
+          <DropdownMenu.Divider />
+        </PermissionGate>
         <DropdownMenu.Item
           onClick={() => {
             onClose();
