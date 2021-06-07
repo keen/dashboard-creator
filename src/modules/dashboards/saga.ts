@@ -62,7 +62,7 @@ import {
   getDashboardSettings,
   getDashboardsMetadata,
 } from './selectors';
-import { getBaseTheme, getActiveDashboardTheme } from '../theme/selectors';
+import { themeSelectors } from '../theme/selectors';
 
 import {
   initializeWidget,
@@ -79,8 +79,10 @@ import {
   removeConnectionFromDatePicker,
 } from '../widgets/saga/datePickerWidget';
 
-import { themeActions } from '../theme';
+import { themeActions, themeSagaActions } from '../theme';
 import {
+  enhanceDashboard,
+  createDashboardSettings,
   createPublicDashboardKeyName,
   createCodeSnippet,
   createWidgetsUniqueIds,
@@ -296,13 +298,18 @@ export function* saveDashboard({
       getDashboardSettings,
       dashboardId
     );
-    const dashboardTheme = yield select(getActiveDashboardTheme);
+
+    const { theme, settings } = yield select(
+      themeSelectors.getThemeByDashboardId,
+      dashboardId
+    );
     const serializedDashboard = {
       ...dashboard,
       widgets: dashboard.widgets.map((widgetId) =>
         getWidgetSettings(state, widgetId)
       ),
-      baseTheme: dashboardTheme,
+      settings,
+      theme,
     };
 
     const { widgets } = serializedDashboard;
@@ -346,16 +353,22 @@ export function* createDashboard({
   payload,
 }: ReturnType<typeof createDashboardAction>) {
   const { dashboardId } = payload;
-  const state: RootState = yield select();
 
-  const baseTheme: Partial<Theme> = yield getBaseTheme(state);
+  const theme: Partial<Theme> = yield select(themeSelectors.getBaseTheme);
   const serializedDashboard: Dashboard = {
     version: __APP_VERSION__,
     widgets: [],
   };
   yield put(registerDashboard(dashboardId));
   yield put(updateDashboard(dashboardId, serializedDashboard));
-  yield put(themeActions.setDashboardTheme({ dashboardId, theme: baseTheme }));
+
+  yield put(
+    themeActions.setDashboardTheme({
+      dashboardId,
+      theme,
+      settings: createDashboardSettings(),
+    })
+  );
 
   yield put(appActions.setActiveDashboard(dashboardId));
   yield put(push(ROUTES.EDITOR));
@@ -475,15 +488,17 @@ export function* editDashboard({
       const responseBody: DashboardModel = yield blobApi.getDashboardById(
         dashboardId
       );
-      const { baseTheme, ...dashboard } = responseBody;
+      const { theme, settings, ...dashboard } = enhanceDashboard(responseBody);
       const serializedDashboard = serializeDashboard(dashboard);
       const { widgets } = responseBody;
 
       yield put(registerWidgets(widgets));
       yield put(updateDashboard(dashboardId, serializedDashboard));
       yield put(
-        themeActions.setDashboardTheme({ dashboardId, theme: baseTheme })
+        themeActions.setDashboardTheme({ dashboardId, theme, settings })
       );
+
+      yield put(themeSagaActions.loadDashboardFonts());
 
       yield put(
         initializeDashboardWidgetsAction(
@@ -531,15 +546,17 @@ export function* viewDashboard({
         dashboardId
       );
 
-      const { baseTheme, ...dashboard } = responseBody;
+      const { theme, settings, ...dashboard } = enhanceDashboard(responseBody);
       const serializedDashboard = serializeDashboard(dashboard);
       const { widgets } = responseBody;
 
       yield put(registerWidgets(widgets));
       yield put(updateDashboard(dashboardId, serializedDashboard));
       yield put(
-        themeActions.setDashboardTheme({ dashboardId, theme: baseTheme })
+        themeActions.setDashboardTheme({ dashboardId, settings, theme })
       );
+
+      yield put(themeSagaActions.loadDashboardFonts());
 
       yield put(
         initializeDashboardWidgetsAction(
@@ -585,15 +602,17 @@ export function* viewPublicDashboard({
         dashboardId
       );
 
-      const { baseTheme, ...dashboard } = responseBody;
+      const { theme, settings, ...dashboard } = enhanceDashboard(responseBody);
       const serializedDashboard = serializeDashboard(dashboard);
       const { widgets } = responseBody;
 
       yield put(registerWidgets(widgets));
       yield put(updateDashboard(dashboardId, serializedDashboard));
       yield put(
-        themeActions.setDashboardTheme({ dashboardId, theme: baseTheme })
+        themeActions.setDashboardTheme({ dashboardId, settings, theme })
       );
+
+      yield put(themeSagaActions.loadDashboardFonts());
 
       yield put(
         initializeDashboardWidgetsAction(
@@ -724,6 +743,7 @@ export function* cloneDashboard({
     const blobApi = yield getContext(BLOB_API);
 
     const model: DashboardModel = yield blobApi.getDashboardById(dashboardId);
+    const { theme, settings } = model;
     const uniqueIdWidgets = createWidgetsUniqueIds(model.widgets);
 
     const newDashboardId = uuid();
@@ -744,6 +764,20 @@ export function* cloneDashboard({
     yield blobApi.saveDashboard(newDashboardId, newModel, newMetaData);
 
     yield put(addClonedDashboard(newMetaData));
+
+    let dashboardTheme = theme;
+    if (!dashboardTheme) {
+      dashboardTheme = yield select(themeSelectors.getBaseTheme);
+    }
+    const dashboardSettings = settings || createDashboardSettings();
+
+    yield put(
+      themeActions.setDashboardTheme({
+        dashboardId: newDashboardId,
+        theme: dashboardTheme,
+        settings: dashboardSettings,
+      })
+    );
 
     yield notificationManager.showNotification({
       type: 'info',

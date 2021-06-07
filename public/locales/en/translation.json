@@ -1,4 +1,26 @@
 {
+  "theme_editor": {
+    "save": "Save Changes",
+    "title": "Dashboard Theming",
+    "preview": "Preview",
+    "cancel": "Cancel",
+    "expand": "Expand",
+    "main_section_title": "General",
+    "color_palette_title": "Data Color Palette",
+    "color_palette_description": "Make sure the colors are diverse to increase the readability of the data",
+    "dashboard_page_title": "Dashboard Page",
+    "widget_tiles_title": "Widget Tiles",
+    "background_color": "Background color",
+    "chart_titles_font": "Chart Titles Font",
+    "data_visualization_font": "Data Visualizations Font",
+    "space_between_widgets": "Space Between Widgets",
+    "empty_search_results": "No font found with this name",
+    "tile_color": "Tile color",
+    "border": "Border",
+    "corner_rounding": "Corner Rounding",
+    "inner_margin": "Inner margin",
+    "shadow": "Shadow"
+  },
   "confirm_query_change": {
     "title": "You Edited Saved Query",
     "message": "What do you want to update?",
@@ -202,6 +224,7 @@
     "text": "Text"
   },
   "editor_bar": {
+    "theming": "Theming",
     "finish_edition": "Finish Edition",
     "saved": "Saved",
     "is_saving": "Is saving..."

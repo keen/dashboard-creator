@@ -24,6 +24,16 @@ const initialProps = {
   },
   chartSettings: {},
   widgetSettings: {},
+  dashboardSettings: {
+    tiles: {
+      background: 'transparent',
+      borderColor: 'transparent',
+      borderRadius: 0,
+      borderWidth: 0,
+      padding: 0,
+      hasShadow: false,
+    },
+  },
   presentationTimezone: 60,
 };
 
@@ -39,6 +49,12 @@ test('creates KeenDataviz instance', () => {
 
 test('creates KeenDataviz instance with theme settings', () => {
   const theme = { colors: ['red', 'green'] };
+  const {
+    dashboardSettings: { tiles },
+  } = initialProps;
+  const { background, ...card } = tiles;
+  const cardSettings = { ...card, backgroundColor: background };
+
   render(<DataViz {...initialProps} visualizationTheme={theme as any} />);
 
   expect(KeenDataviz).toHaveBeenCalledWith(
@@ -47,7 +63,9 @@ test('creates KeenDataviz instance with theme settings', () => {
       settings: {
         theme,
       },
-      widget: {},
+      widget: {
+        card: cardSettings,
+      },
     })
   );
 });

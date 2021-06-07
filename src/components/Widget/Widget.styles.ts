@@ -6,9 +6,15 @@ const getFadeOutStyles = () => css`
   opacity: 0.3;
 `;
 
-export const Container = styled.div<{
+export const StyledCard = styled.div<{
   isFadeOut?: boolean;
   isHighlighted?: boolean;
+  background?: string;
+  borderColor?: string;
+  borderWidth?: number;
+  borderRadius?: number;
+  padding?: number;
+  hasShadow?: boolean;
 }>`
   display: flex;
   flex-direction: column;
@@ -16,8 +22,13 @@ export const Container = styled.div<{
   height: 100%;
   position: relative;
   overflow: hidden;
-  background: ${colors.white[500]};
-
+  background: ${(props) => props.background};
+  border: ${(props) => `${props.borderWidth}px solid ${props.borderColor}`};
+  border-radius: ${(props) => props.borderRadius}px;
+  box-sizing: border-box;
+  box-shadow: ${(props) =>
+    props.hasShadow ? '0px 2px 4px 0px rgba(29,39,41,0.15)' : 'none'};
+  padding: ${(props) => props.padding}px;
   ${(props) =>
     props.isHighlighted &&
     css`

@@ -6,6 +6,7 @@ import configureStore from 'redux-mock-store';
 import { PubSub } from '@keen.io/pubsub';
 import { KeenDataviz } from '@keen.io/dataviz';
 
+import { createDashboardSettings } from '../../modules/dashboards';
 import { EditorContext } from '../../contexts';
 
 import { RESIZE_WIDGET_EVENT } from '../../constants';
@@ -43,7 +44,10 @@ const render = (
     },
     theme: {
       dashboards: {
-        dashboard: {},
+        dashboard: {
+          theme: {},
+          settings: createDashboardSettings(),
+        },
       },
     },
     queries: {
@@ -133,11 +137,21 @@ test('renders visualization', () => {
   expect(KeenDataviz).toHaveBeenCalledWith(
     expect.objectContaining({
       type: 'bar',
+      presentationTimezone: null,
       settings: {
         layout: 'vertical',
         theme: {},
       },
-      widget: {},
+      widget: {
+        card: {
+          backgroundColor: 'transparent',
+          borderColor: 'transparent',
+          borderRadius: 0,
+          borderWidth: 0,
+          hasShadow: false,
+          padding: 20,
+        },
+      },
     })
   );
 });

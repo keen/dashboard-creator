@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import {
-  Container,
+  StyledCard,
   TextManagementContainer,
   FilterContainer,
 } from './Widget.styles';
@@ -29,6 +29,7 @@ import FilterWidget from '../FilterWidget/FilterWidget';
 import FilterManagement from '../FilterManagement';
 import { editFilterWidget } from '../../modules/widgets/actions';
 import { appSelectors } from '../../modules/app';
+import { themeSelectors } from '../../modules/theme';
 
 type Props = {
   /** Widget identifier */
@@ -54,8 +55,12 @@ const renderWidget = ({
   title,
   onRemoveWidget,
   onEditWidget,
+  dashboardSettings,
 }: RenderOptions) => {
   const enableHover = isHoverActive && !isHighlighted && !isFadeOut && !title;
+
+  const { tiles: tileSettings } = dashboardSettings;
+
   switch (widgetType) {
     case 'date-picker':
       return (
@@ -87,7 +92,15 @@ const renderWidget = ({
       }
     case 'visualization':
       return (
-        <Container isFadeOut={isFadeOut} isHighlighted={isHighlighted}>
+        <StyledCard
+          isFadeOut={isFadeOut}
+          isHighlighted={isHighlighted}
+          background={tileSettings.background}
+          borderWidth={tileSettings.borderWidth}
+          borderRadius={tileSettings.borderRadius}
+          borderColor={tileSettings.borderColor}
+          hasShadow={tileSettings.hasShadow}
+        >
           <ChartWidget id={widgetId} disableInteractions={isEditorMode} />
           {isEditorMode && (
             <ChartManagement
@@ -104,12 +117,24 @@ const renderWidget = ({
             />
           )}
           {!isEditorMode && <ChartWidgetFilter widgetId={widgetId} />}
-        </Container>
+        </StyledCard>
       );
     case 'image':
       return (
-        <Container isFadeOut={isFadeOut}>
-          <ImageWidget id={widgetId} />
+        <StyledCard
+          isFadeOut={isFadeOut}
+          isHighlighted={isHighlighted}
+          background={tileSettings.background}
+          borderWidth={tileSettings.borderWidth}
+          borderRadius={tileSettings.borderRadius}
+          borderColor={tileSettings.borderColor}
+          padding={tileSettings.padding}
+          hasShadow={tileSettings.hasShadow}
+        >
+          <ImageWidget
+            id={widgetId}
+            placeholderBackgroundColor={tileSettings.background}
+          />
           {isEditorMode && (
             <ImageManagement
               widgetId={widgetId}
@@ -117,7 +142,7 @@ const renderWidget = ({
               onRemoveWidget={onRemoveWidget}
             />
           )}
-        </Container>
+        </StyledCard>
       );
     case 'filter':
       return (
@@ -172,6 +197,10 @@ const Widget: FC<Props> = ({
     onEditWidget = () => dispatch(editDatePickerWidget(id));
   }
 
+  const { settings: dashboardWidgetSettings } = useSelector(
+    themeSelectors.getActiveDashboardThemeSettings
+  );
+
   return renderWidget({
     widgetType,
     widgetId,
@@ -183,6 +212,7 @@ const Widget: FC<Props> = ({
     title: widgetTitle,
     onRemoveWidget,
     onEditWidget,
+    dashboardSettings: dashboardWidgetSettings,
   });
 };
 

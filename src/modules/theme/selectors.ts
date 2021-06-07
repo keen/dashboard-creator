@@ -1,11 +1,42 @@
 import { RootState } from '../../rootReducer';
 
-export const getBaseTheme = ({ theme }: RootState) => theme.base;
+const getBaseTheme = ({ theme }: RootState) => theme.defaultTheme;
 
-export const getActiveDashboardTheme = (state: RootState) => {
+const getThemeModal = ({ theme }: RootState) => theme.modal;
+
+const getEditorSection = ({ theme }: RootState) => theme.editorSection;
+
+const getThemeByDashboardId = (state: RootState, dashboardId: string) => {
+  const {
+    theme: { dashboards },
+  } = state;
+  return dashboards[dashboardId];
+};
+
+const getCurrentEditTheme = (state: RootState) => state.theme.currentEditTheme;
+
+const getActiveDashboardTheme = (state: RootState) => {
   const {
     app: { activeDashboardId },
     theme: { dashboards },
   } = state;
-  return dashboards[activeDashboardId] || {};
+  return dashboards[activeDashboardId]?.theme || {};
+};
+
+const getActiveDashboardThemeSettings = (state: RootState) => {
+  const {
+    app: { activeDashboardId },
+    theme: { dashboards },
+  } = state;
+  return dashboards[activeDashboardId];
+};
+
+export const themeSelectors = {
+  getBaseTheme,
+  getThemeModal,
+  getEditorSection,
+  getCurrentEditTheme,
+  getThemeByDashboardId,
+  getActiveDashboardThemeSettings,
+  getActiveDashboardTheme,
 };

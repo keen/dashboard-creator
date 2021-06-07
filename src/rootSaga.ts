@@ -7,6 +7,7 @@ import { chartEditorSaga } from './modules/chartEditor';
 import { datePickerSaga } from './modules/datePicker';
 import { filterSaga } from './modules/filter';
 import { timezoneSaga } from './modules/timezone';
+import { themeSaga } from './modules/theme';
 
 export const createRootSaga = (userPermissions: Scopes[] = []) => {
   const sagaFlows = [
@@ -18,7 +19,7 @@ export const createRootSaga = (userPermissions: Scopes[] = []) => {
   ];
 
   if (userPermissions.includes(Scopes.EDIT_DASHBOARD)) {
-    sagaFlows.push(chartEditorSaga(), datePickerSaga());
+    sagaFlows.push(chartEditorSaga(), datePickerSaga(), themeSaga());
   }
 
   return function* () {

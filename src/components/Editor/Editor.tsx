@@ -21,6 +21,7 @@ import {
   updateWidgetsPosition,
   WidgetsPosition,
 } from '../../modules/widgets';
+import { themeSagaActions, themeSelectors } from '../../modules/theme';
 import { textEditorSelectors } from '../../modules/textEditor';
 
 import { AppContext, EditorContext } from '../../contexts';
@@ -31,6 +32,7 @@ import EditorNavigation from '../EditorNavigation';
 import QueryPickerModal from '../QueryPickerModal';
 import DatePickerModal from '../DatePickerModal';
 import ImagePickerModal from '../ImagePickerModal';
+import ThemeEditorModal from '../ThemeEditorModal';
 import FilterModal from '../FilterModal';
 import ChartWidgetEditor from '../ChartWidgetEditor';
 import TextWidgetEditor from '../TextWidgetEditor';
@@ -73,12 +75,24 @@ const Editor: FC<Props> = ({ dashboardId }) => {
     textAlignment,
   } = useSelector(textEditorSelectors.getTextEditor);
 
-  const { widgetsId, isInitialized, isSaving } = useSelector(
+  const { widgetsId, isInitialized, gridGap, isSaving } = useSelector(
     (state: RootState) => {
       const dashboard = getDashboard(state, dashboardId);
-      if (dashboard?.initialized) {
+      const themeSettings = themeSelectors.getThemeByDashboardId(
+        state,
+        dashboardId
+      );
+
+      if (dashboard?.initialized && themeSettings) {
+        const {
+          settings: {
+            page: { gridGap },
+          },
+        } = themeSettings;
+
         return {
           isInitialized: true,
+          gridGap,
           isSaving: dashboard.isSaving,
           widgetsId: dashboard.settings.widgets,
         };
@@ -87,6 +101,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
       return {
         widgetsId: [],
         isSaving: false,
+        gridGap: null,
         isInitialized: false,
       };
     }
@@ -144,6 +159,9 @@ const Editor: FC<Props> = ({ dashboardId }) => {
         <EditorBar
           isSticky={isSticky}
           isSaving={isSaving}
+          onEditTheme={() =>
+            dispatch(themeSagaActions.editDashboardTheme(dashboardId))
+          }
           onFinishEdit={() => {
             dispatch(saveDashboard(dashboardId));
             dispatch(viewDashboard(dashboardId));
@@ -163,6 +181,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
           <Grid
             isEditorMode={true}
             widgetsId={widgetsId}
+            gridGap={gridGap}
             onWidgetDrop={addWidgetHandler}
             onWidgetDrag={(gridPositions) => {
               dispatch(updateWidgetsPosition(gridPositions));
@@ -195,6 +214,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
         <DashboardDeleteConfirmation />
         <QueryPickerModal />
         <DatePickerModal />
+        <ThemeEditorModal />
         <ImagePickerModal />
         <FilterModal />
       </Portal>
