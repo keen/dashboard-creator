@@ -72,6 +72,9 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
     themeSelectors.getActiveDashboardThemeSettings(state)
   );
 
+  const dashboardSettings = useSelector((state: RootState) =>
+    themeSelectors.getActiveDashboardThemeSettings(state)
+  );
   const showVisualization = isConfigured && isInitialized && !isLoading;
   const chartData = interimQuery ? interimQuery : data;
 
@@ -105,6 +108,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
         theme,
         container: containerRef.current,
         presentationTimezone: getTimezone(chartData),
+        dashboardSettings: dashboardSettings.settings,
       });
 
       if (error) {

@@ -149,7 +149,7 @@ test('renders visualization', () => {
           borderRadius: 0,
           borderWidth: 0,
           hasShadow: false,
-          padding: 0,
+          padding: 20,
         },
       },
     })

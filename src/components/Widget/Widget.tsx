@@ -99,7 +99,6 @@ const renderWidget = ({
           borderWidth={tileSettings.borderWidth}
           borderRadius={tileSettings.borderRadius}
           borderColor={tileSettings.borderColor}
-          padding={tileSettings.padding}
           hasShadow={tileSettings.hasShadow}
         >
           <ChartWidget id={widgetId} disableInteractions={isEditorMode} />
