@@ -765,15 +765,19 @@ export function* cloneDashboard({
 
     yield put(addClonedDashboard(newMetaData));
 
-    if (theme && settings) {
-      yield put(
-        themeActions.setDashboardTheme({
-          dashboardId: newDashboardId,
-          theme,
-          settings,
-        })
-      );
+    let dashboardTheme = theme;
+    if (!dashboardTheme) {
+      dashboardTheme = yield select(themeSelectors.getBaseTheme);
     }
+    const dashboardSettings = settings || createDashboardSettings();
+
+    yield put(
+      themeActions.setDashboardTheme({
+        dashboardId: newDashboardId,
+        theme: dashboardTheme,
+        settings: dashboardSettings,
+      })
+    );
 
     yield notificationManager.showNotification({
       type: 'info',
