@@ -27,9 +27,6 @@ import {
   addClonedDashboard,
   initializeDashboardWidgets as initializeDashboardWidgetsAction,
   exportDashboardToHtml as exportDashboardToHtmlAction,
-  saveDashboard as saveDashboardAction,
-  updateDashboardMeta,
-  saveDashboardSuccess,
   viewDashboard as viewDashboardAction,
   calculateYPositionAndAddWidget as calculateYPositionAndAddWidgetAction,
   updateCachedDashboardIds,
@@ -39,7 +36,7 @@ import {
   regenerateAccessKeySuccess,
   regenerateAccessKeyError,
 } from './actions';
-import { themeActions, themeSelectors, themeSagaActions } from '../theme';
+import { themeActions, themeSagaActions } from '../theme';
 import {
   deleteAccessKey,
   deleteDashboard,
@@ -50,11 +47,10 @@ import {
   viewPublicDashboard,
   cloneDashboard,
   exportDashboardToHtml,
-  saveDashboard,
   updateCachedDashboardsList,
   calculateYPositionAndAddWidget,
   setAccessKey,
-} from './saga';
+} from './dashboardsSaga';
 
 import {
   removeWidget,
@@ -67,12 +63,7 @@ import {
 import { serializeDashboard } from './serializers';
 import { createCodeSnippet, createDashboardSettings } from './utils';
 
-import {
-  DashboardModel,
-  DashboardSettings,
-  DashboardMetaData,
-  DashboardError,
-} from './types';
+import { DashboardModel, DashboardMetaData, DashboardError } from './types';
 
 import rootReducer from '../../rootReducer';
 
@@ -92,8 +83,6 @@ import {
   getCachedDashboardIds,
   getDashboard,
   getDashboardMeta,
-  getDashboardSettings,
-  getDashboardsMetadata,
 } from './selectors';
 import { removeConnectionFromFilter } from '../widgets/saga/filterWidget';
 
@@ -948,109 +937,6 @@ describe('exportDashboardToHtml()', () => {
       createCodeSnippet({ projectId, userKey, dashboardId })
     );
     return snippet;
-  });
-});
-
-describe('saveDashboard()', () => {
-  const dashboardId = '@dashboard/01';
-  const dashboard: DashboardModel = {
-    version: '0.0.1',
-    widgets: [],
-  };
-  const state = {
-    rootReducer,
-    app: {
-      activeDashboardId: dashboardId,
-    },
-    dashboards: {
-      items: {
-        [dashboardId]: dashboard,
-      },
-    },
-    theme: {
-      dashboards: {
-        [dashboardId]: {
-          theme: {
-            colors: ['navybule'],
-          },
-          settings: {
-            page: {
-              gridGap: 40,
-            },
-          } as DashboardSettings,
-        },
-      },
-    },
-  };
-
-  const blobApiMock = {
-    saveDashboard: jest.fn(),
-  };
-
-  const updatedMetadata: DashboardMetaData = {
-    id: dashboardId,
-    widgets: 0,
-    queries: 0,
-    title: 'Dashboard',
-    tags: [],
-    lastModificationDate: 0,
-    isPublic: true,
-    publicAccessKey: 'public-access-key',
-  };
-
-  const action = saveDashboardAction(dashboardId);
-  const test = sagaHelper(saveDashboard(action));
-
-  test('prepare state activeDashboardId', (result) => {
-    expect(result).toEqual(select());
-
-    return state;
-  });
-
-  test('get dashboard settings', (result) => {
-    expect(result).toEqual(select(getDashboardSettings, dashboardId));
-
-    return dashboard;
-  });
-
-  test('get dashboard theme', (result) => {
-    expect(result).toEqual(
-      select(themeSelectors.getThemeByDashboardId, dashboardId)
-    );
-
-    return state.theme.dashboards[dashboardId];
-  });
-
-  test('get dashboards meta data', (result) => {
-    expect(result).toEqual(select(getDashboardsMetadata));
-
-    return [updatedMetadata];
-  });
-
-  test('gets BlobAPI instance from context', (result) => {
-    expect(result).toEqual(getContext(BLOB_API));
-
-    return blobApiMock;
-  });
-
-  test('calls saveDashboard', () => {
-    const serializedDashboard = serializeDashboard(dashboard);
-
-    expect(blobApiMock.saveDashboard).toHaveBeenCalledWith(
-      dashboardId,
-      { ...serializedDashboard, ...state.theme.dashboards[dashboardId] },
-      updatedMetadata
-    );
-  });
-
-  test('updates dashboard metadata', (result) => {
-    expect(result).toEqual(
-      put(updateDashboardMeta(dashboardId, updatedMetadata))
-    );
-  });
-
-  test('notifies about save success', (result) => {
-    expect(result).toEqual(put(saveDashboardSuccess(dashboardId)));
   });
 });
 

@@ -16,3 +16,9 @@ export const getWidgetSettings = ({ widgets }: RootState, id: string) => {
 
 export const getWidget = ({ widgets }: RootState, id: string) =>
   widgets.items[id];
+
+export const widgetsSelectors = {
+  getWidgetsPosition,
+  getWidgetSettings,
+  getWidget,
+};

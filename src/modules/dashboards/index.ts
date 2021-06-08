@@ -1,5 +1,5 @@
 import dashboardsReducer from './reducer';
-import { dashboardsSaga } from './saga';
+import { dashboardsSaga } from './dashboardsSaga';
 import {
   createDashboard,
   editDashboard,

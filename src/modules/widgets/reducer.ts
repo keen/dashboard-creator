@@ -7,9 +7,9 @@ import { createWidget } from './utils';
 
 import {
   APPLY_FILTER_WIDGET,
-  UNAPPLY_FILTER_WIDGET,
   CONFIGURE_FILTER_WIDGET,
   FINISH_CHART_WIDGET_CONFIGURATION,
+  SET_CHART_WIDGET_VISUALIZATION,
   REGISTER_WIDGETS,
   REMOVE_WIDGET,
   SET_DATE_PICKER_WIDGET,
@@ -70,6 +70,24 @@ const widgetsReducer = (
             widget: {
               ...state.items[action.payload.id].widget,
               filterIds: action.payload.filterIds,
+            },
+          },
+        },
+      };
+    case SET_CHART_WIDGET_VISUALIZATION:
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          [action.payload.id]: {
+            ...state.items[action.payload.id],
+            widget: {
+              ...state.items[action.payload.id].widget,
+              settings: {
+                visualizationType: action.payload.visualizationType,
+                chartSettings: action.payload.chartSettings,
+                widgetSettings: action.payload.widgetSettings,
+              },
             },
           },
         },

@@ -14,6 +14,7 @@ import {
   FINISH_CHART_WIDGET_CONFIGURATION,
   INITIALIZE_WIDGET,
   INITIALIZE_CHART_WIDGET,
+  SET_CHART_WIDGET_VISUALIZATION,
   EDIT_CHART_WIDGET,
   EDIT_IMAGE_WIDGET,
   RESET_DATE_PICKER_WIDGETS,
@@ -81,6 +82,23 @@ export const removeWidget = createAction(REMOVE_WIDGET, (id: string) => ({
     id,
   },
 }));
+
+export const setChartWidgetVisualization = createAction(
+  SET_CHART_WIDGET_VISUALIZATION,
+  (
+    id: string,
+    visualizationType: string,
+    chartSettings: Record<string, any>,
+    widgetSettings: Record<string, any>
+  ) => ({
+    payload: {
+      id,
+      visualizationType,
+      chartSettings,
+      widgetSettings,
+    },
+  })
+);
 
 export const finishChartWidgetConfiguration = createAction(
   FINISH_CHART_WIDGET_CONFIGURATION,
@@ -459,4 +477,5 @@ export type WidgetsActions =
   | ReturnType<typeof clearInconsistentFiltersError>
   | ReturnType<typeof saveImage>
   | ReturnType<typeof unregisterWidget>
-  | ReturnType<typeof resetFilterWidgets>;
+  | ReturnType<typeof resetFilterWidgets>
+  | ReturnType<typeof setChartWidgetVisualization>;

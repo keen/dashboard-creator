@@ -22,8 +22,6 @@ import {
   registerDashboard,
   updateDashboard,
   deleteDashboardSuccess,
-  saveDashboardSuccess,
-  saveDashboardError,
   updateDashboardMeta,
   removeWidgetFromDashboard as removeWidgetFromDashboardAction,
   initializeDashboardWidgets as initializeDashboardWidgetsAction,
@@ -54,13 +52,13 @@ import {
   addWidgetToDashboard,
 } from './actions';
 
+import { saveDashboard } from './saga';
+
 import { serializeDashboard } from './serializers';
 import {
   getCachedDashboardIds,
   getDashboard,
   getDashboardMeta,
-  getDashboardSettings,
-  getDashboardsMetadata,
 } from './selectors';
 import { themeSelectors } from '../theme/selectors';
 
@@ -284,68 +282,6 @@ export function* updateAccessKeyOptions() {
 
   if (isPublic) {
     yield updateAccessKey(dashboardId);
-  }
-}
-
-export function* saveDashboard({
-  payload,
-}: ReturnType<typeof saveDashboardAction>) {
-  const { dashboardId } = payload;
-  const state: RootState = yield select();
-
-  try {
-    const dashboard: Dashboard = yield select(
-      getDashboardSettings,
-      dashboardId
-    );
-
-    const { theme, settings } = yield select(
-      themeSelectors.getThemeByDashboardId,
-      dashboardId
-    );
-    const serializedDashboard = {
-      ...dashboard,
-      widgets: dashboard.widgets.map((widgetId) =>
-        getWidgetSettings(state, widgetId)
-      ),
-      settings,
-      theme,
-    };
-
-    const { widgets } = serializedDashboard;
-    const queries = widgets.reduce((acc, widget) => {
-      if (
-        widget.type === 'visualization' &&
-        widget.query &&
-        typeof widget.query === 'string'
-      ) {
-        acc.add(widget.query);
-      }
-      return acc;
-    }, new Set([]));
-
-    const dashboardsMeta = yield select(getDashboardsMetadata);
-    const metadata: DashboardMetaData = dashboardsMeta.find(
-      ({ id }) => id === dashboardId
-    );
-
-    const updatedMetadata: DashboardMetaData = {
-      ...metadata,
-      queries: queries.size,
-      lastModificationDate: +new Date(),
-    };
-
-    const blobApi = yield getContext(BLOB_API);
-    yield blobApi.saveDashboard(
-      dashboardId,
-      serializedDashboard,
-      updatedMetadata
-    );
-
-    yield put(updateDashboardMeta(dashboardId, updatedMetadata));
-    yield put(saveDashboardSuccess(dashboardId));
-  } catch (err) {
-    yield put(saveDashboardError(dashboardId));
   }
 }
 

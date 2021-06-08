@@ -20,8 +20,14 @@ import {
   setWidgetState,
   saveImage,
 } from './actions';
-import { getWidgetsPosition, getWidgetSettings, getWidget } from './selectors';
-import { widgetsSaga } from './saga';
+import {
+  getWidgetsPosition,
+  getWidgetSettings,
+  getWidget,
+  widgetsSelectors,
+} from './selectors';
+import { serializeWidget } from './serializers';
+import { widgetsSaga } from './widgetsSaga';
 import { createWidgetId } from './utils';
 import {
   Widget,
@@ -70,4 +76,6 @@ export {
   createWidgetId,
   cloneWidget,
   saveImage,
+  serializeWidget,
+  widgetsSelectors,
 };
