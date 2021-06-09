@@ -253,38 +253,6 @@ test('shows saved query updated message', () => {
   expect(getByText('chart_widget_editor.save_query_edit')).toBeInTheDocument();
 });
 
-test('allows user to restore saved query settings', async () => {
-  const storeState = {
-    chartEditor: {
-      ...chartEditorInitialState,
-      hasQueryChanged: true,
-      isSavedQuery: true,
-    },
-  };
-  const {
-    store,
-    wrapper: { getByTestId, getByText },
-  } = render(storeState);
-
-  const element = getByTestId('edit-tooltip-icon');
-  fireEvent.mouseEnter(element);
-
-  await waitFor(() => getByText('chart_widget_editor.save_query_restore'));
-  store.clearActions();
-
-  const anchor = getByText('chart_widget_editor.save_query_restore');
-  fireEvent.click(anchor);
-
-  expect(store.getActions()).toMatchInlineSnapshot(`
-    Array [
-      Object {
-        "payload": undefined,
-        "type": "chartEditor/restoreSavedQuery",
-      },
-    ]
-  `);
-});
-
 test('shows placeholder with run query button', () => {
   const storeState = {
     chartEditor: {
