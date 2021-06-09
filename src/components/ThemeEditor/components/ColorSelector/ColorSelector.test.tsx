@@ -18,6 +18,8 @@ const render = (overProps: any = {}) => {
   };
 };
 
+HTMLCanvasElement.prototype.getContext = jest.fn();
+
 test('should render color selector with defined color', () => {
   const {
     wrapper: { getByTestId },
