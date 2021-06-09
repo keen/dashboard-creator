@@ -1,6 +1,10 @@
 /*eslint-disable @typescript-eslint/no-unused-vars*/
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { PickerWidgets } from '@keen.io/widget-picker';
+import {
+  ChartSettings,
+  PickerWidgets,
+  WidgetSettings,
+} from '@keen.io/widget-picker';
 import { Query } from '@keen.io/query';
 
 import { createWidgetSettings } from './utils';

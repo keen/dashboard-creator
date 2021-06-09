@@ -41,7 +41,6 @@ import { themeSelectors } from '../../../../modules/theme';
 import { AppContext } from '../../../../contexts';
 
 import WidgetVisualization from '../WidgetVisualization';
-import SaveQueryWarning from '../SaveQueryWarning';
 import QueryEditor from '../QueryEditor';
 import Navigation from '../Navigation';
 
@@ -49,6 +48,7 @@ import { CHART_EDITOR_ERRORS } from './constants';
 import { TOOLTIP_MOTION } from '../../../../constants';
 
 import { ChartEditorError } from './types';
+import SaveQueryWarning from '../SaveQueryWarning';
 
 type Props = {
   /** Close editor event handler */
@@ -69,17 +69,15 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
     visualization,
     editorSection,
     isEditMode,
-    isDirtyQuery,
     isSavedQuery,
+    hasQueryChanged,
+    isDirtyQuery,
     isQueryPerforming,
     queryError,
-    hasQueryChanged,
   } = useSelector(chartEditorSelectors.getChartEditor);
 
   const baseTheme = useSelector(themeSelectors.getActiveDashboardTheme);
-
   const { modalContainer } = useContext(AppContext);
-
   const { type: widgetType, widgetSettings, chartSettings } = visualization;
 
   const customizationSections = useCustomizationSections(
@@ -123,6 +121,29 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
   }, []);
 
   const outdatedAnalysisResults = !!(analysisResult !== null && isDirtyQuery);
+
+  const updateWidgetSettings = (widgetSettings) => {
+    if (!deepEqual(widgetSettings, widgetCustomization.widget)) {
+      dispatch(chartEditorActions.setQueryChange(true));
+    }
+    dispatch(chartEditorActions.updateWidgetSettings(widgetSettings));
+    setCustomizationSettings((state) => ({
+      ...state,
+      widget: widgetSettings,
+    }));
+  };
+
+  const updateChartSettings = (chartSettings) => {
+    if (!deepEqual(chartSettings, widgetCustomization.chart)) {
+      dispatch(chartEditorActions.setQueryChange(true));
+    }
+    const chart = serializeOutputSettings(widgetType, chartSettings);
+    dispatch(chartEditorActions.updateChartSettings(chart));
+    setCustomizationSettings((state) => ({
+      ...state,
+      chart: chartSettings,
+    }));
+  };
 
   return (
     <Container id="chart-editor">
@@ -195,21 +216,12 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
             chartSettings={widgetCustomization.chart}
             widgetSettings={widgetCustomization.widget}
             savedQueryName={analysisResult?.metadata?.display_name}
-            onUpdateWidgetSettings={(widgetSettings) => {
-              dispatch(chartEditorActions.updateWidgetSettings(widgetSettings));
-              setCustomizationSettings((state) => ({
-                ...state,
-                widget: widgetSettings,
-              }));
-            }}
-            onUpdateChartSettings={(chartSettings) => {
-              const chart = serializeOutputSettings(widgetType, chartSettings);
-              dispatch(chartEditorActions.updateChartSettings(chart));
-              setCustomizationSettings((state) => ({
-                ...state,
-                chart: chartSettings,
-              }));
-            }}
+            onUpdateWidgetSettings={(widgetSettings) =>
+              updateWidgetSettings(widgetSettings)
+            }
+            onUpdateChartSettings={(chartSettings) =>
+              updateChartSettings(chartSettings)
+            }
             modalContainer={modalContainer}
           />
         </SectionContainer>
@@ -247,13 +259,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
         <Cancel>
           <Anchor onClick={onClose}>{t('chart_widget_editor.cancel')}</Anchor>
         </Cancel>
-        {isSavedQuery && hasQueryChanged && (
-          <SaveQueryWarning
-            onRestoreQuery={() =>
-              dispatch(chartEditorActions.restoreSavedQuery())
-            }
-          />
-        )}
+        {isSavedQuery && hasQueryChanged && <SaveQueryWarning />}
       </Footer>
     </Container>
   );

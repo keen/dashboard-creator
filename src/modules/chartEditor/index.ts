@@ -1,5 +1,5 @@
 import { EditorSection } from './types';
-import { chartEditorSaga } from './saga';
+import { chartEditorSaga } from './chartEditorSaga';
 
 import { chartEditorSelectors } from './selectors';
 import chartEditorSlice, {
