@@ -40,8 +40,6 @@ export function* cloneDashboard({
     const model: DashboardModel = yield blobApi.getDashboardById(dashboardId);
     const { theme, settings } = model;
 
-    console.log(model, 'sa');
-
     const uniqueIdWidgets = createWidgetsUniqueIds(model.widgets);
 
     const newDashboardId = uuid();
@@ -97,7 +95,6 @@ export function* cloneDashboard({
       yield put(push(ROUTES.EDITOR));
     }
   } catch (err) {
-    console.log(err, 'sasas');
     yield notificationManager.showNotification({
       type: 'error',
       message: 'notifications.dashboard_cloned_error',
