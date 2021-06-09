@@ -20,6 +20,7 @@ const createWidgetsUniqueIds = (widgets: Widget[]) => {
       }),
     id: uniqueIdMap[widget.id],
     settings: {
+      // @TODO: Widget settings not in chart widget with SQ
       ...widget.settings,
       ...('widgets' in widget.settings &&
         widget.settings.widgets.length && {

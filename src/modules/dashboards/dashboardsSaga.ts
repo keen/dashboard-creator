@@ -12,7 +12,6 @@ import {
 } from 'redux-saga/effects';
 import { StatusCodes } from 'http-status-codes';
 import { push } from 'connected-react-router';
-import { v4 as uuid } from 'uuid';
 import { exportToHtml } from '@keen.io/ui-core';
 import { Theme } from '@keen.io/charts';
 
@@ -36,7 +35,6 @@ import {
   regenerateAccessKey as regenerateAccessKeyAction,
   regenerateAccessKeySuccess,
   regenerateAccessKeyError,
-  cloneDashboard as cloneDashboardAction,
   exportDashboardToHtml as exportDashboardToHtmlAction,
   showDeleteConfirmation,
   hideDeleteConfirmation,
@@ -45,14 +43,13 @@ import {
   setDashboardList,
   setDashboardError,
   setDashboardListOrder,
-  addClonedDashboard,
   updateCachedDashboardIds,
   unregisterDashboard,
   calculateYPositionAndAddWidget as calculateYPositionAndAddWidgetAction,
   addWidgetToDashboard,
 } from './actions';
 
-import { saveDashboard } from './saga';
+import { saveDashboard, cloneDashboard } from './saga';
 
 import { serializeDashboard } from './serializers';
 import {
@@ -83,7 +80,6 @@ import {
   createDashboardSettings,
   createPublicDashboardKeyName,
   createCodeSnippet,
-  createWidgetsUniqueIds,
 } from './utils';
 
 import { APIError } from '../../api';
@@ -666,85 +662,6 @@ export function* regenerateAccessKey({
         autoDismiss: false,
       });
     }
-  }
-}
-
-export function* cloneDashboard({
-  payload,
-}: ReturnType<typeof cloneDashboardAction>) {
-  const { dashboardId } = payload;
-
-  const notificationManager = yield getContext(NOTIFICATION_MANAGER);
-  try {
-    const blobApi = yield getContext(BLOB_API);
-
-    const model: DashboardModel = yield blobApi.getDashboardById(dashboardId);
-    const { theme, settings } = model;
-    const uniqueIdWidgets = createWidgetsUniqueIds(model.widgets);
-
-    const newDashboardId = uuid();
-    const metaData = yield blobApi.getDashboardMetaDataById(dashboardId);
-    const newMetaData = {
-      ...metaData,
-      id: newDashboardId,
-      title: metaData.title ? `${metaData.title} Clone` : 'Clone',
-      isPublic: false,
-      lastModificationDate: +new Date(),
-    };
-
-    const newModel = {
-      ...model,
-      widgets: uniqueIdWidgets,
-    };
-
-    yield blobApi.saveDashboard(newDashboardId, newModel, newMetaData);
-
-    yield put(addClonedDashboard(newMetaData));
-
-    let dashboardTheme = theme;
-    if (!dashboardTheme) {
-      dashboardTheme = yield select(themeSelectors.getBaseTheme);
-    }
-    const dashboardSettings = settings || createDashboardSettings();
-
-    yield put(
-      themeActions.setDashboardTheme({
-        dashboardId: newDashboardId,
-        theme: dashboardTheme,
-        settings: dashboardSettings,
-      })
-    );
-
-    yield notificationManager.showNotification({
-      type: 'info',
-      message: 'notifications.dashboard_cloned',
-      autoDismiss: true,
-    });
-
-    const state: RootState = yield select();
-    const activeDashboard = appSelectors.getActiveDashboard(state);
-
-    if (activeDashboard) {
-      const serializedDashboard = serializeDashboard(newModel);
-      yield put(registerWidgets(uniqueIdWidgets));
-      yield put(updateDashboard(newDashboardId, serializedDashboard));
-      yield put(
-        initializeDashboardWidgetsAction(
-          newDashboardId,
-          serializedDashboard.widgets
-        )
-      );
-
-      yield put(appActions.setActiveDashboard(newDashboardId));
-      yield put(push(ROUTES.EDITOR));
-    }
-  } catch (err) {
-    yield notificationManager.showNotification({
-      type: 'error',
-      message: 'notifications.dashboard_cloned_error',
-      showDismissButton: true,
-      autoDismiss: false,
-    });
   }
 }
 
