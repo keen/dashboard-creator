@@ -18,6 +18,17 @@ const render = (overProps: any = {}) => {
   };
 };
 
+beforeEach(() => {
+  HTMLCanvasElement.prototype.getContext = jest.fn();
+  Element.prototype.getBoundingClientRect = jest
+    .fn()
+    .mockImplementation(() => ({
+      x: 1,
+      y: 1,
+      height: 100,
+    }));
+});
+
 test('should render color selector with defined color', () => {
   const {
     wrapper: { getByTestId },
