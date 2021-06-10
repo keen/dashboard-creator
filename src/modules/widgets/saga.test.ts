@@ -23,13 +23,6 @@ import {
 import { getWidget, getWidgetSettings } from './selectors';
 
 import {
-  getActiveDashboard,
-  showQueryPicker,
-  hideQueryPicker,
-  HIDE_QUERY_PICKER,
-} from '../app';
-
-import {
   getDashboardSettings,
   saveDashboard,
   removeWidgetFromDashboard,
@@ -46,18 +39,10 @@ import {
   SavedQuery,
 } from '../queries';
 
-import {
-  openEditor,
-  closeEditor,
-  resetEditor,
-  applyConfiguration,
-  EDITOR_UNMOUNTED,
-  CLOSE_EDITOR,
-  APPLY_CONFIGURATION,
-} from '../chartEditor';
-
 import { widget as widgetItem } from './fixtures';
 import { findBiggestYPositionOfWidgets } from '../dashboards/utils/findBiggestYPositionOfWidgets';
+import { appActions, appSelectors } from '../app';
+import { chartEditorActions } from '../chartEditor';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
@@ -80,7 +65,7 @@ describe('reinitializeWidgets()', () => {
     const test = sagaHelper(reinitializeWidgets(action));
 
     test('get active dashboard idenfitier', (result) => {
-      expect(result).toEqual(select(getActiveDashboard));
+      expect(result).toEqual(select(appSelectors.getActiveDashboard));
 
       return dashboardId;
     });
@@ -152,13 +137,18 @@ describe('createQueryForWidget()', () => {
     const test = sagaHelper(createQueryForWidget(widgetId));
 
     test('opens chart editor', (result) => {
-      expect(result).toEqual(put(openEditor()));
+      expect(result).toEqual(put(chartEditorActions.openEditor()));
     });
 
     test('waits until user close chart editor', (result) => {
-      expect(result).toEqual(take([CLOSE_EDITOR, APPLY_CONFIGURATION]));
+      expect(result).toEqual(
+        take([
+          chartEditorActions.closeEditor.type,
+          chartEditorActions.applyConfiguration.type,
+        ])
+      );
 
-      return closeEditor();
+      return chartEditorActions.closeEditor();
     });
 
     test('gets active dashboard identifier', () => {
@@ -190,13 +180,18 @@ describe('createQueryForWidget()', () => {
     };
 
     test('opens chart editor', (result) => {
-      expect(result).toEqual(put(openEditor()));
+      expect(result).toEqual(put(chartEditorActions.openEditor()));
     });
 
     test('waits until user close chart editor', (result) => {
-      expect(result).toEqual(take([CLOSE_EDITOR, APPLY_CONFIGURATION]));
+      expect(result).toEqual(
+        take([
+          chartEditorActions.closeEditor.type,
+          chartEditorActions.applyConfiguration.type,
+        ])
+      );
 
-      return applyConfiguration();
+      return chartEditorActions.applyConfiguration();
     });
 
     test('gets chart editor settings', () => {
@@ -221,15 +216,15 @@ describe('createQueryForWidget()', () => {
     });
 
     test('closes chart editor', (result) => {
-      expect(result).toEqual(put(closeEditor()));
+      expect(result).toEqual(put(chartEditorActions.closeEditor()));
     });
 
     test('waits until editor is closed', (result) => {
-      expect(result).toEqual(take(EDITOR_UNMOUNTED));
+      expect(result).toEqual(take(chartEditorActions.editorUnmounted.type));
     });
 
     test('reset chart editor', (result) => {
-      expect(result).toEqual(put(resetEditor()));
+      expect(result).toEqual(put(chartEditorActions.resetEditor()));
     });
 
     test('initializes chart widget', (result) => {
@@ -261,19 +256,23 @@ describe('selectQueryForWidget()', () => {
     };
 
     test('shows query picker', (result) => {
-      expect(result).toEqual(put(showQueryPicker()));
+      expect(result).toEqual(put(appActions.showQueryPicker()));
     });
 
     test('waits until user select saved query', (result) => {
       expect(result).toEqual(
-        take([SELECT_SAVED_QUERY, CREATE_QUERY, HIDE_QUERY_PICKER])
+        take([
+          SELECT_SAVED_QUERY,
+          CREATE_QUERY,
+          appActions.hideQueryPicker.type,
+        ])
       );
 
       return selectSavedQuery(savedQuery);
     });
 
     test('hides query picker', (result) => {
-      expect(result).toEqual(put(hideQueryPicker()));
+      expect(result).toEqual(put(appActions.hideQueryPicker()));
     });
 
     test('finishes chart widget configuration', (result) => {
@@ -314,15 +313,19 @@ describe('selectQueryForWidget()', () => {
     const test = sagaHelper(selectQueryForWidget(widgetId));
 
     test('shows query picker', (result) => {
-      expect(result).toEqual(put(showQueryPicker()));
+      expect(result).toEqual(put(appActions.showQueryPicker()));
     });
 
     test('waits until user close query picker', (result) => {
       expect(result).toEqual(
-        take([SELECT_SAVED_QUERY, CREATE_QUERY, HIDE_QUERY_PICKER])
+        take([
+          SELECT_SAVED_QUERY,
+          CREATE_QUERY,
+          appActions.hideQueryPicker.type,
+        ])
       );
 
-      return hideQueryPicker();
+      return appActions.hideQueryPicker();
     });
 
     test('gets active dashboard identifier', () => {
@@ -340,19 +343,23 @@ describe('selectQueryForWidget()', () => {
     const test = sagaHelper(selectQueryForWidget(widgetId));
 
     test('shows query picker', (result) => {
-      expect(result).toEqual(put(showQueryPicker()));
+      expect(result).toEqual(put(appActions.showQueryPicker()));
     });
 
     test('waits for specific user action', (result) => {
       expect(result).toEqual(
-        take([SELECT_SAVED_QUERY, CREATE_QUERY, HIDE_QUERY_PICKER])
+        take([
+          SELECT_SAVED_QUERY,
+          CREATE_QUERY,
+          appActions.hideQueryPicker.type,
+        ])
       );
 
       return createQuery();
     });
 
     test('hides query picker', (result) => {
-      expect(result).toEqual(put(hideQueryPicker()));
+      expect(result).toEqual(put(appActions.hideQueryPicker()));
     });
 
     test('runs create query flow', (result) => {
@@ -399,7 +406,7 @@ describe('cloneWidget()', () => {
     });
 
     test('select active dashboard id', (result) => {
-      expect(result).toEqual(select(getActiveDashboard));
+      expect(result).toEqual(select(appSelectors.getActiveDashboard));
       return dashboardId;
     });
 

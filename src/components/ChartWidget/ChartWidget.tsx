@@ -17,15 +17,18 @@ import { Container, LoaderWrapper } from './ChartWidget.styles';
 import { EditorContext } from '../../contexts';
 import { getWidget, ChartWidget } from '../../modules/widgets';
 import { getInterimQuery } from '../../modules/queries';
-import { getActiveDashboardTheme } from '../../modules/theme';
+import {
+  themeSelectors,
+  mergeSettingsWithFontFallback,
+} from '../../modules/theme';
+import { getPresentationTimezone } from '../../modules/timezone';
 import { RootState } from '../../rootReducer';
 
 import { OBSERVER_DELAY } from './constants';
 import { RESIZE_WIDGET_EVENT } from '../../constants';
 
 import getChartInput from '../../utils/getChartInput';
-import createDataviz from './utils/createDataviz';
-import { getPresentationTimezone } from '../../modules/timezone';
+import { createDataviz } from './utils';
 
 type Props = {
   /** Widget identifier */
@@ -58,10 +61,20 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
   const interimQuery = useSelector((state: RootState) =>
     getInterimQuery(state, id)
   );
-  const theme = useSelector((state: RootState) =>
-    getActiveDashboardTheme(state)
+
+  const {
+    theme,
+    settings,
+    settings: {
+      page: { chartTitlesFont },
+    },
+  } = useSelector((state: RootState) =>
+    themeSelectors.getActiveDashboardThemeSettings(state)
   );
 
+  const dashboardSettings = useSelector((state: RootState) =>
+    themeSelectors.getActiveDashboardThemeSettings(state)
+  );
   const showVisualization = isConfigured && isInitialized && !isLoading;
   const chartData = interimQuery ? interimQuery : data;
 
@@ -86,12 +99,17 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
 
   useEffect(() => {
     if (showVisualization && inView) {
-      datavizRef.current = createDataviz(
-        widget as ChartWidget,
-        theme,
-        containerRef.current,
-        getTimezone(chartData)
+      const widgetWithTheming = mergeSettingsWithFontFallback(
+        chartTitlesFont,
+        widget as ChartWidget
       );
+      datavizRef.current = createDataviz({
+        widget: widgetWithTheming,
+        theme,
+        container: containerRef.current,
+        presentationTimezone: getTimezone(chartData),
+        dashboardSettings: dashboardSettings.settings,
+      });
 
       if (error) {
         datavizRef.current.error(error.message, error.title);
@@ -99,7 +117,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
         datavizRef.current.render(getChartInput(chartData));
       }
     }
-  }, [showVisualization, inView, error]);
+  }, [showVisualization, inView, error, theme, settings]);
 
   useEffect(() => {
     if (!editorPubSub) return;

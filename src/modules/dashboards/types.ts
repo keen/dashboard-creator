@@ -12,10 +12,29 @@ export type DashboardMetaData = {
   publicAccessKey: null | string;
 };
 
+export type DashboardSettings = {
+  colorPalette: string;
+  page: {
+    gridGap: number;
+    background: string;
+    chartTitlesFont: string;
+    visualizationsFont: string;
+  };
+  tiles: {
+    background: string;
+    borderColor: string;
+    borderRadius: number;
+    borderWidth: number;
+    padding: number;
+    hasShadow: boolean;
+  };
+};
+
 export type DashboardModel = {
   version: string;
   widgets: Widget[];
-  baseTheme?: Partial<Theme>;
+  settings?: DashboardSettings;
+  theme?: Partial<Theme>;
 };
 
 export type Dashboard = {

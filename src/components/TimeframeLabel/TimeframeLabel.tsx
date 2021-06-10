@@ -43,9 +43,9 @@ const TimeframeLabel: FC<Props> = ({ timeframe, timezone, onRemove }) => {
       <TimeframeWrapper>
         <Icon
           type="date-picker"
-          fill={transparentize(0.5, colors.black[100])}
-          width={15}
-          height={15}
+          fill={transparentize(0.6, colors.blue[500])}
+          width={13}
+          height={13}
         />
         <Timeframe>
           {formatDate(timeframe.start, timezone, TIMEFRAME_FORMAT)}

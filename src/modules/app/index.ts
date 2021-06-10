@@ -1,35 +1,10 @@
-import appReducer from './reducer';
-import {
-  appStart,
-  setActiveDashboard,
-  showQueryPicker,
-  hideQueryPicker,
-  showImagePicker,
-  hideImagePicker,
-} from './actions';
 import { appSaga } from './saga';
 
-import { HIDE_QUERY_PICKER, HIDE_IMAGE_PICKER } from './constants';
-import {
-  getUser,
-  getQueryPicker,
-  getActiveDashboard,
-  getImagePicker,
-} from './selectors';
+import { appSelectors } from './selectors';
+import appSlice from './reducer';
+import { Scopes } from './types';
 
-export {
-  getUser,
-  appReducer,
-  appSaga,
-  appStart,
-  setActiveDashboard,
-  showQueryPicker,
-  hideQueryPicker,
-  getQueryPicker,
-  getActiveDashboard,
-  getImagePicker,
-  showImagePicker,
-  hideImagePicker,
-  HIDE_QUERY_PICKER,
-  HIDE_IMAGE_PICKER,
-};
+const appActions = appSlice.actions;
+const appReducer = appSlice.reducer;
+
+export { appActions, appReducer, appSelectors, appSaga, Scopes };

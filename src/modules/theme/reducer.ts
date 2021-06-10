@@ -1,49 +1,82 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ThemeActions } from './actions';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Theme } from '@keen.io/charts';
 
-import {
-  SET_BASE_THEME,
-  SET_DASHBOARD_THEME,
-  REMOVE_DASHBOARD_THEME,
-} from './constants';
+import { ReducerState, ThemeSettings, ThemeEditorSection } from './types';
 
-import { ReducerState } from './types';
+import { DashboardSettings } from '../dashboards';
 
 export const initialState: ReducerState = {
-  base: {},
   dashboards: {},
+  defaultTheme: {},
+  initialTheme: {},
+  currentEditTheme: {},
+  editorSection: ThemeEditorSection.Main,
+  modal: {
+    inPreviewMode: false,
+    isOpen: false,
+  },
 };
 
-const themeReducer = (
-  state: ReducerState = initialState,
-  action: ThemeActions
-) => {
-  switch (action.type) {
-    case SET_BASE_THEME:
-      return {
-        ...state,
-        base: action.payload.theme,
+const themeSlice = createSlice({
+  name: 'theme',
+  initialState,
+  reducers: {
+    setEditorSection: (
+      state,
+      { payload }: PayloadAction<ThemeEditorSection>
+    ) => {
+      state.editorSection = payload;
+    },
+    setModalVisibility: (
+      state,
+      { payload }: PayloadAction<{ isOpen: boolean; inPreviewMode: boolean }>
+    ) => {
+      state.modal.isOpen = payload.isOpen;
+      state.modal.inPreviewMode = payload.inPreviewMode;
+    },
+    setInitialDashboardTheme: (
+      state,
+      { payload }: PayloadAction<ThemeSettings>
+    ) => {
+      state.initialTheme = payload;
+    },
+    setCurrentEditTheme: (state, { payload }: PayloadAction<ThemeSettings>) => {
+      state.currentEditTheme = payload;
+    },
+    setBaseTheme: (state, { payload }: PayloadAction<Partial<Theme>>) => {
+      state.defaultTheme = payload;
+    },
+    setDashboardTheme: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        dashboardId: string;
+        theme: Partial<Theme>;
+        settings: DashboardSettings;
+      }>
+    ) => {
+      const { dashboardId, settings, theme } = payload;
+      state.dashboards[dashboardId] = {
+        theme: theme,
+        settings: settings,
       };
-    case SET_DASHBOARD_THEME:
-      return {
-        ...state,
-        dashboards: {
-          ...state.dashboards,
-          [action.payload.dashboardId]: action.payload.theme,
-        },
-      };
-    case REMOVE_DASHBOARD_THEME:
-      const {
-        [action.payload.dashboardId]: _value,
-        ...dashboards
-      } = state.dashboards;
-      return {
-        ...state,
-        dashboards,
-      };
-    default:
-      return state;
-  }
-};
+    },
+    resetDashboardEdit: (state) => {
+      state.initialTheme = {};
+      state.currentEditTheme = {};
+    },
+    removeDashboardTheme: (
+      state,
+      { payload }: PayloadAction<{ dashboardId: string }>
+    ) => {
+      const { dashboardId } = payload;
+      const { [dashboardId]: _value, ...dashboards } = state.dashboards;
 
-export default themeReducer;
+      state.dashboards = dashboards;
+    },
+  },
+});
+
+export default themeSlice;

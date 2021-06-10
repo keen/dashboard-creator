@@ -21,13 +21,9 @@ import {
   Hint,
 } from './ConfirmQueryChange.styles';
 
-import {
-  queryUpdateConfirmationMounted,
-  hideQueryUpdateConfirmation,
-} from '../../modules/chartEditor';
-
 import { CONFIRM_OPTIONS, RADIO_GROUP } from './constants';
 import { EditAction } from './types';
+import { chartEditorActions } from '../../modules/chartEditor';
 
 type Props = {
   /** Chart editor open indicator */
@@ -44,7 +40,7 @@ const ConfirmQueryChange: FC<Props> = ({ isOpen }) => {
 
   useEffect(() => {
     if (isOpen) {
-      dispatch(queryUpdateConfirmationMounted());
+      dispatch(chartEditorActions.queryUpdateConfirmationMounted());
     }
   }, [isOpen]);
 
@@ -54,7 +50,7 @@ const ConfirmQueryChange: FC<Props> = ({ isOpen }) => {
     <Modal
       isOpen={isOpen}
       adjustPositionToScroll={false}
-      onClose={() => dispatch(hideQueryUpdateConfirmation())}
+      onClose={() => dispatch(chartEditorActions.hideQueryUpdateConfirmation())}
     >
       {(_, closeHandler) => (
         <Container id="confirm-query-update">

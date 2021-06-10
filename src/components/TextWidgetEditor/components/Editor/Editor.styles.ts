@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { colors } from '@keen.io/colors';
+import { DEFAULT_BACKGROUND_COLOR } from '../../../../constants';
 
 export const Header = styled.div`
   padding: 10px 20px;
@@ -26,7 +27,7 @@ export const CancelButton = styled.div`
 
 export const EditorContainer = styled.div`
   padding: 10px 12px;
-  background: #f1f5f8;
+  background: ${DEFAULT_BACKGROUND_COLOR};
 
   min-height: 200px;
 `;

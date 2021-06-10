@@ -1,85 +1,44 @@
-import chartEditorReducer, { initialState } from './reducer';
-import {
-  setQuerySettings,
-  setInitialQuerySettings,
-  setVisualizationSettings,
-  setQueryResult,
-  setQueryChange,
-  setQueryDirty,
-  setQueryType,
-  setEditorSection,
-  setEditMode,
-  runQuery,
-  restoreSavedQuery,
-  resetEditor,
-  openEditor,
-  closeEditor,
-  editorMounted,
-  editorUnmounted,
-  applyConfiguration,
-  queryUpdateConfirmationMounted,
-  showQueryUpdateConfirmation,
-  hideQueryUpdateConfirmation,
-  confirmSaveQueryUpdate,
-  useQueryForWidget,
-  backToChartEditor,
-  updateChartSettings,
-  updateWidgetSettings,
-} from './actions';
-import { getChartEditor } from './selectors';
+import { EditorSection } from './types';
 import { chartEditorSaga } from './saga';
 
-import {
-  APPLY_CONFIGURATION,
-  CLOSE_EDITOR,
-  EDITOR_MOUNTED,
-  EDITOR_UNMOUNTED,
-  CONFIRM_SAVE_QUERY_UPDATE,
-  BACK_TO_CHART_EDITOR,
-  USE_QUERY_FOR_WIDGET,
-  HIDE_QUERY_UPDATE_CONFIRMATION,
-  RUN_QUERY,
-} from './constants';
-import { EditorSection } from './types';
+import { chartEditorSelectors } from './selectors';
+import chartEditorSlice, {
+  initialState as chartEditorInitialState,
+} from './reducer';
+const chartEditorReducer = chartEditorSlice.reducer;
 
-export {
-  chartEditorReducer,
-  initialState,
-  setQuerySettings,
-  setInitialQuerySettings,
-  setEditorSection,
-  setQueryChange,
-  setVisualizationSettings,
-  setQueryResult,
-  restoreSavedQuery,
-  setQueryDirty,
-  setQueryType,
-  setEditMode,
-  runQuery,
-  openEditor,
-  closeEditor,
-  resetEditor,
+import {
+  applyConfiguration,
   editorMounted,
   editorUnmounted,
-  backToChartEditor,
-  updateChartSettings,
-  updateWidgetSettings,
-  getChartEditor,
-  applyConfiguration,
-  chartEditorSaga,
-  queryUpdateConfirmationMounted,
+  restoreSavedQuery,
   showQueryUpdateConfirmation,
   hideQueryUpdateConfirmation,
+  backToChartEditor,
   confirmSaveQueryUpdate,
   useQueryForWidget,
-  APPLY_CONFIGURATION,
-  CLOSE_EDITOR,
-  EDITOR_MOUNTED,
-  EDITOR_UNMOUNTED,
-  BACK_TO_CHART_EDITOR,
-  CONFIRM_SAVE_QUERY_UPDATE,
-  USE_QUERY_FOR_WIDGET,
-  HIDE_QUERY_UPDATE_CONFIRMATION,
-  RUN_QUERY,
+  queryUpdateConfirmationMounted,
+} from './actions';
+
+const chartEditorActions = {
+  editorMounted,
+  editorUnmounted,
+  applyConfiguration,
+  restoreSavedQuery,
+  showQueryUpdateConfirmation,
+  hideQueryUpdateConfirmation,
+  backToChartEditor,
+  confirmSaveQueryUpdate,
+  useQueryForWidget,
+  queryUpdateConfirmationMounted,
+  ...chartEditorSlice.actions,
+};
+
+export {
+  chartEditorActions,
+  chartEditorReducer,
+  chartEditorSelectors,
+  chartEditorInitialState,
+  chartEditorSaga,
   EditorSection,
 };

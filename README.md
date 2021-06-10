@@ -20,6 +20,38 @@ yarn add @keen.io/dashboard-creator
 
 The Dashboard Creator components configuration could be specified during creation of application instance.
 
+##### Visualizations Theme
+
+The Dashboard Creator `@keen.io/dataviz` theme could be overridden during initialization of application instance.
+
+```typescript
+const explorer = new KeenDashboardCreator({
+  theme: {
+    colors: ['green', 'navy', 'orange'],
+    metric: {
+      value: {
+        typography: {
+          fontColor: 'black',
+          fontSize: 23
+        },
+      },
+    }
+  },
+ });
+```
+
+##### Define user privileges
+
+By default all users are allowed to edit and share dashboards. To restrict privileges - specify scopes by using `userPermissions` argument. In example below user will be able to edit dashboards - however the share feature will be not available.
+
+```typescript
+type Scopes = 'share-dashboard' | 'edit-dashboard';
+
+const explorer = new KeenDashboardCreator({
+  userPermissions: ['edit-dashboard'],
+});
+```
+
 ##### Set default timezone for queries
 
 Specify default `timezone` used for new created queries. Provided argument must be compatible with **IANA** [Time Zone Database](https://www.iana.org/time-zones) standard.
@@ -53,6 +85,18 @@ const explorer = new KeenDashboardCreator({
     }
   },
 });
+```
+
+#### Examples
+
+##### Unmount application
+
+Unmounts Dashboard Creator application from root container.
+
+```typescript
+const dashboardCreator = new KeenDashboardCreator();
+...
+dashboardCreator.destroy();
 ```
 
 ### Project Setup

@@ -48,6 +48,8 @@ type Props = {
   onRemoveWidget?: (widgetId: string) => void;
   /** Edit mode indicator */
   isEditorMode?: boolean;
+  /** Grid gap settings */
+  gridGap?: number;
 };
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
@@ -58,6 +60,7 @@ const Grid: FC<Props> = ({
   onWidgetResize,
   onWidgetDrop,
   onRemoveWidget,
+  gridGap,
   isEditorMode = false,
 }) => {
   const widgets = useSelector((state: RootState) =>
@@ -103,6 +106,7 @@ const Grid: FC<Props> = ({
       })),
     };
   };
+
   return (
     <Container id={GRID_CONTAINER_ID} ref={containerRef}>
       <ResponsiveReactGridLayout
@@ -119,7 +123,11 @@ const Grid: FC<Props> = ({
         cols={isEditorMode ? GRID_COLS_EDIT_MODE : GRID_COLS_VIEW_MODE}
         containerPadding={GRID_CONTAINER_PADDING as [number, number]}
         rowHeight={ROW_HEIGHT}
-        margin={GRID_MARGIN as [number, number]}
+        margin={
+          gridGap
+            ? [gridGap, GRID_MARGIN[1]]
+            : (GRID_MARGIN as [number, number])
+        }
         resizeHandle={
           <div className="react-resizable-handle react-resizable-handle-se">
             <Icon

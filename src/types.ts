@@ -1,5 +1,7 @@
 import { Theme } from '@keen.io/charts';
 
+import { Scopes } from './modules/app';
+
 export type BackendSettings = {
   dashboardsApiUrl?: string;
   analyticsApiUrl?: string;
@@ -8,7 +10,7 @@ export type BackendSettings = {
 export type DashboardCreatorOptions = {
   container: string;
   modalContainer: string;
-  editPrivileges: boolean;
+  userPermissions?: Scopes[];
   project: {
     masterKey: string;
     accessKey: string;

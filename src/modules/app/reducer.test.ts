@@ -1,23 +1,23 @@
-import appReducer, { initialState } from './reducer';
+import { appActions, appReducer } from './index';
+import { initialState } from './reducer';
 
-import {
-  appStart,
-  showQueryPicker,
-  hideQueryPicker,
-  setActiveDashboard,
-} from './actions';
+import { Scopes } from './types';
 
 test('set user edit privileges', () => {
-  const action = appStart({}, true, 3);
+  const action = appActions.appStart({
+    baseTheme: {},
+    userPermissions: [Scopes.SHARE_DASHBOARD],
+    cachedDashboardsNumber: 3,
+  });
   const {
-    user: { editPrivileges },
+    user: { permissions },
   } = appReducer(initialState, action);
 
-  expect(editPrivileges).toEqual(true);
+  expect(permissions).toEqual([Scopes.SHARE_DASHBOARD]);
 });
 
 test('shows query picker', () => {
-  const action = showQueryPicker();
+  const action = appActions.showQueryPicker();
   const {
     queryPicker: { isVisible },
   } = appReducer(
@@ -34,7 +34,7 @@ test('shows query picker', () => {
 });
 
 test('hides query picker', () => {
-  const action = hideQueryPicker();
+  const action = appActions.hideQueryPicker();
   const {
     queryPicker: { isVisible },
   } = appReducer(
@@ -52,7 +52,7 @@ test('hides query picker', () => {
 
 test('set active dashboard identifier', () => {
   const dashboardId = '@dashboard-id';
-  const action = setActiveDashboard(dashboardId);
+  const action = appActions.setActiveDashboard(dashboardId);
   const { activeDashboardId } = appReducer(
     {
       ...initialState,

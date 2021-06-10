@@ -30,7 +30,7 @@ import {
   getDashboardListOrder,
   getTagsFilter,
 } from '../../modules/dashboards';
-import { getUser } from '../../modules/app';
+import { appSelectors, Scopes } from '../../modules/app';
 
 type Props = {};
 
@@ -40,7 +40,7 @@ const Management: FC<Props> = () => {
   const dashboards = useSelector(getDashboardsMetadata);
   const dashboardsLoaded = useSelector(getDashboardsLoadState);
   const dashboardListOrder = useSelector(getDashboardListOrder);
-  const { editPrivileges } = useSelector(getUser);
+  const { permissions: userPermissions } = useSelector(appSelectors.getUser);
   const dashboardsFilters = useSelector(getTagsFilter);
 
   const [searchPhrase, setSearchPhrase] = useState('');
@@ -74,7 +74,8 @@ const Management: FC<Props> = () => {
   }, [searchPhrase, dashboards, dashboardListOrder, dashboardsFilters]);
 
   const isEmptyProject = dashboardsLoaded && dashboards.length === 0;
-  const isEmptySearch = dashboardsLoaded && filteredDashboards.length === 0;
+  const isEmptySearch =
+    dashboardsLoaded && !!dashboards.length && filteredDashboards.length === 0;
   const showPlaceholders = isEmptyProject || isEmptySearch || !dashboardsLoaded;
 
   return (
@@ -82,30 +83,35 @@ const Management: FC<Props> = () => {
       <div>
         <ManagementNavigation
           attractCreateDashboardButton={isEmptyProject}
-          showCreateDashboardButton={editPrivileges && dashboardsLoaded}
+          showCreateDashboardButton={
+            userPermissions.includes(Scopes.EDIT_DASHBOARD) && dashboardsLoaded
+          }
           onCreateDashboard={createDashbord}
         />
-        <Filters>
-          <Search>
-            <SearchInputContainer>
-              <SearchInput
-                searchPhrase={searchPhrase}
-                placeholder={t('dashboard_management.search_input_placeholder')}
-                onChangePhrase={(phrase) => setSearchPhrase(phrase)}
-                onClearSearch={() => setSearchPhrase('')}
-              />
-            </SearchInputContainer>
-            {dashboardsLoaded && <FilterDashboards />}
-          </Search>
-          <DashboardListOrder />
-        </Filters>
+        {!isEmptyProject && (
+          <Filters data-testid="management-filters">
+            <Search>
+              <SearchInputContainer>
+                <SearchInput
+                  searchPhrase={searchPhrase}
+                  placeholder={t(
+                    'dashboard_management.search_input_placeholder'
+                  )}
+                  onChangePhrase={(phrase) => setSearchPhrase(phrase)}
+                  onClearSearch={() => setSearchPhrase('')}
+                />
+              </SearchInputContainer>
+              {dashboardsLoaded && <FilterDashboards />}
+            </Search>
+            <DashboardListOrder />
+          </Filters>
+        )}
       </div>
       <Content>
         {showPlaceholders ? (
           <DashboardsPlaceholder />
         ) : (
           <DashboardsList
-            editPrivileges={editPrivileges}
             onPreviewDashboard={(id) => dispatch(viewDashboard(id))}
             onShowDashboardSettings={(id) => {
               dispatch(showDashboardSettingsModal(id));
@@ -118,7 +124,7 @@ const Management: FC<Props> = () => {
             {t('dashboard_management.empty_search_results')}
           </EmptySearch>
         )}
-        {editPrivileges && (
+        {userPermissions.includes(Scopes.EDIT_DASHBOARD) && (
           <>
             <DashboardDeleteConfirmation />
             <CreateFirstDashboard

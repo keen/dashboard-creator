@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable @typescript-eslint/camelcase, @typescript-eslint/no-unused-vars */
 import sagaHelper from 'redux-saga-testing';
 import { put, take, select, getContext, call, all } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
@@ -39,7 +39,7 @@ import {
   regenerateAccessKeySuccess,
   regenerateAccessKeyError,
 } from './actions';
-import { removeDashboardTheme } from '../theme/actions';
+import { themeActions, themeSelectors, themeSagaActions } from '../theme';
 import {
   deleteAccessKey,
   deleteDashboard,
@@ -64,13 +64,15 @@ import {
   createWidget,
 } from '../widgets';
 
-import { getActiveDashboardTheme, setDashboardTheme } from '../theme';
-import { setActiveDashboard, getActiveDashboard } from '../app';
-
 import { serializeDashboard } from './serializers';
-import { createCodeSnippet } from './utils';
+import { createCodeSnippet, createDashboardSettings } from './utils';
 
-import { DashboardModel, DashboardMetaData, DashboardError } from './types';
+import {
+  DashboardModel,
+  DashboardSettings,
+  DashboardMetaData,
+  DashboardError,
+} from './types';
 
 import rootReducer from '../../rootReducer';
 
@@ -95,8 +97,8 @@ import {
 } from './selectors';
 import { removeConnectionFromFilter } from '../widgets/saga/filterWidget';
 
-import { getCachedDashboardsNumber } from '../app/selectors';
 import { unregisterWidget } from '../widgets/actions';
+import { appActions, appSelectors } from '../app';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
@@ -119,12 +121,16 @@ describe('viewPublicDashboard()', () => {
   const dashboard: DashboardModel = {
     version: '0.0.1',
     widgets: [],
+    settings: createDashboardSettings(),
+    theme: {
+      colors: ['navyblue'],
+    },
   };
 
   describe('Scenario 1: User access public dashboard', () => {
     const test = sagaHelper(viewPublicDashboard(action));
     const blobApiMock = {
-      getDashboardMetaById: jest.fn(),
+      getDashboardMetaDataById: jest.fn(),
       getDashboardById: jest.fn(),
     };
 
@@ -133,7 +139,7 @@ describe('viewPublicDashboard()', () => {
     });
 
     test('set active dashboard', (result) => {
-      expect(result).toEqual(put(setActiveDashboard(dashboardId)));
+      expect(result).toEqual(put(appActions.setActiveDashboard(dashboardId)));
     });
 
     test('gets BlobAPI instance from context', (result) => {
@@ -143,7 +149,7 @@ describe('viewPublicDashboard()', () => {
     });
 
     test('fetch dashboard metadata', () => {
-      expect(blobApiMock.getDashboardMetaById).toHaveBeenCalledWith(
+      expect(blobApiMock.getDashboardMetaDataById).toHaveBeenCalledWith(
         dashboardId
       );
 
@@ -165,15 +171,29 @@ describe('viewPublicDashboard()', () => {
     });
 
     test('updates dashboard', (result) => {
-      const serializedDashboard = serializeDashboard(dashboard);
+      const { theme, settings, ...dashboardSettings } = serializeDashboard(
+        dashboard
+      );
 
       expect(result).toEqual(
-        put(updateDashboard(dashboardId, serializedDashboard))
+        put(updateDashboard(dashboardId, dashboardSettings))
       );
     });
 
     test('set dashboard theme', (result) => {
-      expect(result).toEqual(put(setDashboardTheme(dashboardId, undefined)));
+      expect(result).toEqual(
+        put(
+          themeActions.setDashboardTheme({
+            dashboardId,
+            theme: dashboard.theme,
+            settings: dashboard.settings,
+          })
+        )
+      );
+    });
+
+    test('load dashboard fonts', (result) => {
+      expect(result).toEqual(put(themeSagaActions.loadDashboardFonts()));
     });
 
     test('initializes dashboard widgets', (result) => {
@@ -184,7 +204,7 @@ describe('viewPublicDashboard()', () => {
   describe('Scenario 2: User access not public dashboard', () => {
     const test = sagaHelper(viewPublicDashboard(action));
     const blobApiMock = {
-      getDashboardMetaById: jest.fn(),
+      getDashboardMetaDataById: jest.fn(),
     };
 
     test('accessed dashboard is registered', (result) => {
@@ -192,7 +212,7 @@ describe('viewPublicDashboard()', () => {
     });
 
     test('set active dashboard', (result) => {
-      expect(result).toEqual(put(setActiveDashboard(dashboardId)));
+      expect(result).toEqual(put(appActions.setActiveDashboard(dashboardId)));
     });
 
     test('gets BlobAPI instance from context', (result) => {
@@ -202,7 +222,7 @@ describe('viewPublicDashboard()', () => {
     });
 
     test('fetch dashboard metadata', () => {
-      expect(blobApiMock.getDashboardMetaById).toHaveBeenCalledWith(
+      expect(blobApiMock.getDashboardMetaDataById).toHaveBeenCalledWith(
         dashboardId
       );
 
@@ -363,7 +383,7 @@ describe('deleteDashboard()', () => {
     });
 
     test('get active dashboard identifer', (result) => {
-      expect(result).toEqual(select(getActiveDashboard));
+      expect(result).toEqual(select(appSelectors.getActiveDashboard));
 
       return null;
     });
@@ -373,7 +393,9 @@ describe('deleteDashboard()', () => {
     });
 
     test('triggers dashboard theme removal action with dashboard identifer', (result) => {
-      expect(result).toEqual(put(removeDashboardTheme(dashboardId)));
+      expect(result).toEqual(
+        put(themeActions.removeDashboardTheme({ dashboardId }))
+      );
     });
 
     test('calls show notification method', () => {
@@ -434,7 +456,7 @@ describe('deleteDashboard()', () => {
     });
 
     test('get active dashboard identifer', (result) => {
-      expect(result).toEqual(select(getActiveDashboard));
+      expect(result).toEqual(select(appSelectors.getActiveDashboard));
 
       return dashboardId;
     });
@@ -444,7 +466,7 @@ describe('deleteDashboard()', () => {
     });
 
     test('set active dashboard identifer', (result) => {
-      expect(result).toEqual(put(setActiveDashboard(null)));
+      expect(result).toEqual(put(appActions.setActiveDashboard(null)));
     });
 
     test('triggers dashboard delete success action with dashboard identifer', (result) => {
@@ -452,7 +474,9 @@ describe('deleteDashboard()', () => {
     });
 
     test('triggers dashboard theme removal action with dashboard identifer', (result) => {
-      expect(result).toEqual(put(removeDashboardTheme(dashboardId)));
+      expect(result).toEqual(
+        put(themeActions.removeDashboardTheme({ dashboardId }))
+      );
     });
 
     test('calls show notification method', () => {
@@ -543,6 +567,24 @@ describe('cloneDashboard', () => {
   const model = {
     version: '1',
     widgets: [],
+    settings: {
+      colorPalette: 'default',
+      page: {
+        gridGap: 20,
+        background: 'transparent',
+        chartTitlesFont: 'Lato',
+        visualizationsFont: 'Lato',
+      },
+      tiles: {
+        background: 'white',
+        borderColor: 'transparent',
+        borderRadius: 0,
+        borderWidth: 1,
+        padding: 20,
+        hasShadow: false,
+      },
+    },
+    theme: {},
   };
 
   const metaData = {
@@ -558,7 +600,7 @@ describe('cloneDashboard', () => {
 
   const blobApiMock = {
     getDashboardById: jest.fn(),
-    getDashboardMetadataById: jest.fn(),
+    getDashboardMetaDataById: jest.fn(),
     saveDashboard: jest.fn(),
   };
 
@@ -593,8 +635,8 @@ describe('cloneDashboard', () => {
       return model;
     });
 
-    test('calls getDashboardMetadataById with dashboard identifer', () => {
-      expect(blobApiMock.getDashboardMetadataById).toHaveBeenCalledWith(
+    test('calls getDashboardMetaDataById with dashboard identifier', () => {
+      expect(blobApiMock.getDashboardMetaDataById).toHaveBeenCalledWith(
         dashbboardId
       );
 
@@ -608,6 +650,18 @@ describe('cloneDashboard', () => {
     test('triggers addClonedDashboard action', (result) => {
       expect(result).toEqual(
         put(addClonedDashboard({ ...metaData, title: 'Clone' }))
+      );
+    });
+
+    test('set theme for cloned dashboard', (result) => {
+      expect(result).toEqual(
+        put(
+          themeActions.setDashboardTheme({
+            dashboardId,
+            theme: model.theme,
+            settings: model.settings,
+          })
+        )
       );
     });
 
@@ -655,8 +709,8 @@ describe('cloneDashboard', () => {
       return model;
     });
 
-    test('calls getDashboardMetadataById with dashboard identifer', () => {
-      expect(blobApiMock.getDashboardMetadataById).toHaveBeenCalledWith(
+    test('calls getDashboardMetaDataById with dashboard identifer', () => {
+      expect(blobApiMock.getDashboardMetaDataById).toHaveBeenCalledWith(
         dashbboardId
       );
 
@@ -670,6 +724,18 @@ describe('cloneDashboard', () => {
     test('triggers addClonedDashboard action', (result) => {
       expect(result).toEqual(
         put(addClonedDashboard({ ...metaData, title: 'Clone' }))
+      );
+    });
+
+    test('set theme for cloned dashboard', (result) => {
+      expect(result).toEqual(
+        put(
+          themeActions.setDashboardTheme({
+            dashboardId,
+            theme: model.theme,
+            settings: model.settings,
+          })
+        )
       );
     });
 
@@ -704,7 +770,7 @@ describe('cloneDashboard', () => {
     });
 
     test('set proper dashboard as active', (result) => {
-      expect(result).toEqual(put(setActiveDashboard(dashbboardId)));
+      expect(result).toEqual(put(appActions.setActiveDashboard(dashboardId)));
     });
 
     test('switch route to the cloned dashboard', (result) => {
@@ -712,7 +778,7 @@ describe('cloneDashboard', () => {
     });
   });
 
-  describe('Scenario 3: User fail to clone dashboard', () => {
+  describe('Scenario 3: User fails to clone dashboard', () => {
     const test = sagaHelper(cloneDashboard(action));
 
     test('gets NotificationManager from context', (result) => {
@@ -733,8 +799,8 @@ describe('cloneDashboard', () => {
       return model;
     });
 
-    test('calls getDashboardMetadataById with dashboard identifer', () => {
-      expect(blobApiMock.getDashboardMetadataById).toHaveBeenCalledWith(
+    test('calls getDashboardMetaDataById with dashboard identifer', () => {
+      expect(blobApiMock.getDashboardMetaDataById).toHaveBeenCalledWith(
         dashbboardId
       );
 
@@ -888,7 +954,6 @@ describe('exportDashboardToHtml()', () => {
 describe('saveDashboard()', () => {
   const dashboardId = '@dashboard/01';
   const dashboard: DashboardModel = {
-    baseTheme: {},
     version: '0.0.1',
     widgets: [],
   };
@@ -903,7 +968,18 @@ describe('saveDashboard()', () => {
       },
     },
     theme: {
-      dashboards: {},
+      dashboards: {
+        [dashboardId]: {
+          theme: {
+            colors: ['navybule'],
+          },
+          settings: {
+            page: {
+              gridGap: 40,
+            },
+          } as DashboardSettings,
+        },
+      },
     },
   };
 
@@ -938,9 +1014,11 @@ describe('saveDashboard()', () => {
   });
 
   test('get dashboard theme', (result) => {
-    expect(result).toEqual(select(getActiveDashboardTheme));
+    expect(result).toEqual(
+      select(themeSelectors.getThemeByDashboardId, dashboardId)
+    );
 
-    return {};
+    return state.theme.dashboards[dashboardId];
   });
 
   test('get dashboards meta data', (result) => {
@@ -960,7 +1038,7 @@ describe('saveDashboard()', () => {
 
     expect(blobApiMock.saveDashboard).toHaveBeenCalledWith(
       dashboardId,
-      serializedDashboard,
+      { ...serializedDashboard, ...state.theme.dashboards[dashboardId] },
       updatedMetadata
     );
   });
@@ -987,7 +1065,7 @@ describe('updateCachedDashboardsList()', () => {
       return [];
     });
     test('should get maximal cached dashboards number', (result) => {
-      expect(result).toEqual(select(getCachedDashboardsNumber));
+      expect(result).toEqual(select(appSelectors.getCachedDashboardsNumber));
       return 3;
     });
     test('should update state with the array containing the id of visited dashboard', (result) => {
@@ -1007,7 +1085,7 @@ describe('updateCachedDashboardsList()', () => {
       return cachedDashboardIds;
     });
     test('should get maximal cached dashboards number', (result) => {
-      expect(result).toEqual(select(getCachedDashboardsNumber));
+      expect(result).toEqual(select(appSelectors.getCachedDashboardsNumber));
       return 3;
     });
     test('should update state with array containing recent dashboard id at the end', (result) => {
@@ -1036,7 +1114,7 @@ describe('updateCachedDashboardsList()', () => {
       return cachedDashboardIds;
     });
     test('should get maximal cached dashboards number', (result) => {
-      expect(result).toEqual(select(getCachedDashboardsNumber));
+      expect(result).toEqual(select(appSelectors.getCachedDashboardsNumber));
       return 3;
     });
     test('should get dashboard to remove', (result) => {

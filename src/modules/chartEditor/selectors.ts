@@ -1,3 +1,7 @@
 import { RootState } from '../../rootReducer';
 
-export const getChartEditor = ({ chartEditor }: RootState) => chartEditor;
+const getChartEditor = ({ chartEditor }: RootState) => chartEditor;
+
+export const chartEditorSelectors = {
+  getChartEditor,
+};

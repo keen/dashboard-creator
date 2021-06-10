@@ -15,6 +15,7 @@ import {
 } from './PublicDashboardViewer.styles';
 
 import { getDashboard, getDashboardMeta } from '../../modules/dashboards';
+import { themeSelectors } from '../../modules/theme';
 import { modalMotion } from './motion';
 
 import Grid from '../Grid';
@@ -32,32 +33,51 @@ type Props = {
 
 const PublicDashboardViewer: FC<Props> = ({ dashboardId }) => {
   const { t } = useTranslation();
-  const { widgetsId, isInitialized, error } = useSelector(
-    (state: RootState) => {
-      const dashboard = getDashboard(state, dashboardId);
-      if (dashboard) {
-        const { initialized, error } = dashboard;
-        return {
-          isInitialized: initialized,
-          error,
-          widgetsId: dashboard.settings?.widgets,
-        };
-      }
+  const {
+    widgetsId,
+    isInitialized,
+    gridGap,
+    pageBackground,
+    error,
+  } = useSelector((state: RootState) => {
+    const dashboard = getDashboard(state, dashboardId);
+    const themeSettings = themeSelectors.getThemeByDashboardId(
+      state,
+      dashboardId
+    );
+
+    if (dashboard && themeSettings) {
+      const { initialized, error } = dashboard;
+      const {
+        settings: {
+          page: { gridGap, background },
+        },
+      } = themeSettings;
 
       return {
-        widgetsId: [],
-        error: null,
-        isInitialized: false,
+        isInitialized: initialized,
+        error,
+        pageBackground: background,
+        widgetsId: dashboard.settings?.widgets,
+        gridGap,
       };
     }
-  );
+
+    return {
+      widgetsId: [],
+      error: dashboard?.error,
+      gridGap: null,
+      pageBackground: null,
+      isInitialized: false,
+    };
+  });
 
   const metadata = useSelector((state: RootState) =>
     getDashboardMeta(state, dashboardId)
   );
 
   return (
-    <Container>
+    <Container background={pageBackground}>
       <Content>
         <Navigation>
           {metadata && (
@@ -79,7 +99,7 @@ const PublicDashboardViewer: FC<Props> = ({ dashboardId }) => {
         </AnimatePresence>
         {error && <GridPlaceholder />}
         {isInitialized && !error && (
-          <Grid isEditorMode={false} widgetsId={widgetsId} />
+          <Grid isEditorMode={false} gridGap={gridGap} widgetsId={widgetsId} />
         )}
       </Content>
       <DropdownContainer id="dropdown-container" />

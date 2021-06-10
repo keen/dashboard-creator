@@ -1,9 +1,5 @@
-import {
-  confirmSaveQueryUpdate,
-  useQueryForWidget,
-} from '../../modules/chartEditor';
-
 import { EditAction } from './types';
+import { chartEditorActions } from '../../modules/chartEditor';
 
 export const RADIO_GROUP = [
   {
@@ -20,11 +16,11 @@ export const RADIO_GROUP = [
 
 export const CONFIRM_OPTIONS: Record<EditAction, any> = {
   [EditAction.UPDATE_SAVED_QUERY]: {
-    editAction: confirmSaveQueryUpdate,
+    editAction: chartEditorActions.confirmSaveQueryUpdate,
     hintMessage: 'confirm_query_change.connect_saved_query_message',
   },
   [EditAction.CREATE_AD_HOC_QUERY]: {
-    editAction: useQueryForWidget,
+    editAction: chartEditorActions.useQueryForWidget,
     hintMessage: 'confirm_query_change.create_ad_hoc_query_message',
   },
 };

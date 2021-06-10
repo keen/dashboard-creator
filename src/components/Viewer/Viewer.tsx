@@ -10,9 +10,10 @@ import {
   editDashboard,
   showDashboardSettingsModal,
 } from '../../modules/dashboards';
-import { setActiveDashboard, getUser } from '../../modules/app';
+import { themeSelectors } from '../../modules/theme';
 import { removeInterimQueries } from '../../modules/queries';
 import { resetDatePickerWidgets } from '../../modules/widgets';
+import { Scopes } from '../../modules/app';
 
 import Grid from '../Grid';
 import GridLoader from '../GridLoader';
@@ -26,6 +27,7 @@ import {
   clearInconsistentFiltersError,
   resetFilterWidgets,
 } from '../../modules/widgets/actions';
+import { appActions, appSelectors } from '../../modules/app';
 
 type Props = {
   /** Dashboard identifer */
@@ -35,21 +37,36 @@ type Props = {
 const Viewer: FC<Props> = ({ dashboardId }) => {
   const dispatch = useDispatch();
 
-  const { editPrivileges } = useSelector(getUser);
-  const { widgetsId, isInitialized } = useSelector((state: RootState) => {
-    const dashboard = getDashboard(state, dashboardId);
-    if (dashboard?.initialized) {
+  const { permissions: userPermissions } = useSelector(appSelectors.getUser);
+  const { widgetsId, isInitialized, gridGap } = useSelector(
+    (state: RootState) => {
+      const dashboard = getDashboard(state, dashboardId);
+      const themeSettings = themeSelectors.getThemeByDashboardId(
+        state,
+        dashboardId
+      );
+
+      if (dashboard?.initialized && themeSettings) {
+        const {
+          settings: {
+            page: { gridGap },
+          },
+        } = themeSettings;
+
+        return {
+          isInitialized: true,
+          gridGap: gridGap,
+          widgetsId: dashboard.settings.widgets,
+        };
+      }
+
       return {
-        isInitialized: true,
-        widgetsId: dashboard.settings.widgets,
+        isInitialized: false,
+        gridGap: null,
+        widgetsId: [],
       };
     }
-
-    return {
-      widgetsId: [],
-      isInitialized: false,
-    };
-  });
+  );
 
   const { title, tags, isPublic } = useSelector((state: RootState) =>
     getDashboardMeta(state, dashboardId)
@@ -74,25 +91,28 @@ const Viewer: FC<Props> = ({ dashboardId }) => {
           isPublic={isPublic}
           onEditDashboard={() => dispatch(editDashboard(dashboardId))}
           onBack={() => {
-            dispatch(setActiveDashboard(null));
+            dispatch(appActions.setActiveDashboard(null));
             dispatch(push(ROUTES.MANAGEMENT));
           }}
           onShowSettings={() => {
             dispatch(showDashboardSettingsModal(dashboardId));
           }}
-          editPrivileges={editPrivileges}
         />
       </Navigation>
       <Content>
         {isInitialized ? (
           <>
-            <Grid isEditorMode={false} widgetsId={widgetsId} />
+            <Grid
+              isEditorMode={false}
+              gridGap={gridGap}
+              widgetsId={widgetsId}
+            />
           </>
         ) : (
           <GridLoader />
         )}
       </Content>
-      {editPrivileges && (
+      {userPermissions.includes(Scopes.EDIT_DASHBOARD) && (
         <>
           <DashboardDeleteConfirmation />
         </>

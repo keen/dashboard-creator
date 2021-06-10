@@ -1,4 +1,5 @@
 import { WidgetType } from '../../types';
+import { DashboardSettings } from '../../modules/dashboards';
 
 export type RenderOptions = {
   widgetType: WidgetType;
@@ -11,4 +12,5 @@ export type RenderOptions = {
   title?: string;
   onRemoveWidget: () => void;
   onEditWidget: () => void;
+  dashboardSettings?: Pick<DashboardSettings, 'tiles'>;
 };

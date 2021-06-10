@@ -6,16 +6,18 @@ import { Modal, ModalHeader } from '@keen.io/ui-core';
 import { Content } from './QueryPickerModal.styles';
 
 import QueryPicker from '../QueryPicker';
-
-import { getQueryPicker, hideQueryPicker } from '../../modules/app';
+import { appActions, appSelectors } from '../../modules/app';
 
 const QueryPickerModal: FC<{}> = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { isVisible } = useSelector(getQueryPicker);
+  const { isVisible } = useSelector(appSelectors.getQueryPicker);
 
   return (
-    <Modal isOpen={isVisible} onClose={() => dispatch(hideQueryPicker())}>
+    <Modal
+      isOpen={isVisible}
+      onClose={() => dispatch(appActions.hideQueryPicker())}
+    >
       {(_, closeHandler) => (
         <>
           <ModalHeader onClose={closeHandler}>

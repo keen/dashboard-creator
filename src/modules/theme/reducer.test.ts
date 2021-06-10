@@ -1,12 +1,9 @@
 import { Theme } from '@keen.io/charts';
-import themeReducer, { initialState } from './reducer';
+
+import themeSlice, { initialState } from './reducer';
 import { ReducerState } from './types';
 
-import {
-  setBaseTheme,
-  setDashboardTheme,
-  removeDashboardTheme,
-} from './actions';
+import { createDashboardSettings } from '../dashboards';
 
 const theme = {
   metric: {
@@ -19,11 +16,25 @@ const theme = {
   },
 } as Partial<Theme>;
 
-test('set base theme', () => {
-  const action = setBaseTheme(theme);
-  const { base } = themeReducer(initialState, action);
+test('set modal visibility state', () => {
+  const action = themeSlice.actions.setModalVisibility({
+    isOpen: true,
+    inPreviewMode: true,
+  });
 
-  expect(base).toMatchInlineSnapshot(`
+  const { modal } = themeSlice.reducer(initialState, action);
+
+  expect(modal).toEqual({
+    isOpen: true,
+    inPreviewMode: true,
+  });
+});
+
+test('set base theme', () => {
+  const action = themeSlice.actions.setBaseTheme(theme);
+  const { defaultTheme } = themeSlice.reducer(initialState, action);
+
+  expect(defaultTheme).toMatchInlineSnapshot(`
     Object {
       "metric": Object {
         "value": Object {
@@ -37,86 +48,98 @@ test('set base theme', () => {
   `);
 });
 
+test('reset dashboard edit state', () => {
+  const action = themeSlice.actions.resetDashboardEdit();
+  const { initialTheme, currentEditTheme } = themeSlice.reducer(
+    {
+      ...initialState,
+      initialTheme: {
+        theme: { colors: ['navyblue'] },
+        settings: createDashboardSettings(),
+      },
+      currentEditTheme: {
+        theme: { colors: ['orange'] },
+        settings: createDashboardSettings(),
+      },
+    },
+    action
+  );
+
+  expect(initialTheme).toEqual({});
+  expect(currentEditTheme).toEqual({});
+});
+
+test('set initial theme settings', () => {
+  const dashboardSettings = createDashboardSettings();
+
+  const action = themeSlice.actions.setInitialDashboardTheme({
+    theme,
+    settings: dashboardSettings,
+  });
+  const { initialTheme } = themeSlice.reducer(initialState, action);
+
+  expect(initialTheme).toEqual({
+    theme,
+    settings: dashboardSettings,
+  });
+});
+
+test('set chages for current theme in edit', () => {
+  const dashboardSettings = createDashboardSettings();
+
+  const action = themeSlice.actions.setCurrentEditTheme({
+    theme,
+    settings: dashboardSettings,
+  });
+  const { currentEditTheme } = themeSlice.reducer(initialState, action);
+
+  expect(currentEditTheme).toEqual({
+    theme,
+    settings: dashboardSettings,
+  });
+});
+
 test('set dashboard theme', () => {
   const dashboardId = '@dashboard/01';
-  const action = setDashboardTheme(dashboardId, theme);
-  const { dashboards } = themeReducer(initialState, action);
+  const dashboardSettings = createDashboardSettings();
 
-  expect(dashboards[dashboardId]).toMatchInlineSnapshot(`
-    Object {
-      "metric": Object {
-        "value": Object {
-          "typography": Object {
-            "fontColor": "red",
-            "fontSize": 10,
-          },
-        },
-      },
-    }
-  `);
+  const action = themeSlice.actions.setDashboardTheme({
+    dashboardId,
+    theme,
+    settings: dashboardSettings,
+  });
+  const { dashboards } = themeSlice.reducer(initialState, action);
+
+  expect(dashboards[dashboardId]).toEqual({
+    theme,
+    settings: dashboardSettings,
+  });
 });
 
 test('remove dashboard theme', () => {
   const dashboardId = '@dashboard/01';
   const state: ReducerState = {
-    base: {},
+    ...initialState,
+    defaultTheme: {},
     dashboards: {
       [dashboardId]: {
-        metric: {
-          prefix: null,
-          suffix: null,
-          caption: null,
-          excerpt: null,
-          value: {
-            typography: {
-              fontColor: 'blue',
-              fontStyle: 'normal',
-              fontWeight: 'normal',
-              fontSize: 10,
-            },
-          },
-        },
+        theme,
+        settings: createDashboardSettings(),
       },
       '@dashboard/02': {
-        metric: {
-          prefix: null,
-          suffix: null,
-          caption: null,
-          excerpt: null,
-          value: {
-            typography: {
-              fontColor: 'red',
-              fontStyle: 'normal',
-              fontWeight: 'normal',
-              fontSize: 12,
-            },
-          },
-        },
+        theme,
+        settings: createDashboardSettings(),
       },
     },
   };
 
-  const action = removeDashboardTheme(dashboardId);
-  const { dashboards } = themeReducer(state, action);
+  const action = themeSlice.actions.removeDashboardTheme({ dashboardId });
+  const { dashboards } = themeSlice.reducer(state, action);
 
-  expect(dashboards).toMatchInlineSnapshot(`
-    Object {
-      "@dashboard/02": Object {
-        "metric": Object {
-          "caption": null,
-          "excerpt": null,
-          "prefix": null,
-          "suffix": null,
-          "value": Object {
-            "typography": Object {
-              "fontColor": "red",
-              "fontSize": 12,
-              "fontStyle": "normal",
-              "fontWeight": "normal",
-            },
-          },
-        },
-      },
-    }
-  `);
+  expect(dashboards).toEqual({
+    ['@dashboard/02']: {
+      theme,
+      settings: createDashboardSettings(),
+    },
+  });
 });

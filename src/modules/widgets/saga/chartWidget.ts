@@ -26,29 +26,6 @@ import {
   updateAccessKeyOptions,
 } from '../../../modules/dashboards';
 
-import { getActiveDashboard } from '../../../modules/app';
-
-import {
-  openEditor,
-  closeEditor,
-  resetEditor,
-  getChartEditor,
-  setEditMode,
-  setQueryType,
-  setQuerySettings,
-  setQueryResult,
-  setVisualizationSettings,
-  showQueryUpdateConfirmation,
-  hideQueryUpdateConfirmation,
-  CLOSE_EDITOR as CLOSE_CHART_EDITOR,
-  EDITOR_MOUNTED,
-  EDITOR_UNMOUNTED,
-  APPLY_CONFIGURATION,
-  CONFIRM_SAVE_QUERY_UPDATE,
-  HIDE_QUERY_UPDATE_CONFIRMATION,
-  USE_QUERY_FOR_WIDGET,
-} from '../../../modules/chartEditor';
-
 import {
   NOTIFICATION_MANAGER,
   PUBSUB,
@@ -57,6 +34,8 @@ import {
 } from '../../../constants';
 
 import { WidgetItem, ChartWidget, WidgetErrors } from '../types';
+import { appSelectors } from '../../app';
+import { chartEditorActions, chartEditorSelectors } from '../../chartEditor';
 
 /**
  * Creates ad-hoc query with date picker and filters modifiers.
@@ -330,7 +309,7 @@ export function* editChartSavedQuery(widgetId: string) {
     visualization: { type: widgetType, chartSettings, widgetSettings },
     hasQueryChanged,
     querySettings,
-  } = yield select(getChartEditor);
+  } = yield select(chartEditorSelectors.getChartEditor);
 
   const widgetState = {
     isInitialized: false,
@@ -340,16 +319,16 @@ export function* editChartSavedQuery(widgetId: string) {
   };
 
   if (hasQueryChanged) {
-    yield put(closeEditor());
-    yield put(showQueryUpdateConfirmation());
+    yield put(chartEditorActions.closeEditor());
+    yield put(chartEditorActions.showQueryUpdateConfirmation());
 
     const action = yield take([
-      HIDE_QUERY_UPDATE_CONFIRMATION,
-      CONFIRM_SAVE_QUERY_UPDATE,
-      USE_QUERY_FOR_WIDGET,
+      chartEditorActions.hideQueryUpdateConfirmation.type,
+      chartEditorActions.confirmSaveQueryUpdate.type,
+      chartEditorActions.useQueryForWidget.type,
     ]);
 
-    if (action.type === USE_QUERY_FOR_WIDGET) {
+    if (action.type === chartEditorActions.useQueryForWidget.type) {
       yield put(setWidgetState(widgetId, widgetState));
       yield put(
         finishChartWidgetConfiguration(
@@ -364,10 +343,10 @@ export function* editChartSavedQuery(widgetId: string) {
       yield put(initializeChartWidgetAction(widgetId));
       yield put(updateAccessKeyOptions());
 
-      const dashboardId = yield select(getActiveDashboard);
+      const dashboardId = yield select(appSelectors.getActiveDashboard);
       yield put(saveDashboard(dashboardId));
-      yield put(resetEditor());
-    } else if (action.type === CONFIRM_SAVE_QUERY_UPDATE) {
+      yield put(chartEditorActions.resetEditor());
+    } else if (action.type === chartEditorActions.confirmSaveQueryUpdate.type) {
       try {
         const { query: queryName } = yield select(getWidgetSettings, widgetId);
 
@@ -394,7 +373,7 @@ export function* editChartSavedQuery(widgetId: string) {
 
         yield put(initializeChartWidgetAction(widgetId));
 
-        const dashboardId = yield select(getActiveDashboard);
+        const dashboardId = yield select(appSelectors.getActiveDashboard);
         yield put(saveDashboard(dashboardId));
         yield put(savedQueryUpdated(widgetId, queryName));
       } catch (err) {
@@ -407,12 +386,12 @@ export function* editChartSavedQuery(widgetId: string) {
       }
     }
 
-    yield put(hideQueryUpdateConfirmation());
-    yield put(resetEditor());
+    yield put(chartEditorActions.hideQueryUpdateConfirmation());
+    yield put(chartEditorActions.resetEditor());
   } else {
-    yield put(closeEditor());
-    yield take(EDITOR_UNMOUNTED);
-    yield put(resetEditor());
+    yield put(chartEditorActions.closeEditor());
+    yield take(chartEditorActions.editorUnmounted.type);
+    yield put(chartEditorActions.resetEditor());
 
     yield put(setWidgetState(widgetId, widgetState));
     const { query: queryName } = yield select(getWidgetSettings, widgetId);
@@ -429,7 +408,7 @@ export function* editChartSavedQuery(widgetId: string) {
 
     yield put(initializeChartWidgetAction(widgetId));
 
-    const dashboardId = yield select(getActiveDashboard);
+    const dashboardId = yield select(appSelectors.getActiveDashboard);
     yield put(saveDashboard(dashboardId));
   }
 }
@@ -460,18 +439,22 @@ export function* editChartWidget({
   } = widget as ChartWidget;
   const isSavedQuery = typeof widgetQuery === 'string';
 
-  yield put(setQueryType(isSavedQuery));
+  yield put(chartEditorActions.setQueryType(isSavedQuery));
 
   yield put(
-    setVisualizationSettings(visualizationType, chartSettings, widgetSettings)
+    chartEditorActions.setVisualizationSettings({
+      type: visualizationType,
+      chartSettings,
+      widgetSettings,
+    })
   );
-  yield put(setEditMode(true));
-  yield put(setQuerySettings(query));
-  yield put(setQueryResult(widgetItem.data));
+  yield put(chartEditorActions.setEditMode(true));
+  yield put(chartEditorActions.setQuerySettings(query));
+  yield put(chartEditorActions.setQueryResult(widgetItem.data));
 
-  yield put(openEditor());
+  yield put(chartEditorActions.openEditor());
 
-  yield take(EDITOR_MOUNTED);
+  yield take(chartEditorActions.editorMounted.type);
   const pubsub = yield getContext(PUBSUB);
 
   yield pubsub.publish(SET_QUERY_EVENT, { query });
@@ -483,17 +466,20 @@ export function* editChartWidget({
     });
   }
 
-  const action = yield take([CLOSE_CHART_EDITOR, APPLY_CONFIGURATION]);
+  const action = yield take([
+    chartEditorActions.closeEditor.type,
+    chartEditorActions.applyConfiguration.type,
+  ]);
 
-  if (action.type === CLOSE_CHART_EDITOR) {
-    yield take(EDITOR_UNMOUNTED);
-    yield put(resetEditor());
+  if (action.type === chartEditorActions.closeEditor.type) {
+    yield take(chartEditorActions.editorUnmounted.type);
+    yield put(chartEditorActions.resetEditor());
   } else {
     const {
       isSavedQuery,
       visualization: { type: widgetType, chartSettings, widgetSettings },
       querySettings,
-    } = yield select(getChartEditor);
+    } = yield select(chartEditorSelectors.getChartEditor);
 
     if (isSavedQuery) {
       yield* editChartSavedQuery(id);
@@ -518,11 +504,11 @@ export function* editChartWidget({
 
       yield put(initializeChartWidgetAction(id));
 
-      yield put(closeEditor());
-      yield take(EDITOR_UNMOUNTED);
-      yield put(resetEditor());
+      yield put(chartEditorActions.closeEditor());
+      yield take(chartEditorActions.editorUnmounted.type);
+      yield put(chartEditorActions.resetEditor());
 
-      const dashboardId = yield select(getActiveDashboard);
+      const dashboardId = yield select(appSelectors.getActiveDashboard);
       yield put(saveDashboard(dashboardId));
     }
   }

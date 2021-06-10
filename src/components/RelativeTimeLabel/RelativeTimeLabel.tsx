@@ -30,9 +30,9 @@ const RelativeTimeLabel: FC<Props> = ({ timeframe, showIcon }) => {
         <IconContainer data-testid="relative-time-icon">
           <Icon
             type="date-picker"
-            fill={transparentize(0.5, colors.black[100])}
-            width={15}
-            height={15}
+            fill={transparentize(0.6, colors.blue[500])}
+            width={13}
+            height={13}
           />
         </IconContainer>
       )}

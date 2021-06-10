@@ -17,28 +17,6 @@ import {
 
 import { updateSaveQuery } from '../../../modules/queries';
 
-import {
-  openEditor,
-  closeEditor,
-  resetEditor,
-  applyConfiguration,
-  confirmSaveQueryUpdate,
-  setVisualizationSettings,
-  setQueryType,
-  setQuerySettings,
-  setEditMode,
-  setQueryResult,
-  getChartEditor,
-  showQueryUpdateConfirmation,
-  EDITOR_MOUNTED,
-  EDITOR_UNMOUNTED,
-  CLOSE_EDITOR,
-  APPLY_CONFIGURATION,
-  HIDE_QUERY_UPDATE_CONFIRMATION,
-  CONFIRM_SAVE_QUERY_UPDATE,
-  USE_QUERY_FOR_WIDGET,
-} from '../../../modules/chartEditor';
-
 import { saveDashboard } from '../../../modules/dashboards';
 
 import {
@@ -57,6 +35,7 @@ import { widget as widgetFixture } from '../fixtures';
 import { KEEN_ANALYSIS, TRANSLATIONS } from '../../../constants';
 
 import { WidgetItem, WidgetErrors } from '../types';
+import { chartEditorActions, chartEditorSelectors } from '../../chartEditor';
 
 describe('handleInconsistentFilters()', () => {
   describe('Scenario 1: Handle filter settings inconsistency', () => {
@@ -892,20 +871,20 @@ describe('editChartSavedQuery()', () => {
     const test = sagaHelper(editChartSavedQuery(widgetId));
 
     test('get chart editor state', (result) => {
-      expect(result).toEqual(select(getChartEditor));
+      expect(result).toEqual(select(chartEditorSelectors.getChartEditor));
       return chartEditor;
     });
 
     test('close chart editor', (result) => {
-      expect(result).toEqual(put(closeEditor()));
+      expect(result).toEqual(put(chartEditorActions.closeEditor()));
     });
 
     test('waits until editor is closed', (result) => {
-      expect(result).toEqual(take(EDITOR_UNMOUNTED));
+      expect(result).toEqual(take(chartEditorActions.editorUnmounted.type));
     });
 
     test('reset chart editor', (result) => {
-      expect(result).toEqual(put(resetEditor()));
+      expect(result).toEqual(put(chartEditorActions.resetEditor()));
     });
 
     test('updates widget state', (result) => {
@@ -962,7 +941,7 @@ describe('editChartSavedQuery()', () => {
     const test = sagaHelper(editChartSavedQuery(widgetId));
 
     test('get chart editor state', (result) => {
-      expect(result).toEqual(select(getChartEditor));
+      expect(result).toEqual(select(chartEditorSelectors.getChartEditor));
       return {
         ...chartEditor,
         hasQueryChanged: true,
@@ -970,23 +949,25 @@ describe('editChartSavedQuery()', () => {
     });
 
     test('close chart editor', (result) => {
-      expect(result).toEqual(put(closeEditor()));
+      expect(result).toEqual(put(chartEditorActions.closeEditor()));
     });
 
     test('shows query update confirmation', (result) => {
-      expect(result).toEqual(put(showQueryUpdateConfirmation()));
+      expect(result).toEqual(
+        put(chartEditorActions.showQueryUpdateConfirmation())
+      );
     });
 
     test('waits for user action', (result) => {
       expect(result).toEqual(
         take([
-          HIDE_QUERY_UPDATE_CONFIRMATION,
-          CONFIRM_SAVE_QUERY_UPDATE,
-          USE_QUERY_FOR_WIDGET,
+          chartEditorActions.hideQueryUpdateConfirmation.type,
+          chartEditorActions.confirmSaveQueryUpdate.type,
+          chartEditorActions.useQueryForWidget.type,
         ])
       );
 
-      return confirmSaveQueryUpdate();
+      return chartEditorActions.confirmSaveQueryUpdate();
     });
 
     test('get widget settings', (result) => {
@@ -1084,7 +1065,7 @@ describe('editChartWidget()', () => {
     });
 
     test('set chart editor query type', (result) => {
-      expect(result).toEqual(put(setQueryType(false)));
+      expect(result).toEqual(put(chartEditorActions.setQueryType(false)));
     });
 
     test('set visualization settings in chart editor', (result) => {
@@ -1096,33 +1077,35 @@ describe('editChartWidget()', () => {
 
       expect(result).toEqual(
         put(
-          setVisualizationSettings(
-            visualizationType,
+          chartEditorActions.setVisualizationSettings({
+            type: visualizationType,
             chartSettings,
-            widgetSettings
-          )
+            widgetSettings,
+          })
         )
       );
     });
 
     test('set edit mode in chart editor', (result) => {
-      expect(result).toEqual(put(setEditMode(true)));
+      expect(result).toEqual(put(chartEditorActions.setEditMode(true)));
     });
 
     test('set query settings in chart editor', (result) => {
-      expect(result).toEqual(put(setQuerySettings(query)));
+      expect(result).toEqual(put(chartEditorActions.setQuerySettings(query)));
     });
 
     test('set query results in chart editor', (result) => {
-      expect(result).toEqual(put(setQueryResult({ query, result: 10 })));
+      expect(result).toEqual(
+        put(chartEditorActions.setQueryResult({ query, result: 10 }))
+      );
     });
 
     test('opens chart editor', (result) => {
-      expect(result).toEqual(put(openEditor()));
+      expect(result).toEqual(put(chartEditorActions.openEditor()));
     });
 
     test('waits until chart editor is mounted', (result) => {
-      expect(result).toEqual(take(EDITOR_MOUNTED));
+      expect(result).toEqual(take(chartEditorActions.editorMounted.type));
     });
 
     test('get pubsub from context', () => {
@@ -1134,9 +1117,14 @@ describe('editChartWidget()', () => {
     });
 
     test('waits until user applies chart editor settigs', (result) => {
-      expect(result).toEqual(take([CLOSE_EDITOR, APPLY_CONFIGURATION]));
+      expect(result).toEqual(
+        take([
+          chartEditorActions.closeEditor.type,
+          chartEditorActions.applyConfiguration.type,
+        ])
+      );
 
-      return applyConfiguration();
+      return chartEditorActions.applyConfiguration();
     });
 
     test('gets chart editor settings', () => {
@@ -1178,15 +1166,15 @@ describe('editChartWidget()', () => {
     });
 
     test('close chart editor', (result) => {
-      expect(result).toEqual(put(closeEditor()));
+      expect(result).toEqual(put(chartEditorActions.closeEditor()));
     });
 
     test('waits until editor is closed', (result) => {
-      expect(result).toEqual(take(EDITOR_UNMOUNTED));
+      expect(result).toEqual(take(chartEditorActions.editorUnmounted.type));
     });
 
     test('reset chart editor', (result) => {
-      expect(result).toEqual(put(resetEditor()));
+      expect(result).toEqual(put(chartEditorActions.resetEditor()));
     });
 
     test('gets active dashboard identifier', () => {
@@ -1221,7 +1209,7 @@ describe('editChartWidget()', () => {
     });
 
     test('set chart editor query type', (result) => {
-      expect(result).toEqual(put(setQueryType(true)));
+      expect(result).toEqual(put(chartEditorActions.setQueryType(true)));
     });
   });
 
@@ -1257,7 +1245,7 @@ describe('editChartWidget()', () => {
     });
 
     test('set chart editor query type', (result) => {
-      expect(result).toEqual(put(setQueryType(false)));
+      expect(result).toEqual(put(chartEditorActions.setQueryType(false)));
     });
 
     test('set visualization settings in chart editor', (result) => {
@@ -1269,33 +1257,35 @@ describe('editChartWidget()', () => {
 
       expect(result).toEqual(
         put(
-          setVisualizationSettings(
-            visualizationType,
+          chartEditorActions.setVisualizationSettings({
+            type: visualizationType,
             chartSettings,
-            widgetSettings
-          )
+            widgetSettings,
+          })
         )
       );
     });
 
     test('set edit mode in chart editor', (result) => {
-      expect(result).toEqual(put(setEditMode(true)));
+      expect(result).toEqual(put(chartEditorActions.setEditMode(true)));
     });
 
     test('set query settings in chart editor', (result) => {
-      expect(result).toEqual(put(setQuerySettings(query)));
+      expect(result).toEqual(put(chartEditorActions.setQuerySettings(query)));
     });
 
     test('set query results in chart editor', (result) => {
-      expect(result).toEqual(put(setQueryResult({ query, result: 500 })));
+      expect(result).toEqual(
+        put(chartEditorActions.setQueryResult({ query, result: 500 }))
+      );
     });
 
     test('opens chart editor', (result) => {
-      expect(result).toEqual(put(openEditor()));
+      expect(result).toEqual(put(chartEditorActions.openEditor()));
     });
 
     test('waits until chart editor is mounted', (result) => {
-      expect(result).toEqual(take(EDITOR_MOUNTED));
+      expect(result).toEqual(take(chartEditorActions.editorMounted.type));
     });
 
     test('get pubsub from context', () => {
@@ -1307,17 +1297,22 @@ describe('editChartWidget()', () => {
     });
 
     test('waits until user applies chart editor settigs', (result) => {
-      expect(result).toEqual(take([CLOSE_EDITOR, APPLY_CONFIGURATION]));
+      expect(result).toEqual(
+        take([
+          chartEditorActions.closeEditor.type,
+          chartEditorActions.applyConfiguration.type,
+        ])
+      );
 
-      return closeEditor();
+      return chartEditorActions.closeEditor();
     });
 
     test('waits until chart editor is unmounted', (result) => {
-      expect(result).toEqual(take(EDITOR_UNMOUNTED));
+      expect(result).toEqual(take(chartEditorActions.editorUnmounted.type));
     });
 
     test('resets chart editor', (result) => {
-      expect(result).toEqual(put(resetEditor()));
+      expect(result).toEqual(put(chartEditorActions.resetEditor()));
     });
   });
 });

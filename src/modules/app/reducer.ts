@@ -1,22 +1,12 @@
-import { AppActions } from './actions';
-
-import {
-  HIDE_QUERY_PICKER,
-  APP_START,
-  SET_ACTIVE_DASHBOARD,
-  SHOW_IMAGE_PICKER,
-  HIDE_IMAGE_PICKER,
-  SHOW_QUERY_PICKER,
-} from './constants';
-
-import { ReducerState } from './types';
+import { AppStartPayload, ReducerState } from './types';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export const initialState: ReducerState = {
   view: 'management',
   activeDashboardId: null,
   cachedDashboardsNumber: null,
   user: {
-    editPrivileges: false,
+    permissions: [],
   },
   imagePicker: {
     isVisible: false,
@@ -29,56 +19,29 @@ export const initialState: ReducerState = {
   },
 };
 
-const appReducer = (state: ReducerState = initialState, action: AppActions) => {
-  switch (action.type) {
-    case APP_START:
-      return {
-        ...state,
-        cachedDashboardsNumber: action.payload.cachedDashboardsNumber,
-        user: {
-          editPrivileges: action.payload.user.editPrivileges,
-        },
-      };
-    case HIDE_QUERY_PICKER:
-      return {
-        ...state,
-        queryPicker: {
-          ...state.queryPicker,
-          isVisible: false,
-        },
-      };
-    case SHOW_QUERY_PICKER:
-      return {
-        ...state,
-        queryPicker: {
-          ...state.queryPicker,
-          isVisible: true,
-        },
-      };
-    case SHOW_IMAGE_PICKER:
-      return {
-        ...state,
-        imagePicker: {
-          ...state.imagePicker,
-          isVisible: true,
-        },
-      };
-    case HIDE_IMAGE_PICKER:
-      return {
-        ...state,
-        imagePicker: {
-          ...state.imagePicker,
-          isVisible: false,
-        },
-      };
-    case SET_ACTIVE_DASHBOARD:
-      return {
-        ...state,
-        activeDashboardId: action.payload.dashboardId,
-      };
-    default:
-      return state;
-  }
-};
-
-export default appReducer;
+export const appSlice = createSlice({
+  name: 'app',
+  initialState,
+  reducers: {
+    appStart: (state, { payload }: PayloadAction<AppStartPayload>) => {
+      state.cachedDashboardsNumber = payload.cachedDashboardsNumber;
+      state.user.permissions = payload.userPermissions;
+    },
+    hideQueryPicker: (state) => {
+      state.queryPicker.isVisible = false;
+    },
+    showQueryPicker: (state) => {
+      state.queryPicker.isVisible = true;
+    },
+    hideImagePicker: (state) => {
+      state.imagePicker.isVisible = false;
+    },
+    showImagePicker: (state) => {
+      state.imagePicker.isVisible = true;
+    },
+    setActiveDashboard: (state, { payload }: PayloadAction<string>) => {
+      state.activeDashboardId = payload;
+    },
+  },
+});
+export default appSlice;
