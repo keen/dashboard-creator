@@ -123,9 +123,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
   const outdatedAnalysisResults = !!(analysisResult !== null && isDirtyQuery);
 
   const updateWidgetSettings = (widgetSettings) => {
-    if (!deepEqual(widgetSettings, widgetCustomization.widget)) {
-      dispatch(chartEditorActions.setQueryChange(true));
-    }
+    dispatch(chartEditorActions.setQueryChange(true));
     dispatch(chartEditorActions.updateWidgetSettings(widgetSettings));
     setCustomizationSettings((state) => ({
       ...state,
@@ -134,9 +132,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
   };
 
   const updateChartSettings = (chartSettings) => {
-    if (!deepEqual(chartSettings, widgetCustomization.chart)) {
-      dispatch(chartEditorActions.setQueryChange(true));
-    }
+    dispatch(chartEditorActions.setQueryChange(true));
     const chart = serializeOutputSettings(widgetType, chartSettings);
     dispatch(chartEditorActions.updateChartSettings(chart));
     setCustomizationSettings((state) => ({
