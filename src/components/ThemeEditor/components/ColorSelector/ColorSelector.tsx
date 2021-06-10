@@ -43,7 +43,6 @@ const ColorSelector: FC<Props> = ({
 
   const setPickerPosition = () => {
     const dropdownRect = dropdownRef.current.getBoundingClientRect();
-    if (dropdownRect.y === undefined) return;
     setColorPickerPosition({
       x: dropdownRect.x,
       y: dropdownRect.y + window.scrollY + dropdownRect.height + modalScrollY,

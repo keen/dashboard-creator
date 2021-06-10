@@ -18,7 +18,23 @@ const render = (overProps: any = {}) => {
   };
 };
 
-HTMLCanvasElement.prototype.getContext = jest.fn();
+beforeEach(() => {
+  HTMLCanvasElement.prototype.getContext = jest.fn();
+  spyOn(Element.prototype, 'getBoundingClientRect').and.callFake(
+    jasmine
+      .createSpy('getBoundingClientRect')
+      .and.returnValue({
+        x: 1,
+        y: 1,
+        top: 1,
+        left: 1,
+        right: 1,
+        bottom: 1,
+        height: 100,
+        width: 100,
+      })
+  );
+});
 
 test('should render color selector with defined color', () => {
   const {
