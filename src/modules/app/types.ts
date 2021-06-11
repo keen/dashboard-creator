@@ -1,6 +1,6 @@
 import { Theme } from '@keen.io/charts';
 
-export type ViewMode = 'editor' | 'viewer' | 'management';
+import { View } from '../../types';
 
 export enum Scopes {
   EDIT_DASHBOARD = 'edit-dashboard',
@@ -8,7 +8,6 @@ export enum Scopes {
 }
 
 export type ReducerState = {
-  view: ViewMode;
   activeDashboardId: string | null;
   cachedDashboardsNumber: number;
   user: {
@@ -29,4 +28,6 @@ export type AppStartPayload = {
   baseTheme: Partial<Theme>;
   userPermissions: Scopes[];
   cachedDashboardsNumber: number;
+  initialView: View;
+  dashboardId: string | null;
 };

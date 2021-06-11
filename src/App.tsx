@@ -11,9 +11,11 @@ import PageLoader from './components/PageLoader';
 import ToastNotifications from './components/ToastNotifications';
 import DashboardSettingsModal from './components/DashboardSettingsModal';
 import DashboardShareModal from './components/DashboardShareModal';
-import { ROUTES } from './constants';
+
 import { appSelectors } from './modules/app';
 import { themeSelectors } from './modules/theme';
+
+import { ROUTES } from './constants';
 
 type Props = {};
 
@@ -45,7 +47,7 @@ const App: FC<Props> = () => {
     <Container background={dashboardSettings?.settings?.page.background}>
       <Content>
         <Switch>
-          <Route exact path="/" component={Management} />
+          <Route exact path={ROUTES.MANAGEMENT} component={Management} />
           <Route
             exact
             path={ROUTES.VIEWER}

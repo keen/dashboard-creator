@@ -4,15 +4,19 @@ if (process.env.NODE_ENV === 'production') {
   // @ts-ignore
   __webpack_public_path__ = window.dashboardCreatorResourcesBasePath;
 }
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import i18n from 'i18next';
 import { Provider } from 'react-redux';
-import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
+import {
+  ConnectedRouter,
+  connectRouter,
+  routerMiddleware,
+} from 'connected-react-router';
 import KeenAnalysis from 'keen-analysis';
 import { ThemeProvider } from 'styled-components';
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import { createMemoryHistory } from 'history';
 import { PubSub } from '@keen.io/pubsub';
 import { ToastProvider } from '@keen.io/toast-notifications';
 import { screenBreakpoints } from '@keen.io/ui-core';
@@ -26,12 +30,22 @@ import { NotificationManager } from './modules/notifications';
 
 import createI18n from './i18n';
 import createSagaMiddleware from './createSagaMiddleware';
-import rootReducer, { history } from './rootReducer';
+import rootReducer from './rootReducer';
 import { createRootSaga } from './rootSaga';
+import { createViewUpdateMiddleware } from './middleware';
 
-import { DEFAULT_TIMEZONE, SHOW_TOAST_NOTIFICATION_EVENT } from './constants';
+import {
+  DEFAULT_TIMEZONE,
+  SHOW_TOAST_NOTIFICATION_EVENT,
+  INITIAL_VIEWS,
+} from './constants';
 
-import { DashboardCreatorOptions, TranslationsSettings } from './types';
+import {
+  DashboardCreatorOptions,
+  TranslationsSettings,
+  ViewUpdateHandler,
+  View,
+} from './types';
 import GlobalStyles from './components/GlobalStyles';
 
 export class DashboardCreator {
@@ -89,6 +103,9 @@ export class DashboardCreator {
   /** Enable fixed Editor bar */
   private enableFixedEditorBar = false;
 
+  /** View change event handler */
+  private onViewChange?: ViewUpdateHandler = null;
+
   constructor(config: DashboardCreatorOptions) {
     const {
       container,
@@ -104,6 +121,7 @@ export class DashboardCreator {
       defaultTimezoneForQuery,
       widgetsConfiguration,
       enableFixedEditorBar,
+      onViewChange,
     } = config;
 
     const { id, masterKey, accessKey } = project;
@@ -112,6 +130,7 @@ export class DashboardCreator {
     if (backend?.dashboardsApiUrl)
       this.dashboardsApiUrl = backend.dashboardsApiUrl;
     if (userPermissions) this.userPermissions = userPermissions;
+    if (onViewChange) this.onViewChange = onViewChange;
 
     this.container = container;
     this.modalContainer = modalContainer;
@@ -130,24 +149,57 @@ export class DashboardCreator {
     this.enableFixedEditorBar = enableFixedEditorBar;
   }
 
-  destroy() {
-    ReactDOM.unmountComponentAtNode(document.querySelector(this.container));
-  }
-
-  render() {
-    const blobApi = new BlobAPI({
+  /**
+   * Creates dashboards api instance
+   *
+   * @return Blob API instance
+   *
+   */
+  private createDashboardsAPI() {
+    return new BlobAPI({
       projectId: this.projectId,
       accessKey: this.accessKey,
       masterKey: this.masterKey,
       url: this.dashboardsApiUrl,
     });
+  }
 
-    const keenAnalysis = new KeenAnalysis({
+  /**
+   * Creates analytics api instance
+   *
+   * @return Analytis API instance
+   *
+   */
+  private createAnalytisAPI() {
+    return new KeenAnalysis({
       projectId: this.projectId,
       masterKey: this.masterKey,
       readKey: this.accessKey,
       host: this.analyticsApiUrl,
     });
+  }
+
+  /**
+   * Unmounts application instance from container
+   *
+   * @return void
+   *
+   */
+  destroy() {
+    ReactDOM.unmountComponentAtNode(document.querySelector(this.container));
+  }
+
+  /**
+   * Render dashboard creator instance in DOM container
+   *
+   * @param initialView - Application initial view
+   * @param dashboardId - Initial dashboard identifer
+   * @return DOM Node
+   *
+   */
+  render(initialView: View = 'management', dashboardId: string = null) {
+    const blobApi = this.createDashboardsAPI();
+    const keenAnalysis = this.createAnalytisAPI();
 
     createI18n(this.translationsSettings);
 
@@ -165,15 +217,30 @@ export class DashboardCreator {
 
     const defaultTimezoneForQuery =
       this.defaultTimezoneForQuery || DEFAULT_TIMEZONE;
+
+    const history = createMemoryHistory({
+      initialIndex: 0,
+      initialEntries: [INITIAL_VIEWS[initialView]],
+    });
+
+    const reduxMiddlewares = [sagaMiddleware, routerMiddleware(history)];
+
+    if (this.onViewChange) {
+      reduxMiddlewares.push(createViewUpdateMiddleware(this.onViewChange));
+    }
+
     const store = configureStore({
-      reducer: rootReducer,
+      reducer: combineReducers({
+        ...rootReducer,
+        router: connectRouter(history),
+      }),
       preloadedState: {
         timezone: {
           defaultTimezoneForQuery: defaultTimezoneForQuery,
           timezoneSelectionDisabled: !!this.disableTimezoneSelection,
         },
       },
-      middleware: [sagaMiddleware, routerMiddleware(history)],
+      middleware: reduxMiddlewares,
     });
 
     const rootSaga = createRootSaga(this.userPermissions);
@@ -185,6 +252,8 @@ export class DashboardCreator {
         baseTheme: this.themeSettings,
         userPermissions: this.userPermissions,
         cachedDashboardsNumber: this.cachedDashboardsNumber,
+        initialView,
+        dashboardId,
       })
     );
 

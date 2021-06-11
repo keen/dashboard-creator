@@ -5,8 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Navigation, Content } from './Viewer.styles';
 
 import {
-  getDashboard,
-  getDashboardMeta,
+  dashboardsSelectors,
   editDashboard,
   showDashboardSettingsModal,
 } from '../../modules/dashboards';
@@ -38,9 +37,13 @@ const Viewer: FC<Props> = ({ dashboardId }) => {
   const dispatch = useDispatch();
 
   const { permissions: userPermissions } = useSelector(appSelectors.getUser);
+  const isDashboardsInitiallyLoaded = useSelector(
+    dashboardsSelectors.getDashboardsLoadState
+  );
+
   const { widgetsId, isInitialized, gridGap } = useSelector(
     (state: RootState) => {
-      const dashboard = getDashboard(state, dashboardId);
+      const dashboard = dashboardsSelectors.getDashboard(state, dashboardId);
       const themeSettings = themeSelectors.getThemeByDashboardId(
         state,
         dashboardId
@@ -56,21 +59,33 @@ const Viewer: FC<Props> = ({ dashboardId }) => {
         return {
           isInitialized: true,
           gridGap: gridGap,
+          error: dashboard.error,
           widgetsId: dashboard.settings.widgets,
         };
       }
 
       return {
         isInitialized: false,
+        error: dashboard?.error,
         gridGap: null,
         widgetsId: [],
       };
     }
   );
 
-  const { title, tags, isPublic } = useSelector((state: RootState) =>
-    getDashboardMeta(state, dashboardId)
-  );
+  const { title, tags, isPublic } = useSelector((state: RootState) => {
+    const dashboardMeta = dashboardsSelectors.getDashboardMeta(
+      state,
+      dashboardId
+    );
+    if (dashboardMeta) return dashboardMeta;
+
+    return {
+      title: null,
+      isPublic: false,
+      tags: [],
+    };
+  });
 
   useEffect(() => {
     return () => {
@@ -83,22 +98,24 @@ const Viewer: FC<Props> = ({ dashboardId }) => {
 
   return (
     <>
-      <Navigation>
-        <ViewerNavigation
-          dashboardId={dashboardId}
-          title={title}
-          tags={tags}
-          isPublic={isPublic}
-          onEditDashboard={() => dispatch(editDashboard(dashboardId))}
-          onBack={() => {
-            dispatch(appActions.setActiveDashboard(null));
-            dispatch(push(ROUTES.MANAGEMENT));
-          }}
-          onShowSettings={() => {
-            dispatch(showDashboardSettingsModal(dashboardId));
-          }}
-        />
-      </Navigation>
+      {isDashboardsInitiallyLoaded && (
+        <Navigation>
+          <ViewerNavigation
+            dashboardId={dashboardId}
+            title={title}
+            tags={tags}
+            isPublic={isPublic}
+            onEditDashboard={() => dispatch(editDashboard(dashboardId))}
+            onBack={() => {
+              dispatch(appActions.setActiveDashboard(null));
+              dispatch(push(ROUTES.MANAGEMENT));
+            }}
+            onShowSettings={() => {
+              dispatch(showDashboardSettingsModal(dashboardId));
+            }}
+          />
+        </Navigation>
+      )}
       <Content>
         {isInitialized ? (
           <>

@@ -36,6 +36,7 @@
      },
      defaultTimezoneForQuery: "Africa/Nairobi",
      disableTimezoneSelection: true,
+     onViewChange: (view, dashboardId) => console.log('View Change', view, dashboardId),
      widgetsConfiguration: {
        datePicker: {
          defaultTimezone: 'Africa/Nairobi',
@@ -46,6 +47,6 @@
      project: <%= config %>,
      theme,
      createSharedDashboardUrl: (accessKey, dashboardId) => `https://dashboards.keen.io/${dashboardId}/${accessKey}`,
-   }).render();
+   }).render('viewer', '3f741f86-0411-4686-a437-eb73598895e');
   </script>
 </html>
