@@ -26,7 +26,6 @@ export {
   getInterimQuery,
   SELECT_SAVED_QUERY,
   CREATE_QUERY,
-  SavedQuery,
-  SavedQueryAPIResponse,
-  QueryVisualization,
 };
+
+export type { SavedQuery, SavedQueryAPIResponse, QueryVisualization };

@@ -14,6 +14,7 @@ import DashboardShareModal from './components/DashboardShareModal';
 import { ROUTES } from './constants';
 import { appSelectors } from './modules/app';
 import { themeSelectors } from './modules/theme';
+import { hot } from 'react-hot-loader/root';
 
 type Props = {};
 
@@ -70,4 +71,4 @@ const App: FC<Props> = () => {
   );
 };
 
-export default App;
+export default hot(App);

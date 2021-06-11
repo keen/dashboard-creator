@@ -15,7 +15,10 @@ import WidgetPlaceholder from '../WidgetPlaceholder';
 import { Container, LoaderWrapper } from './ChartWidget.styles';
 
 import { EditorContext } from '../../contexts';
-import { getWidget, ChartWidget } from '../../modules/widgets';
+import {
+  getWidget,
+  ChartWidget as ChartWidgetType,
+} from '../../modules/widgets';
 import { getInterimQuery } from '../../modules/queries';
 import {
   themeSelectors,
@@ -101,7 +104,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
     if (showVisualization && inView) {
       const widgetWithTheming = mergeSettingsWithFontFallback(
         chartTitlesFont,
-        widget as ChartWidget
+        widget as ChartWidgetType
       );
       datavizRef.current = createDataviz({
         widget: widgetWithTheming,

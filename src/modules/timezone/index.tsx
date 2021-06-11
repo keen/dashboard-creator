@@ -25,5 +25,6 @@ export {
   getTimezones,
   getPresentationTimezone,
   getTimezoneState,
-  ReducerState,
 };
+
+export type { ReducerState };

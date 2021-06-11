@@ -19,7 +19,7 @@ import {
   setDashboardListOrder,
   getDashboardListOrder,
   DASHBOARDS_ORDER,
-  DashboardListOrder,
+  DashboardListOrder as DashboardListOrderType,
 } from '../../modules/dashboards';
 
 const DashboardListOrder = () => {
@@ -75,23 +75,25 @@ const DashboardListOrder = () => {
       <div style={{ zIndex: UI_LAYERS.dropdown }}>
         <Dropdown isOpen={isOpen}>
           <List>
-            {Object.keys(DASHBOARDS_ORDER).map((order: DashboardListOrder) => (
-              <ListItem
-                isActive={order === selected}
-                key={order}
-                onClick={() => {
-                  setOpen(false);
-                  dispatch(setDashboardListOrder(order));
-                }}
-                onMouseEnter={() => {
-                  setSelected(order);
-                }}
-              >
-                <BodyText variant="body2">
-                  {t(DASHBOARDS_ORDER[order])}
-                </BodyText>
-              </ListItem>
-            ))}
+            {Object.keys(DASHBOARDS_ORDER).map(
+              (order: DashboardListOrderType) => (
+                <ListItem
+                  isActive={order === selected}
+                  key={order}
+                  onClick={() => {
+                    setOpen(false);
+                    dispatch(setDashboardListOrder(order));
+                  }}
+                  onMouseEnter={() => {
+                    setSelected(order);
+                  }}
+                >
+                  <BodyText variant="body2">
+                    {t(DASHBOARDS_ORDER[order])}
+                  </BodyText>
+                </ListItem>
+              )
+            )}
           </List>
         </Dropdown>
       </div>

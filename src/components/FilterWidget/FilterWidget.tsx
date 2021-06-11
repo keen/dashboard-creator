@@ -31,7 +31,7 @@ import {
   unapplyFilterWidget,
 } from '../../modules/widgets/actions';
 import { FilterItem, SearchTags } from '../FilterDashboards/components';
-import { FilterWidget } from '../../modules/widgets/types';
+import { FilterWidget as FilterWidgetType } from '../../modules/widgets/types';
 import { DROPDOWN_CONTAINER_ID } from '../../constants';
 
 type Props = {
@@ -65,7 +65,7 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
 
   const widget = useSelector((state: RootState) => getWidget(state, id));
 
-  const filterWidget = widget.widget as FilterWidget;
+  const filterWidget = widget.widget as FilterWidgetType;
   const [isOpen, setOpen] = useState(false);
   const [dropdown, setDropdown] = useState({ x: 0, y: 0, width: 0 });
   const [searchMode, setSearchMode] = useState(false);

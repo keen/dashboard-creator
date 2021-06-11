@@ -106,11 +106,6 @@ export {
   getDashboardListOrder,
   getCurrentDashboardChartsCount,
   getDashboardAccessKeyRegenerating,
-  DashboardMetaData,
-  DashboardModel,
-  DashboardListOrder,
-  DashboardSettings,
-  DashboardError,
   DASHBOARDS_ORDER,
   ADD_WIDGET_TO_DASHBOARD,
   sortDashboards,
@@ -121,4 +116,12 @@ export {
   setTagsFiltersPublic,
   createDashboardSettings,
   extendDashboardSettings,
+  DashboardError,
+};
+
+export type {
+  DashboardMetaData,
+  DashboardModel,
+  DashboardSettings,
+  DashboardListOrder,
 };
