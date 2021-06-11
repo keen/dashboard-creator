@@ -6,7 +6,7 @@ import { appSelectors } from '../modules/app';
 import { View, ViewUpdateHandler } from '../types';
 
 const ROUTES_MAP: Record<string, View> = {
-  '/': 'management',
+  '/management': 'management',
   '/viewer': 'viewer',
   '/editor': 'editor',
 };
