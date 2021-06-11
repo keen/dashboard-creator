@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable @typescript-eslint/naming-convention */
 import sagaHelper from 'redux-saga-testing';
 import { all, put, call, take, getContext, select } from 'redux-saga/effects';
 import { PickerWidgets, ChartSettings } from '@keen.io/widget-picker';

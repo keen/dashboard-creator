@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable @typescript-eslint/naming-convention */
 import React, { FC, useContext, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Portal, Modal } from '@keen.io/ui-core';

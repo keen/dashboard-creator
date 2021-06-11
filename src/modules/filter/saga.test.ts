@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable @typescript-eslint/naming-convention */
 import sagaHelper from 'redux-saga-testing';
 import { put, select, getContext } from 'redux-saga/effects';
 import fetchMock from 'jest-fetch-mock';

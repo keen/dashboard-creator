@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable @typescript-eslint/naming-convention */
 import { put, select, getContext } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
 import { v4 as uuid } from 'uuid';

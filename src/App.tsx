@@ -17,8 +17,6 @@ import { themeSelectors } from './modules/theme';
 
 import { ROUTES } from './constants';
 
-type Props = {};
-
 const Editor = Loadable({
   loader: () => import(/* webpackChunkName: "editor" */ './components/Editor'),
   loading: PageLoader,
@@ -35,7 +33,7 @@ const Management = Loadable({
   loading: PageLoader,
 });
 
-const App: FC<Props> = () => {
+const App: FC = () => {
   const activeDashboard = useSelector(appSelectors.getActiveDashboard);
   const dashboardSettings = useSelector(
     themeSelectors.getActiveDashboardThemeSettings

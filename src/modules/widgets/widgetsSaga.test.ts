@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable @typescript-eslint/naming-convention */
 import sagaHelper from 'redux-saga-testing';
 import { all, put, take, call, select } from 'redux-saga/effects';
 import { Query } from '@keen.io/query';

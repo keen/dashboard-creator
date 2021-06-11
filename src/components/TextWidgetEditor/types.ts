@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable @typescript-eslint/naming-convention */
 
 import { DraftInlineStyleType } from 'draft-js';
 import { IconType } from '@keen.io/icons';

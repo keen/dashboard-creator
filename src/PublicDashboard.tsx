@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase, @typescript-eslint/ban-ts-ignore */
+/* eslint-disable @typescript-eslint/naming-convention, @typescript-eslint/ban-ts-comment */
 import { timezoneActions } from './modules/timezone';
 
 if (process.env.NODE_ENV === 'production') {

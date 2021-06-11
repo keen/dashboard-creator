@@ -25,7 +25,7 @@ import {
 
 import { APIContext } from '../../contexts';
 
-const QueryPicker: FC<{}> = () => {
+const QueryPicker: FC = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 

@@ -19,9 +19,7 @@ import {
   extendDashboardSettings,
 } from '../../modules/dashboards';
 
-type Props = {};
-
-const ThemeEditor: FC<Props> = () => {
+const ThemeEditor: FC = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
