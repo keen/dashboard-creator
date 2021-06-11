@@ -8,3 +8,9 @@ export const Content = styled.div`
   position: relative;
   z-index: 1;
 `;
+
+export const Error = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;

@@ -1,4 +1,5 @@
 import { saveDashboard } from './saveDashboard';
 import { cloneDashboard } from './cloneDashboard';
+import { viewDashboard } from './viewDashboard';
 
-export { saveDashboard, cloneDashboard };
+export { viewDashboard, saveDashboard, cloneDashboard };
