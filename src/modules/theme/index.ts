@@ -37,5 +37,6 @@ export {
   COLOR_PALETTES,
   FONTS,
   ThemeEditorSection,
-  ThemeSettings,
 };
+
+export type { ThemeSettings };

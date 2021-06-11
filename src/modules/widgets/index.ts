@@ -41,7 +41,7 @@ import {
   FilterSettings,
 } from './types';
 
-export {
+export type {
   Widget,
   GridPosition,
   WidgetsPosition,
@@ -51,6 +51,9 @@ export {
   TextWidget,
   FilterWidget,
   FilterSettings,
+};
+
+export {
   widgetsReducer,
   widgetsSaga,
   createWidget,

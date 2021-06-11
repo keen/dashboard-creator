@@ -11,5 +11,6 @@ export {
   textEditorSagaActions,
   textEditorReducer,
   textEditorSelectors,
-  TextAlignment,
 };
+
+export type { TextAlignment };
