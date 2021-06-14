@@ -18,7 +18,7 @@ import {
   reinitializeWidgets,
   initializeWidget,
   cloneWidget,
-} from './saga';
+} from './widgetsSaga';
 
 import { getWidget, getWidgetSettings } from './selectors';
 

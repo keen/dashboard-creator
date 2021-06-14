@@ -48,7 +48,7 @@ import {
   editInlineTextWidget,
 } from './saga/textWidget';
 
-import { initializeChartWidget, editChartWidget } from './saga/chartWidget';
+import { editChartWidget } from './saga/chartWidget';
 import {
   setFilterWidget,
   editFilterWidget,
@@ -57,6 +57,7 @@ import {
   unapplyFilterWidget,
   resetFilterWidgets,
 } from './saga/filterWidget';
+import { initializeChartWidget } from './saga/chart';
 
 import { SELECT_SAVED_QUERY, CREATE_QUERY, SavedQuery } from '../queries';
 import { createWidgetId } from './utils';

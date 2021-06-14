@@ -62,3 +62,21 @@ export const getCachedDashboardIds = ({ dashboards }: RootState) =>
 
 export const getDashboardAccessKeyRegenerating = ({ dashboards }: RootState) =>
   dashboards.metadata.isRegeneratingAccessKey;
+
+export const dashboardsSelectors = {
+  getDashboardMeta,
+  getDashboardsMetadata,
+  getDashboardsLoadState,
+  getDashboardSettings,
+  getDeleteConfirmation,
+  getDashboardShareModal,
+  getDashboardSettingsModal,
+  getDashboardMetaSaving,
+  getDashboardListOrder,
+  getCurrentDashboardChartsCount,
+  getDashboardAccessKeyRegenerating,
+  getCachedDashboardIds,
+  getTagsFilter,
+  getTagsPool,
+  getDashboard,
+};

@@ -52,11 +52,6 @@ test('create unique Ids for widgets', () => {
       position: { w: 4, h: 9, x: 0, y: 0, minH: 6, minW: 2 },
       type: 'visualization',
       query: 'customers-by-continent',
-      settings: {
-        visualizationType: 'bar',
-        chartSettings: { layout: 'vertical', groupMode: 'grouped' },
-        widgetSettings: {},
-      },
     },
   ] as Widget[];
   const transformedWidgets = [
@@ -96,11 +91,6 @@ test('create unique Ids for widgets', () => {
       position: { w: 4, h: 9, x: 0, y: 0, minH: 6, minW: 2 },
       type: 'visualization',
       query: 'customers-by-continent',
-      settings: {
-        visualizationType: 'bar',
-        chartSettings: { layout: 'vertical', groupMode: 'grouped' },
-        widgetSettings: {},
-      },
     },
   ] as Widget[];
 

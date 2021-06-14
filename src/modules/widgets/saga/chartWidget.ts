@@ -1,5 +1,4 @@
 import { put, select, call, take, getContext, all } from 'redux-saga/effects';
-import { getAvailableWidgets } from '@keen.io/widget-picker';
 import { Query } from '@keen.io/query';
 import { SET_QUERY_EVENT, SET_CHART_SETTINGS } from '@keen.io/query-creator';
 
@@ -7,31 +6,20 @@ import {
   initializeChartWidget as initializeChartWidgetAction,
   editChartWidget as editChartWidgetAction,
   setWidgetState,
-  setWidgetLoading,
   finishChartWidgetConfiguration,
   savedQueryUpdated,
 } from '../actions';
 
 import { getWidget, getWidgetSettings } from '../selectors';
 
-import {
-  addInterimQuery,
-  removeInterimQuery,
-  getInterimQuery,
-  updateSaveQuery,
-} from '../../../modules/queries';
+import { updateSaveQuery } from '../../../modules/queries';
 
 import {
   saveDashboard,
   updateAccessKeyOptions,
 } from '../../../modules/dashboards';
 
-import {
-  NOTIFICATION_MANAGER,
-  PUBSUB,
-  KEEN_ANALYSIS,
-  TRANSLATIONS,
-} from '../../../constants';
+import { NOTIFICATION_MANAGER, PUBSUB, TRANSLATIONS } from '../../../constants';
 
 import { WidgetItem, ChartWidget, WidgetErrors } from '../types';
 import { appSelectors } from '../../app';
@@ -115,37 +103,6 @@ export function* prepareChartWidgetQuery(chartWidget: WidgetItem) {
 }
 
 /**
- * Setup chart widget state for query detached from visualization settings
- *
- * @param widgetId - Widget identifier
- * @param visualizationType - Type of visualization
- * @return void
- *
- */
-export function* handleDetachedQuery(
-  widgetId: string,
-  visualizationType: string,
-  analysisResult: Record<string, any>
-) {
-  const i18n = yield getContext(TRANSLATIONS);
-  const error = {
-    title: i18n.t('widget_errors.detached_query_title', {
-      chart: visualizationType,
-    }),
-    message: i18n.t('widget_errors.detached_query_message'),
-    code: WidgetErrors.DETACHED_QUERY,
-  };
-
-  const widgetState: Partial<WidgetItem> = {
-    isInitialized: true,
-    data: analysisResult,
-    error,
-  };
-
-  yield put(setWidgetState(widgetId, widgetState));
-}
-
-/**
  * Setup chart widget state for query with different event collection than applied filters
  *
  * @param widgetId - Widget identifier
@@ -211,89 +168,6 @@ export function* checkIfChartWidgetHasInconsistentFilters(chartWidget: any) {
   }
 
   return widgetHasInconsistentFilters;
-}
-
-/**
- * Flow responsible for initializing chart widget.
- *
- * @param id - Widget identifer
- * @return void
- *
- */
-export function* initializeChartWidget({
-  payload,
-}: ReturnType<typeof initializeChartWidgetAction>) {
-  const { id } = payload;
-  const chartWidget = yield select(getWidget, id);
-
-  const {
-    widget: {
-      settings: { visualizationType },
-    },
-  } = chartWidget;
-
-  try {
-    const { query, hasQueryModifiers } = yield call(
-      prepareChartWidgetQuery,
-      chartWidget
-    );
-    yield put(setWidgetLoading(id, true));
-
-    const widgetHasInconsistentFilters = yield call(
-      checkIfChartWidgetHasInconsistentFilters,
-      chartWidget
-    );
-    if (widgetHasInconsistentFilters) return;
-
-    const client = yield getContext(KEEN_ANALYSIS);
-    const requestBody =
-      typeof query === 'string' ? { savedQueryName: query } : query;
-
-    let analysisResult = yield client.query(requestBody);
-
-    /** Funnel analysis do not return query settings in response */
-    if (typeof query !== 'string' && query.analysis_type === 'funnel') {
-      analysisResult = {
-        ...analysisResult,
-        query,
-      };
-    }
-
-    const { query: querySettings } = analysisResult;
-    const isDetachedQuery = !getAvailableWidgets(querySettings).includes(
-      visualizationType
-    );
-
-    if (isDetachedQuery) {
-      yield call(handleDetachedQuery, id, visualizationType, analysisResult);
-    } else if (hasQueryModifiers) {
-      yield put(addInterimQuery(id, analysisResult));
-      yield put(setWidgetState(id, { isInitialized: true }));
-    } else {
-      const interimQuery = yield select(getInterimQuery, id);
-      if (interimQuery) {
-        yield put(removeInterimQuery(id));
-      }
-      const widgetState: Partial<WidgetItem> = {
-        isInitialized: true,
-        data: analysisResult,
-      };
-      yield put(setWidgetState(id, widgetState));
-    }
-  } catch (err) {
-    const { body } = err;
-    yield put(
-      setWidgetState(id, {
-        isInitialized: true,
-        error: {
-          message: body,
-          code: WidgetErrors.CANNOT_INITIALIZE,
-        },
-      })
-    );
-  } finally {
-    yield put(setWidgetLoading(id, false));
-  }
 }
 
 /**

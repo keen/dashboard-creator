@@ -23,13 +23,7 @@ import {
   removeWidgetFromDashboard as removeWidgetFromDashboardAction,
   regenerateAccessKey as regenerateAccessKeyAction,
   saveDashboardMeta as saveDashboardMetaAction,
-  cloneDashboard as cloneDashboardAction,
-  addClonedDashboard,
-  initializeDashboardWidgets as initializeDashboardWidgetsAction,
   exportDashboardToHtml as exportDashboardToHtmlAction,
-  saveDashboard as saveDashboardAction,
-  updateDashboardMeta,
-  saveDashboardSuccess,
   viewDashboard as viewDashboardAction,
   calculateYPositionAndAddWidget as calculateYPositionAndAddWidgetAction,
   updateCachedDashboardIds,
@@ -39,7 +33,7 @@ import {
   regenerateAccessKeySuccess,
   regenerateAccessKeyError,
 } from './actions';
-import { themeActions, themeSelectors, themeSagaActions } from '../theme';
+import { themeActions, themeSagaActions } from '../theme';
 import {
   deleteAccessKey,
   deleteDashboard,
@@ -48,13 +42,11 @@ import {
   regenerateAccessKey,
   createAccessKey,
   viewPublicDashboard,
-  cloneDashboard,
   exportDashboardToHtml,
-  saveDashboard,
   updateCachedDashboardsList,
   calculateYPositionAndAddWidget,
   setAccessKey,
-} from './saga';
+} from './dashboardsSaga';
 
 import {
   removeWidget,
@@ -67,14 +59,7 @@ import {
 import { serializeDashboard } from './serializers';
 import { createCodeSnippet, createDashboardSettings } from './utils';
 
-import {
-  DashboardModel,
-  DashboardSettings,
-  DashboardMetaData,
-  DashboardError,
-} from './types';
-
-import rootReducer from '../../rootReducer';
+import { DashboardModel, DashboardMetaData, DashboardError } from './types';
 
 import {
   CONFIRM_DASHBOARD_DELETE,
@@ -92,8 +77,6 @@ import {
   getCachedDashboardIds,
   getDashboard,
   getDashboardMeta,
-  getDashboardSettings,
-  getDashboardsMetadata,
 } from './selectors';
 import { removeConnectionFromFilter } from '../widgets/saga/filterWidget';
 
@@ -557,274 +540,6 @@ describe('deleteDashboard()', () => {
   });
 });
 
-describe('cloneDashboard', () => {
-  const mockDate = (new Date(0) as unknown) as string;
-  jest.spyOn(global, 'Date').mockImplementation(() => mockDate);
-
-  const dashbboardId = '@dashboard/01';
-  const action = cloneDashboardAction(dashbboardId);
-
-  const model = {
-    version: '1',
-    widgets: [],
-    settings: {
-      colorPalette: 'default',
-      page: {
-        gridGap: 20,
-        background: 'transparent',
-        chartTitlesFont: 'Lato',
-        visualizationsFont: 'Lato',
-      },
-      tiles: {
-        background: 'white',
-        borderColor: 'transparent',
-        borderRadius: 0,
-        borderWidth: 1,
-        padding: 20,
-        hasShadow: false,
-      },
-    },
-    theme: {},
-  };
-
-  const metaData = {
-    id: '@dashboard/01',
-    title: null,
-    widgets: 0,
-    queries: 0,
-    tags: [],
-    lastModificationDate: 0,
-    isPublic: false,
-    publicAccessKey: null,
-  };
-
-  const blobApiMock = {
-    getDashboardById: jest.fn(),
-    getDashboardMetaDataById: jest.fn(),
-    saveDashboard: jest.fn(),
-  };
-
-  const notificationManagerMock = {
-    showNotification: jest.fn(),
-  };
-
-  describe('Scenario 1: User clone dashboard from management', () => {
-    const state = {
-      rootReducer,
-      app: {
-        activeDashboardId: null,
-      },
-    };
-    const test = sagaHelper(cloneDashboard(action));
-
-    test('gets NotificationManager from context', (result) => {
-      expect(result).toEqual(getContext(NOTIFICATION_MANAGER));
-
-      return notificationManagerMock;
-    });
-
-    test('gets BlobAPI from context', (result) => {
-      expect(result).toEqual(getContext(BLOB_API));
-
-      return blobApiMock;
-    });
-
-    test('calls getDashboardById with dashboard identifer', () => {
-      expect(blobApiMock.getDashboardById).toHaveBeenCalledWith(dashbboardId);
-
-      return model;
-    });
-
-    test('calls getDashboardMetaDataById with dashboard identifier', () => {
-      expect(blobApiMock.getDashboardMetaDataById).toHaveBeenCalledWith(
-        dashbboardId
-      );
-
-      return metaData;
-    });
-
-    test('calls saveDashboard', () => {
-      expect(blobApiMock.saveDashboard).toHaveBeenCalled();
-    });
-
-    test('triggers addClonedDashboard action', (result) => {
-      expect(result).toEqual(
-        put(addClonedDashboard({ ...metaData, title: 'Clone' }))
-      );
-    });
-
-    test('set theme for cloned dashboard', (result) => {
-      expect(result).toEqual(
-        put(
-          themeActions.setDashboardTheme({
-            dashboardId,
-            theme: model.theme,
-            settings: model.settings,
-          })
-        )
-      );
-    });
-
-    test('calls show notification method', () => {
-      expect(notificationManagerMock.showNotification).toHaveBeenCalledWith(
-        expect.objectContaining({
-          type: 'info',
-          message: 'notifications.dashboard_cloned',
-          autoDismiss: true,
-        })
-      );
-    });
-
-    test('prepare state activeDashboardId', (result) => {
-      expect(result).toEqual(select());
-
-      return state;
-    });
-  });
-
-  describe('Scenario 2: User clone dashboard from dashboard view', () => {
-    const state = {
-      rootReducer,
-      app: {
-        activeDashboardId: '@dashboard/01',
-      },
-    };
-    const test = sagaHelper(cloneDashboard(action));
-
-    test('gets NotificationManager from context', (result) => {
-      expect(result).toEqual(getContext(NOTIFICATION_MANAGER));
-
-      return notificationManagerMock;
-    });
-
-    test('gets BlobAPI from context', (result) => {
-      expect(result).toEqual(getContext(BLOB_API));
-
-      return blobApiMock;
-    });
-
-    test('calls getDashboardById with dashboard identifer', () => {
-      expect(blobApiMock.getDashboardById).toHaveBeenCalledWith(dashbboardId);
-
-      return model;
-    });
-
-    test('calls getDashboardMetaDataById with dashboard identifer', () => {
-      expect(blobApiMock.getDashboardMetaDataById).toHaveBeenCalledWith(
-        dashbboardId
-      );
-
-      return metaData;
-    });
-
-    test('calls saveDashboard', () => {
-      expect(blobApiMock.saveDashboard).toHaveBeenCalled();
-    });
-
-    test('triggers addClonedDashboard action', (result) => {
-      expect(result).toEqual(
-        put(addClonedDashboard({ ...metaData, title: 'Clone' }))
-      );
-    });
-
-    test('set theme for cloned dashboard', (result) => {
-      expect(result).toEqual(
-        put(
-          themeActions.setDashboardTheme({
-            dashboardId,
-            theme: model.theme,
-            settings: model.settings,
-          })
-        )
-      );
-    });
-
-    test('calls show notification method', () => {
-      expect(notificationManagerMock.showNotification).toHaveBeenCalledWith(
-        expect.objectContaining({
-          type: 'info',
-          message: 'notifications.dashboard_cloned',
-          autoDismiss: true,
-        })
-      );
-    });
-
-    test('prepare state activeDashboardId', (result) => {
-      expect(result).toEqual(select());
-
-      return state;
-    });
-
-    test('register widgets', (result) => {
-      expect(result).toEqual(put(registerWidgets(model.widgets)));
-    });
-
-    test('update cloned dashboard', (result) => {
-      expect(result).toEqual(put(updateDashboard(dashbboardId, model)));
-    });
-
-    test('initialize cloned dashboard widgets', (result) => {
-      expect(result).toEqual(
-        put(initializeDashboardWidgetsAction(dashbboardId, model.widgets))
-      );
-    });
-
-    test('set proper dashboard as active', (result) => {
-      expect(result).toEqual(put(appActions.setActiveDashboard(dashboardId)));
-    });
-
-    test('switch route to the cloned dashboard', (result) => {
-      expect(result).toEqual(put(push(ROUTES.EDITOR)));
-    });
-  });
-
-  describe('Scenario 3: User fails to clone dashboard', () => {
-    const test = sagaHelper(cloneDashboard(action));
-
-    test('gets NotificationManager from context', (result) => {
-      expect(result).toEqual(getContext(NOTIFICATION_MANAGER));
-
-      return notificationManagerMock;
-    });
-
-    test('gets BlobAPI from context', (result) => {
-      expect(result).toEqual(getContext(BLOB_API));
-
-      return blobApiMock;
-    });
-
-    test('calls getDashboardById with dashboard identifer', () => {
-      expect(blobApiMock.getDashboardById).toHaveBeenCalledWith(dashbboardId);
-
-      return model;
-    });
-
-    test('calls getDashboardMetaDataById with dashboard identifer', () => {
-      expect(blobApiMock.getDashboardMetaDataById).toHaveBeenCalledWith(
-        dashbboardId
-      );
-
-      return metaData;
-    });
-
-    test('calls saveDashboard', () => {
-      expect(blobApiMock.saveDashboard).toHaveBeenCalled();
-
-      return new Error();
-    });
-
-    test('calls show notification method', () => {
-      expect(notificationManagerMock.showNotification).toHaveBeenCalledWith(
-        expect.objectContaining({
-          type: 'error',
-          showDismissButton: true,
-          autoDismiss: false,
-        })
-      );
-    });
-  });
-});
-
 describe('regenerateAccessKey()', () => {
   const dashboardId = '@dashboard/01';
   const publicAccessKey = 'public-access-key';
@@ -948,109 +663,6 @@ describe('exportDashboardToHtml()', () => {
       createCodeSnippet({ projectId, userKey, dashboardId })
     );
     return snippet;
-  });
-});
-
-describe('saveDashboard()', () => {
-  const dashboardId = '@dashboard/01';
-  const dashboard: DashboardModel = {
-    version: '0.0.1',
-    widgets: [],
-  };
-  const state = {
-    rootReducer,
-    app: {
-      activeDashboardId: dashboardId,
-    },
-    dashboards: {
-      items: {
-        [dashboardId]: dashboard,
-      },
-    },
-    theme: {
-      dashboards: {
-        [dashboardId]: {
-          theme: {
-            colors: ['navybule'],
-          },
-          settings: {
-            page: {
-              gridGap: 40,
-            },
-          } as DashboardSettings,
-        },
-      },
-    },
-  };
-
-  const blobApiMock = {
-    saveDashboard: jest.fn(),
-  };
-
-  const updatedMetadata: DashboardMetaData = {
-    id: dashboardId,
-    widgets: 0,
-    queries: 0,
-    title: 'Dashboard',
-    tags: [],
-    lastModificationDate: 0,
-    isPublic: true,
-    publicAccessKey: 'public-access-key',
-  };
-
-  const action = saveDashboardAction(dashboardId);
-  const test = sagaHelper(saveDashboard(action));
-
-  test('prepare state activeDashboardId', (result) => {
-    expect(result).toEqual(select());
-
-    return state;
-  });
-
-  test('get dashboard settings', (result) => {
-    expect(result).toEqual(select(getDashboardSettings, dashboardId));
-
-    return dashboard;
-  });
-
-  test('get dashboard theme', (result) => {
-    expect(result).toEqual(
-      select(themeSelectors.getThemeByDashboardId, dashboardId)
-    );
-
-    return state.theme.dashboards[dashboardId];
-  });
-
-  test('get dashboards meta data', (result) => {
-    expect(result).toEqual(select(getDashboardsMetadata));
-
-    return [updatedMetadata];
-  });
-
-  test('gets BlobAPI instance from context', (result) => {
-    expect(result).toEqual(getContext(BLOB_API));
-
-    return blobApiMock;
-  });
-
-  test('calls saveDashboard', () => {
-    const serializedDashboard = serializeDashboard(dashboard);
-
-    expect(blobApiMock.saveDashboard).toHaveBeenCalledWith(
-      dashboardId,
-      { ...serializedDashboard, ...state.theme.dashboards[dashboardId] },
-      updatedMetadata
-    );
-  });
-
-  test('updates dashboard metadata', (result) => {
-    expect(result).toEqual(
-      put(updateDashboardMeta(dashboardId, updatedMetadata))
-    );
-  });
-
-  test('notifies about save success', (result) => {
-    expect(result).toEqual(put(saveDashboardSuccess(dashboardId)));
   });
 });
 
