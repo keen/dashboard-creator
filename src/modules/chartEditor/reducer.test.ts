@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable @typescript-eslint/naming-convention */
 import { Query } from '@keen.io/query';
 import { ChartSettings } from '@keen.io/widget-picker';
 

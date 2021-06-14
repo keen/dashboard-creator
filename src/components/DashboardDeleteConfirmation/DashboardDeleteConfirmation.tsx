@@ -31,9 +31,7 @@ import {
 
 import { RootState } from '../../rootReducer';
 
-type Props = {};
-
-const DashboardDeleteConfirmation: FC<Props> = () => {
+const DashboardDeleteConfirmation: FC = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { isVisible, dashboardId } = useSelector(getDeleteConfirmation);

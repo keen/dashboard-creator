@@ -2,7 +2,6 @@ import { AppStartPayload, ReducerState } from './types';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export const initialState: ReducerState = {
-  view: 'management',
   activeDashboardId: null,
   cachedDashboardsNumber: null,
   user: {

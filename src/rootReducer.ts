@@ -1,6 +1,4 @@
-import { combineReducers } from '@reduxjs/toolkit';
-import { connectRouter } from 'connected-react-router';
-import { createMemoryHistory } from 'history';
+import { CombinedState, StateFromReducersMapObject } from '@reduxjs/toolkit';
 
 import { appReducer } from './modules/app';
 import { dashboardsReducer } from './modules/dashboards';
@@ -13,9 +11,7 @@ import { textEditorReducer } from './modules/textEditor';
 import { filterReducer } from './modules/filter';
 import { timezoneReducer } from './modules/timezone';
 
-export const history = createMemoryHistory();
-
-const rootReducer = combineReducers({
+const rootReducer = {
   app: appReducer,
   dashboards: dashboardsReducer,
   widgets: widgetsReducer,
@@ -24,10 +20,11 @@ const rootReducer = combineReducers({
   filter: filterReducer,
   chartEditor: chartEditorReducer,
   textEditor: textEditorReducer,
-  router: connectRouter(history),
   theme: themeReducer,
   timezone: timezoneReducer,
-});
+};
 
 export default rootReducer;
-export type RootState = ReturnType<typeof rootReducer>;
+export type RootState = CombinedState<
+  StateFromReducersMapObject<typeof rootReducer>
+>;

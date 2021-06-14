@@ -17,7 +17,7 @@ import { isLink } from '../../utils';
 import { saveImage } from '../../modules/widgets';
 import { appActions } from '../../modules/app';
 
-const ImagePicker: FC<{}> = () => {
+const ImagePicker: FC = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 

@@ -32,9 +32,7 @@ import {
 } from '../../modules/dashboards';
 import { appSelectors, Scopes } from '../../modules/app';
 
-type Props = {};
-
-const Management: FC<Props> = () => {
+const Management: FC = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const dashboards = useSelector(getDashboardsMetadata);

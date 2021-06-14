@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable @typescript-eslint/naming-convention */
 import {
   takeLatest,
   put,
@@ -49,7 +49,7 @@ import {
   addWidgetToDashboard,
 } from './actions';
 
-import { saveDashboard, cloneDashboard } from './saga';
+import { viewDashboard, saveDashboard, cloneDashboard } from './saga';
 
 import { serializeDashboard } from './serializers';
 import {
@@ -456,52 +456,6 @@ export function* editDashboard({
     }
     yield put(appActions.setActiveDashboard(dashboardId));
     yield put(push(ROUTES.EDITOR));
-  }
-}
-
-export function* viewDashboard({
-  payload,
-}: ReturnType<typeof viewDashboardAction>) {
-  const { dashboardId } = payload;
-  const state: RootState = yield select();
-  const dashboard = yield getDashboard(state, dashboardId);
-
-  if (!dashboard) {
-    yield put(registerDashboard(dashboardId));
-    yield put(appActions.setActiveDashboard(dashboardId));
-    yield put(push(ROUTES.VIEWER));
-
-    const blobApi = yield getContext(BLOB_API);
-
-    try {
-      const responseBody: DashboardModel = yield blobApi.getDashboardById(
-        dashboardId
-      );
-
-      const { theme, settings, ...dashboard } = enhanceDashboard(responseBody);
-      const serializedDashboard = serializeDashboard(dashboard);
-      const { widgets } = responseBody;
-
-      yield put(registerWidgets(widgets));
-      yield put(updateDashboard(dashboardId, serializedDashboard));
-      yield put(
-        themeActions.setDashboardTheme({ dashboardId, settings, theme })
-      );
-
-      yield put(themeSagaActions.loadDashboardFonts());
-
-      yield put(
-        initializeDashboardWidgetsAction(
-          dashboardId,
-          serializedDashboard.widgets
-        )
-      );
-    } catch (err) {
-      console.error(err);
-    }
-  } else {
-    yield put(appActions.setActiveDashboard(dashboardId));
-    yield put(push(ROUTES.VIEWER));
   }
 }
 

@@ -7,10 +7,18 @@ export type BackendSettings = {
   analyticsApiUrl?: string;
 };
 
+export type View = 'management' | 'editor' | 'viewer';
+
+export type ViewUpdateHandler = (
+  view: View,
+  dashboardId: string | null
+) => void;
+
 export type DashboardCreatorOptions = {
   container: string;
   modalContainer: string;
   userPermissions?: Scopes[];
+  onViewChange?: ViewUpdateHandler;
   project: {
     masterKey: string;
     accessKey: string;

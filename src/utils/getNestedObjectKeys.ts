@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 const concatKeychain = (previousKeys, key) => {
   return previousKeys !== '' ? previousKeys + '.' + key : key;
 };
@@ -11,7 +12,7 @@ const concatKeychain = (previousKeys, key) => {
  */
 export const getNestedObjectKeysAndValues = (
   obj: Record<string, any>,
-  filter?: (keychain) => {}
+  filter?: (keychain: string) => {}
 ) => {
   const nestedObjectKeys = [];
   const nestedObjectValues = [];

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable @typescript-eslint/naming-convention */
 import { getContext, put } from 'redux-saga/effects';
 import { StatusCodes } from 'http-status-codes';
 

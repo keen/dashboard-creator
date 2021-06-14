@@ -54,6 +54,7 @@ import {
   getTagsFilter,
   getCurrentDashboardChartsCount,
   getDashboardAccessKeyRegenerating,
+  dashboardsSelectors,
 } from './selectors';
 import {
   DashboardSettings,
@@ -121,4 +122,5 @@ export {
   setTagsFiltersPublic,
   createDashboardSettings,
   extendDashboardSettings,
+  dashboardsSelectors,
 };

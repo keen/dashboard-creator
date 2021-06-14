@@ -22,7 +22,7 @@ import {
 
 export const ThemeModalContext = createContext({ modalContentRef: null });
 
-const ThemeEditorModal: FC<{}> = () => {
+const ThemeEditorModal: FC = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 

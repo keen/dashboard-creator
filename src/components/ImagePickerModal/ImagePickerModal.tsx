@@ -8,7 +8,7 @@ import ImagePicker from '../ImagePicker';
 import { Content } from './ImagePickerModal.styles';
 import { appActions, appSelectors } from '../../modules/app';
 
-const ImagePickerModal: FC<{}> = () => {
+const ImagePickerModal: FC = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { isVisible } = useSelector(appSelectors.getImagePicker);

@@ -8,6 +8,8 @@ test('set user edit privileges', () => {
     baseTheme: {},
     userPermissions: [Scopes.SHARE_DASHBOARD],
     cachedDashboardsNumber: 3,
+    initialView: 'management',
+    dashboardId: null,
   });
   const {
     user: { permissions },
