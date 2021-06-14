@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
-
 import sagaHelper from 'redux-saga-testing';
 import { runQuery } from './runQuery';
 import { put, select } from 'redux-saga/effects';

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
-
 import sagaHelper from 'redux-saga-testing';
 import { put, select } from 'redux-saga/effects';
 import { chartEditorActions, chartEditorSelectors } from '../index';
