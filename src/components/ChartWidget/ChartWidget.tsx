@@ -30,6 +30,7 @@ import { RESIZE_WIDGET_EVENT } from '../../constants';
 import getChartInput from '../../utils/getChartInput';
 import { createDataviz } from './utils';
 import { useTranslation } from 'react-i18next';
+import { WidgetItem } from '../../modules/widgets/types';
 
 type Props = {
   /** Widget identifier */
@@ -60,9 +61,11 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
     error,
     data,
     widget,
-  } = useSelector((state: RootState) => getWidget(state, id));
+  } = useSelector((state: RootState) =>
+    getWidget(state, id)
+  ) as WidgetItem<ChartWidget>;
 
-  const { query: widgetQuery } = widget as ChartWidget;
+  const { query: widgetQuery } = widget;
   const isSavedQuery = typeof widgetQuery === 'string';
 
   const interimQuery = useSelector((state: RootState) =>
@@ -113,7 +116,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
     if (showVisualization && inView) {
       const widgetWithTheming = mergeSettingsWithFontFallback(
         chartTitlesFont,
-        widget as ChartWidget
+        widget
       );
 
       datavizRef.current = createDataviz({
