@@ -10,7 +10,6 @@ export const Container = styled.div<{ background?: string }>`
 `;
 
 export const Content = styled.div`
-  max-width: 1200px;
   width: 100%;
   padding: 20px;
 `;

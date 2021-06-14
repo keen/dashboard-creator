@@ -17,7 +17,6 @@ export const Container = styled.div<{ background?: string }>`
 
 export const Content = styled.div`
   position: relative;
-  max-width: 1200px;
   width: 100%;
   z-index: 1;
 `;

@@ -25,7 +25,7 @@ The Dashboard Creator components configuration could be specified during creatio
 The Dashboard Creator `@keen.io/dataviz` theme could be overridden during initialization of application instance.
 
 ```typescript
-const explorer = new KeenDashboardCreator({
+const dashboardCreator = new KeenDashboardCreator({
   theme: {
     colors: ['green', 'navy', 'orange'],
     metric: {
@@ -73,7 +73,7 @@ By default all users are allowed to edit and share dashboards. To restrict privi
 ```typescript
 type Scopes = 'share-dashboard' | 'edit-dashboard';
 
-const explorer = new KeenDashboardCreator({
+const dashboardCreator = new KeenDashboardCreator({
   userPermissions: ['edit-dashboard'],
 });
 ```
@@ -83,7 +83,7 @@ const explorer = new KeenDashboardCreator({
 Specify default `timezone` used for new created queries. Provided argument must be compatible with **IANA** [Time Zone Database](https://www.iana.org/time-zones) standard.
 
 ```typescript
-const explorer = new KeenDashboardCreator({
+const dashboardCreator = new KeenDashboardCreator({
   defaultTimezoneForQuery: 'Europe/Warsaw',
 });
 ```
@@ -93,7 +93,7 @@ const explorer = new KeenDashboardCreator({
 Disables possibility to change `timezone` for queries from user interface.
 
 ```typescript
-const explorer = new KeenDashboardCreator({
+const dashboardCreator = new KeenDashboardCreator({
   disableTimezoneSelection: true,
 });
 ```
@@ -103,7 +103,7 @@ const explorer = new KeenDashboardCreator({
 Setup default timezone in widget and disable timezone selection.
 
 ```typescript
-const explorer = new KeenDashboardCreator({
+const dashboardCreator = new KeenDashboardCreator({
   widgetsConfiguration: {
     datePicker: {
       defaultTimezone: 'Etc/UTC',
