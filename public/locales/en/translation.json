@@ -533,5 +533,8 @@
     "settings_disabled": "Run your query first",
     "settings_disabled_for_widget": "Settings do not affect {{widget}} visualization",
     "format_values_not_avaialble": "No formatting options for {{analysis}} analysis"
+  },
+  "tags": {
+    "saved_query": "Saved query"
   }
 }

@@ -31,6 +31,8 @@ import {
   mergeSettingsWithFontFallback,
 } from '../../../../modules/theme';
 
+import { WidgetSettings } from '@keen.io/widgets';
+
 type Props = {
   /** Query run indocator */
   isQueryPerforming: boolean;
@@ -48,6 +50,8 @@ type Props = {
   baseTheme: Partial<Theme>;
   /** Query results */
   analysisResult?: Record<string, any>;
+  /** Is saved query */
+  isSavedQuery?: boolean;
 };
 
 const WidgetVisualization: FC<Props> = ({
@@ -59,6 +63,7 @@ const WidgetVisualization: FC<Props> = ({
   analysisResult,
   onRunQuery,
   onChangeVisualization,
+  isSavedQuery,
 }) => {
   const { t } = useTranslation();
   const widgets = useMemo(
@@ -70,6 +75,13 @@ const WidgetVisualization: FC<Props> = ({
   );
 
   const { type, chartSettings, widgetSettings } = visualization;
+
+  const tags = [];
+  const settings = { ...widgetSettings } as WidgetSettings;
+
+  if (isSavedQuery) {
+    tags.push({ label: t('tags.saved_query'), variant: 'gray' });
+  }
 
   useEffect(() => {
     if (!widgets.includes(type)) {
@@ -130,9 +142,10 @@ const WidgetVisualization: FC<Props> = ({
                 visualization={type}
                 visualizationTheme={baseTheme}
                 chartSettings={chartSettings}
+                tags={tags}
                 widgetSettings={mergeSettingsWithFontFallback(
                   chartTitlesFont,
-                  widgetSettings
+                  settings
                 )}
                 analysisResults={analysisResult}
                 presentationTimezone={getTimezone(analysisResult)}

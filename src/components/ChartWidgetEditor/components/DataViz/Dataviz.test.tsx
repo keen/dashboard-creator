@@ -4,6 +4,7 @@ import { PickerWidgets } from '@keen.io/widget-picker';
 import { KeenDataviz } from '@keen.io/dataviz';
 
 import DataViz from './Dataviz';
+import { WidgetSettings } from '@keen.io/widgets';
 
 const renderMock = jest.fn();
 const errorMock = jest.fn();
@@ -23,7 +24,7 @@ const initialProps = {
     result: 20,
   },
   chartSettings: {},
-  widgetSettings: {},
+  widgetSettings: {} as WidgetSettings,
   dashboardSettings: {
     tiles: {
       background: 'transparent',
@@ -65,6 +66,7 @@ test('creates KeenDataviz instance with theme settings', () => {
       },
       widget: {
         card: cardSettings,
+        tags: [],
       },
     })
   );

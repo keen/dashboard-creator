@@ -143,6 +143,7 @@ test('renders visualization', () => {
         theme: {},
       },
       widget: {
+        tags: [],
         card: {
           backgroundColor: 'transparent',
           borderColor: 'transparent',

@@ -155,6 +155,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
           visualization={visualization}
           baseTheme={baseTheme}
           isQueryPerforming={isQueryPerforming}
+          isSavedQuery={isSavedQuery}
           outdatedAnalysisResults={outdatedAnalysisResults}
           analysisResult={analysisResult}
           querySettings={querySettings}
