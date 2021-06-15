@@ -1,6 +1,6 @@
 import { take } from 'redux-saga/effects';
-import { chartEditorActions } from '../index';
 import { scrollToElement } from './scrollToElement';
+import { chartEditorActions } from '../../chartEditor';
 
 export function* openEditor() {
   yield take(chartEditorActions.editorMounted.type);

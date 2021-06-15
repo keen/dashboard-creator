@@ -1,9 +1,11 @@
-import { chartEditorActions } from '../index';
 import sagaHelper from 'redux-saga-testing';
-import { updateVisualizationType } from './updateVisualizationType';
 import { getContext } from 'redux-saga/effects';
-import { PUBSUB } from '../../../constants';
+
 import { UPDATE_VISUALIZATION_TYPE } from '@keen.io/query-creator/dist';
+
+import { updateVisualizationType } from './updateVisualizationType';
+import { PUBSUB } from '../../../constants';
+import { chartEditorActions } from '../../chartEditor';
 
 describe('updateVisualizationType()', () => {
   describe('Scenario 1: Query Creator is notified about visualization change', () => {

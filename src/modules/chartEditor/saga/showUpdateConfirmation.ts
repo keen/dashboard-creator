@@ -1,6 +1,6 @@
 import { take } from 'redux-saga/effects';
-import { chartEditorActions } from '../index';
-import { scrollToElement } from './index';
+import { chartEditorActions } from '../../chartEditor';
+import { scrollToElement } from './scrollToElement';
 
 export function* showUpdateConfirmation() {
   yield take(chartEditorActions.queryUpdateConfirmationMounted.type);

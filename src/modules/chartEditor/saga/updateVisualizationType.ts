@@ -1,7 +1,7 @@
-import { chartEditorActions } from '../index';
 import { getContext } from 'redux-saga/effects';
+import { UPDATE_VISUALIZATION_TYPE } from '@keen.io/query-creator';
+import { chartEditorActions } from '../../chartEditor';
 import { PUBSUB } from '../../../constants';
-import { UPDATE_VISUALIZATION_TYPE } from '@keen.io/query-creator/dist';
 
 export function* updateVisualizationType({
   payload,

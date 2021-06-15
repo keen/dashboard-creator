@@ -1,14 +1,10 @@
-import { Query } from '@keen.io/query';
 import sagaHelper from 'redux-saga-testing';
 import { getContext, put, select } from 'redux-saga/effects';
-import { PUBSUB } from '../../../constants';
-import { chartEditorSelectors } from '../selectors';
-import { chartEditorActions } from '../index';
-import {
-  SET_CHART_SETTINGS,
-  SET_QUERY_EVENT,
-} from '@keen.io/query-creator/dist';
+import { Query } from '@keen.io/query';
+import { SET_CHART_SETTINGS, SET_QUERY_EVENT } from '@keen.io/query-creator';
 import { restoreSavedQuery } from './index';
+import { chartEditorSelectors, chartEditorActions } from '../../chartEditor';
+import { PUBSUB } from '../../../constants';
 
 describe('restoreSavedQuery()', () => {
   describe('Scenario 1: Restores saved query settings', () => {

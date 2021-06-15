@@ -1,6 +1,6 @@
-import { chartEditorActions, chartEditorSelectors } from '../index';
 import deepEqual from 'deep-equal';
 import { put, select } from 'redux-saga/effects';
+import { chartEditorActions, chartEditorSelectors } from '../../chartEditor';
 
 /**
  * Flow responsible for comparing root query with updated settings.

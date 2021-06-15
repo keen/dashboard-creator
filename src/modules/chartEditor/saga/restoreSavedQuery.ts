@@ -1,10 +1,7 @@
-import { PUBSUB } from '../../../constants';
 import { getContext, put, select } from 'redux-saga/effects';
-import { chartEditorActions, chartEditorSelectors } from '../index';
-import {
-  SET_CHART_SETTINGS,
-  SET_QUERY_EVENT,
-} from '@keen.io/query-creator/dist';
+import { SET_CHART_SETTINGS, SET_QUERY_EVENT } from '@keen.io/query-creator';
+import { chartEditorActions, chartEditorSelectors } from '../../chartEditor';
+import { PUBSUB } from '../../../constants';
 
 /**
  * Flow responsible for restoring initial query settings in chart editor

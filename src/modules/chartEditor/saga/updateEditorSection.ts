@@ -1,14 +1,11 @@
+import { getContext, select, take } from 'redux-saga/effects';
+import { SET_CHART_SETTINGS, SET_QUERY_EVENT } from '@keen.io/query-creator';
 import {
   chartEditorActions,
   chartEditorSelectors,
   EditorSection,
-} from '../index';
-import { getContext, select, take } from 'redux-saga/effects';
+} from '../../chartEditor';
 import { PUBSUB } from '../../../constants';
-import {
-  SET_CHART_SETTINGS,
-  SET_QUERY_EVENT,
-} from '@keen.io/query-creator/dist';
 
 export function* updateEditorSection({
   payload: editorSection,

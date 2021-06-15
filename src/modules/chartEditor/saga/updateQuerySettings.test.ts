@@ -1,6 +1,6 @@
 import sagaHelper from 'redux-saga-testing';
 import { put, select } from 'redux-saga/effects';
-import { chartEditorActions, chartEditorSelectors } from '../index';
+import { chartEditorActions, chartEditorSelectors } from '../../chartEditor';
 import { updateQuerySettings } from './updateQuerySettings';
 
 describe('updateQuerySettings()', () => {

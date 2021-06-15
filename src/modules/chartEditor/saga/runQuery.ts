@@ -1,7 +1,6 @@
 import { getContext, put, select } from 'redux-saga/effects';
-import { chartEditorSelectors } from '../selectors';
+import { chartEditorActions, chartEditorSelectors } from '../../chartEditor';
 import { KEEN_ANALYSIS, NOTIFICATION_MANAGER } from '../../../constants';
-import { chartEditorActions } from '../index';
 
 /**
  * Flow responsible for executing query in chart editor

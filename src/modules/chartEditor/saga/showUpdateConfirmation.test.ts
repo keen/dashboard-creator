@@ -1,7 +1,7 @@
 import sagaHelper from 'redux-saga-testing';
-import { showUpdateConfirmation } from './showUpdateConfirmation';
 import { take } from 'redux-saga/effects';
-import { chartEditorActions } from '../index';
+import { showUpdateConfirmation } from './showUpdateConfirmation';
+import { chartEditorActions } from '../../chartEditor';
 
 describe('showUpdateConfirmation()', () => {
   const test = sagaHelper(showUpdateConfirmation());
