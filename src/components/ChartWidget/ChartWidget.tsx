@@ -29,6 +29,8 @@ import { RESIZE_WIDGET_EVENT } from '../../constants';
 
 import getChartInput from '../../utils/getChartInput';
 import { createDataviz } from './utils';
+import { useTranslation } from 'react-i18next';
+import { WidgetItem } from '../../modules/widgets/types';
 
 type Props = {
   /** Widget identifier */
@@ -41,6 +43,8 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
   const containerRef = useRef(null);
   const loaderRef = useRef(null);
   const datavizRef = useRef(null);
+
+  const { t } = useTranslation();
 
   const [inViewRef, inView] = useInView({
     delay: OBSERVER_DELAY,
@@ -57,7 +61,13 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
     error,
     data,
     widget,
-  } = useSelector((state: RootState) => getWidget(state, id));
+  } = useSelector((state: RootState) =>
+    getWidget(state, id)
+  ) as WidgetItem<ChartWidget>;
+
+  const { query: widgetQuery } = widget;
+  const isSavedQuery = typeof widgetQuery === 'string';
+
   const interimQuery = useSelector((state: RootState) =>
     getInterimQuery(state, id)
   );
@@ -97,15 +107,22 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
     [inViewRef]
   );
 
+  const tags = [];
+  if (isSavedQuery && disableInteractions) {
+    tags.push({ label: t('tags.saved_query'), variant: 'gray' });
+  }
+
   useEffect(() => {
     if (showVisualization && inView) {
       const widgetWithTheming = mergeSettingsWithFontFallback(
         chartTitlesFont,
-        widget as ChartWidget
+        widget
       );
+
       datavizRef.current = createDataviz({
         widget: widgetWithTheming,
         theme,
+        tags,
         container: containerRef.current,
         presentationTimezone: getTimezone(chartData),
         dashboardSettings: dashboardSettings.settings,

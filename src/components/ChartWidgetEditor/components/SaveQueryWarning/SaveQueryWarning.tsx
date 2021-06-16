@@ -4,12 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { transparentize } from 'polished';
 import { colors } from '@keen.io/colors';
 import { BodyText } from '@keen.io/typography';
-import { Anchor, Tooltip } from '@keen.io/ui-core';
+import { Tooltip } from '@keen.io/ui-core';
 import { Icon } from '@keen.io/icons';
 
 import {
   Container,
-  RestoreSavedQuery,
   TooltipContainer,
   TooltipContent,
   EditTooltip,
@@ -17,12 +16,7 @@ import {
 
 import { TOOLTIP_MOTION } from '../../../../constants';
 
-type Props = {
-  /** Restore initial query event handler */
-  onRestoreQuery: () => void;
-};
-
-const SaveQueryWarning: FC<Props> = ({ onRestoreQuery }) => {
+const SaveQueryWarning: FC = () => {
   const { t } = useTranslation();
   const [tooltipVisible, setTooltip] = useState(false);
 
@@ -49,12 +43,6 @@ const SaveQueryWarning: FC<Props> = ({ onRestoreQuery }) => {
                 <TooltipContent>
                   <BodyText variant="body2">
                     {t('chart_widget_editor.save_query_edit_tooltip')}
-                    <RestoreSavedQuery>
-                      {t('chart_widget_editor.save_query_restore_hint')}{' '}
-                      <Anchor onClick={onRestoreQuery}>
-                        {t('chart_widget_editor.save_query_restore')}
-                      </Anchor>
-                    </RestoreSavedQuery>
                   </BodyText>
                 </TooltipContent>
               </Tooltip>

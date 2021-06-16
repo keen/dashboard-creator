@@ -3,6 +3,7 @@ import { Theme } from '@keen.io/charts';
 
 import { ChartWidget } from '../../../modules/widgets';
 import { DashboardSettings } from '../../../modules/dashboards';
+import { Tag } from '@keen.io/widgets';
 
 type Options = {
   widget: ChartWidget;
@@ -10,6 +11,7 @@ type Options = {
   container: HTMLElement;
   presentationTimezone?: string | number;
   dashboardSettings: DashboardSettings;
+  tags: Tag[];
 };
 
 /**
@@ -19,7 +21,8 @@ type Options = {
  * @param theme - chart theme
  * @param container - DOM element used to mount component
  * @param presentationTimezone - named timezone or offset
- * @param dashboardSettings - Dashbaord settinfs
+ * @param dashboardSettings - Dashboard settings
+ * @param tags - Widget tags
  * @return dataviz instance
  *
  */
@@ -29,6 +32,7 @@ const createDataviz = ({
   container,
   presentationTimezone,
   dashboardSettings,
+  tags,
 }: Options) => {
   const {
     settings: { visualizationType, chartSettings, widgetSettings },
@@ -45,6 +49,7 @@ const createDataviz = ({
     },
     widget: {
       ...widgetSettings,
+      tags,
       card: {
         backgroundColor: 'transparent',
         borderColor: 'transparent',

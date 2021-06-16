@@ -23,12 +23,3 @@ export const TooltipContainer = styled(motion.div)`
 export const TooltipContent = styled.div`
   width: 250px;
 `;
-
-export const RestoreSavedQuery = styled.span`
-  display: block;
-  margin-top: 15px;
-
-  a {
-    cursor: pointer;
-  }
-`;

@@ -1,9 +1,5 @@
 import React, { FC, useRef, useEffect } from 'react';
-import {
-  PickerWidgets,
-  ChartSettings,
-  WidgetSettings,
-} from '@keen.io/widget-picker';
+import { PickerWidgets, ChartSettings } from '@keen.io/widget-picker';
 import { KeenDataviz } from '@keen.io/dataviz';
 import { Theme } from '@keen.io/charts';
 
@@ -13,6 +9,8 @@ import getChartInput from '../../../../utils/getChartInput';
 
 import { CONTAINER_ID } from './constants';
 import { DashboardSettings } from '../../../../modules/dashboards';
+
+import { WidgetSettings, Tag } from '@keen.io/widgets';
 
 type Props = {
   /** Query execution results */
@@ -29,6 +27,8 @@ type Props = {
   presentationTimezone?: string | number;
   /** Dashboard settings for tiles */
   dashboardSettings?: Pick<DashboardSettings, 'tiles'>;
+  /** Tags */
+  tags?: Tag[];
 };
 
 const Dataviz: FC<Props> = ({
@@ -39,6 +39,7 @@ const Dataviz: FC<Props> = ({
   visualizationTheme,
   presentationTimezone,
   dashboardSettings = {},
+  tags = [],
 }) => {
   const datavizRef = useRef(null);
   const containerRef = useRef(null);
@@ -59,6 +60,7 @@ const Dataviz: FC<Props> = ({
       },
       widget: {
         ...widgetSettings,
+        tags,
         card: {
           backgroundColor: tiles.background,
           borderColor: tiles.borderColor,

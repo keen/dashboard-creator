@@ -3,6 +3,10 @@
 exports[`allows user to set chart subtitle 1`] = `
 Array [
   Object {
+    "payload": true,
+    "type": "chartEditor/setQueryChange",
+  },
+  Object {
     "payload": Object {
       "subtitle": Object {
         "content": "CHART_SUBTITLE",
@@ -32,6 +36,10 @@ Array [
 
 exports[`allows user to set chart title 1`] = `
 Array [
+  Object {
+    "payload": true,
+    "type": "chartEditor/setQueryChange",
+  },
   Object {
     "payload": Object {
       "subtitle": Object {

@@ -1,5 +1,5 @@
 import { EditorSection } from './types';
-import { chartEditorSaga } from './saga';
+import { chartEditorSaga } from './chartEditorSaga';
 
 import { chartEditorSelectors } from './selectors';
 import chartEditorSlice, {
@@ -11,7 +11,6 @@ import {
   applyConfiguration,
   editorMounted,
   editorUnmounted,
-  restoreSavedQuery,
   showQueryUpdateConfirmation,
   hideQueryUpdateConfirmation,
   backToChartEditor,
@@ -24,7 +23,6 @@ const chartEditorActions = {
   editorMounted,
   editorUnmounted,
   applyConfiguration,
-  restoreSavedQuery,
   showQueryUpdateConfirmation,
   hideQueryUpdateConfirmation,
   backToChartEditor,
