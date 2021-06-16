@@ -168,6 +168,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
             chartSettings,
             widgetSettings: defaultWidgetSettings,
           }) => {
+            dispatch(chartEditorActions.setQueryChange(true));
             const chart = serializeOutputSettings(
               type,
               widgetCustomization.chart
