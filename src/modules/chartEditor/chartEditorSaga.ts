@@ -3,7 +3,6 @@ import { takeLatest } from 'redux-saga/effects';
 import { chartEditorActions } from './index';
 import {
   openEditor,
-  restoreSavedQuery,
   runQuery,
   showUpdateConfirmation,
   updateEditorSection,
@@ -29,9 +28,5 @@ export function* chartEditorSaga() {
   yield takeLatest(
     chartEditorActions.setVisualizationSettings.type,
     updateVisualizationType
-  );
-  yield takeLatest(
-    chartEditorActions.restoreSavedQuery.type,
-    restoreSavedQuery
   );
 }

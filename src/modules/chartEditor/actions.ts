@@ -5,7 +5,6 @@ export const editorUnmounted = createAction('chartEditor/editorUnmounted');
 export const applyConfiguration = createAction(
   'chartEditor/applyConfiguration'
 );
-export const restoreSavedQuery = createAction('chartEditor/restoreSavedQuery');
 
 export const showQueryUpdateConfirmation = createAction(
   'chartEditor/showQueryUpdateConfirmation'
