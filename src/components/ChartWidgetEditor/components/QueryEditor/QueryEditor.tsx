@@ -29,11 +29,10 @@ const QueryEditor: FC<Props> = ({ isEditMode, initialQueryInitialized }) => {
   const defaultTimezoneForQuery = useSelector(getDefaultTimezone);
   const timezoneSelectionDisabled = useSelector(getTimezoneSelectionDisabled);
 
-  const setChartSettings = useCallback(
-    (chartSettings: Record<string, any>) =>
-      dispatch(chartEditorActions.updateChartSettings(chartSettings)),
-    []
-  );
+  const setChartSettings = useCallback((chartSettings: Record<string, any>) => {
+    dispatch(chartEditorActions.updateChartSettings(chartSettings));
+    dispatch(chartEditorActions.setQueryChange(true));
+  }, []);
 
   useEffect(() => {
     dispatch(chartEditorActions.editorMounted());
