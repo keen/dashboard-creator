@@ -1,5 +1,5 @@
 const isLink = (url: string) => {
-  return /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/.test(url);
+  return /^(http(s?):)(\/\/[^"']*\.(?:jpg|jpeg|png|gif|webp|svg))$/.test(url);
 };
 
 export default isLink;
