@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 import { UI_LAYERS } from '@keen.io/ui-core';
 
 export const EditorContainer = styled.div<{ isFixed?: boolean }>`
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 
   ${({ isFixed }) =>
     isFixed &&
