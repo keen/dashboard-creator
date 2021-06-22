@@ -135,7 +135,12 @@ export function* setFilterWidget({
         },
       ],
     });
-    yield put(setFilterPropertyList(filter.widget.id, response.result));
+    const filterItemsSortedAlphabetically = response.result.sort((a, b) =>
+      a.localeCompare(b)
+    );
+    yield put(
+      setFilterPropertyList(filter.widget.id, filterItemsSortedAlphabetically)
+    );
   } catch (err) {
     yield put(
       setWidgetState(payload.widgetId, {

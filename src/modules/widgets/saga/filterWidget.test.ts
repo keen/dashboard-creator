@@ -141,7 +141,7 @@ describe('setFilterWidget()', () => {
           settings: {
             widgets: ['@widget/01', '@widget/02'],
             eventStream: 'logins',
-            targetProperty: 'user.id',
+            targetProperty: 'country',
           },
         },
       };
@@ -191,19 +191,35 @@ describe('setFilterWidget()', () => {
         expect.objectContaining({
           analysisType: 'select_unique',
           eventCollection: 'logins',
-          targetProperty: 'user.id',
+          targetProperty: 'country',
           timeframe: 'this_3_months',
         })
       );
 
       return {
-        result: ['@id/01', '@id/02'],
+        result: [
+          'argentina',
+          'Armenia',
+          'Angola',
+          'algeria',
+          '12Australia',
+          '33venezuela',
+        ],
       };
     });
 
-    test('set values for filter widget ', (result) => {
+    test('sorts filter values alphabetically and sets them for filter widget ', (result) => {
       expect(result).toEqual(
-        put(setFilterPropertyList(widgetId, ['@id/01', '@id/02']))
+        put(
+          setFilterPropertyList(widgetId, [
+            '12Australia',
+            '33venezuela',
+            'algeria',
+            'Angola',
+            'argentina',
+            'Armenia',
+          ])
+        )
       );
     });
 
