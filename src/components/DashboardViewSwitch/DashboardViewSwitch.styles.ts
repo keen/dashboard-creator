@@ -76,17 +76,11 @@ export const DropdownFooter = styled.div`
   flex-direction: row;
   padding: 10px;
   align-items: center;
+  justify-content: space-between;
   box-shadow: 0 -10px 24px ${transparentize(0.95, colors.black[500])};
 `;
 
-export const NewDashboard = styled.div`
-  padding-left: 10px;
-  width: 60%;
-`;
-
 export const AllDashboards = styled.div`
-  font-family: Lato Bold, sans-serif;
-  color: ${colors.blue[500]};
   cursor: pointer;
-  font-size: 14px;
+  margin: 0 10px;
 `;

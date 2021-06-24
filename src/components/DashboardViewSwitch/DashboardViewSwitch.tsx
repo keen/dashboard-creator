@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { v4 as uuid } from 'uuid';
 import { Icon } from '@keen.io/icons';
 import { Dropdown, Button, EmptySearch } from '@keen.io/ui-core';
+import { BodyText } from '@keen.io/typography';
 import { colors } from '@keen.io/colors';
 
 import SearchInput from '../SearchInput';
@@ -35,7 +36,6 @@ import {
   OverflowContainer,
   List,
   DropdownFooter,
-  NewDashboard,
   AllDashboards,
   Search,
 } from './DashboardViewSwitch.styles';
@@ -168,11 +168,9 @@ const DashboardViewSwitch: FC<Props> = ({ title }) => {
             </OverflowContainer>
             <DropdownFooter>
               <PermissionGate scopes={[Scopes.EDIT_DASHBOARD]}>
-                <NewDashboard>
-                  <Button variant="secondary" onClick={createDashboard}>
-                    {t('dashboard_details.new_dashboard')}
-                  </Button>
-                </NewDashboard>
+                <Button variant="secondary" onClick={createDashboard}>
+                  {t('dashboard_details.new_dashboard')}
+                </Button>
               </PermissionGate>
               <AllDashboards
                 onClick={() => {
@@ -180,7 +178,13 @@ const DashboardViewSwitch: FC<Props> = ({ title }) => {
                   dispatch(push(ROUTES.MANAGEMENT));
                 }}
               >
-                {t('dashboard_details.all_dashboards')}
+                <BodyText
+                  variant="body2"
+                  fontWeight="bold"
+                  color={colors.blue[500]}
+                >
+                  {t('dashboard_details.all_dashboards')}
+                </BodyText>
               </AllDashboards>
             </DropdownFooter>
           </Dropdown>
