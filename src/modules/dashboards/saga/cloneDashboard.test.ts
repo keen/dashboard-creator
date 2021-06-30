@@ -37,6 +37,15 @@ const model = {
       chartTitlesFont: 'Lato',
       visualizationsFont: 'Lato',
     },
+    legend: {
+      typography: {
+        fontStyle: 'normal',
+        fontWeight: 'normal',
+        fontSize: 10,
+        fontFamily: 'Lato Regular, sans-serif',
+        fontColor: '#000000',
+      },
+    },
     tiles: {
       background: 'white',
       borderColor: 'transparent',

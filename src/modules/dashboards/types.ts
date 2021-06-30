@@ -17,8 +17,17 @@ export type DashboardSettings = {
   page: {
     gridGap: number;
     background: string;
-    chartTitlesFont: string;
+    chartTitlesFont: string; // ?
     visualizationsFont: string;
+  };
+  legend: {
+    typography: {
+      fontStyle: string;
+      fontWeight: string;
+      fontSize: number;
+      fontFamily: string;
+      fontColor: string;
+    };
   };
   tiles: {
     background: string;
