@@ -40,6 +40,14 @@ const createDataviz = ({
 
   const { tiles } = dashboardSettings;
 
+  const extendedWidgetSettings = {
+    ...widgetSettings,
+    legend: {
+      ...widgetSettings.legend,
+      ...dashboardSettings.legend,
+    },
+  };
+
   return new KeenDataviz({
     container,
     type: visualizationType as any,
@@ -48,7 +56,7 @@ const createDataviz = ({
       theme,
     },
     widget: {
-      ...widgetSettings,
+      ...extendedWidgetSettings,
       tags,
       card: {
         backgroundColor: 'transparent',

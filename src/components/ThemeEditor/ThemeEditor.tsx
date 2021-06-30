@@ -18,6 +18,7 @@ import {
   DashboardSettings,
   extendDashboardSettings,
 } from '../../modules/dashboards';
+import ChartSettings from './components/ChartSettings/ChartSettings';
 
 const ThemeEditor: FC = () => {
   const { t } = useTranslation();
@@ -52,6 +53,8 @@ const ThemeEditor: FC = () => {
     [theme, settings]
   );
 
+  console.log('themeSettings', theme);
+
   useEffect(() => {
     return () => {
       dispatch(themeSagaActions.editorUnmounted());
@@ -69,6 +72,18 @@ const ThemeEditor: FC = () => {
           }
         >
           <MainSettings
+            currentSettings={{ theme, settings }}
+            onUpdateSettings={updateThemeSettings}
+          />
+        </Accordion>
+        <Accordion
+          title={'Chart Elements'}
+          isOpen={editorSection === ThemeEditorSection.Chart}
+          onChange={(isOpen) =>
+            onSectionChange(ThemeEditorSection.Chart, isOpen)
+          }
+        >
+          <ChartSettings
             currentSettings={{ theme, settings }}
             onUpdateSettings={updateThemeSettings}
           />
