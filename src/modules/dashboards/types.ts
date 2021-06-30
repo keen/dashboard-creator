@@ -12,6 +12,14 @@ export type DashboardMetaData = {
   publicAccessKey: null | string;
 };
 
+type TypographySettings = {
+  fontStyle: string;
+  fontWeight: string;
+  fontSize: number;
+  fontFamily: string;
+  fontColor: string;
+};
+
 export type DashboardSettings = {
   colorPalette: string;
   page: {
@@ -20,14 +28,14 @@ export type DashboardSettings = {
     chartTitlesFont: string; // ?
     visualizationsFont: string;
   };
+  title: {
+    typography: TypographySettings;
+  };
+  subtitle: {
+    typography: TypographySettings;
+  };
   legend: {
-    typography: {
-      fontStyle: string;
-      fontWeight: string;
-      fontSize: number;
-      fontFamily: string;
-      fontColor: string;
-    };
+    typography: TypographySettings;
   };
   tiles: {
     background: string;

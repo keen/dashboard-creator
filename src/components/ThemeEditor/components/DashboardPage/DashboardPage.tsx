@@ -102,6 +102,12 @@ const DashboardPage: FC<Props> = ({ settings, onUpdateSettings, colors }) => {
               onUpdateSettings(
                 {
                   page: { ...settings.page, visualizationsFont: font },
+                  // title: {
+                  //   ...settings.title,
+                  //   typography: {
+                  //     ...settings.title.typography,
+                  //     fontFamily: getFontFallback(font)
+                  //   }} todo
                 },
                 themeWithFallbackFonts
               );
