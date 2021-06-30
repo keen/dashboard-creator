@@ -16,12 +16,24 @@ const createDashboardSettings = (): DashboardSettings => ({
     chartTitlesFont: FONTS[1].name,
     visualizationsFont: FONTS[0].name,
   },
-  // title: {
-  //
-  // },
-  // subtitle: {
-  //
-  // },
+  title: {
+    typography: {
+      fontStyle: 'normal',
+      fontWeight: 'normal',
+      fontSize: 10,
+      fontFamily: FONTS[0].name,
+      fontColor: 'teal',
+    },
+  },
+  subtitle: {
+    typography: {
+      fontStyle: 'normal',
+      fontWeight: 'normal',
+      fontSize: 10,
+      fontFamily: FONTS[0].name,
+      fontColor: 'teal',
+    },
+  },
   legend: {
     typography: {
       fontStyle: 'normal',

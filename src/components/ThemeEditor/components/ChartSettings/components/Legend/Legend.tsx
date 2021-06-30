@@ -1,40 +1,36 @@
-import SettingsHeadline from '../../../SettingsHeadline';
-import Section, { SectionRow, TextWrapper } from '../../../Section';
+import React, { FC } from 'react';
 import { BodyText } from '@keen.io/typography';
 import { TypographySettings } from '@keen.io/ui-core';
-import React, { FC } from 'react';
 import { FontSettings } from '@keen.io/ui-core/typings/components/typography-settings/types';
 
+import {
+  mapInputTypographySettings,
+  mapOutputTypographySettings,
+} from '../../utils';
+import Section, { SectionRow, TextWrapper } from '../../../Section';
+import SettingsHeadline from '../../../SettingsHeadline';
+import { DashboardSettings } from '../../../../../../modules/dashboards';
+
 type Props = {
-  settings: any; // todo
-  onChange: (newSettings: any) => void;
+  settings: DashboardSettings;
+  onChange: (newSettings) => void;
 };
 
 const Legend: FC<Props> = ({ settings, onChange }) => {
-  const legendTypography = settings.typography;
+  const legendTypography = settings.legend.typography;
 
-  const mappedSettings = {
-    label: {
-      color: legendTypography.fontColor,
-      size: legendTypography.fontSize,
-      bold: legendTypography.fontWeight === 'bold',
-      italic: legendTypography.fontStyle === 'italic',
-      underline: false, // ??
-      alignment: 'left', // ??
-    },
-  } as any; // todo export Axis type
+  const labelTypographySettings = mapInputTypographySettings(
+    legendTypography
+  ) as FontSettings;
 
   const onSettingsChange = (changes: FontSettings) => {
     const newSettings = {
       ...settings,
       typography: {
-        ...settings.typography,
-        fontColor: changes.color,
-        fontSize: changes.size,
-        // todo
+        ...settings.legend.typography,
+        ...mapOutputTypographySettings(changes),
       },
     };
-    console.log('newSettings', newSettings);
     onChange(newSettings);
   };
 
@@ -49,10 +45,8 @@ const Legend: FC<Props> = ({ settings, onChange }) => {
             </BodyText>
           </TextWrapper>
           <TypographySettings
-            settings={mappedSettings.label}
-            onChange={(settings) => {
-              onSettingsChange(settings);
-            }}
+            settings={labelTypographySettings}
+            onChange={(settings) => onSettingsChange(settings)}
           />
         </SectionRow>
       </div>

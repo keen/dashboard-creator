@@ -46,6 +46,20 @@ const createDataviz = ({
       ...widgetSettings.legend,
       ...dashboardSettings.legend,
     },
+    title: {
+      ...widgetSettings.title,
+      typography: {
+        ...widgetSettings.title?.typography,
+        ...dashboardSettings.title?.typography,
+      },
+    },
+    subtitle: {
+      ...widgetSettings.subtitle,
+      typography: {
+        ...widgetSettings.subtitle?.typography,
+        ...dashboardSettings.subtitle?.typography,
+      },
+    },
   };
 
   return new KeenDataviz({
