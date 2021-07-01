@@ -21,6 +21,7 @@ const render = (overProps: any = {}) => {
   };
 };
 
+<<<<<<< HEAD
 beforeEach(() => {
   Element.prototype.getBoundingClientRect = jest
     .fn()
@@ -31,6 +32,8 @@ beforeEach(() => {
     }));
 });
 
+=======
+>>>>>>> 4948e35... chore: 🤖 unit tests for charts
 test('allows user to set "fontSize" for axis labels', () => {
   const {
     wrapper: { getByTestId, getByText },
@@ -50,7 +53,10 @@ test('allows user to set "fontSize" for axis labels', () => {
   expect(onChange).toHaveBeenCalledWith({
     ...settings,
     labels: {
+<<<<<<< HEAD
       ...settings.labels,
+=======
+>>>>>>> 4948e35... chore: 🤖 unit tests for charts
       typography: {
         ...settings.labels.typography,
         fontSize: 12,
@@ -73,7 +79,10 @@ test('allows user to set "bold" text for axis labels', () => {
   expect(onChange).toHaveBeenCalledWith({
     ...settings,
     labels: {
+<<<<<<< HEAD
       ...settings.labels,
+=======
+>>>>>>> 4948e35... chore: 🤖 unit tests for charts
       typography: {
         ...settings.labels.typography,
         fontWeight: 'bold',

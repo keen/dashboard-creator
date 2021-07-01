@@ -41,6 +41,7 @@ const render = (overProps: any = {}) => {
   };
 };
 
+<<<<<<< HEAD
 beforeEach(() => {
   Element.prototype.getBoundingClientRect = jest
     .fn()
@@ -51,6 +52,8 @@ beforeEach(() => {
     }));
 });
 
+=======
+>>>>>>> 4948e35... chore: 🤖 unit tests for charts
 test('allows user to set "fontSize" for widget titles', () => {
   const {
     wrapper: { getByTestId, getByText },
@@ -61,7 +64,11 @@ test('allows user to set "fontSize" for widget titles', () => {
   const element = within(section).getByText(settings.title.typography.fontSize);
 
   fireEvent.click(element);
+<<<<<<< HEAD
   const fontSizeElement = getByText('18');
+=======
+  const fontSizeElement = getByText('12');
+>>>>>>> 4948e35... chore: 🤖 unit tests for charts
 
   fireEvent.click(fontSizeElement);
 
@@ -70,7 +77,11 @@ test('allows user to set "fontSize" for widget titles', () => {
     title: {
       typography: {
         ...settings.title.typography,
+<<<<<<< HEAD
         fontSize: 18,
+=======
+        fontSize: 12,
+>>>>>>> 4948e35... chore: 🤖 unit tests for charts
       },
     },
   });

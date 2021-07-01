@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { FC, useContext } from 'react';
+=======
+import React, { FC } from 'react';
+>>>>>>> 4948e35... chore: 🤖 unit tests for charts
 import { useTranslation } from 'react-i18next';
 import { TypographySettings, FontSettings } from '@keen.io/ui-core';
 import { BodyText } from '@keen.io/typography';
@@ -12,9 +16,12 @@ import {
   mapInputTypographySettings,
   mapOutputTypographySettings,
 } from '../../utils';
+<<<<<<< HEAD
 import { ThemeModalContext } from '../../../../../ThemeEditorModal/ThemeEditorModal';
 
 import { AVAILABLE_FONT_SIZES, LEGEND_LABELS_SETTINGS } from './constants';
+=======
+>>>>>>> 4948e35... chore: 🤖 unit tests for charts
 
 type Props = {
   /* Legend settings */
@@ -25,8 +32,11 @@ type Props = {
 
 const Legend: FC<Props> = ({ settings, onChange }) => {
   const { t } = useTranslation();
+<<<<<<< HEAD
   const { modalContentRef } = useContext(ThemeModalContext);
 
+=======
+>>>>>>> 4948e35... chore: 🤖 unit tests for charts
   const legendTypography = settings.legend.typography;
 
   const labelTypographySettings = mapInputTypographySettings(legendTypography);

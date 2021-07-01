@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { FC, useContext } from 'react';
+=======
+import React, { FC } from 'react';
+>>>>>>> 4948e35... chore: 🤖 unit tests for charts
 import { useTranslation } from 'react-i18next';
 import { BodyText } from '@keen.io/typography';
 import { TypographySettings, FontSettings } from '@keen.io/ui-core';
@@ -12,9 +16,12 @@ import {
 
 import SettingsHeadline from '../../../SettingsHeadline';
 import Section, { SectionRow, TextWrapper } from '../../../Section';
+<<<<<<< HEAD
 import { ThemeModalContext } from '../../../../../ThemeEditorModal/ThemeEditorModal';
 
 import { AVAILABLE_FONT_SIZES, TITLES_SETTINGS } from './constants';
+=======
+>>>>>>> 4948e35... chore: 🤖 unit tests for charts
 
 type Props = {
   /* Title and subtitle settings */
@@ -25,7 +32,10 @@ type Props = {
 
 const Titles: FC<Props> = ({ settings, onChange }) => {
   const { t } = useTranslation();
+<<<<<<< HEAD
   const { modalContentRef } = useContext(ThemeModalContext);
+=======
+>>>>>>> 4948e35... chore: 🤖 unit tests for charts
 
   const titleTypography = settings.title.typography;
   const subtitleTypography = settings.subtitle.typography;

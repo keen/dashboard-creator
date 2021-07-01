@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { FC, useContext } from 'react';
+=======
+import React, { FC } from 'react';
+>>>>>>> 4948e35... chore: 🤖 unit tests for charts
 import { useTranslation } from 'react-i18next';
 import { BodyText } from '@keen.io/typography';
 import { Color } from '@keen.io/ui-core';
@@ -6,7 +10,10 @@ import { Theme } from '@keen.io/charts';
 
 import SettingsHeadline from '../../../SettingsHeadline';
 import Section, { SectionRow, TextWrapper } from '../../../Section';
+<<<<<<< HEAD
 import { ThemeModalContext } from '../../../../../ThemeEditorModal/ThemeEditorModal';
+=======
+>>>>>>> 4948e35... chore: 🤖 unit tests for charts
 
 type Props = {
   /** Grid settings */
@@ -19,7 +26,10 @@ type Props = {
 
 const Grid: FC<Props> = ({ settings, colorSuggestions, onChange }) => {
   const { t } = useTranslation();
+<<<<<<< HEAD
   const { modalContentRef } = useContext(ThemeModalContext);
+=======
+>>>>>>> 4948e35... chore: 🤖 unit tests for charts
 
   const onColorChange = (color: string) => {
     onChange({

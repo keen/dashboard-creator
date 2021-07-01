@@ -31,6 +31,7 @@ const render = (overProps: any = {}) => {
   };
 };
 
+<<<<<<< HEAD
 beforeEach(() => {
   Element.prototype.getBoundingClientRect = jest
     .fn()
@@ -41,6 +42,8 @@ beforeEach(() => {
     }));
 });
 
+=======
+>>>>>>> 4948e35... chore: 🤖 unit tests for charts
 test('allows user to set "fontSize" for legend labels', () => {
   const {
     wrapper: { getByTestId, getByText },

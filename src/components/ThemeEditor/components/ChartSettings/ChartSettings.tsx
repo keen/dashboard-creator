@@ -72,7 +72,11 @@ const ChartSettings: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
       <SettingsDivider />
       <Axis
         settings={theme.axisY}
+<<<<<<< HEAD
         sectionTitle={t('theme_editor.widget_y_axis_title')}
+=======
+        sectionTitle={t('theme_editor.widget_x_axis_title')}
+>>>>>>> 4948e35... chore: 🤖 unit tests for charts
         onChange={(settings) => {
           onUpdateSettings({ axisY: settings }, chartSettings);
         }}
