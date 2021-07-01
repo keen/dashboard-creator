@@ -23,7 +23,7 @@ import { ColorSelector } from '../ColorSelector';
 
 type Props = {
   /** Dashboard page settings */
-  settings: Pick<DashboardSettings, 'page'>;
+  settings: Pick<DashboardSettings, 'page' | 'title' | 'subtitle' | 'legend'>;
   /** Update dashboard settings event handler */
   onUpdateSettings: (
     settings: Partial<DashboardSettings>,
@@ -94,20 +94,38 @@ const DashboardPage: FC<Props> = ({ settings, onUpdateSettings, colors }) => {
           <FontSelector
             font={visualizationsFont}
             onChange={(font) => {
+              const fontFallback = getFontFallback(font);
               const themeWithFallbackFonts = keys.reduce((acc, key) => {
-                acc[key] = getFontFallback(font);
+                acc[key] = fontFallback;
                 return acc;
               }, {});
-
               onUpdateSettings(
                 {
-                  page: { ...settings.page, visualizationsFont: font },
-                  // title: {
-                  //   ...settings.title,
-                  //   typography: {
-                  //     ...settings.title.typography,
-                  //     fontFamily: getFontFallback(font)
-                  //   }} todo
+                  page: {
+                    ...settings.page,
+                    visualizationsFont: font,
+                  },
+                  legend: {
+                    ...settings.legend,
+                    typography: {
+                      ...settings.legend.typography,
+                      fontFamily: fontFallback,
+                    },
+                  },
+                  title: {
+                    ...settings.title,
+                    typography: {
+                      ...settings.title.typography,
+                      fontFamily: fontFallback,
+                    },
+                  },
+                  subtitle: {
+                    ...settings.subtitle,
+                    typography: {
+                      ...settings.subtitle.typography,
+                      fontFamily: fontFallback,
+                    },
+                  },
                 },
                 themeWithFallbackFonts
               );
