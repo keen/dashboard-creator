@@ -1,8 +1,7 @@
 import Grid from './Grid/Grid';
 import Legend from './Legend/Legend';
 import Titles from './Titles/Titles';
-import XAxis from './XAxis/XAxis';
-import YAxis from './YAxis/YAxis';
+import Axis from './Axis';
 import Tooltip from './Tooltip/Tooltip';
 
-export { Grid, Legend, Titles, XAxis, YAxis, Tooltip };
+export { Grid, Legend, Titles, Axis, Tooltip };

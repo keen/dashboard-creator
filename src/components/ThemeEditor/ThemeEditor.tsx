@@ -77,7 +77,7 @@ const ThemeEditor: FC = () => {
           />
         </Accordion>
         <Accordion
-          title={'Chart Elements'}
+          title={t('theme_editor.charts_section_title')}
           isOpen={editorSection === ThemeEditorSection.Chart}
           onChange={(isOpen) =>
             onSectionChange(ThemeEditorSection.Chart, isOpen)
