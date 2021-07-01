@@ -13,8 +13,8 @@ export type DashboardMetaData = {
 };
 
 type TypographySettings = {
-  fontStyle: string;
-  fontWeight: string;
+  fontStyle: 'normal' | 'italic';
+  fontWeight: 'normal' | 'bold' | 'lighter';
   fontSize: number;
   fontFamily: string;
   fontColor: string;
@@ -25,7 +25,7 @@ export type DashboardSettings = {
   page: {
     gridGap: number;
     background: string;
-    chartTitlesFont: string; // ?
+    chartTitlesFont: string;
     visualizationsFont: string;
   };
   title: {

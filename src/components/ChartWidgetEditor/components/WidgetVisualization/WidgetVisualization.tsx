@@ -30,11 +30,10 @@ import {
   themeSelectors,
   mergeSettingsWithFontFallback,
 } from '../../../../modules/theme';
-
 import { WidgetSettings } from '@keen.io/widgets';
 
 type Props = {
-  /** Query run indocator */
+  /** Query run indicator */
   isQueryPerforming: boolean;
   /** Visualization do not represents current query state */
   outdatedAnalysisResults: boolean;
@@ -74,10 +73,13 @@ const WidgetVisualization: FC<Props> = ({
     [analysisResult]
   );
 
-  const { type, chartSettings, widgetSettings } = visualization;
+  const {
+    type,
+    chartSettings,
+    widgetSettings: baseWidgetSettings,
+  } = visualization;
 
   const tags = [];
-  const settings = { ...widgetSettings } as WidgetSettings;
 
   if (isSavedQuery) {
     tags.push({ label: t('tags.saved_query'), variant: 'gray' });
@@ -112,6 +114,25 @@ const WidgetVisualization: FC<Props> = ({
   const { settings: dashboardWidgetSettings } = useSelector(
     themeSelectors.getActiveDashboardThemeSettings
   );
+
+  const widgetSettings = {
+    ...baseWidgetSettings,
+    legend: {
+      ...baseWidgetSettings.legend,
+      typography: {
+        ...dashboardWidgetSettings.legend.typography,
+      },
+    },
+    title: {
+      ...baseWidgetSettings.title,
+      typography: dashboardWidgetSettings.title.typography,
+    },
+    subtitle: {
+      ...baseWidgetSettings.subtitle,
+      typography: dashboardWidgetSettings.subtitle.typography,
+    },
+  };
+
   const {
     page: { chartTitlesFont },
   } = dashboardWidgetSettings;
@@ -143,9 +164,9 @@ const WidgetVisualization: FC<Props> = ({
                 visualizationTheme={baseTheme}
                 chartSettings={chartSettings}
                 tags={tags}
-                widgetSettings={mergeSettingsWithFontFallback(
+                widgetSettings={mergeSettingsWithFontFallback<WidgetSettings>(
                   chartTitlesFont,
-                  settings
+                  widgetSettings
                 )}
                 analysisResults={analysisResult}
                 presentationTimezone={getTimezone(analysisResult)}

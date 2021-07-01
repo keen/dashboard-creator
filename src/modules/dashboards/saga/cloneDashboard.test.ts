@@ -22,6 +22,7 @@ import { registerWidgets } from '../../widgets';
 import { themeActions } from '../../theme';
 
 import { BLOB_API, NOTIFICATION_MANAGER, ROUTES } from '../../../constants';
+import { DashboardSettings } from '../types';
 
 const dashboardId = '@dashboard/01';
 const action = cloneDashboardAction(dashboardId);
@@ -147,7 +148,7 @@ describe('Scenario 1: User clone dashboard from dashboard view', () => {
         themeActions.setDashboardTheme({
           dashboardId,
           theme: model.theme,
-          settings: model.settings,
+          settings: model.settings as DashboardSettings,
         })
       )
     );
@@ -237,7 +238,7 @@ describe('Scenario 2: User clone dashboard from management', () => {
         themeActions.setDashboardTheme({
           dashboardId,
           theme: model.theme,
-          settings: model.settings,
+          settings: model.settings as DashboardSettings,
         })
       )
     );
