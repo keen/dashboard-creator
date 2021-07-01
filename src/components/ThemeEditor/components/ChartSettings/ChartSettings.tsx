@@ -1,11 +1,15 @@
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { Theme } from '@keen.io/charts';
+
+import { Container } from './ChartSettings.styles';
+import { Grid, Legend, Titles, Tooltip, Axis } from './components';
+
+import SettingsDivider from '../SettingsDivider';
+
 import { themeSelectors, ThemeSettings } from '../../../../modules/theme';
 import { DashboardSettings } from '../../../../modules/dashboards';
-import SettingsDivider from '../SettingsDivider';
-import { Container } from './ChartSettings.styles';
-import { Grid, Legend, Titles, Tooltip, XAxis, YAxis } from './components';
 
 type Props = {
   /** Current theme settings */
@@ -18,6 +22,8 @@ type Props = {
 };
 
 const ChartSettings: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
+  const { t } = useTranslation();
+
   const { theme, settings: chartSettings } = currentSettings;
   const { colors: defaultColors } = useSelector(themeSelectors.getBaseTheme);
 
@@ -56,15 +62,17 @@ const ChartSettings: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
         }}
       />
       <SettingsDivider />
-      <XAxis
-        settings={theme}
+      <Axis
+        settings={theme.axisX}
+        sectionTitle={t('theme_editor.widget_x_axis_title')}
         onChange={(settings) => {
           onUpdateSettings({ axisX: settings }, chartSettings);
         }}
       />
       <SettingsDivider />
-      <YAxis
-        settings={theme}
+      <Axis
+        settings={theme.axisY}
+        sectionTitle={t('theme_editor.widget_x_axis_title')}
         onChange={(settings) => {
           onUpdateSettings({ axisY: settings }, chartSettings);
         }}

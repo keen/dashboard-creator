@@ -1,33 +1,40 @@
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
+import { TypographySettings, FontSettings } from '@keen.io/ui-core';
 import { BodyText } from '@keen.io/typography';
-import { TypographySettings } from '@keen.io/ui-core';
-import { Theme } from '@keen.io/charts';
-import { FontSettings } from '@keen.io/ui-core/typings/components/typography-settings/types';
+import { Axis } from '@keen.io/charts';
 
 import {
   mapInputTypographySettings,
   mapOutputTypographySettings,
 } from '../../utils';
+
 import SettingsHeadline from '../../../SettingsHeadline';
 import Section, { SectionRow, TextWrapper } from '../../../Section';
 
 type Props = {
-  settings: Partial<Theme>;
-  onChange: (newSettings) => void;
+  /** Axis  settings */
+  settings: Axis;
+  /** Change event handler */
+  onChange: (settings: Axis) => void;
+  /** Section title */
+  sectionTitle: string;
 };
 
-const YAxis: FC<Props> = ({ settings, onChange }) => {
-  const labelTypography = settings.axisY.labels.typography;
+const XAxis: FC<Props> = ({ sectionTitle, settings, onChange }) => {
+  const { t } = useTranslation();
+
+  const labelTypography = settings.labels.typography;
   const mappedLabelTypography = mapInputTypographySettings(
     labelTypography
   ) as FontSettings;
 
   const onLabelSettingsChange = (changes: FontSettings) => {
-    const newSettings = {
+    const newSettings: Axis = {
       ...settings,
       labels: {
         typography: {
-          ...settings.axisX.labels.typography,
+          ...settings.labels.typography,
           ...mapOutputTypographySettings(changes),
         },
       },
@@ -36,13 +43,13 @@ const YAxis: FC<Props> = ({ settings, onChange }) => {
   };
 
   return (
-    <Section>
-      <SettingsHeadline title={'Y-Axis'} />
+    <Section data-testid="axis-settings">
+      <SettingsHeadline title={sectionTitle} />
       <div>
         <SectionRow>
           <TextWrapper>
             <BodyText variant="body2" fontWeight="bold">
-              Labels
+              {t('theme_editor.axis_labels')}
             </BodyText>
           </TextWrapper>
           <TypographySettings
@@ -55,4 +62,4 @@ const YAxis: FC<Props> = ({ settings, onChange }) => {
   );
 };
 
-export default YAxis;
+export default XAxis;

@@ -1,31 +1,34 @@
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { BodyText } from '@keen.io/typography';
-import { FontSettings } from '@keen.io/ui-core/typings/components/typography-settings/types';
-import { TypographySettings } from '@keen.io/ui-core';
+import { TypographySettings, FontSettings } from '@keen.io/ui-core';
+
+import { DashboardSettings } from '../../../../../../modules/dashboards';
 
 import {
   mapInputTypographySettings,
   mapOutputTypographySettings,
 } from '../../utils';
+
 import SettingsHeadline from '../../../SettingsHeadline';
 import Section, { SectionRow, TextWrapper } from '../../../Section';
-import { DashboardSettings } from '../../../../../../modules/dashboards';
 
 type Props = {
-  settings: DashboardSettings;
-  onChange: (newSettings) => void;
+  /* Title and subtitle settings */
+  settings: Pick<DashboardSettings, 'title' | 'subtitle'>;
+  /* Change event handler */
+  onChange: (settings: Pick<DashboardSettings, 'title' | 'subtitle'>) => void;
 };
 
 const Titles: FC<Props> = ({ settings, onChange }) => {
+  const { t } = useTranslation();
+
   const titleTypography = settings.title.typography;
   const subtitleTypography = settings.subtitle.typography;
 
   const mappedSettings = {
     title: mapInputTypographySettings(titleTypography),
     subtitle: mapInputTypographySettings(subtitleTypography),
-  } as {
-    title: FontSettings;
-    subtitle: FontSettings;
   };
 
   const onTitleSettingsChange = (changes: FontSettings) => {
@@ -56,12 +59,12 @@ const Titles: FC<Props> = ({ settings, onChange }) => {
 
   return (
     <Section>
-      <SettingsHeadline title={'Titles'} />
+      <SettingsHeadline title={t('theme_editor.widget_titles_title')} />
       <div>
-        <SectionRow>
+        <SectionRow data-testid="title-settings">
           <TextWrapper>
             <BodyText variant="body2" fontWeight="bold">
-              Title
+              {t('theme_editor.titles_title')}
             </BodyText>
           </TextWrapper>
           <TypographySettings
@@ -69,10 +72,10 @@ const Titles: FC<Props> = ({ settings, onChange }) => {
             onChange={(settings) => onTitleSettingsChange(settings)}
           />
         </SectionRow>
-        <SectionRow>
+        <SectionRow data-testid="subtitle-settings">
           <TextWrapper>
             <BodyText variant="body2" fontWeight="bold">
-              Subtitle
+              {t('theme_editor.titles_subtitle')}
             </BodyText>
           </TextWrapper>
           <TypographySettings
