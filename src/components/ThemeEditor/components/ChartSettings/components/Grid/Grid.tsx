@@ -1,31 +1,39 @@
-import SettingsHeadline from '../../../SettingsHeadline';
-import Section, { SectionRow, TextWrapper } from '../../../Section';
+import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { BodyText } from '@keen.io/typography';
 import { Color } from '@keen.io/ui-core';
-import React, { FC } from 'react';
 import { Theme } from '@keen.io/charts';
 
+import SettingsHeadline from '../../../SettingsHeadline';
+import Section, { SectionRow, TextWrapper } from '../../../Section';
+
 type Props = {
-  settings: Partial<Theme>;
+  /** Grid settings */
+  settings: Pick<Theme, 'gridX' | 'gridY'>;
+  /** Color suggestions used in color picker */
   colorSuggestions: string[];
-  onChange: (settings) => void;
+  /** Change event handler */
+  onChange: (settings: Pick<Theme, 'gridX' | 'gridY'>) => void;
 };
 
 const Grid: FC<Props> = ({ settings, colorSuggestions, onChange }) => {
-  const onColorChange = (color) => {
+  const { t } = useTranslation();
+
+  const onColorChange = (color: string) => {
     onChange({
       gridX: { ...settings.gridX, color },
       gridY: { ...settings.gridY, color },
     });
   };
+
   return (
     <Section>
-      <SettingsHeadline title={'Grid'} />
+      <SettingsHeadline title={t('theme_editor.widget_grid_title')} />
       <div>
-        <SectionRow>
+        <SectionRow data-testid="grid-settings">
           <TextWrapper>
             <BodyText variant="body2" fontWeight="bold">
-              Color
+              {t('theme_editor.grid_color')}
             </BodyText>
           </TextWrapper>
           <Color

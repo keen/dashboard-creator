@@ -19,7 +19,18 @@
     "border": "Border",
     "corner_rounding": "Corner Rounding",
     "inner_margin": "Inner margin",
-    "shadow": "Shadow"
+    "shadow": "Shadow",
+    "widget_titles_title": "Titles",
+    "titles_title": "Title",
+    "titles_subtitle": "Subtitle",
+    "widget_legend_title": "Legend",
+    "legend_labels": "Labels",
+    "widget_grid_title": "Grid",
+    "grid_color": "Color",
+    "widget_x_axis_title": "X-Axis",
+    "widget_y_axis_title": "Y-Axis",
+    "axis_labels": "Labels",
+    "charts_section_title": "Charts Elements"
   },
   "confirm_query_change": {
     "title": "You Edited Saved Query",

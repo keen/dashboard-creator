@@ -1,31 +1,34 @@
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
+import { TypographySettings, FontSettings } from '@keen.io/ui-core';
 import { BodyText } from '@keen.io/typography';
-import { TypographySettings } from '@keen.io/ui-core';
-import { FontSettings } from '@keen.io/ui-core/typings/components/typography-settings/types';
+
+import { DashboardSettings } from '../../../../../../modules/dashboards';
+
+import Section, { SectionRow, TextWrapper } from '../../../Section';
+import SettingsHeadline from '../../../SettingsHeadline';
 
 import {
   mapInputTypographySettings,
   mapOutputTypographySettings,
 } from '../../utils';
-import Section, { SectionRow, TextWrapper } from '../../../Section';
-import SettingsHeadline from '../../../SettingsHeadline';
-import { DashboardSettings } from '../../../../../../modules/dashboards';
 
 type Props = {
-  settings: DashboardSettings;
-  onChange: (newSettings) => void;
+  /* Legend settings */
+  settings: Pick<DashboardSettings, 'legend'>;
+  /* Change event handler */
+  onChange: (settings: DashboardSettings['legend']) => void;
 };
 
 const Legend: FC<Props> = ({ settings, onChange }) => {
+  const { t } = useTranslation();
   const legendTypography = settings.legend.typography;
 
-  const labelTypographySettings = mapInputTypographySettings(
-    legendTypography
-  ) as FontSettings;
+  const labelTypographySettings = mapInputTypographySettings(legendTypography);
 
   const onSettingsChange = (changes: FontSettings) => {
     const newSettings = {
-      ...settings,
+      ...settings.legend,
       typography: {
         ...settings.legend.typography,
         ...mapOutputTypographySettings(changes),
@@ -35,13 +38,13 @@ const Legend: FC<Props> = ({ settings, onChange }) => {
   };
 
   return (
-    <Section>
-      <SettingsHeadline title={'Legend'} />
+    <Section data-testid="legend-settings">
+      <SettingsHeadline title={t('theme_editor.widget_legend_title')} />
       <div>
         <SectionRow>
           <TextWrapper>
             <BodyText variant="body2" fontWeight="bold">
-              Labels
+              {t('theme_editor.legend_labels')}
             </BodyText>
           </TextWrapper>
           <TypographySettings
