@@ -1,11 +1,11 @@
-import { FontSettings } from '@keen.io/ui-core';
+import { FontSettings, Typography } from '@keen.io/ui-core';
 
 export const mapOutputTypographySettings = ({
   color,
   size,
   bold,
   italic,
-}: FontSettings) => {
+}: FontSettings): Typography => {
   return {
     fontColor: color,
     fontSize: size,

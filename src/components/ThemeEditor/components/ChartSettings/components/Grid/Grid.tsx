@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BodyText } from '@keen.io/typography';
 import { Color } from '@keen.io/ui-core';
@@ -6,6 +6,7 @@ import { Theme } from '@keen.io/charts';
 
 import SettingsHeadline from '../../../SettingsHeadline';
 import Section, { SectionRow, TextWrapper } from '../../../Section';
+import { ThemeModalContext } from '../../../../../ThemeEditorModal/ThemeEditorModal';
 
 type Props = {
   /** Grid settings */
@@ -18,6 +19,7 @@ type Props = {
 
 const Grid: FC<Props> = ({ settings, colorSuggestions, onChange }) => {
   const { t } = useTranslation();
+  const { modalContentRef } = useContext(ThemeModalContext);
 
   const onColorChange = (color: string) => {
     onChange({
@@ -37,6 +39,7 @@ const Grid: FC<Props> = ({ settings, colorSuggestions, onChange }) => {
             </BodyText>
           </TextWrapper>
           <Color
+            scrollableContainerRef={modalContentRef}
             color={settings.gridX.color}
             colorSuggestions={colorSuggestions}
             onColorChange={(color) => onColorChange(color)}
