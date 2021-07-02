@@ -14,6 +14,8 @@ import {
 } from '../../utils';
 import { ThemeModalContext } from '../../../../../ThemeEditorModal/ThemeEditorModal';
 
+import { LEGEND_LABELS_SETTINGS } from './constants';
+
 type Props = {
   /* Legend settings */
   settings: Pick<DashboardSettings, 'legend'>;
@@ -53,6 +55,7 @@ const Legend: FC<Props> = ({ settings, onChange }) => {
           <TypographySettings
             scrollableContainerRef={modalContentRef}
             settings={labelTypographySettings}
+            availableSettings={LEGEND_LABELS_SETTINGS}
             onChange={(settings) => onSettingsChange(settings)}
           />
         </SectionRow>

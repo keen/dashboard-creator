@@ -13,6 +13,8 @@ import SettingsHeadline from '../../../SettingsHeadline';
 import Section, { SectionRow, TextWrapper } from '../../../Section';
 import { ThemeModalContext } from '../../../../../ThemeEditorModal/ThemeEditorModal';
 
+import { AXIS_LABELS_SETTINGS } from './constants';
+
 type Props = {
   /** Axis  settings */
   settings: Axis;
@@ -58,6 +60,7 @@ const XAxis: FC<Props> = ({ sectionTitle, settings, onChange }) => {
           <TypographySettings
             scrollableContainerRef={modalContentRef}
             settings={mappedLabelTypography}
+            availableSettings={AXIS_LABELS_SETTINGS}
             onChange={(settings) => onLabelSettingsChange(settings)}
           />
         </SectionRow>
