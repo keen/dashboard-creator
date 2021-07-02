@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TypographySettings, FontSettings } from '@keen.io/ui-core';
 import { BodyText } from '@keen.io/typography';
@@ -11,6 +11,7 @@ import {
 
 import SettingsHeadline from '../../../SettingsHeadline';
 import Section, { SectionRow, TextWrapper } from '../../../Section';
+import { ThemeModalContext } from '../../../../../ThemeEditorModal/ThemeEditorModal';
 
 type Props = {
   /** Axis  settings */
@@ -23,6 +24,7 @@ type Props = {
 
 const XAxis: FC<Props> = ({ sectionTitle, settings, onChange }) => {
   const { t } = useTranslation();
+  const { modalContentRef } = useContext(ThemeModalContext);
 
   const labelTypography = settings.labels.typography;
   const mappedLabelTypography = mapInputTypographySettings(
@@ -33,6 +35,7 @@ const XAxis: FC<Props> = ({ sectionTitle, settings, onChange }) => {
     const newSettings: Axis = {
       ...settings,
       labels: {
+        ...settings.labels,
         typography: {
           ...settings.labels.typography,
           ...mapOutputTypographySettings(changes),
@@ -53,6 +56,7 @@ const XAxis: FC<Props> = ({ sectionTitle, settings, onChange }) => {
             </BodyText>
           </TextWrapper>
           <TypographySettings
+            scrollableContainerRef={modalContentRef}
             settings={mappedLabelTypography}
             onChange={(settings) => onLabelSettingsChange(settings)}
           />

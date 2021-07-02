@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BodyText } from '@keen.io/typography';
 import { TypographySettings, FontSettings } from '@keen.io/ui-core';
@@ -12,6 +12,7 @@ import {
 
 import SettingsHeadline from '../../../SettingsHeadline';
 import Section, { SectionRow, TextWrapper } from '../../../Section';
+import { ThemeModalContext } from '../../../../../ThemeEditorModal/ThemeEditorModal';
 
 type Props = {
   /* Title and subtitle settings */
@@ -22,6 +23,7 @@ type Props = {
 
 const Titles: FC<Props> = ({ settings, onChange }) => {
   const { t } = useTranslation();
+  const { modalContentRef } = useContext(ThemeModalContext);
 
   const titleTypography = settings.title.typography;
   const subtitleTypography = settings.subtitle.typography;
@@ -68,6 +70,7 @@ const Titles: FC<Props> = ({ settings, onChange }) => {
             </BodyText>
           </TextWrapper>
           <TypographySettings
+            scrollableContainerRef={modalContentRef}
             settings={mappedSettings.title}
             onChange={(settings) => onTitleSettingsChange(settings)}
           />
@@ -79,6 +82,7 @@ const Titles: FC<Props> = ({ settings, onChange }) => {
             </BodyText>
           </TextWrapper>
           <TypographySettings
+            scrollableContainerRef={modalContentRef}
             settings={mappedSettings.subtitle}
             onChange={(settings) => onSubtitleSettingsChange(settings)}
           />

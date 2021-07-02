@@ -1,9 +1,18 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useContext, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { DropableContainer, Dropdown, Toggle } from '@keen.io/ui-core';
+import {
+  DropableContainer,
+  Dropdown,
+  DynamicPortal,
+  Toggle,
+} from '@keen.io/ui-core';
 import { BodyText } from '@keen.io/typography';
 import { colors as keenColors } from '@keen.io/colors/dist/colors';
+import {
+  useDynamicContentPosition,
+  useOnParentScroll,
+} from '@keen.io/react-hooks';
 
 import SettingsHeadline from '../SettingsHeadline';
 import Section, { SectionRow, TextWrapper } from '../Section';
@@ -17,12 +26,14 @@ import {
   BorderOption,
   BorderWidthDropdownWrapper,
   BorderSettingsWrapper,
+  DropdownWrapper,
 } from './WidgetTiles.styles';
 import {
   TILE_BORDER_WIDTHS,
   SPACING_INTERVALS,
   ROUNDING_INTERVALS,
 } from '../../constants';
+import { ThemeModalContext } from '../../../ThemeEditorModal/ThemeEditorModal';
 
 type Props = {
   /** Dashboard page settings */
@@ -34,6 +45,10 @@ type Props = {
 
 const WidgetTiles: FC<Props> = ({ settings, onUpdateSettings, colors }) => {
   const { t } = useTranslation();
+  const { modalContentRef } = useContext(ThemeModalContext);
+
+  const borderWidthDropdownContainerRef = useRef(null);
+
   const {
     tiles: {
       background,
@@ -50,6 +65,13 @@ const WidgetTiles: FC<Props> = ({ settings, onUpdateSettings, colors }) => {
   const [borderWidthDropdownIsOpen, setBorderWidthDropdownIsOpen] = useState(
     false
   );
+
+  const {
+    setPosition: setBorderWidthDropdownPosition,
+    contentPosition: borderWidthDropdownPosition,
+  } = useDynamicContentPosition(borderWidthDropdownContainerRef);
+
+  useOnParentScroll(modalContentRef, () => setBorderWidthDropdownIsOpen(false));
 
   return (
     <Section>
@@ -93,12 +115,13 @@ const WidgetTiles: FC<Props> = ({ settings, onUpdateSettings, colors }) => {
                 })
               }
             />
-            <BorderWidthDropdownWrapper>
+            <BorderWidthDropdownWrapper ref={borderWidthDropdownContainerRef}>
               <DropableContainer
                 isActive={borderWidthDropdownIsOpen}
-                onClick={() =>
-                  setBorderWidthDropdownIsOpen(!borderWidthDropdownIsOpen)
-                }
+                onClick={() => {
+                  setBorderWidthDropdownPosition();
+                  setBorderWidthDropdownIsOpen(!borderWidthDropdownIsOpen);
+                }}
                 onDefocus={() => setBorderWidthDropdownIsOpen(false)}
                 dropIndicator
                 variant="secondary"
@@ -106,25 +129,32 @@ const WidgetTiles: FC<Props> = ({ settings, onUpdateSettings, colors }) => {
               >
                 {borderWidth}
               </DropableContainer>
-              <Dropdown isOpen={borderWidthDropdownIsOpen} fullWidth={true}>
-                {TILE_BORDER_WIDTHS.map((borderWidth, index) => (
-                  <BorderOption
-                    key={borderWidth + index}
-                    onClick={() =>
-                      onUpdateSettings({
-                        tiles: {
-                          ...settings.tiles,
-                          borderWidth: borderWidth,
-                        },
-                      })
-                    }
-                  >
-                    <BodyText variant="body2" color={keenColors.blue[500]}>
-                      {borderWidth}
-                    </BodyText>
-                  </BorderOption>
-                ))}
-              </Dropdown>
+              <DynamicPortal>
+                <DropdownWrapper
+                  x={borderWidthDropdownPosition.x}
+                  y={borderWidthDropdownPosition.y}
+                >
+                  <Dropdown isOpen={borderWidthDropdownIsOpen} fullWidth={true}>
+                    {TILE_BORDER_WIDTHS.map((borderWidth, index) => (
+                      <BorderOption
+                        key={borderWidth + index}
+                        onClick={() =>
+                          onUpdateSettings({
+                            tiles: {
+                              ...settings.tiles,
+                              borderWidth: borderWidth,
+                            },
+                          })
+                        }
+                      >
+                        <BodyText variant="body2" color={keenColors.blue[500]}>
+                          {borderWidth}
+                        </BodyText>
+                      </BorderOption>
+                    ))}
+                  </Dropdown>
+                </DropdownWrapper>
+              </DynamicPortal>
             </BorderWidthDropdownWrapper>
           </BorderSettingsWrapper>
         </SectionRow>

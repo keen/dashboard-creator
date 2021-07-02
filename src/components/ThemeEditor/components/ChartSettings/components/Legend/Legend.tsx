@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TypographySettings, FontSettings } from '@keen.io/ui-core';
 import { BodyText } from '@keen.io/typography';
@@ -12,6 +12,7 @@ import {
   mapInputTypographySettings,
   mapOutputTypographySettings,
 } from '../../utils';
+import { ThemeModalContext } from '../../../../../ThemeEditorModal/ThemeEditorModal';
 
 type Props = {
   /* Legend settings */
@@ -22,6 +23,8 @@ type Props = {
 
 const Legend: FC<Props> = ({ settings, onChange }) => {
   const { t } = useTranslation();
+  const { modalContentRef } = useContext(ThemeModalContext);
+
   const legendTypography = settings.legend.typography;
 
   const labelTypographySettings = mapInputTypographySettings(legendTypography);
@@ -48,6 +51,7 @@ const Legend: FC<Props> = ({ settings, onChange }) => {
             </BodyText>
           </TextWrapper>
           <TypographySettings
+            scrollableContainerRef={modalContentRef}
             settings={labelTypographySettings}
             onChange={(settings) => onSettingsChange(settings)}
           />
