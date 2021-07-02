@@ -65,10 +65,8 @@ export function* editTextWidget({
   ]);
 
   if (action.type === textEditorSagaActions.applyTextEditorSettings.type) {
-    const {
-      content: updatedContent,
-      textAlignment: updatedAlignment,
-    } = action.payload;
+    const { content: updatedContent, textAlignment: updatedAlignment } =
+      action.payload;
     yield put(
       setTextWidget(id, {
         content: updatedContent,

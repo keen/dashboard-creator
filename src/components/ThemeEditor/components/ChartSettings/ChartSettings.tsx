@@ -82,7 +82,12 @@ const ChartSettings: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
         }}
       />
       <SettingsDivider />
-      <Tooltip settings={{}} onChange={() => console.log('change')} />
+      <Tooltip
+        settings={theme.tooltip}
+        onChange={(settings) => {
+          onUpdateSettings({ tooltip: settings }, chartSettings);
+        }}
+      />
     </Container>
   );
 };

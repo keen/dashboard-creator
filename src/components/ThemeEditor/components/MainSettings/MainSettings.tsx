@@ -53,9 +53,8 @@ const MainSettings: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
       <SettingsDivider />
       <DashboardPage
         onUpdateSettings={(pageSettings, themeSettings = {}) => {
-          const formattedThemeSettings = transformDotNotationToNested(
-            themeSettings
-          );
+          const formattedThemeSettings =
+            transformDotNotationToNested(themeSettings);
           const mergedTheme = deepMerge(theme, formattedThemeSettings);
 
           onUpdateSettings(mergedTheme, { ...pageSettings });
