@@ -18,17 +18,21 @@ const ROUTES_MAP: Record<string, View> = {
  * @return Middleware - redux middleware
  *
  */
-export const createViewUpdateMiddleware = (
-  updateHandler: ViewUpdateHandler
-): Middleware => (store: Store) => (next) => (action: Action) => {
-  if (action.type === LOCATION_CHANGE) {
-    const activeDashboardId = appSelectors.getActiveDashboard(store.getState());
-    const {
-      payload: {
-        location: { pathname },
-      },
-    } = action as LocationChangeAction;
-    updateHandler(ROUTES_MAP[pathname], activeDashboardId);
-  }
-  next(action);
-};
+export const createViewUpdateMiddleware =
+  (updateHandler: ViewUpdateHandler): Middleware =>
+  (store: Store) =>
+  (next) =>
+  (action: Action) => {
+    if (action.type === LOCATION_CHANGE) {
+      const activeDashboardId = appSelectors.getActiveDashboard(
+        store.getState()
+      );
+      const {
+        payload: {
+          location: { pathname },
+        },
+      } = action as LocationChangeAction;
+      updateHandler(ROUTES_MAP[pathname], activeDashboardId);
+    }
+    next(action);
+  };

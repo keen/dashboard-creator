@@ -705,11 +705,8 @@ describe('editChartWidget()', () => {
     });
 
     test('set visualization settings in chart editor', (result) => {
-      const {
-        visualizationType,
-        chartSettings,
-        widgetSettings,
-      } = visualizationSettings;
+      const { visualizationType, chartSettings, widgetSettings } =
+        visualizationSettings;
 
       expect(result).toEqual(
         put(
@@ -885,11 +882,8 @@ describe('editChartWidget()', () => {
     });
 
     test('set visualization settings in chart editor', (result) => {
-      const {
-        visualizationType,
-        chartSettings,
-        widgetSettings,
-      } = visualizationSettings;
+      const { visualizationType, chartSettings, widgetSettings } =
+        visualizationSettings;
 
       expect(result).toEqual(
         put(

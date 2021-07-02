@@ -54,16 +54,10 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
   const { editorPubSub } = useContext(EditorContext);
   const [placeholder, setPlaceholder] = useState({ width: 0, height: 0 });
 
-  const {
-    isConfigured,
-    isInitialized,
-    isLoading,
-    error,
-    data,
-    widget,
-  } = useSelector((state: RootState) =>
-    getWidget(state, id)
-  ) as WidgetItem<ChartWidget>;
+  const { isConfigured, isInitialized, isLoading, error, data, widget } =
+    useSelector((state: RootState) =>
+      getWidget(state, id)
+    ) as WidgetItem<ChartWidget>;
 
   const { query: widgetQuery } = widget;
   const isSavedQuery = typeof widgetQuery === 'string';

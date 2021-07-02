@@ -30,7 +30,9 @@
     "widget_x_axis_title": "X-Axis",
     "widget_y_axis_title": "Y-Axis",
     "axis_labels": "Labels",
-    "charts_section_title": "Charts Elements"
+    "charts_section_title": "Charts Elements",
+    "color_mode": "Color mode",
+    "text_size": "Text size" 
   },
   "confirm_query_change": {
     "title": "You Edited Saved Query",
