@@ -72,7 +72,7 @@ const ChartSettings: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
       <SettingsDivider />
       <Axis
         settings={theme.axisY}
-        sectionTitle={t('theme_editor.widget_x_axis_title')}
+        sectionTitle={t('theme_editor.widget_y_axis_title')}
         onChange={(settings) => {
           onUpdateSettings({ axisY: settings }, chartSettings);
         }}
