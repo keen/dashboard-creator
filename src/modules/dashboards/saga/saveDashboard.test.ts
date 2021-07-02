@@ -109,7 +109,7 @@ const updatedMetadata: DashboardMetaData = {
 };
 
 beforeAll(() => {
-  const mockDate = (new Date(0) as unknown) as string;
+  const mockDate = new Date(0) as unknown as string;
   jest.spyOn(global, 'Date').mockImplementation(() => mockDate);
 });
 

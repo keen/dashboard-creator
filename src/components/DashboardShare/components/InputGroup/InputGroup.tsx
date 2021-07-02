@@ -29,10 +29,8 @@ const InputGroup: FC<Props> = ({ value }) => {
       if (tooltipHide.current) clearTimeout(tooltipHide.current);
       copyToClipboard(value);
 
-      const {
-        top,
-        left,
-      }: ClientRect = containerRef.current.getBoundingClientRect();
+      const { top, left }: ClientRect =
+        containerRef.current.getBoundingClientRect();
 
       const tooltipX = e.pageX - left - window.scrollX;
       const tooltipY = e.pageY - top - window.scrollY;

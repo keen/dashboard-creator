@@ -88,9 +88,8 @@ const WidgetVisualization: FC<Props> = ({
   useEffect(() => {
     if (!widgets.includes(type)) {
       const [defaultWidget] = widgets;
-      const { chartSettings, widgetSettings } = getDefaultSettings(
-        defaultWidget
-      );
+      const { chartSettings, widgetSettings } =
+        getDefaultSettings(defaultWidget);
 
       onChangeVisualization({
         type: defaultWidget,

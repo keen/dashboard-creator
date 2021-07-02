@@ -7,10 +7,8 @@ import { widgetSettings } from '@keen.io/widgets';
  *
  */
 const createHeadingSettings = () => {
-  const {
-    title: defaultTitleSettings,
-    subtitle: defaultSubtitleSettings,
-  } = widgetSettings;
+  const { title: defaultTitleSettings, subtitle: defaultSubtitleSettings } =
+    widgetSettings;
 
   return {
     title: {
