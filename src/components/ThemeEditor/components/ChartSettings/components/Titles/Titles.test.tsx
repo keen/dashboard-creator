@@ -61,7 +61,7 @@ test('allows user to set "fontSize" for widget titles', () => {
   const element = within(section).getByText(settings.title.typography.fontSize);
 
   fireEvent.click(element);
-  const fontSizeElement = getByText('12');
+  const fontSizeElement = getByText('18');
 
   fireEvent.click(fontSizeElement);
 
@@ -70,7 +70,7 @@ test('allows user to set "fontSize" for widget titles', () => {
     title: {
       typography: {
         ...settings.title.typography,
-        fontSize: 12,
+        fontSize: 18,
       },
     },
   });

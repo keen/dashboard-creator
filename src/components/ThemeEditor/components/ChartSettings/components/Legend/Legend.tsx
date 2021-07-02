@@ -14,7 +14,7 @@ import {
 } from '../../utils';
 import { ThemeModalContext } from '../../../../../ThemeEditorModal/ThemeEditorModal';
 
-import { LEGEND_LABELS_SETTINGS } from './constants';
+import { AVAILABLE_FONT_SIZES, LEGEND_LABELS_SETTINGS } from './constants';
 
 type Props = {
   /* Legend settings */
@@ -55,6 +55,7 @@ const Legend: FC<Props> = ({ settings, onChange }) => {
           <TypographySettings
             scrollableContainerRef={modalContentRef}
             settings={labelTypographySettings}
+            fontSizeSuggestions={AVAILABLE_FONT_SIZES}
             availableSettings={LEGEND_LABELS_SETTINGS}
             onChange={(settings) => onSettingsChange(settings)}
           />

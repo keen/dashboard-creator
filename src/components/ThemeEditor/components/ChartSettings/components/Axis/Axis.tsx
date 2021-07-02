@@ -13,7 +13,7 @@ import SettingsHeadline from '../../../SettingsHeadline';
 import Section, { SectionRow, TextWrapper } from '../../../Section';
 import { ThemeModalContext } from '../../../../../ThemeEditorModal/ThemeEditorModal';
 
-import { AXIS_LABELS_SETTINGS } from './constants';
+import { AVAILABLE_FONT_SIZES, AXIS_LABELS_SETTINGS } from './constants';
 
 type Props = {
   /** Axis  settings */
@@ -60,6 +60,7 @@ const XAxis: FC<Props> = ({ sectionTitle, settings, onChange }) => {
           <TypographySettings
             scrollableContainerRef={modalContentRef}
             settings={mappedLabelTypography}
+            fontSizeSuggestions={AVAILABLE_FONT_SIZES}
             availableSettings={AXIS_LABELS_SETTINGS}
             onChange={(settings) => onLabelSettingsChange(settings)}
           />

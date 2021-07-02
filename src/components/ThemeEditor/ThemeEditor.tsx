@@ -53,8 +53,6 @@ const ThemeEditor: FC = () => {
     [theme, settings]
   );
 
-  console.log('themeSettings', theme);
-
   useEffect(() => {
     return () => {
       dispatch(themeSagaActions.editorUnmounted());

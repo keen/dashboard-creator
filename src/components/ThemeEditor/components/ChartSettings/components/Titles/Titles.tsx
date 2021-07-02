@@ -14,7 +14,7 @@ import SettingsHeadline from '../../../SettingsHeadline';
 import Section, { SectionRow, TextWrapper } from '../../../Section';
 import { ThemeModalContext } from '../../../../../ThemeEditorModal/ThemeEditorModal';
 
-import { TITLES_SETTINGS } from './constants';
+import { AVAILABLE_FONT_SIZES, TITLES_SETTINGS } from './constants';
 
 type Props = {
   /* Title and subtitle settings */
@@ -74,6 +74,7 @@ const Titles: FC<Props> = ({ settings, onChange }) => {
           <TypographySettings
             scrollableContainerRef={modalContentRef}
             settings={mappedSettings.title}
+            fontSizeSuggestions={AVAILABLE_FONT_SIZES.TITLE}
             availableSettings={TITLES_SETTINGS}
             onChange={(settings) => onTitleSettingsChange(settings)}
           />
@@ -87,6 +88,7 @@ const Titles: FC<Props> = ({ settings, onChange }) => {
           <TypographySettings
             scrollableContainerRef={modalContentRef}
             settings={mappedSettings.subtitle}
+            fontSizeSuggestions={AVAILABLE_FONT_SIZES.SUBTITLE}
             availableSettings={TITLES_SETTINGS}
             onChange={(settings) => onSubtitleSettingsChange(settings)}
           />

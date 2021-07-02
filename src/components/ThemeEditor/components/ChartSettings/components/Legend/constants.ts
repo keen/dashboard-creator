@@ -6,3 +6,5 @@ export const LEGEND_LABELS_SETTINGS = {
   underline: false,
   alignment: false,
 };
+
+export const AVAILABLE_FONT_SIZES = [16, 15, 14, 13, 12, 11, 10];
