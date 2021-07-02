@@ -21,6 +21,16 @@ const render = (overProps: any = {}) => {
   };
 };
 
+beforeEach(() => {
+  Element.prototype.getBoundingClientRect = jest
+    .fn()
+    .mockImplementation(() => ({
+      x: 0,
+      y: 0,
+      height: 100,
+    }));
+});
+
 test('allows user to set "fontSize" for axis labels', () => {
   const {
     wrapper: { getByTestId, getByText },
