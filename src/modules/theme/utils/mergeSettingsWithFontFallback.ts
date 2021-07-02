@@ -28,5 +28,5 @@ export const mergeSettingsWithFontFallback = <T>(font: string, settings: T) => {
     fallbackFontsSettings
   );
 
-  return deepMerge(settings, nestedFallbackFontsSettings) as unknown as T;
+  return (deepMerge(settings, nestedFallbackFontsSettings) as unknown) as T;
 };
