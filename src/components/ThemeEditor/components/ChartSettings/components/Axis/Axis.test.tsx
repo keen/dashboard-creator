@@ -40,6 +40,7 @@ test('allows user to set "fontSize" for axis labels', () => {
   expect(onChange).toHaveBeenCalledWith({
     ...settings,
     labels: {
+      ...settings.labels,
       typography: {
         ...settings.labels.typography,
         fontSize: 12,
@@ -62,6 +63,7 @@ test('allows user to set "bold" text for axis labels', () => {
   expect(onChange).toHaveBeenCalledWith({
     ...settings,
     labels: {
+      ...settings.labels,
       typography: {
         ...settings.labels.typography,
         fontWeight: 'bold',
