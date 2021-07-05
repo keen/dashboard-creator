@@ -1,5 +1,6 @@
 import { Theme } from '@keen.io/charts';
 import { Widget } from '../widgets';
+import { Typography } from '@keen.io/ui-core';
 
 export type DashboardMetaData = {
   id: string;
@@ -12,14 +13,6 @@ export type DashboardMetaData = {
   publicAccessKey: null | string;
 };
 
-type TypographySettings = {
-  fontStyle: 'normal' | 'italic';
-  fontWeight: 'normal' | 'bold' | 'lighter';
-  fontSize: number;
-  fontFamily: string;
-  fontColor: string;
-};
-
 export type DashboardSettings = {
   colorPalette: string;
   page: {
@@ -29,13 +22,13 @@ export type DashboardSettings = {
     visualizationsFont: string;
   };
   title: {
-    typography: TypographySettings;
+    typography: Typography;
   };
   subtitle: {
-    typography: TypographySettings;
+    typography: Typography;
   };
   legend: {
-    typography: TypographySettings;
+    typography: Typography;
   };
   tiles: {
     background: string;
