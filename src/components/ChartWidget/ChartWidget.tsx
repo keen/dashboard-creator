@@ -134,7 +134,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
         datavizRef.current.render(getChartInput(chartData));
       }
     }
-  }, [showVisualization, inView, error, theme, settings]);
+  }, [showVisualization, inView, error, theme, settings, chartData]);
 
   useEffect(() => {
     if (!editorPubSub) return;
