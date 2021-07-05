@@ -2,6 +2,7 @@ import React from 'react';
 import { render as rtlRender, fireEvent } from '@testing-library/react';
 import { within } from '@testing-library/dom';
 import { theme } from '@keen.io/charts';
+import { colors } from '@keen.io/colors';
 
 import Tooltip from './Tooltip';
 
@@ -26,6 +27,16 @@ const render = (overProps: any = {}) => {
     props,
   };
 };
+
+beforeEach(() => {
+  Element.prototype.getBoundingClientRect = jest
+    .fn()
+    .mockImplementation(() => ({
+      x: 0,
+      y: 0,
+      height: 100,
+    }));
+});
 
 test('allows user to set "fontSize" for tooltip labels and values', () => {
   const {
@@ -53,7 +64,7 @@ test('allows user to set "fontSize" for tooltip labels and values', () => {
     },
     values: {
       typography: {
-        ...settings.labels.typography,
+        ...settings.values.typography,
         fontSize: 16,
       },
     },
@@ -76,6 +87,20 @@ test('allows user to set "colorMode" for tooltip ', () => {
 
   expect(onChange).toHaveBeenCalledWith({
     ...settings,
+    labels: {
+      ...settings.labels,
+      typography: {
+        ...settings.labels.typography,
+        fontColor: colors.white[500],
+      },
+    },
+    values: {
+      ...settings.values,
+      typography: {
+        ...settings.values.typography,
+        fontColor: colors.white[500],
+      },
+    },
     mode: COLOR_MODES_ITEMS[1].id,
   });
 });

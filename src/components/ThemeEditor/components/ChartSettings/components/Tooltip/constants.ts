@@ -12,7 +12,7 @@ export const AVAILABLE_SETTINGS = {
   alignment: false,
 };
 
-export const FONT_SIZE_SETTINGS = [16, 15, 14, 13, 12, 11, 10, 9];
+export const FONT_SIZE_SETTINGS = [9, 10, 11, 12, 13, 14, 15, 16];
 
 export const COLOR_MODE: {
   [key: string]: TooltipMode;

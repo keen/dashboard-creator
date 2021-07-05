@@ -8,11 +8,9 @@ import {
   TooltipMode,
 } from '@keen.io/ui-core';
 import { Tooltip as TooltipType } from '@keen.io/charts';
+import { colors } from '@keen.io/colors';
 
-import {
-  mapInputTypographySettings,
-  mapOutputTypographySettings,
-} from '../../utils';
+import { mapInputTypographySettings } from '../../utils';
 
 import SettingsHeadline from '../../../SettingsHeadline';
 import Section, { SectionRow, TextWrapper } from '../../../Section';
@@ -37,19 +35,21 @@ const Tooltip: FC<Props> = ({ settings, onChange }) => {
     labelTypography
   ) as FontSettings;
 
-  const onLabelSettingsChange = (changes: FontSettings) => {
+  const onLabelSettingsChange = ({ size }: FontSettings) => {
     const newSettings: TooltipType = {
       ...settings,
       labels: {
+        ...settings.labels,
         typography: {
           ...settings.labels.typography,
-          ...mapOutputTypographySettings(changes),
+          fontSize: size,
         },
       },
       values: {
+        ...settings.values,
         typography: {
-          ...settings.labels.typography,
-          ...mapOutputTypographySettings(changes),
+          ...settings.values.typography,
+          fontSize: size,
         },
       },
     };
@@ -57,8 +57,25 @@ const Tooltip: FC<Props> = ({ settings, onChange }) => {
   };
 
   const onColorModeSettingsChange = (mode: TooltipMode) => {
+    const fontColor =
+      mode === 'light' ? colors.black['500'] : colors.white['500'];
+
     const newSettings: TooltipType = {
       ...settings,
+      labels: {
+        ...settings.labels,
+        typography: {
+          ...settings.labels.typography,
+          fontColor,
+        },
+      },
+      values: {
+        ...settings.values,
+        typography: {
+          ...settings.values.typography,
+          fontColor,
+        },
+      },
       mode,
     };
     onChange(newSettings);
@@ -71,7 +88,7 @@ const Tooltip: FC<Props> = ({ settings, onChange }) => {
         <SectionRow>
           <TextWrapper>
             <BodyText variant="body2" fontWeight="bold">
-              {t('theme_editor.color_mode')}
+              {t('theme_editor.tooltip_color_mode')}
             </BodyText>
           </TextWrapper>
           <RadioSelect
@@ -83,7 +100,7 @@ const Tooltip: FC<Props> = ({ settings, onChange }) => {
         <SectionRow>
           <TextWrapper>
             <BodyText variant="body2" fontWeight="bold">
-              {t('theme_editor.text_size')}
+              {t('theme_editor.tooltip_text_size')}
             </BodyText>
           </TextWrapper>
           <TypographySettings

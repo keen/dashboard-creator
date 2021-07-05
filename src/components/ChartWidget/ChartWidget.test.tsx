@@ -156,7 +156,7 @@ test('renders visualization', () => {
           typography: {
             fontColor: '#1D2729',
             fontFamily: 'Gangster Grotesk, Arial, Helvetica, sans-serif',
-            fontSize: 11,
+            fontSize: 12,
             fontStyle: 'normal',
             fontWeight: 'normal',
           },
