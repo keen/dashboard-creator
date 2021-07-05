@@ -14,6 +14,8 @@ import ChartEditor from './ChartEditor';
 
 import { AppContext } from '../../../../contexts';
 import { createBodyElementById } from '../../../../utils/test/createBodyElementById';
+
+import { createDashboardSettings } from '../../../../modules/dashboards';
 import {
   chartEditorActions,
   chartEditorInitialState,
@@ -34,17 +36,7 @@ const render = (storeState: any = {}, overProps: any = {}) => {
       dashboards: {
         [activeDashboardId]: {
           theme: {},
-          settings: {
-            page: {},
-            tiles: {
-              background: 'transparent',
-              borderColor: 'transparent',
-              borderRadius: 6,
-              borderWidth: 1,
-              padding: 20,
-              hasShadow: true,
-            },
-          },
+          settings: createDashboardSettings(),
         },
       },
     },

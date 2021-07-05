@@ -1,5 +1,6 @@
 import { Theme } from '@keen.io/charts';
 import { Widget } from '../widgets';
+import { Typography } from '@keen.io/ui-core';
 
 export type DashboardMetaData = {
   id: string;
@@ -19,6 +20,15 @@ export type DashboardSettings = {
     background: string;
     chartTitlesFont: string;
     visualizationsFont: string;
+  };
+  title: {
+    typography: Typography;
+  };
+  subtitle: {
+    typography: Typography;
+  };
+  legend: {
+    typography: Typography;
   };
   tiles: {
     background: string;

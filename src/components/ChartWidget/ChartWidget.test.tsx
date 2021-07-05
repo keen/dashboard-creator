@@ -152,6 +152,33 @@ test('renders visualization', () => {
           hasShadow: false,
           padding: 20,
         },
+        legend: {
+          typography: {
+            fontColor: '#1D2729',
+            fontFamily: 'Gangster Grotesk, Arial, Helvetica, sans-serif',
+            fontSize: 12,
+            fontStyle: 'normal',
+            fontWeight: 'normal',
+          },
+        },
+        subtitle: {
+          typography: {
+            fontColor: '#1D2729',
+            fontFamily: 'Gangster Grotesk, Arial, Helvetica, sans-serif',
+            fontSize: 14,
+            fontStyle: 'normal',
+            fontWeight: 'normal',
+          },
+        },
+        title: {
+          typography: {
+            fontColor: '#27566D',
+            fontFamily: 'Gangster Grotesk, Arial, Helvetica, sans-serif',
+            fontSize: 20,
+            fontStyle: 'normal',
+            fontWeight: 'normal',
+          },
+        },
       },
     })
   );
