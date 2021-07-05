@@ -85,12 +85,14 @@ const chartEditorSlice = createSlice({
     ) => {
       state.visualization.type = payload.type as Exclude<PickerWidgets, 'json'>;
       state.visualization.chartSettings = payload.chartSettings;
-      state.visualization.widgetSettings =
-        payload.widgetSettings as EditorWidgetSettings;
+      state.visualization.widgetSettings = payload.widgetSettings as EditorWidgetSettings;
     },
     resetEditor: (state) => {
-      const { changeQueryConfirmation, isOpen, ...initialEditorState } =
-        initialState;
+      const {
+        changeQueryConfirmation,
+        isOpen,
+        ...initialEditorState
+      } = initialState;
       return { ...state, ...initialEditorState };
     },
     setQueryResult: (

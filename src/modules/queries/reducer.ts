@@ -27,8 +27,10 @@ const queriesReducer = (
         },
       };
     case REMOVE_INTERIM_QUERY:
-      const { [action.payload.widgetId]: removeQuery, ...restQueries } =
-        state.interimQueries;
+      const {
+        [action.payload.widgetId]: removeQuery,
+        ...restQueries
+      } = state.interimQueries;
       return {
         ...state,
         interimQueries: {

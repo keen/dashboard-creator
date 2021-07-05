@@ -32,8 +32,10 @@ const WidgetFilter: FC<Props> = ({ icon, children }) => {
 
   useEffect(() => {
     if (!tooltipRef.current) return;
-    const { right, width }: ClientRect =
-      tooltipRef.current.getBoundingClientRect();
+    const {
+      right,
+      width,
+    }: ClientRect = tooltipRef.current.getBoundingClientRect();
 
     if (right > document.body.offsetWidth) {
       setTooltip((state) => ({
@@ -44,8 +46,10 @@ const WidgetFilter: FC<Props> = ({ icon, children }) => {
   }, [tooltip.visible]);
 
   const handleMouseEnter = () => {
-    const { bottom, right }: ClientRect =
-      containerRef.current.getBoundingClientRect();
+    const {
+      bottom,
+      right,
+    }: ClientRect = containerRef.current.getBoundingClientRect();
 
     const tooltipX = document.body.offsetWidth - right + window.scrollX;
     const tooltipY = bottom + window.scrollY;

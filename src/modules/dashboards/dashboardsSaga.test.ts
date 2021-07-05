@@ -154,8 +154,9 @@ describe('viewPublicDashboard()', () => {
     });
 
     test('updates dashboard', (result) => {
-      const { theme, settings, ...dashboardSettings } =
-        serializeDashboard(dashboard);
+      const { theme, settings, ...dashboardSettings } = serializeDashboard(
+        dashboard
+      );
 
       expect(result).toEqual(
         put(updateDashboard(dashboardId, dashboardSettings))
