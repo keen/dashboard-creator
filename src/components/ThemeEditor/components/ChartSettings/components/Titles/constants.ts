@@ -8,6 +8,6 @@ export const TITLES_SETTINGS = {
 };
 
 export const AVAILABLE_FONT_SIZES = {
-  TITLE: [28, 24, 22, 20, 18, 16],
-  SUBTITLE: [20, 18, 16, 14, 12],
+  TITLE: [16, 18, 20, 22, 24, 28],
+  SUBTITLE: [12, 14, 16, 18, 20],
 };

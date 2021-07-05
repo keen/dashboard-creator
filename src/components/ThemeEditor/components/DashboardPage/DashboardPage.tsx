@@ -1,8 +1,9 @@
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { BodyText } from '@keen.io/typography';
 import { Theme } from '@keen.io/charts';
+import { Color } from '@keen.io/ui-core';
 
 import SettingsHeadline from '../SettingsHeadline';
 import FontSelector from '../FontSelector';
@@ -19,7 +20,7 @@ import {
 import { getNestedObjectKeysAndValues } from '../../../../utils';
 
 import { SPACING_INTERVALS } from '../../constants';
-import { ColorSelector } from '../ColorSelector';
+import { ThemeModalContext } from '../../../ThemeEditorModal/ThemeEditorModal';
 
 type Props = {
   /** Dashboard page settings */
@@ -35,6 +36,7 @@ type Props = {
 const DashboardPage: FC<Props> = ({ settings, onUpdateSettings, colors }) => {
   const { t } = useTranslation();
   const { theme } = useSelector(themeSelectors.getCurrentEditTheme);
+  const { modalContentRef } = useContext(ThemeModalContext);
 
   const {
     page: { gridGap, chartTitlesFont, visualizationsFont, background },
@@ -57,8 +59,9 @@ const DashboardPage: FC<Props> = ({ settings, onUpdateSettings, colors }) => {
               {t('theme_editor.background_color')}
             </BodyText>
           </TextWrapper>
-          <ColorSelector
+          <Color
             color={background}
+            scrollableContainerRef={modalContentRef}
             colorSuggestions={colorSuggestions}
             onColorChange={(color) =>
               onUpdateSettings({

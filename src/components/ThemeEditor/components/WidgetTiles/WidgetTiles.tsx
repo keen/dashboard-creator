@@ -2,6 +2,7 @@ import React, { FC, useContext, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import {
+  Color,
   DropableContainer,
   Dropdown,
   DynamicPortal,
@@ -16,7 +17,6 @@ import {
 
 import SettingsHeadline from '../SettingsHeadline';
 import Section, { SectionRow, TextWrapper } from '../Section';
-import { ColorSelector } from '../ColorSelector';
 import ThemeSlider, { generateRulerSettings } from '../ThemeSlider';
 
 import { DashboardSettings } from '../../../../modules/dashboards';
@@ -83,8 +83,9 @@ const WidgetTiles: FC<Props> = ({ settings, onUpdateSettings, colors }) => {
               {t('theme_editor.tile_color')}
             </BodyText>
           </TextWrapper>
-          <ColorSelector
+          <Color
             color={background}
+            scrollableContainerRef={modalContentRef}
             colorSuggestions={colorSuggestions}
             onColorChange={(color) =>
               onUpdateSettings({
@@ -103,8 +104,9 @@ const WidgetTiles: FC<Props> = ({ settings, onUpdateSettings, colors }) => {
             </BodyText>
           </TextWrapper>
           <BorderSettingsWrapper>
-            <ColorSelector
+            <Color
               color={borderColor}
+              scrollableContainerRef={modalContentRef}
               colorSuggestions={colorSuggestions}
               onColorChange={(color) =>
                 onUpdateSettings({
