@@ -8,7 +8,7 @@ import { DashboardSettings } from '../../../../../../modules/dashboards';
 import {
   mapInputTypographySettings,
   mapOutputTypographySettings,
-} from '../../utils';
+} from '../../../../utils';
 
 import SettingsHeadline from '../../../SettingsHeadline';
 import Section, { SectionRow, TextWrapper } from '../../../Section';

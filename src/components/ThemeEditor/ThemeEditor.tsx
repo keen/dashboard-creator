@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Theme } from '@keen.io/charts';
 import { Accordion } from '@keen.io/ui-core';
 
-import { MainSettings } from './components';
+import { MainSettings, ChartSettings, Visualizations } from './components';
 import { Container, SectionContainer } from './ThemeEditor.styles';
 
 import {
@@ -18,7 +18,6 @@ import {
   DashboardSettings,
   extendDashboardSettings,
 } from '../../modules/dashboards';
-import ChartSettings from './components/ChartSettings/ChartSettings';
 
 const ThemeEditor: FC = () => {
   const { t } = useTranslation();
@@ -82,6 +81,18 @@ const ThemeEditor: FC = () => {
           }
         >
           <ChartSettings
+            currentSettings={{ theme, settings }}
+            onUpdateSettings={updateThemeSettings}
+          />
+        </Accordion>
+        <Accordion
+          title={t('theme_editor.visualizations_section_title')}
+          isOpen={editorSection === ThemeEditorSection.Visualizations}
+          onChange={(isOpen) =>
+            onSectionChange(ThemeEditorSection.Visualizations, isOpen)
+          }
+        >
+          <Visualizations
             currentSettings={{ theme, settings }}
             onUpdateSettings={updateThemeSettings}
           />

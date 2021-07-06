@@ -7,7 +7,7 @@ import { Axis } from '@keen.io/charts';
 import {
   mapInputTypographySettings,
   mapOutputTypographySettings,
-} from '../../utils';
+} from '../../../../utils';
 
 import SettingsHeadline from '../../../SettingsHeadline';
 import Section, { SectionRow, TextWrapper } from '../../../Section';

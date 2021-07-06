@@ -31,8 +31,13 @@
     "widget_y_axis_title": "Y-Axis",
     "axis_labels": "Labels",
     "charts_section_title": "Charts Elements",
+    "visualizations_section_title": "Visualizations Types",
     "tooltip_color_mode": "Color mode",
-    "tooltip_text_size": "Text size"
+    "tooltip_text_size": "Text size",
+    "circular_chart_title": "Pie & Donut",
+    "circular_chart_values": "Values Style",
+    "circular_total_value": "Donut Total Value",
+    "circular_chart_total_label": "Donut Total Label"
   },
   "confirm_query_change": {
     "title": "You Edited Saved Query",

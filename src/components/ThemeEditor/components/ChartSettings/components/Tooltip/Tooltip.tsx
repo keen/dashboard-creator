@@ -10,7 +10,7 @@ import {
 import { Tooltip as TooltipType } from '@keen.io/charts';
 import { colors } from '@keen.io/colors';
 
-import { mapInputTypographySettings } from '../../utils';
+import { mapInputTypographySettings } from '../../../../utils';
 
 import SettingsHeadline from '../../../SettingsHeadline';
 import Section, { SectionRow, TextWrapper } from '../../../Section';
