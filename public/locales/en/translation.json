@@ -37,7 +37,12 @@
     "circular_chart_title": "Pie & Donut",
     "circular_chart_values": "Values Style",
     "circular_total_value": "Donut Total Value",
-    "circular_chart_total_label": "Donut Total Label"
+    "circular_chart_total_label": "Donut Total Label",
+    "funnel_title": "Funnel",
+    "funnel_steps_background": "Steps Background",
+    "funnel_value": "Value",
+    "funnel_labels": "Labels",
+    "funnel_badge": "Percentage Badge"
   },
   "confirm_query_change": {
     "title": "You Edited Saved Query",
