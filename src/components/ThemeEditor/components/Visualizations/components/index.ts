@@ -1,4 +1,5 @@
 import CircularChart from './CircularChart';
 import Funnel from './Funnel';
+import Metric from './Metric';
 
-export { CircularChart, Funnel };
+export { CircularChart, Metric, Funnel };

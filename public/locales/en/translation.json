@@ -42,7 +42,10 @@
     "funnel_steps_background": "Steps Background",
     "funnel_value": "Value",
     "funnel_labels": "Labels",
-    "funnel_badge": "Percentage Badge"
+    "funnel_badge": "Percentage Badge",
+    "metric_title": "Metric",
+    "metric_primary_value": "Primary Value",
+    "metric_secondary_value": "Secondary Value Badge"
   },
   "confirm_query_change": {
     "title": "You Edited Saved Query",
