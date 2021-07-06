@@ -10,11 +10,10 @@ import { Navigation, Error, Content } from './Viewer.styles';
 import {
   dashboardsSelectors,
   editDashboard,
+  resetDashboardFilters,
   showDashboardSettingsModal,
 } from '../../modules/dashboards';
 import { themeSelectors } from '../../modules/theme';
-import { removeInterimQueries } from '../../modules/queries';
-import { resetDatePickerWidgets } from '../../modules/widgets';
 import { Scopes } from '../../modules/app';
 
 import Grid from '../Grid';
@@ -25,10 +24,6 @@ import DashboardDeleteConfirmation from '../DashboardDeleteConfirmation';
 import { ROUTES } from '../../constants';
 import { RootState } from '../../rootReducer';
 
-import {
-  clearInconsistentFiltersError,
-  resetFilterWidgets,
-} from '../../modules/widgets/actions';
 import { appActions, appSelectors } from '../../modules/app';
 
 type Props = {
@@ -93,10 +88,7 @@ const Viewer: FC<Props> = ({ dashboardId }) => {
 
   useEffect(() => {
     return () => {
-      dispatch(resetDatePickerWidgets(dashboardId));
-      dispatch(resetFilterWidgets(dashboardId));
-      dispatch(clearInconsistentFiltersError(dashboardId));
-      dispatch(removeInterimQueries());
+      dispatch(resetDashboardFilters(dashboardId));
     };
   }, [dashboardId]);
 

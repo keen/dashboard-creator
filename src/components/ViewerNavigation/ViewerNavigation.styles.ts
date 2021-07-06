@@ -22,3 +22,8 @@ export const TooltipMotion = styled(motion.div)`
   top: 100%;
   transform: translateY(4px);
 `;
+
+export const ClearFilters = styled.span`
+  padding: 0 10px;
+  cursor: pointer;
+`;

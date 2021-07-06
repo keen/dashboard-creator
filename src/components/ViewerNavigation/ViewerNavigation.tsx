@@ -3,26 +3,33 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence } from 'framer-motion';
 import { Button, CircleButton, Dropdown, Tooltip } from '@keen.io/ui-core';
+import { BodyText } from '@keen.io/typography';
 import { Icon } from '@keen.io/icons';
 import { colors } from '@keen.io/colors';
 
+import { RootState } from '../../rootReducer';
+
+import {
+  showDashboardShareModal,
+  resetDashboardFilters,
+} from '../../modules/dashboards';
+import { Scopes, appSelectors } from '../../modules/app';
+import { getInterimQueriesLength } from '../../modules/queries';
+
 import TooltipContent from '../TooltipContent';
+import PermissionGate from '../PermissionGate';
+import DashboardDetails from '../DashboardDetails';
+import { ActionsMenu } from './components';
+
 import {
   Aside,
   ButtonWrapper,
   Container,
   TooltipMotion,
+  ClearFilters,
 } from './ViewerNavigation.styles';
 
-import PermissionGate from '../PermissionGate';
-import DashboardDetails from '../DashboardDetails';
-
-import { showDashboardShareModal } from '../../modules/dashboards';
-import { Scopes } from '../../modules/app';
-
-import ActionsMenu from './components/ActionsMenu';
 import { TOOLTIP_MOTION } from '../../constants';
-import { appSelectors } from '../../modules/app';
 
 type Props = {
   /** Dashboard Id */
@@ -60,6 +67,10 @@ const ViewerNavigation: FC<Props> = ({
 }) => {
   const { t } = useTranslation();
   const activeDashboard = useSelector(appSelectors.getActiveDashboard);
+  const hasInterimQueries = useSelector((state: RootState) => {
+    const interimQueriesLength = getInterimQueriesLength(state);
+    return !!interimQueriesLength;
+  });
   const dispatch = useDispatch();
 
   const [actionsOpen, setActionsOpen] = useState(false);
@@ -93,6 +104,19 @@ const ViewerNavigation: FC<Props> = ({
         onBack={onBack}
       />
       <Aside>
+        {hasInterimQueries && (
+          <ClearFilters
+            onClick={() => dispatch(resetDashboardFilters(activeDashboard))}
+          >
+            <BodyText
+              variant="body2"
+              fontWeight="bold"
+              color={colors.blue[500]}
+            >
+              {t('viewer.clear_filters')}
+            </BodyText>
+          </ClearFilters>
+        )}
         <PermissionGate scopes={[Scopes.EDIT_DASHBOARD]}>
           <ButtonWrapper
             onMouseEnter={() => setTooltip('settings')}

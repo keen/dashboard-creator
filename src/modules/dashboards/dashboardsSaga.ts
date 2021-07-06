@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/naming-convention */
 import {
   takeLatest,
@@ -49,7 +50,12 @@ import {
   addWidgetToDashboard,
 } from './actions';
 
-import { viewDashboard, saveDashboard, cloneDashboard } from './saga';
+import {
+  viewDashboard,
+  saveDashboard,
+  cloneDashboard,
+  resetDashboardFilters,
+} from './saga';
 
 import { serializeDashboard } from './serializers';
 import {
@@ -113,6 +119,7 @@ import {
   EXPORT_DASHBOARD_TO_HTML,
   CALCULATE_Y_POSITION_AND_ADD_WIDGET,
   SAVE_DASHBOARD_METADATA_SUCCESS,
+  RESET_DASHBOARD_FILTERS,
 } from './constants';
 
 import { RootState } from '../../rootReducer';
@@ -122,12 +129,11 @@ import {
   DashboardMetaData,
   DashboardError,
 } from './types';
-import { unregisterWidget } from '../widgets/actions';
+import { unregisterWidget, clearFilterData } from '../widgets/actions';
 import {
   removeConnectionFromFilter,
   removeFilterConnections,
 } from '../widgets/saga/filterWidget';
-import { clearFilterData } from '../widgets/actions';
 import { getDroppingItemSize } from '../../utils';
 import { findBiggestYPositionOfWidgets } from './utils/findBiggestYPositionOfWidgets';
 import { appActions, appSelectors } from '../app';
@@ -717,4 +723,5 @@ export function* dashboardsSaga() {
     CALCULATE_Y_POSITION_AND_ADD_WIDGET,
     calculateYPositionAndAddWidget
   );
+  yield takeEvery(RESET_DASHBOARD_FILTERS, resetDashboardFilters);
 }
