@@ -48,10 +48,14 @@ import {
   unregisterDashboard,
   calculateYPositionAndAddWidget as calculateYPositionAndAddWidgetAction,
   addWidgetToDashboard,
-  resetDashboardFilters as resetDashboardFiltersAction,
 } from './actions';
 
-import { viewDashboard, saveDashboard, cloneDashboard } from './saga';
+import {
+  viewDashboard,
+  saveDashboard,
+  cloneDashboard,
+  resetDashboardFilters,
+} from './saga';
 
 import { serializeDashboard } from './serializers';
 import {
@@ -125,13 +129,7 @@ import {
   DashboardMetaData,
   DashboardError,
 } from './types';
-import {
-  clearInconsistentFiltersError,
-  resetDatePickerWidgets,
-  resetFilterWidgets,
-  unregisterWidget,
-  clearFilterData,
-} from '../widgets/actions';
+import { unregisterWidget, clearFilterData } from '../widgets/actions';
 import {
   removeConnectionFromFilter,
   removeFilterConnections,
@@ -139,7 +137,6 @@ import {
 import { getDroppingItemSize } from '../../utils';
 import { findBiggestYPositionOfWidgets } from './utils/findBiggestYPositionOfWidgets';
 import { appActions, appSelectors } from '../app';
-import { removeInterimQueries } from '../queries';
 
 export function* fetchDashboardList() {
   const blobApi = yield getContext(BLOB_API);
@@ -700,17 +697,6 @@ export function* calculateYPositionAndAddWidget({
     })
   );
   yield put(addWidgetToDashboard(dashboardId, widgetId));
-}
-
-export function* resetDashboardFilters({
-  payload,
-}: ReturnType<typeof resetDashboardFiltersAction>) {
-  const { dashboardId } = payload;
-
-  yield put(resetDatePickerWidgets(dashboardId));
-  yield put(resetFilterWidgets(dashboardId));
-  yield put(clearInconsistentFiltersError(dashboardId));
-  yield put(removeInterimQueries());
 }
 
 export function* dashboardsSaga() {

@@ -32,7 +32,6 @@ import {
   setDashboardPublicAccess,
   regenerateAccessKeySuccess,
   regenerateAccessKeyError,
-  resetDashboardFilters as resetDashboardFiltersAction,
 } from './actions';
 import { themeActions, themeSagaActions } from '../theme';
 import {
@@ -47,7 +46,6 @@ import {
   updateCachedDashboardsList,
   calculateYPositionAndAddWidget,
   setAccessKey,
-  resetDashboardFilters,
 } from './dashboardsSaga';
 
 import {
@@ -82,14 +80,8 @@ import {
 } from './selectors';
 import { removeConnectionFromFilter } from '../widgets/saga/filterWidget';
 
-import {
-  clearInconsistentFiltersError,
-  resetDatePickerWidgets,
-  resetFilterWidgets,
-  unregisterWidget,
-} from '../widgets/actions';
+import { unregisterWidget } from '../widgets/actions';
 import { appActions, appSelectors } from '../app';
-import { removeInterimQueries } from '../queries';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
@@ -926,27 +918,5 @@ describe('calculateYPositionAndAddWidget()', () => {
     test('should add widget to the dashboard', (result) => {
       expect(result).toEqual(put(addWidgetToDashboard(dashboardId, widgetId)));
     });
-  });
-});
-
-describe('resetDashboardFilters()', () => {
-  const dashboardId = '@dashboard/01';
-  const action = resetDashboardFiltersAction(dashboardId);
-  const test = sagaHelper(resetDashboardFilters(action));
-
-  test('should reset Date Picker widgets', (result) => {
-    expect(result).toEqual(put(resetDatePickerWidgets(dashboardId)));
-  });
-
-  test('should reset Filter widgets', (result) => {
-    expect(result).toEqual(put(resetFilterWidgets(dashboardId)));
-  });
-
-  test('should clear Filter error', (result) => {
-    expect(result).toEqual(put(clearInconsistentFiltersError(dashboardId)));
-  });
-
-  test('should remove interim queries', (result) => {
-    expect(result).toEqual(put(removeInterimQueries()));
   });
 });
