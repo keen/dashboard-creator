@@ -35,7 +35,7 @@ const CircularChart: FC<Props> = ({ settings, colorSuggestions, onChange }) => {
     <Section>
       <SettingsHeadline title={t('theme_editor.circular_chart_title')} />
       <div>
-        <SectionRow>
+        <SectionRow data-testid="circular-chart-values">
           <TextWrapper>
             <BodyText variant="body2" fontWeight="bold">
               {t('theme_editor.circular_chart_values')}
@@ -71,7 +71,7 @@ const CircularChart: FC<Props> = ({ settings, colorSuggestions, onChange }) => {
             }}
           />
         </SectionRow>
-        <SectionRow>
+        <SectionRow data-testid="donut-total-label">
           <TextWrapper>
             <BodyText variant="body2" fontWeight="bold">
               {t('theme_editor.circular_chart_total_label')}
@@ -111,7 +111,7 @@ const CircularChart: FC<Props> = ({ settings, colorSuggestions, onChange }) => {
             }}
           />
         </SectionRow>
-        <SectionRow>
+        <SectionRow data-testid="donut-total-value">
           <TextWrapper>
             <BodyText variant="body2" fontWeight="bold">
               {t('theme_editor.circular_total_value')}
