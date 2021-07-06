@@ -30,6 +30,7 @@ import {
   clearTagsPool,
   setTagsFilters,
   setTagsFiltersPublic,
+  resetDashboardFilters,
 } from './actions';
 
 import {
@@ -123,4 +124,5 @@ export {
   createDashboardSettings,
   extendDashboardSettings,
   dashboardsSelectors,
+  resetDashboardFilters,
 };

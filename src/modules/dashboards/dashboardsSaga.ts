@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/naming-convention */
 import {
   takeLatest,
@@ -47,6 +48,7 @@ import {
   unregisterDashboard,
   calculateYPositionAndAddWidget as calculateYPositionAndAddWidgetAction,
   addWidgetToDashboard,
+  resetDashboardFilters as resetDashboardFiltersAction,
 } from './actions';
 
 import { viewDashboard, saveDashboard, cloneDashboard } from './saga';
@@ -113,6 +115,7 @@ import {
   EXPORT_DASHBOARD_TO_HTML,
   CALCULATE_Y_POSITION_AND_ADD_WIDGET,
   SAVE_DASHBOARD_METADATA_SUCCESS,
+  RESET_DASHBOARD_FILTERS,
 } from './constants';
 
 import { RootState } from '../../rootReducer';
@@ -122,15 +125,21 @@ import {
   DashboardMetaData,
   DashboardError,
 } from './types';
-import { unregisterWidget } from '../widgets/actions';
+import {
+  clearInconsistentFiltersError,
+  resetDatePickerWidgets,
+  resetFilterWidgets,
+  unregisterWidget,
+  clearFilterData,
+} from '../widgets/actions';
 import {
   removeConnectionFromFilter,
   removeFilterConnections,
 } from '../widgets/saga/filterWidget';
-import { clearFilterData } from '../widgets/actions';
 import { getDroppingItemSize } from '../../utils';
 import { findBiggestYPositionOfWidgets } from './utils/findBiggestYPositionOfWidgets';
 import { appActions, appSelectors } from '../app';
+import { removeInterimQueries } from '../queries';
 
 export function* fetchDashboardList() {
   const blobApi = yield getContext(BLOB_API);
@@ -693,6 +702,17 @@ export function* calculateYPositionAndAddWidget({
   yield put(addWidgetToDashboard(dashboardId, widgetId));
 }
 
+export function* resetDashboardFilters({
+  payload,
+}: ReturnType<typeof resetDashboardFiltersAction>) {
+  const { dashboardId } = payload;
+
+  yield put(resetDatePickerWidgets(dashboardId));
+  yield put(resetFilterWidgets(dashboardId));
+  yield put(clearInconsistentFiltersError(dashboardId));
+  yield put(removeInterimQueries());
+}
+
 export function* dashboardsSaga() {
   yield spawn(rehydrateDashboardsOrder);
   yield takeLatest(FETCH_DASHBOARDS_LIST, fetchDashboardList);
@@ -717,4 +737,5 @@ export function* dashboardsSaga() {
     CALCULATE_Y_POSITION_AND_ADD_WIDGET,
     calculateYPositionAndAddWidget
   );
+  yield takeEvery(RESET_DASHBOARD_FILTERS, resetDashboardFilters);
 }

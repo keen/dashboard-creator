@@ -9,17 +9,12 @@ import { colors } from '@keen.io/colors';
 
 import { RootState } from '../../rootReducer';
 
-import { showDashboardShareModal } from '../../modules/dashboards';
+import {
+  showDashboardShareModal,
+  resetDashboardFilters,
+} from '../../modules/dashboards';
 import { Scopes, appSelectors } from '../../modules/app';
-import {
-  getInterimQueriesLength,
-  removeInterimQueries,
-} from '../../modules/queries';
-import {
-  clearInconsistentFiltersError,
-  resetDatePickerWidgets,
-  resetFilterWidgets,
-} from '../../modules/widgets/actions';
+import { getInterimQueriesLength } from '../../modules/queries';
 
 import TooltipContent from '../TooltipContent';
 import PermissionGate from '../PermissionGate';
@@ -111,12 +106,7 @@ const ViewerNavigation: FC<Props> = ({
       <Aside>
         {hasInterimQueries && (
           <ClearFilters
-            onClick={() => {
-              dispatch(resetDatePickerWidgets(activeDashboard));
-              dispatch(resetFilterWidgets(activeDashboard));
-              dispatch(clearInconsistentFiltersError(activeDashboard));
-              dispatch(removeInterimQueries());
-            }}
+            onClick={() => dispatch(resetDashboardFilters(activeDashboard))}
           >
             <BodyText
               variant="body2"
