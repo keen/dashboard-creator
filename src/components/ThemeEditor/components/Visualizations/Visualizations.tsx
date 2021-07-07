@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { Theme } from '@keen.io/charts';
 
-import { CircularChart, Funnel, Metric, Table } from './components';
+import { CircularChart, Funnel, Metric, Table, Line } from './components';
 import SettingsDivider from '../SettingsDivider';
 
 import { ThemeSettings, themeSelectors } from '../../../../modules/theme';
@@ -20,7 +20,7 @@ type Props = {
 
 const Visualizations: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
   const {
-    theme: { donut, pie, funnel, metric, table },
+    theme: { donut, pie, funnel, metric, table, line },
     settings: dashboardSettings,
   } = currentSettings;
 
@@ -28,6 +28,13 @@ const Visualizations: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
 
   return (
     <div>
+      <Line
+        settings={line}
+        onChange={(themeSettings) =>
+          onUpdateSettings({ line: themeSettings }, dashboardSettings)
+        }
+      />
+      <SettingsDivider />
       <CircularChart
         settings={{ pie, donut }}
         onChange={(themeSettings) =>

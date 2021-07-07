@@ -49,7 +49,10 @@ const ChartSettings: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
       />
       <SettingsDivider />
       <Grid
-        settings={theme}
+        settings={{
+          gridX: theme.gridX,
+          gridY: theme.gridY,
+        }}
         colorSuggestions={defaultColors}
         onChange={(settings) => {
           onUpdateSettings(

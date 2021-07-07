@@ -49,7 +49,10 @@
     "table_title": "Table",
     "table_color": "Color",
     "table_header_labels": "Header labels",
-    "table_body_values": "Values"
+    "table_body_values": "Values",
+    "line_title": "Line & Area",
+    "line_thickness": "Line thickness",
+    "line_markers": "Markers size"
   },
   "confirm_query_change": {
     "title": "You Edited Saved Query",
