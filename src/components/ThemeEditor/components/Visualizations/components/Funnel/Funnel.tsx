@@ -25,7 +25,6 @@ type Props = {
   onChange: (settings: Theme['funnel']) => void;
 };
 
-/* TODO: Funnel badge color not working in Dataviz */
 const Funnel: FC<Props> = ({ settings, colorSuggestions, onChange }) => {
   const { t } = useTranslation();
   const { modalContentRef } = useContext(ThemeModalContext);
@@ -87,7 +86,7 @@ const Funnel: FC<Props> = ({ settings, colorSuggestions, onChange }) => {
             scrollableContainerRef={modalContentRef}
             colorSuggestions={colorSuggestions}
             settings={mapInputTypographySettings(value.typography)}
-            fontSizeSuggestions={[10, 12, 14]}
+            fontSizeSuggestions={[10, 12, 14, 18, 20]}
             availableSettings={FUNNEL_TYPOGRAPHY_SETTINGS}
             onChange={(typographySettings) => {
               updateFunnelSettings('value', {
