@@ -14,7 +14,12 @@ import {
   mapOutputTypographySettings,
 } from '../../../../utils';
 
-import { FUNNEL_TYPOGRAPHY_SETTINGS } from './constants';
+import {
+  FUNNEL_TYPOGRAPHY_SETTINGS,
+  VALUE_FONT_SIZES,
+  LABEL_FONT_SIZES,
+  BADGE_FONT_SIZES,
+} from './constants';
 
 type Props = {
   /** Funnel chart theme settings */
@@ -86,7 +91,7 @@ const Funnel: FC<Props> = ({ settings, colorSuggestions, onChange }) => {
             scrollableContainerRef={modalContentRef}
             colorSuggestions={colorSuggestions}
             settings={mapInputTypographySettings(value.typography)}
-            fontSizeSuggestions={[10, 12, 14, 18, 20]}
+            fontSizeSuggestions={VALUE_FONT_SIZES}
             availableSettings={FUNNEL_TYPOGRAPHY_SETTINGS}
             onChange={(typographySettings) => {
               updateFunnelSettings('value', {
@@ -108,7 +113,7 @@ const Funnel: FC<Props> = ({ settings, colorSuggestions, onChange }) => {
             scrollableContainerRef={modalContentRef}
             colorSuggestions={colorSuggestions}
             settings={mapInputTypographySettings(title.typography)}
-            fontSizeSuggestions={[10, 12, 14]}
+            fontSizeSuggestions={LABEL_FONT_SIZES}
             availableSettings={FUNNEL_TYPOGRAPHY_SETTINGS}
             onChange={(typographySettings) => {
               updateFunnelSettings('title', {
@@ -130,7 +135,7 @@ const Funnel: FC<Props> = ({ settings, colorSuggestions, onChange }) => {
             scrollableContainerRef={modalContentRef}
             colorSuggestions={colorSuggestions}
             settings={mapInputTypographySettings(badge.typography)}
-            fontSizeSuggestions={[10, 12, 14]}
+            fontSizeSuggestions={BADGE_FONT_SIZES}
             availableSettings={FUNNEL_TYPOGRAPHY_SETTINGS}
             onChange={(typographySettings) => {
               updateFunnelSettings('badge', {

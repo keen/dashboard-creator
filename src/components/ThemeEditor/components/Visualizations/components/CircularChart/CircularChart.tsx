@@ -14,6 +14,12 @@ import {
   mapOutputTypographySettings,
 } from '../../../../utils';
 
+import {
+  TOTAL_VALUE_FONT_SIZES,
+  TOTAL_LABEL_FONT_SIZES,
+  VALUES_FONT_SIZES,
+} from './constants';
+
 type Props = {
   /** Donut and pie chart settings */
   settings: Pick<Theme, 'donut' | 'pie'>;
@@ -45,7 +51,7 @@ const CircularChart: FC<Props> = ({ settings, colorSuggestions, onChange }) => {
             scrollableContainerRef={modalContentRef}
             colorSuggestions={colorSuggestions}
             settings={mapInputTypographySettings(labels.typography)}
-            fontSizeSuggestions={[10, 12, 14]}
+            fontSizeSuggestions={VALUES_FONT_SIZES}
             availableSettings={{ bold: true, italic: true, fontSize: true }}
             onChange={(typographySettings) => {
               const mappedLabelsTypography = mapOutputTypographySettings(
@@ -81,7 +87,7 @@ const CircularChart: FC<Props> = ({ settings, colorSuggestions, onChange }) => {
             scrollableContainerRef={modalContentRef}
             colorSuggestions={colorSuggestions}
             settings={mapInputTypographySettings(total.label.typography)}
-            fontSizeSuggestions={[10, 12, 14]}
+            fontSizeSuggestions={TOTAL_LABEL_FONT_SIZES}
             availableSettings={{
               color: true,
               bold: true,
@@ -121,7 +127,7 @@ const CircularChart: FC<Props> = ({ settings, colorSuggestions, onChange }) => {
             scrollableContainerRef={modalContentRef}
             colorSuggestions={colorSuggestions}
             settings={mapInputTypographySettings(total.value.typography)}
-            fontSizeSuggestions={[10, 12, 14]}
+            fontSizeSuggestions={TOTAL_VALUE_FONT_SIZES}
             availableSettings={{
               color: true,
               bold: true,
