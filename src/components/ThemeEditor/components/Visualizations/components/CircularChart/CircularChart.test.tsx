@@ -49,7 +49,7 @@ test('allows user to set "fontSize" for values', () => {
   );
 
   fireEvent.click(element);
-  const fontSizeElement = getByText('12');
+  const fontSizeElement = getByText('13');
 
   fireEvent.click(fontSizeElement);
 
@@ -69,7 +69,7 @@ test('allows user to set "fontSize" for values', () => {
         ...settings.pie.labels,
         typography: {
           ...pieLabelsTypography,
-          fontSize: 12,
+          fontSize: 13,
         },
       },
     },
@@ -79,7 +79,7 @@ test('allows user to set "fontSize" for values', () => {
         ...settings.donut.labels,
         typography: {
           ...donutLabelsTypography,
-          fontSize: 12,
+          fontSize: 13,
         },
       },
     },
