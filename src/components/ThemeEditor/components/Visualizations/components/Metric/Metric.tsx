@@ -14,7 +14,11 @@ import {
   mapOutputTypographySettings,
 } from '../../../../utils';
 
-import { METRIC_TYPOGRAPHY_SETTINGS } from './constants';
+import {
+  METRIC_TYPOGRAPHY_SETTINGS,
+  PRIMARY_VALUE_FONT_SIZES,
+  SECONDARY_VALUE_FONT_SIZES,
+} from './constants';
 
 type Props = {
   /** Metric chart theme settings */
@@ -45,7 +49,7 @@ const Metric: FC<Props> = ({ settings, colorSuggestions, onChange }) => {
             scrollableContainerRef={modalContentRef}
             colorSuggestions={colorSuggestions}
             settings={mapInputTypographySettings(value.typography)}
-            fontSizeSuggestions={[10, 12, 14]}
+            fontSizeSuggestions={PRIMARY_VALUE_FONT_SIZES}
             availableSettings={METRIC_TYPOGRAPHY_SETTINGS}
             onChange={(typographySettings) =>
               onChange({
@@ -67,7 +71,7 @@ const Metric: FC<Props> = ({ settings, colorSuggestions, onChange }) => {
             scrollableContainerRef={modalContentRef}
             colorSuggestions={colorSuggestions}
             settings={mapInputTypographySettings(excerpt.typography)}
-            fontSizeSuggestions={[10, 12, 14]}
+            fontSizeSuggestions={SECONDARY_VALUE_FONT_SIZES}
             availableSettings={METRIC_TYPOGRAPHY_SETTINGS}
             onChange={(typographySettings) =>
               onChange({

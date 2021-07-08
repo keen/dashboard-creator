@@ -14,6 +14,8 @@ import {
   mapOutputTypographySettings,
 } from '../../../../utils';
 
+import { TABLE_FONT_SIZES } from './constants';
+
 type Props = {
   /** Table chart theme settings */
   settings: Theme['table'];
@@ -62,7 +64,7 @@ const Table: FC<Props> = ({ settings, colorSuggestions, onChange }) => {
             scrollableContainerRef={modalContentRef}
             colorSuggestions={colorSuggestions}
             settings={mapInputTypographySettings(header.typography)}
-            fontSizeSuggestions={[10, 12, 14]}
+            fontSizeSuggestions={TABLE_FONT_SIZES}
             availableSettings={{
               fontSize: true,
               bold: true,
@@ -89,7 +91,7 @@ const Table: FC<Props> = ({ settings, colorSuggestions, onChange }) => {
             scrollableContainerRef={modalContentRef}
             colorSuggestions={colorSuggestions}
             settings={mapInputTypographySettings(body.typography)}
-            fontSizeSuggestions={[10, 12, 14]}
+            fontSizeSuggestions={TABLE_FONT_SIZES}
             availableSettings={{
               fontSize: true,
               bold: true,
