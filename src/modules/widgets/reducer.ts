@@ -194,6 +194,7 @@ const widgetsReducer = (
               ...state.items[action.payload.id].widget,
               settings: {
                 widgets: action.payload.widgetConnections,
+                name: action.payload.name,
               },
             },
           },
@@ -229,6 +230,7 @@ const widgetsReducer = (
                 widgets: action.payload.widgetConnections,
                 eventStream: action.payload.eventStream,
                 targetProperty: action.payload.targetProperty,
+                name: action.payload.name,
               },
             },
           },

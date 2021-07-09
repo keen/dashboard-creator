@@ -7,7 +7,7 @@ import { Container, Connector } from './FiltersContent.styles';
 import TitleContainer from '../TitleContainer';
 import FilterValue from '../FilterValue';
 
-import { capitalize, getPropertyName } from './utils';
+import { capitalize } from './utils';
 
 import { FilterMeta } from '../../types';
 
@@ -21,7 +21,7 @@ const FiltersContent: FC<Props> = ({ data }) => {
   return (
     <Container>
       {data.map((item, index, arr) => {
-        const { propertyName, propertyValue } = item;
+        const { propertyName, propertyValue, filterName } = item;
         return (
           <div key={`${propertyName}-${propertyValue}`}>
             <TitleContainer>
@@ -29,7 +29,7 @@ const FiltersContent: FC<Props> = ({ data }) => {
                 variant="body2"
                 fontWeight="bold"
                 color={colors.black[100]}
-              >{`${capitalize(getPropertyName(propertyName))}:`}</BodyText>
+              >{`${capitalize(filterName || propertyName)}:`}</BodyText>
             </TitleContainer>
             <FilterValue propertyValue={propertyValue} />
             {index < arr.length - 1 && (

@@ -273,10 +273,11 @@ export const updateChartWidgetDatePickerConnection = createAction(
 
 export const setDatePickerWidget = createAction(
   SET_DATE_PICKER_WIDGET,
-  (id: string, widgetConnections: string[]) => ({
+  (id: string, widgetConnections: string[], name: string) => ({
     payload: {
       id,
       widgetConnections,
+      name,
     },
   })
 );
@@ -334,13 +335,15 @@ export const configureFilerWidget = createAction(
     id: string,
     widgetConnections: string[],
     eventStream: string,
-    targetProperty: string
+    targetProperty: string,
+    name?: string
   ) => ({
     payload: {
       id,
       widgetConnections,
       eventStream,
       targetProperty,
+      name,
     },
   })
 );

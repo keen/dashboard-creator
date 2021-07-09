@@ -16,6 +16,7 @@ export type ReducerState = {
     inProgress: boolean;
     error: boolean;
   };
+  name: string;
 };
 
 export type FilterConnection = {

@@ -4,7 +4,11 @@ import { useSelector } from 'react-redux';
 import { DatePickerContent, FiltersContent } from './components';
 
 import { getInterimQuery } from '../../modules/queries';
-import { getWidget } from '../../modules/widgets';
+import {
+  DatePickerWidget,
+  FilterWidget,
+  getWidget,
+} from '../../modules/widgets';
 
 import { RootState } from '../../rootReducer';
 
@@ -25,14 +29,16 @@ const ChartWidgetFilter: FC<Props> = ({ widgetId }) => {
 
   const datePickerData = useSelector((state: RootState) => {
     if ('datePickerId' in widget && widget.datePickerId) {
-      const { data, isActive } = getWidget(state, widget.datePickerId);
+      const { data, isActive, widget: datePickerWidget } = getWidget(
+        state,
+        widget.datePickerId
+      );
       if (isActive) {
-        return data;
+        const filterWidget = datePickerWidget as DatePickerWidget;
+        return { data, name: filterWidget.settings.name };
       }
-
       return null;
     }
-
     return null;
   });
 
@@ -40,7 +46,8 @@ const ChartWidgetFilter: FC<Props> = ({ widgetId }) => {
     if ('filterIds' in widget && widget.filterIds.length > 0) {
       const filters = widget.filterIds.reduce(
         (activeFilters: FilterMeta[], id: string) => {
-          const { data, isActive } = getWidget(state, id);
+          const { data, isActive, widget } = getWidget(state, id);
+          const filterWidget = widget as FilterWidget;
           if (isActive && data?.filter) {
             const { propertyName, propertyValue } = data.filter;
             return [
@@ -48,6 +55,7 @@ const ChartWidgetFilter: FC<Props> = ({ widgetId }) => {
               {
                 propertyName,
                 propertyValue,
+                filterName: filterWidget.settings.name,
               },
             ];
           }
@@ -74,8 +82,9 @@ const ChartWidgetFilter: FC<Props> = ({ widgetId }) => {
         {datePickerData && (
           <WidgetFilter icon="date-picker">
             <DatePickerContent
-              timeframe={datePickerData.timeframe}
-              timezone={datePickerData.timezone}
+              name={datePickerData.name}
+              timeframe={datePickerData.data.timeframe}
+              timezone={datePickerData.data.timezone}
             />
           </WidgetFilter>
         )}

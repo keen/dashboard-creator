@@ -11,6 +11,7 @@ import {
   setEditorConnections,
   setEditorDetachedConnections,
   setupDashboardEventStreams,
+  setName,
 } from './actions';
 import { ReducerState, SchemaPropertiesList } from './types';
 
@@ -33,6 +34,7 @@ export {
   setupDashboardEventStreams,
   setEventStream,
   setTargetProperty,
+  setName,
   setEditorConnections,
   setEditorDetachedConnections,
   updateConnection,

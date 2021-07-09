@@ -1,7 +1,13 @@
-import React, { FC, useState, useEffect } from 'react';
+import React, { FC, useState, useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { Alert, Button, ModalFooter } from '@keen.io/ui-core';
+import {
+  Alert,
+  Button,
+  ModalFooter,
+  Input,
+  MousePositionedTooltip,
+} from '@keen.io/ui-core';
 
 import {
   BoldMessage,
@@ -29,12 +35,16 @@ import {
   setTargetProperty,
   getFilterSettings,
   updateConnection,
+  setName,
 } from '../../modules/filter';
 import { getCurrentDashboardChartsCount } from '../../modules/dashboards';
 
 import { ERRORS } from './constants';
 
 import { FilterSettingsError } from './types';
+import { BodyText } from '@keen.io/typography';
+import { colors } from '@keen.io/colors';
+import { AppContext } from '../../contexts';
 
 type Props = {
   /* Cancel filter settings */
@@ -46,6 +56,8 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
   const dispatch = useDispatch();
   const [error, setError] = useState<FilterSettingsError>(null);
 
+  const { modalContainer } = useContext(AppContext);
+
   const {
     widgetConnections,
     detachedWidgetConnections,
@@ -54,10 +66,13 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
     eventStreamsPool,
     eventStreamSchema,
     schemaProcessing,
+    name,
   } = useSelector(getFilterSettings);
+
   const chartWidgetsCount = useSelector(getCurrentDashboardChartsCount);
 
   const [isEditMode] = useState(!!targetProperty);
+  const [filterName, setFilterName] = useState(name);
 
   const { inProgress, error: schemaError } = schemaProcessing;
   const { schema, tree: schemaTree, list: schemaList } = eventStreamSchema;
@@ -122,10 +137,27 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
                 schema={schema}
                 schemaList={schemaList}
                 schemaTree={schemaTree}
-                onChange={(property) => dispatch(setTargetProperty(property))}
+                onChange={(property) => {
+                  if (!filterName) {
+                    setFilterName(property);
+                  }
+                  dispatch(setTargetProperty(property));
+                }}
               />
             </Field>
           </FieldGroup>
+          <Description marginTop={20} marginBottom={1}>
+            {t('filter_settings.filter_display_name')}
+          </Description>
+          <Field width={300} marginRight={15}>
+            <Input
+              type="text"
+              variant="solid"
+              placeholder={t('filter_settings.filter_display_name_placeholder')}
+              value={filterName}
+              onChange={(e) => setFilterName(e.target.value)}
+            />
+          </Field>
           <ConnectionsContainer>
             <Description marginBottom={15}>
               {t('filter_settings.connections_description')}
@@ -203,21 +235,38 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
       </Container>
       <ModalFooter>
         <FooterContent>
-          <Button
-            variant="secondary"
-            onClick={() => {
-              if (eventStream && targetProperty) {
-                setError(null);
-                dispatch(applySettings());
-              } else {
-                setError(FilterSettingsError.IncompleteSettings);
-              }
-            }}
+          <MousePositionedTooltip
+            isActive={!filterName}
+            renderContent={() => (
+              <BodyText
+                variant="body2"
+                fontWeight="normal"
+                color={colors.white[500]}
+              >
+                Enter filter name first
+              </BodyText>
+            )}
+            tooltipPortal={modalContainer}
+            tooltipTheme="dark"
           >
-            {isEditMode
-              ? t('filter_settings.edit_button')
-              : t('filter_settings.create_button')}
-          </Button>
+            <Button
+              variant="secondary"
+              isDisabled={!filterName}
+              onClick={() => {
+                if (eventStream && targetProperty) {
+                  setError(null);
+                  dispatch(setName(filterName));
+                  dispatch(applySettings());
+                } else {
+                  setError(FilterSettingsError.IncompleteSettings);
+                }
+              }}
+            >
+              {isEditMode
+                ? t('filter_settings.edit_button')
+                : t('filter_settings.create_button')}
+            </Button>
+          </MousePositionedTooltip>
           <CancelButton>
             <Button variant="secondary" style="outline" onClick={onCancel}>
               {t('filter_settings.cancel_button')}

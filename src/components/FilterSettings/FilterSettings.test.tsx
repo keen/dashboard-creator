@@ -194,9 +194,15 @@ test('allows user to cancel filter widget configuration', () => {
 });
 
 test('renders error about unfinished filter widget configuration', () => {
+  const state = {
+    filter: {
+      ...filterInitialState,
+      name: 'filterName',
+    },
+  };
   const {
     wrapper: { getByText },
-  } = render();
+  } = render(state);
 
   const button = getByText('filter_settings.create_button');
   fireEvent.click(button);
@@ -241,6 +247,7 @@ test('allows user to apply filter widget settings', () => {
   const state = {
     filter: {
       ...filterInitialState,
+      name: 'filterName',
       eventStream: 'logins',
       targetProperty: 'user.gender',
       widgetConnections: [
@@ -271,9 +278,49 @@ test('allows user to apply filter widget settings', () => {
   expect(store.getActions()).toMatchInlineSnapshot(`
     Array [
       Object {
+        "payload": Object {
+          "name": "filterName",
+        },
+        "type": "@filter/SET_NAME",
+      },
+      Object {
         "payload": undefined,
         "type": "@filter/APPLY_SETTINGS",
       },
     ]
   `);
+});
+
+test('not allows user to apply filter widget settings when name is not provided', () => {
+  const state = {
+    filter: {
+      ...filterInitialState,
+      eventStream: 'logins',
+      targetProperty: 'user.gender',
+      widgetConnections: [
+        {
+          widgetId: '@widget/01',
+          isConnected: false,
+          title: null,
+          positionIndex: 0,
+        },
+      ],
+      eventStreamsPool: ['logins', 'purchases'],
+      eventStreamSchema: {
+        schema: {},
+        list: [],
+        tree: {},
+      },
+    },
+  };
+
+  const {
+    store,
+    wrapper: { getByText },
+  } = render(state);
+
+  const button = getByText('filter_settings.edit_button');
+  fireEvent.click(button);
+
+  expect(store.getActions()).toStrictEqual([]);
 });

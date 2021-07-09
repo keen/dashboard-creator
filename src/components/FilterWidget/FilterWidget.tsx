@@ -19,6 +19,7 @@ import {
   EmptySearch,
   SelectedPropertiesNumber,
   DropdownHeader,
+  IconWrapper,
 } from './FilterWidget.styles';
 
 import { getWidget } from '../../modules/widgets';
@@ -31,7 +32,7 @@ import {
   unapplyFilterWidget,
 } from '../../modules/widgets/actions';
 import { FilterItem, SearchTags } from '../FilterDashboards/components';
-import { FilterWidget } from '../../modules/widgets/types';
+import { FilterWidget } from '../../modules/widgets';
 import { DROPDOWN_CONTAINER_ID } from '../../constants';
 
 type Props = {
@@ -71,13 +72,6 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
   const [searchMode, setSearchMode] = useState(false);
   const [searchPhrase, setSearchPhrase] = useState('');
   const [activeProperties, setActiveProperties] = useState([]);
-
-  let targetProperty = null;
-
-  if (filterWidget.settings && filterWidget.settings.targetProperty) {
-    const properties = filterWidget.settings.targetProperty.split('.');
-    targetProperty = properties[properties.length - 1];
-  }
 
   const containerRef = useRef(null);
   const dropdownContainerRef = useRef(null);
@@ -181,14 +175,16 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
       >
         {
           <TitleContainer>
-            <Icon
-              type="funnel-widget-vertical"
-              fill={transparentize(0.6, colors.blue[500])}
-              width={13}
-              height={13}
-            />
+            <IconWrapper>
+              <Icon
+                type="funnel-widget-vertical"
+                fill={transparentize(0.6, colors.blue[500])}
+                width={13}
+                height={13}
+              />
+            </IconWrapper>
             <Title role="heading">
-              {targetProperty}
+              {filterWidget.settings.name}
               {widget.isActive && (
                 <SelectedPropertiesNumber data-testid="applied-properties-number">
                   {widget.data.filter.propertyValue.length}

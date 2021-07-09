@@ -15,5 +15,6 @@ export const SET_EVENT_STREAM_SCHEMA = '@filter/SET_EVENT_STREAM_SCHEMA';
 export const SET_SCHEMA_PROCESSING = '@filter/SET_SCHEMA_PROCESSING';
 export const SET_SCHEMA_PROCESSING_ERROR =
   '@filter/SET_SCHEMA_PROCESSING_ERROR';
+export const SET_NAME = '@filter/SET_NAME';
 
 export const FILTER_SCHEMA_PROPERTY_TYPE = 'string';

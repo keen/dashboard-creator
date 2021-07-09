@@ -36,6 +36,7 @@ import {
   SettingsContainer,
   TitleContainer,
   ErrorContainer,
+  IconWrapper,
 } from './DatePickerWidget.styles';
 
 import {
@@ -43,6 +44,7 @@ import {
   clearDatePickerModifiers,
   applyDatePickerModifiers,
   getWidget,
+  DatePickerWidget,
 } from '../../modules/widgets';
 
 import { RootState } from '../../rootReducer';
@@ -68,9 +70,10 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { modalContainer, widgetsConfiguration } = useContext(AppContext);
-  const { isActive, data } = useSelector((state: RootState) =>
+  const { isActive, data, widget } = useSelector((state: RootState) =>
     getWidget(state, id)
   );
+  const datePickerWidget = widget as DatePickerWidget;
 
   const datePickerConfiguration = widgetsConfiguration?.datePicker;
 
@@ -162,13 +165,17 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
           />
         ) : (
           <TitleContainer>
-            <Icon
-              type="date-picker"
-              fill={transparentize(0.6, colors.blue[500])}
-              width={13}
-              height={13}
-            />
-            <Title role="heading">{t('date_picker_widget.name')}</Title>
+            <IconWrapper>
+              <Icon
+                type="date-picker"
+                fill={transparentize(0.6, colors.blue[500])}
+                width={13}
+                height={13}
+              />
+            </IconWrapper>
+            <Title role="heading">
+              {datePickerWidget.settings.name || t('date_picker_widget.name')}
+            </Title>
           </TitleContainer>
         )}
       </Container>

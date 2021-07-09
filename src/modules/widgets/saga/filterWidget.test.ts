@@ -52,6 +52,7 @@ import {
   APPLY_EDITOR_SETTINGS,
   CLOSE_EDITOR,
   SET_EVENT_STREAM,
+  setName,
 } from '../../filter';
 import { getWidgetSettings, getWidget } from '../../widgets';
 import {
@@ -591,7 +592,11 @@ describe('editFilterWidget()', () => {
       expect(result).toEqual(select(getWidgetSettings, widgetId));
 
       return {
-        settings: { eventStream: 'logins', targetProperty: 'user.id' },
+        settings: {
+          eventStream: 'logins',
+          targetProperty: 'user.id',
+          name: 'filterWidgetName',
+        },
       };
     });
 
@@ -632,6 +637,10 @@ describe('editFilterWidget()', () => {
 
     test('set widget connections', (result) => {
       expect(result).toEqual(put(setEditorConnections(widgetConnections)));
+    });
+
+    test('set filter widget name', (result) => {
+      expect(result).toEqual(put(setName('filterWidgetName')));
     });
 
     test('updates widget distinction', (result) => {

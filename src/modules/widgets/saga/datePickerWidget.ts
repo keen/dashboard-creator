@@ -30,8 +30,9 @@ import {
   ADD_WIDGET_TO_DASHBOARD,
 } from '../../dashboards';
 
-import { ChartWidget } from '../types';
+import { ChartWidget, DatePickerWidget } from '../types';
 import { appSelectors } from '../../app';
+import { setName } from '../../datePicker/actions';
 
 /**
  * Apply date picker connections updates to connected widgets
@@ -168,9 +169,9 @@ export function* removeConnectionFromDatePicker(
   const {
     settings: { widgets },
   } = yield select(getWidgetSettings, datePickerId);
-
+  const { name } = yield select(getDatePickerSettings);
   const updatedConnections = widgets.filter((id: string) => id !== widgetId);
-  yield put(setDatePickerWidget(datePickerId, updatedConnections));
+  yield put(setDatePickerWidget(datePickerId, updatedConnections, name));
 }
 
 /**
@@ -183,7 +184,8 @@ export function* removeConnectionFromDatePicker(
 export function* applyDatePickerUpdates(datePickerWidgetId: string) {
   const {
     widgetConnections: updatedConnections,
-  }: { widgetConnections: DatePickerConnection[] } = yield select(
+    name,
+  }: { widgetConnections: DatePickerConnection[]; name: string } = yield select(
     getDatePickerSettings
   );
 
@@ -199,7 +201,9 @@ export function* applyDatePickerUpdates(datePickerWidgetId: string) {
   );
 
   yield all(chartWidgetsUpdates);
-  yield put(setDatePickerWidget(datePickerWidgetId, widgetPickerConnections));
+  yield put(
+    setDatePickerWidget(datePickerWidgetId, widgetPickerConnections, name)
+  );
 }
 
 /**
@@ -220,6 +224,10 @@ export function* editDatePickerWidget({
     dashboardId,
     datePickerWidgetId
   );
+
+  const {
+    settings: { name },
+  }: DatePickerWidget = yield select(getWidgetSettings, datePickerWidgetId);
 
   yield put(setEditorConnections(widgetConnections));
 
@@ -250,6 +258,7 @@ export function* editDatePickerWidget({
     );
 
   yield all([...fadeOutWidgets, ...titleCoverWidgets, ...highlightWidgets]);
+  yield put(setName(name));
   yield put(openEditor());
 
   const action = yield take([APPLY_EDITOR_SETTINGS, CLOSE_EDITOR]);
@@ -286,6 +295,7 @@ export function* setupDatePicker(widgetId: string) {
   const dashboardId = yield select(appSelectors.getActiveDashboard);
 
   yield take(ADD_WIDGET_TO_DASHBOARD);
+
   const {
     settings: { widgets: dashboardWidgetsIds },
   } = yield select(getDashboard, dashboardId);

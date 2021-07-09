@@ -8,6 +8,7 @@ import {
   APPLY_EDITOR_SETTINGS,
   SET_EDITOR_CONNECTIONS,
   UPDATE_CONNECTION,
+  SET_NAME,
 } from './constants';
 
 export const openEditor = createAction(OPEN_EDITOR);
@@ -35,9 +36,16 @@ export const updateConnection = createAction(
   })
 );
 
+export const setName = createAction(SET_NAME, (name) => ({
+  payload: {
+    name,
+  },
+}));
+
 export type DatePickerActions =
   | ReturnType<typeof openEditor>
   | ReturnType<typeof closeEditor>
   | ReturnType<typeof applySettings>
   | ReturnType<typeof setEditorConnections>
-  | ReturnType<typeof updateConnection>;
+  | ReturnType<typeof updateConnection>
+  | ReturnType<typeof setName>;

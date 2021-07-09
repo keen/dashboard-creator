@@ -43,6 +43,7 @@ import {
   CLOSE_EDITOR,
 } from '../../datePicker';
 import { appSelectors } from '../../app';
+import { setName } from '../../datePicker/actions';
 
 describe('clearDatePickerModifiers()', () => {
   describe('Scenario 1: Resets date picker state and re-initialize connected chart widgets', () => {
@@ -321,6 +322,15 @@ describe('editDatePickerWidget()', () => {
       return connections;
     });
 
+    test('gets date picker name', (result) => {
+      expect(result).toEqual(select(getWidgetSettings, datePickerId));
+      return {
+        settings: {
+          name: 'datePickerName',
+        },
+      };
+    });
+
     test('set date picker editor connections', (result) => {
       expect(result).toEqual(put(setEditorConnections(connections)));
     });
@@ -342,6 +352,10 @@ describe('editDatePickerWidget()', () => {
           put(setWidgetState('@widget/01', { isHighlighted: true })),
         ])
       );
+    });
+
+    test('set date picker widget name', (result) => {
+      expect(result).toEqual(put(setName('datePickerName')));
     });
 
     test('opens date picker editor', (result) => {
@@ -406,6 +420,7 @@ describe('applyDatePickerUpdates()', () => {
       expect(result).toEqual(select(getDatePickerSettings));
 
       return {
+        name: 'datePickerName',
         widgetConnections: [
           {
             widgetId: '@widget/01',
@@ -436,7 +451,7 @@ describe('applyDatePickerUpdates()', () => {
 
     test('updates date picker connection settings', (result) => {
       expect(result).toEqual(
-        put(setDatePickerWidget(datePickerId, ['@widget/01']))
+        put(setDatePickerWidget(datePickerId, ['@widget/01'], 'datePickerName'))
       );
     });
   });
@@ -459,9 +474,22 @@ describe('removeConnectionFromDatePicker()', () => {
       };
     });
 
+    test('get date picker settings', (result) => {
+      expect(result).toEqual(select(getDatePickerSettings));
+      return {
+        name: 'datePickerName',
+      };
+    });
+
     test('updates date picker connection settings', (result) => {
       expect(result).toEqual(
-        put(setDatePickerWidget(datePickerId, ['@widget/02', '@widget/03']))
+        put(
+          setDatePickerWidget(
+            datePickerId,
+            ['@widget/02', '@widget/03'],
+            'datePickerName'
+          )
+        )
       );
     });
   });
