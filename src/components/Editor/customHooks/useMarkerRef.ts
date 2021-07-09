@@ -11,7 +11,7 @@ const useMarkerRef = (
       isSticky,
     };
 
-  const { ref: inViewRef, inView } = useInView({
+  const { ref: inViewRef, inView, entry } = useInView({
     threshold: 1,
   });
 
@@ -23,7 +23,7 @@ const useMarkerRef = (
     [inViewRef]
   );
 
-  isSticky = !inView;
+  isSticky = !inView && entry?.isIntersecting === false;
 
   return {
     isSticky,

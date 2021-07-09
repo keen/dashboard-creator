@@ -3,12 +3,16 @@
 exports[`allows user to set chart subtitle 1`] = `
 Array [
   Object {
+    "payload": true,
+    "type": "chartEditor/setQueryChange",
+  },
+  Object {
     "payload": Object {
       "subtitle": Object {
         "content": "CHART_SUBTITLE",
         "typography": Object {
           "fontColor": "#1D2729",
-          "fontFamily": "Lato Regular, sans-serif",
+          "fontFamily": "Lato, sans-serif",
           "fontSize": 14,
           "fontStyle": "normal",
           "fontWeight": "normal",
@@ -18,7 +22,7 @@ Array [
         "content": "",
         "typography": Object {
           "fontColor": "#27566D",
-          "fontFamily": "Gangster Grotesk Regular, sans-serif",
+          "fontFamily": "Gangster Grotesk, sans-serif",
           "fontSize": 20,
           "fontStyle": "normal",
           "fontWeight": "normal",
@@ -33,12 +37,16 @@ Array [
 exports[`allows user to set chart title 1`] = `
 Array [
   Object {
+    "payload": true,
+    "type": "chartEditor/setQueryChange",
+  },
+  Object {
     "payload": Object {
       "subtitle": Object {
         "content": "",
         "typography": Object {
           "fontColor": "#1D2729",
-          "fontFamily": "Lato Regular, sans-serif",
+          "fontFamily": "Lato, sans-serif",
           "fontSize": 14,
           "fontStyle": "normal",
           "fontWeight": "normal",
@@ -48,7 +56,7 @@ Array [
         "content": "CHART_TITLE",
         "typography": Object {
           "fontColor": "#27566D",
-          "fontFamily": "Gangster Grotesk Regular, sans-serif",
+          "fontFamily": "Gangster Grotesk, sans-serif",
           "fontSize": 20,
           "fontStyle": "normal",
           "fontWeight": "normal",

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable @typescript-eslint/naming-convention */
 import React from 'react';
 import { render as rtlRender, fireEvent } from '@testing-library/react';
 

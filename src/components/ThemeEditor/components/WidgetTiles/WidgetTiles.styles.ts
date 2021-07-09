@@ -12,3 +12,10 @@ export const BorderSettingsWrapper = styled.div`
 export const BorderWidthDropdownWrapper = styled.div`
   margin-left: 10px;
 `;
+
+export const DropdownWrapper = styled.div<{ x: number; y: number }>`
+  position: absolute;
+  top: ${(props) => props.y}px;
+  left: ${(props) => props.x}px;
+  width: 66px;
+`;

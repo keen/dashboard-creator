@@ -1,3 +1,5 @@
+import { View } from './types';
+
 export const BLOB_API = 'BLOB_API';
 export const TRANSLATIONS = 'I18N';
 export const KEEN_ANALYSIS = 'KEEN_ANALYSIS';
@@ -11,10 +13,16 @@ export const SHOW_TOAST_NOTIFICATION_EVENT =
 export const RESIZE_WIDGET_EVENT = '@dashboard-creator/resize-widget';
 export const DROPDOWN_CONTAINER_ID = 'dropdown-container';
 
-export const ROUTES = {
-  MANAGEMENT: '/',
+export const ROUTES: Record<string, `/${View}`> = {
+  MANAGEMENT: '/management',
   EDITOR: '/editor',
   VIEWER: '/viewer',
+};
+
+export const INITIAL_VIEWS: Record<View, typeof ROUTES[keyof typeof ROUTES]> = {
+  management: '/management',
+  editor: '/viewer',
+  viewer: '/viewer',
 };
 
 export const TOOLTIP_MOTION = {

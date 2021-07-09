@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase, @typescript-eslint/ban-ts-ignore */
+/* eslint-disable @typescript-eslint/naming-convention, @typescript-eslint/ban-ts-comment */
 import { timezoneActions } from './modules/timezone';
 
 if (process.env.NODE_ENV === 'production') {
@@ -10,10 +10,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import i18n from 'i18next';
 import { Provider } from 'react-redux';
-import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
+import {
+  ConnectedRouter,
+  connectRouter,
+  routerMiddleware,
+} from 'connected-react-router';
 import KeenAnalysis from 'keen-analysis';
 import { ThemeProvider } from 'styled-components';
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import { createMemoryHistory } from 'history';
 import { PubSub } from '@keen.io/pubsub';
 import { ToastProvider } from '@keen.io/toast-notifications';
 import { screenBreakpoints } from '@keen.io/ui-core';
@@ -28,7 +33,7 @@ import GlobalStyles from './components/GlobalStyles';
 
 import createI18n from './i18n';
 import createSagaMiddleware from './createSagaMiddleware';
-import rootReducer, { history } from './rootReducer';
+import rootReducer from './rootReducer';
 import { createRootSaga } from './rootSaga';
 
 import { SHOW_TOAST_NOTIFICATION_EVENT } from './constants';
@@ -118,8 +123,13 @@ export class PublicDashboard {
       }),
     });
 
+    const history = createMemoryHistory();
+
     const store = configureStore({
-      reducer: rootReducer,
+      reducer: combineReducers({
+        ...rootReducer,
+        router: connectRouter(history),
+      }),
       middleware: [sagaMiddleware, routerMiddleware(history)],
     });
 

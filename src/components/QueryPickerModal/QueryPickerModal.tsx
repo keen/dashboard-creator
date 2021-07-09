@@ -8,7 +8,7 @@ import { Content } from './QueryPickerModal.styles';
 import QueryPicker from '../QueryPicker';
 import { appActions, appSelectors } from '../../modules/app';
 
-const QueryPickerModal: FC<{}> = () => {
+const QueryPickerModal: FC = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { isVisible } = useSelector(appSelectors.getQueryPicker);

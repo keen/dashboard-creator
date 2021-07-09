@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable @typescript-eslint/naming-convention */
 import sagaHelper from 'redux-saga-testing';
 import { getContext, put } from 'redux-saga/effects';
 

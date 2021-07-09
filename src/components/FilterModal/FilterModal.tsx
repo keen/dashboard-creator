@@ -7,7 +7,7 @@ import FilterSettings from '../FilterSettings';
 
 import { getFilterSettings, closeEditor } from '../../modules/filter';
 
-const FilterModal: FC<{}> = () => {
+const FilterModal: FC = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 

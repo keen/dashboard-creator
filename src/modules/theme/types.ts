@@ -9,6 +9,8 @@ export type ThemeSettings = {
 
 export enum ThemeEditorSection {
   Main = 'main',
+  Chart = 'chart',
+  Visualizations = 'visualizations',
 }
 
 export type ReducerState = {

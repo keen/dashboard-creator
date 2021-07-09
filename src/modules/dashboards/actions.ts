@@ -56,6 +56,7 @@ import {
   CALCULATE_Y_POSITION_AND_ADD_WIDGET,
   REGENERATE_ACCESS_KEY_SUCCESS,
   REGENERATE_ACCESS_KEY_ERROR,
+  RESET_DASHBOARD_FILTERS,
 } from './constants';
 import { WidgetType } from '../../types';
 
@@ -415,6 +416,15 @@ export const calculateYPositionAndAddWidget = createAction(
   })
 );
 
+export const resetDashboardFilters = createAction(
+  RESET_DASHBOARD_FILTERS,
+  (dashboardId: string) => ({
+    payload: {
+      dashboardId,
+    },
+  })
+);
+
 export type DashboardsActions =
   | ReturnType<typeof fetchDashboardList>
   | ReturnType<typeof fetchDashboardListSuccess>
@@ -464,4 +474,5 @@ export type DashboardsActions =
   | ReturnType<typeof setTagsFiltersPublic>
   | ReturnType<typeof updateCachedDashboardIds>
   | ReturnType<typeof unregisterDashboard>
-  | ReturnType<typeof calculateYPositionAndAddWidget>;
+  | ReturnType<typeof calculateYPositionAndAddWidget>
+  | ReturnType<typeof resetDashboardFilters>;

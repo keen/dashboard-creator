@@ -25,7 +25,7 @@ The Dashboard Creator components configuration could be specified during creatio
 The Dashboard Creator `@keen.io/dataviz` theme could be overridden during initialization of application instance.
 
 ```typescript
-const explorer = new KeenDashboardCreator({
+const dashboardCreator = new KeenDashboardCreator({
   theme: {
     colors: ['green', 'navy', 'orange'],
     metric: {
@@ -40,6 +40,32 @@ const explorer = new KeenDashboardCreator({
  });
 ```
 
+##### Routing integration
+
+Additional handler could be used to get information about the current view rendered in the application.
+
+```typescript
+export type View = 'management' | 'editor' | 'viewer';
+
+const dashboardCreator = new KeenDashboardCreator({
+  onViewChange: (view: View, dashboardId: string | null) => {}
+});
+```
+
+##### Render initially dashboard viewer
+
+The `render` method accepts `initialView` and `dashboardId` argument that could be used to present specific dashboard initially.
+
+For `editor` provided as initial view the dashboard in `viewer` mode will be rendered.
+
+```typescript
+export type View = 'management' | 'editor' | 'viewer';
+
+const dashboardCreator = new KeenDashboardCreator({});
+
+dashboardCreator.render('viewer', '@dashboardId');
+```
+
 ##### Define user privileges
 
 By default all users are allowed to edit and share dashboards. To restrict privileges - specify scopes by using `userPermissions` argument. In example below user will be able to edit dashboards - however the share feature will be not available.
@@ -47,7 +73,7 @@ By default all users are allowed to edit and share dashboards. To restrict privi
 ```typescript
 type Scopes = 'share-dashboard' | 'edit-dashboard';
 
-const explorer = new KeenDashboardCreator({
+const dashboardCreator = new KeenDashboardCreator({
   userPermissions: ['edit-dashboard'],
 });
 ```
@@ -57,7 +83,7 @@ const explorer = new KeenDashboardCreator({
 Specify default `timezone` used for new created queries. Provided argument must be compatible with **IANA** [Time Zone Database](https://www.iana.org/time-zones) standard.
 
 ```typescript
-const explorer = new KeenDashboardCreator({
+const dashboardCreator = new KeenDashboardCreator({
   defaultTimezoneForQuery: 'Europe/Warsaw',
 });
 ```
@@ -67,7 +93,7 @@ const explorer = new KeenDashboardCreator({
 Disables possibility to change `timezone` for queries from user interface.
 
 ```typescript
-const explorer = new KeenDashboardCreator({
+const dashboardCreator = new KeenDashboardCreator({
   disableTimezoneSelection: true,
 });
 ```
@@ -77,7 +103,7 @@ const explorer = new KeenDashboardCreator({
 Setup default timezone in widget and disable timezone selection.
 
 ```typescript
-const explorer = new KeenDashboardCreator({
+const dashboardCreator = new KeenDashboardCreator({
   widgetsConfiguration: {
     datePicker: {
       defaultTimezone: 'Etc/UTC',

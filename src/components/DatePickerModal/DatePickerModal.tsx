@@ -7,7 +7,7 @@ import DatePickerSettings from '../DatePickerSettings';
 
 import { getDatePickerSettings, closeEditor } from '../../modules/datePicker';
 
-const DatePickerModal: FC<{}> = () => {
+const DatePickerModal: FC = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 

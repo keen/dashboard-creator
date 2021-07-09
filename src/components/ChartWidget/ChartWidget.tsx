@@ -9,6 +9,7 @@ import React, {
 import { useSelector } from 'react-redux';
 import { useInView } from 'react-intersection-observer';
 import { Loader } from '@keen.io/ui-core';
+import { ErrorWidget } from '@keen.io/widgets';
 import { colors } from '@keen.io/colors';
 
 import WidgetPlaceholder from '../WidgetPlaceholder';
@@ -29,6 +30,8 @@ import { RESIZE_WIDGET_EVENT } from '../../constants';
 
 import getChartInput from '../../utils/getChartInput';
 import { createDataviz } from './utils';
+import { useTranslation } from 'react-i18next';
+import { WidgetItem } from '../../modules/widgets/types';
 
 type Props = {
   /** Widget identifier */
@@ -41,6 +44,8 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
   const containerRef = useRef(null);
   const loaderRef = useRef(null);
   const datavizRef = useRef(null);
+
+  const { t } = useTranslation();
 
   const [inViewRef, inView] = useInView({
     delay: OBSERVER_DELAY,
@@ -57,7 +62,13 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
     error,
     data,
     widget,
-  } = useSelector((state: RootState) => getWidget(state, id));
+  } = useSelector((state: RootState) =>
+    getWidget(state, id)
+  ) as WidgetItem<ChartWidget>;
+
+  const { query: widgetQuery } = widget;
+  const isSavedQuery = typeof widgetQuery === 'string';
+
   const interimQuery = useSelector((state: RootState) =>
     getInterimQuery(state, id)
   );
@@ -75,7 +86,8 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
   const dashboardSettings = useSelector((state: RootState) =>
     themeSelectors.getActiveDashboardThemeSettings(state)
   );
-  const showVisualization = isConfigured && isInitialized && !isLoading;
+  const showVisualization =
+    isConfigured && isInitialized && !isLoading && !error;
   const chartData = interimQuery ? interimQuery : data;
 
   const getTimezone = useCallback((chartData) => {
@@ -97,27 +109,30 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
     [inViewRef]
   );
 
+  const tags = [];
+  if (isSavedQuery && disableInteractions) {
+    tags.push({ label: t('tags.saved_query'), variant: 'gray' });
+  }
+
   useEffect(() => {
     if (showVisualization && inView) {
       const widgetWithTheming = mergeSettingsWithFontFallback(
         chartTitlesFont,
-        widget as ChartWidget
+        widget
       );
+
       datavizRef.current = createDataviz({
         widget: widgetWithTheming,
         theme,
+        tags,
         container: containerRef.current,
         presentationTimezone: getTimezone(chartData),
         dashboardSettings: dashboardSettings.settings,
       });
 
-      if (error) {
-        datavizRef.current.error(error.message, error.title);
-      } else {
-        datavizRef.current.render(getChartInput(chartData));
-      }
+      datavizRef.current.render(getChartInput(chartData));
     }
-  }, [showVisualization, inView, error, theme, settings]);
+  }, [showVisualization, inView, theme, settings, chartData]);
 
   useEffect(() => {
     if (!editorPubSub) return;
@@ -145,6 +160,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
 
   return (
     <>
+      {error && <ErrorWidget header={error.title} message={error.message} />}
       {showVisualization ? (
         <Container
           data-testid="chart-widget-container"

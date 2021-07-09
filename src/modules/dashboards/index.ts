@@ -1,5 +1,5 @@
 import dashboardsReducer from './reducer';
-import { dashboardsSaga } from './saga';
+import { dashboardsSaga } from './dashboardsSaga';
 import {
   createDashboard,
   editDashboard,
@@ -30,6 +30,7 @@ import {
   clearTagsPool,
   setTagsFilters,
   setTagsFiltersPublic,
+  resetDashboardFilters,
 } from './actions';
 
 import {
@@ -54,6 +55,7 @@ import {
   getTagsFilter,
   getCurrentDashboardChartsCount,
   getDashboardAccessKeyRegenerating,
+  dashboardsSelectors,
 } from './selectors';
 import {
   DashboardSettings,
@@ -121,4 +123,6 @@ export {
   setTagsFiltersPublic,
   createDashboardSettings,
   extendDashboardSettings,
+  dashboardsSelectors,
+  resetDashboardFilters,
 };

@@ -23,6 +23,12 @@ export type FilterSettings = {
   propertyValue: string | string[];
 };
 
+export type VisualizationSettings = {
+  visualizationType: PickerWidgets;
+  chartSettings: Record<string, any>;
+  widgetSettings: Record<string, any>;
+};
+
 export interface BaseWidget {
   id: string;
   position: GridPosition;
@@ -33,11 +39,7 @@ export interface ChartWidget extends BaseWidget {
   query: string | Query;
   datePickerId?: string;
   filterIds?: string[];
-  settings: {
-    visualizationType: PickerWidgets;
-    chartSettings: Record<string, any>;
-    widgetSettings: Record<string, any>;
-  };
+  settings: VisualizationSettings;
 }
 
 export interface TextWidget extends BaseWidget {
@@ -91,8 +93,8 @@ export type WidgetError = {
   code?: WidgetErrors;
 };
 
-export type WidgetItem = {
-  widget: Widget;
+export type WidgetItem<T = Widget> = {
+  widget: T;
   isActive: boolean;
   isConfigured: boolean;
   isInitialized: boolean;

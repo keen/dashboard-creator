@@ -24,6 +24,9 @@ const render = (overProps: any = {}, storeState: any = {}) => {
         ],
       },
     },
+    queries: {
+      interimQueries: {},
+    },
     ...storeState,
   });
 
@@ -108,4 +111,38 @@ test('allows user with privilages to edit dashboard ', () => {
   fireEvent.click(button);
 
   expect(props.onEditDashboard).toHaveBeenCalled();
+});
+
+test('clear filters button is not visible when no filters applied', () => {
+  const {
+    wrapper: { queryByText },
+  } = render();
+
+  expect(queryByText('viewer.clear_filters')).not.toBeInTheDocument();
+});
+
+test('shows clear filters button when filters are applied', () => {
+  const {
+    wrapper: { getByText },
+  } = render(
+    {},
+    {
+      queries: {
+        interimQueries: {
+          '@widget/id': {
+            query: {
+              analysis_type: 'count',
+              event_collection: 'logins',
+              timezone: 'Africa/Nairobi',
+              timeframe: 'this_14_days',
+            },
+            result: [],
+          },
+        },
+      },
+    }
+  );
+
+  const button = getByText('viewer.clear_filters');
+  expect(button).toBeInTheDocument();
 });

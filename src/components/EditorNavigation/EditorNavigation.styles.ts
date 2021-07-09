@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { space, SpaceProps } from 'styled-system';
 
 export const Container = styled.div`
-  padding: 30px 0;
+  padding: 0 0 30px 0;
   display: flex;
 `;
 

@@ -143,6 +143,7 @@ test('renders visualization', () => {
         theme: {},
       },
       widget: {
+        tags: [],
         card: {
           backgroundColor: 'transparent',
           borderColor: 'transparent',
@@ -150,6 +151,33 @@ test('renders visualization', () => {
           borderWidth: 0,
           hasShadow: false,
           padding: 20,
+        },
+        legend: {
+          typography: {
+            fontColor: '#1D2729',
+            fontFamily: 'Gangster Grotesk, Arial, Helvetica, sans-serif',
+            fontSize: 12,
+            fontStyle: 'normal',
+            fontWeight: 'normal',
+          },
+        },
+        subtitle: {
+          typography: {
+            fontColor: '#1D2729',
+            fontFamily: 'Gangster Grotesk, Arial, Helvetica, sans-serif',
+            fontSize: 14,
+            fontStyle: 'normal',
+            fontWeight: 'normal',
+          },
+        },
+        title: {
+          typography: {
+            fontColor: '#27566D',
+            fontFamily: 'Gangster Grotesk, Arial, Helvetica, sans-serif',
+            fontSize: 20,
+            fontStyle: 'normal',
+            fontWeight: 'normal',
+          },
         },
       },
     })
@@ -165,6 +193,7 @@ test('do not renders visualization when widget is not in view', () => {
 
 test('renders error', () => {
   const errorMessage = 'Invalid access key';
+
   const storeState = {
     widgets: {
       items: {
@@ -196,9 +225,12 @@ test('renders error', () => {
       },
     },
   };
-  render(storeState);
 
-  expect(errorMock).toHaveBeenCalledWith(errorMessage, undefined);
+  const {
+    wrapper: { getByText },
+  } = render(storeState);
+
+  expect(getByText(errorMessage)).toBeInTheDocument();
 });
 
 test('renders chart placeholder', () => {

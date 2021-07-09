@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/prefer-as-const */
 import { getColorSuggestions } from './getColorSuggestions';
 import { DEFAULT_BACKGROUND_COLOR } from '../../../constants';
 
