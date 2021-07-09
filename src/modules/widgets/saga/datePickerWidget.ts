@@ -11,7 +11,7 @@ import {
   setWidgetState,
   initializeChartWidget,
 } from '../actions';
-import { getWidgetSettings } from '../selectors';
+import { getWidget, getWidgetSettings } from '../selectors';
 
 import {
   openEditor,
@@ -101,8 +101,12 @@ export function* getDatePickerWidgetConnections(
     settings: { widgets: widgetsIds },
   } = getDashboard(state, dashboardId);
 
-  const widgets: DatePickerConnection[] = widgetsIds
-    .map((widgetId) => getWidgetSettings(state, widgetId))
+  const widgetsWithoutErrors = widgetsIds
+    .map((widgetId) => getWidget(state, widgetId))
+    .filter((widget) => !widget.error)
+    .map((widget) => widget.widget);
+
+  const widgets: DatePickerConnection[] = widgetsWithoutErrors
     .sort((widgetA, widgetB) => widgetA.position.y - widgetB.position.y)
     .filter(
       ({ type, datePickerId }: ChartWidget) =>
