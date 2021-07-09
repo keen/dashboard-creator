@@ -9,6 +9,7 @@ import React, {
 import { useSelector } from 'react-redux';
 import { useInView } from 'react-intersection-observer';
 import { Loader } from '@keen.io/ui-core';
+import { ErrorWidget } from '@keen.io/widgets';
 import { colors } from '@keen.io/colors';
 
 import WidgetPlaceholder from '../WidgetPlaceholder';
@@ -85,7 +86,8 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
   const dashboardSettings = useSelector((state: RootState) =>
     themeSelectors.getActiveDashboardThemeSettings(state)
   );
-  const showVisualization = isConfigured && isInitialized && !isLoading;
+  const showVisualization =
+    isConfigured && isInitialized && !isLoading && !error;
   const chartData = interimQuery ? interimQuery : data;
 
   const getTimezone = useCallback((chartData) => {
@@ -128,13 +130,9 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
         dashboardSettings: dashboardSettings.settings,
       });
 
-      if (error) {
-        datavizRef.current.error(error.message, error.title);
-      } else {
-        datavizRef.current.render(getChartInput(chartData));
-      }
+      datavizRef.current.render(getChartInput(chartData));
     }
-  }, [showVisualization, inView, error, theme, settings, chartData]);
+  }, [showVisualization, inView, theme, settings, chartData]);
 
   useEffect(() => {
     if (!editorPubSub) return;
@@ -162,6 +160,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
 
   return (
     <>
+      {error && <ErrorWidget header={error.title} message={error.message} />}
       {showVisualization ? (
         <Container
           data-testid="chart-widget-container"

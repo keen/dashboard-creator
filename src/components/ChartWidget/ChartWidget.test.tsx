@@ -193,6 +193,7 @@ test('do not renders visualization when widget is not in view', () => {
 
 test('renders error', () => {
   const errorMessage = 'Invalid access key';
+
   const storeState = {
     widgets: {
       items: {
@@ -224,9 +225,12 @@ test('renders error', () => {
       },
     },
   };
-  render(storeState);
 
-  expect(errorMock).toHaveBeenCalledWith(errorMessage, undefined);
+  const {
+    wrapper: { getByText },
+  } = render(storeState);
+
+  expect(getByText(errorMessage)).toBeInTheDocument();
 });
 
 test('renders chart placeholder', () => {
