@@ -11,7 +11,8 @@ import SettingsHeadline from '../../../SettingsHeadline';
 import {
   mapInputTypographySettings,
   mapOutputTypographySettings,
-} from '../../utils';
+} from '../../../../utils';
+
 import { ThemeModalContext } from '../../../../../ThemeEditorModal/ThemeEditorModal';
 
 import { AVAILABLE_FONT_SIZES, LEGEND_LABELS_SETTINGS } from './constants';
