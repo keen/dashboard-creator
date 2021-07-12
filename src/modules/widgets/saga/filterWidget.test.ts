@@ -52,7 +52,7 @@ import {
   APPLY_EDITOR_SETTINGS,
   CLOSE_EDITOR,
   SET_EVENT_STREAM,
-  setName,
+  filterActions,
 } from '../../filter';
 import { getWidgetSettings, getWidget } from '../../widgets';
 import {
@@ -640,7 +640,7 @@ describe('editFilterWidget()', () => {
     });
 
     test('set filter widget name', (result) => {
-      expect(result).toEqual(put(setName('filterWidgetName')));
+      expect(result).toEqual(put(filterActions.setName('filterWidgetName')));
     });
 
     test('updates widget distinction', (result) => {

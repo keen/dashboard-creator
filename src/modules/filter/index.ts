@@ -26,6 +26,20 @@ import {
 } from './constants';
 import { getFilterSettings } from './selectors';
 
+const filterActions = {
+  openEditor,
+  closeEditor,
+  resetEditor,
+  applySettings,
+  updateConnection,
+  setEventStream,
+  setTargetProperty,
+  setEditorConnections,
+  setEditorDetachedConnections,
+  setupDashboardEventStreams,
+  setName,
+};
+
 export {
   getFilterSettings,
   filterReducer,
@@ -49,4 +63,5 @@ export {
   CLOSE_EDITOR,
   ReducerState,
   SchemaPropertiesList,
+  filterActions,
 };

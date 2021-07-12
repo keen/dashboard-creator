@@ -36,7 +36,7 @@ import {
   APPLY_EDITOR_SETTINGS,
   CLOSE_EDITOR,
   getFilterSettings,
-  setName,
+  filterActions,
 } from '../../filter';
 
 import {
@@ -452,7 +452,7 @@ export function* editFilterWidget({
   yield put(setEventStream(eventStream));
   yield put(setTargetProperty(targetProperty));
   yield put(setEditorConnections(widgetConnections));
-  yield put(setName(name));
+  yield put(filterActions.setName(name));
 
   yield call(
     updateWidgetsDistinction,

@@ -21,6 +21,7 @@ import {
   APPLY_EDITOR_SETTINGS,
   CLOSE_EDITOR,
   DatePickerConnection,
+  datePickerActions,
 } from '../../datePicker';
 
 import {
@@ -32,7 +33,6 @@ import {
 
 import { ChartWidget, DatePickerWidget } from '../types';
 import { appSelectors } from '../../app';
-import { setName } from '../../datePicker/actions';
 
 /**
  * Apply date picker connections updates to connected widgets
@@ -258,7 +258,7 @@ export function* editDatePickerWidget({
     );
 
   yield all([...fadeOutWidgets, ...titleCoverWidgets, ...highlightWidgets]);
-  yield put(setName(name));
+  yield put(datePickerActions.setName(name));
   yield put(openEditor());
 
   const action = yield take([APPLY_EDITOR_SETTINGS, CLOSE_EDITOR]);

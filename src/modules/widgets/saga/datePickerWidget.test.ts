@@ -41,9 +41,9 @@ import {
   setEditorConnections,
   APPLY_EDITOR_SETTINGS,
   CLOSE_EDITOR,
+  datePickerActions,
 } from '../../datePicker';
 import { appSelectors } from '../../app';
-import { setName } from '../../datePicker/actions';
 
 describe('clearDatePickerModifiers()', () => {
   describe('Scenario 1: Resets date picker state and re-initialize connected chart widgets', () => {
@@ -355,7 +355,7 @@ describe('editDatePickerWidget()', () => {
     });
 
     test('set date picker widget name', (result) => {
-      expect(result).toEqual(put(setName('datePickerName')));
+      expect(result).toEqual(put(datePickerActions.setName('datePickerName')));
     });
 
     test('opens date picker editor', (result) => {

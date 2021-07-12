@@ -22,13 +22,11 @@ import WidgetConnections from '../WidgetConnections';
 
 import {
   getDatePickerSettings,
-  applySettings,
-  updateConnection,
+  datePickerActions,
 } from '../../modules/datePicker';
 
 import { TOOLTIP_MOTION } from '../../constants';
 import { Field } from '../FilterSettings/FilterSettings.styles';
-import { setName } from '../../modules/datePicker/actions';
 
 type Props = {
   onCancel: () => void;
@@ -109,7 +107,9 @@ const DatePickerSettings: FC<Props> = ({ onCancel }) => {
                 })
               )}
               onUpdateConnection={(widgetId, isConnected) =>
-                dispatch(updateConnection(widgetId, isConnected))
+                dispatch(
+                  datePickerActions.updateConnection(widgetId, isConnected)
+                )
               }
             />
           </Connections>
@@ -120,8 +120,8 @@ const DatePickerSettings: FC<Props> = ({ onCancel }) => {
           <Button
             variant="secondary"
             onClick={() => {
-              dispatch(setName(filterName));
-              dispatch(applySettings());
+              dispatch(datePickerActions.setName(filterName));
+              dispatch(datePickerActions.applySettings());
             }}
           >
             {t('date_picker_settings.confirm_button')}
