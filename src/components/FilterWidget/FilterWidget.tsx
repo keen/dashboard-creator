@@ -4,12 +4,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { transparentize } from 'polished';
 import { Icon } from '@keen.io/icons';
 import { colors } from '@keen.io/colors';
-import { Dropdown, Portal, Loader, Button } from '@keen.io/ui-core';
+import { Dropdown, Portal, Loader, Button, Title } from '@keen.io/ui-core';
 import { FixedSizeList as ReactWindowList } from 'react-window';
 
 import {
   Container,
-  Title,
   DropdownContainer,
   TitleContainer,
   FilterButtonSecondary,
@@ -20,6 +19,7 @@ import {
   SelectedPropertiesNumber,
   DropdownHeader,
   IconWrapper,
+  TitleWrapper,
 } from './FilterWidget.styles';
 
 import { getWidget } from '../../modules/widgets';
@@ -183,14 +183,16 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
                 height={13}
               />
             </IconWrapper>
-            <Title role="heading">
-              {filterWidget.settings.name}
-              {widget.isActive && (
-                <SelectedPropertiesNumber data-testid="applied-properties-number">
-                  {widget.data.filter.propertyValue.length}
-                </SelectedPropertiesNumber>
-              )}
-            </Title>
+            <TitleWrapper role="heading">
+              <Title variant="body-bold">
+                {filterWidget.settings.name}
+                {widget.isActive && (
+                  <SelectedPropertiesNumber data-testid="applied-properties-number">
+                    {widget.data.filter.propertyValue.length}
+                  </SelectedPropertiesNumber>
+                )}
+              </Title>
+            </TitleWrapper>
           </TitleContainer>
         }
       </Container>

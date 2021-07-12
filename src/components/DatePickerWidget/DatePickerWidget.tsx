@@ -26,18 +26,22 @@ import {
   TIME_PICKER_CLASS,
   MousePositionedTooltip,
   TimezoneError,
+  Title,
 } from '@keen.io/ui-core';
+import { BodyText } from '@keen.io/typography';
 
 import TimeframeLabel from '../TimeframeLabel';
 import {
   Container,
-  Title,
+  TitleWrapper,
   Bar,
   SettingsContainer,
   TitleContainer,
   ErrorContainer,
   IconWrapper,
 } from './DatePickerWidget.styles';
+import TimezoneLoader from './components/TimezoneLoader';
+import { DEFAULT_TIMEFRAME, ABSOLUTE_TAB, RELATIVE_TAB } from './constants';
 
 import {
   setDatePickerModifiers,
@@ -52,11 +56,7 @@ import { AppContext } from '../../contexts';
 
 import { getEventPath, getRelativeBoundingRect } from '../../utils';
 
-import { DEFAULT_TIMEFRAME, ABSOLUTE_TAB, RELATIVE_TAB } from './constants';
-
-import { BodyText } from '@keen.io/typography';
 import { getTimezoneState } from '../../modules/timezone';
-import TimezoneLoader from './components/TimezoneLoader';
 import { DEFAULT_TIMEZONE, DROPDOWN_CONTAINER_ID } from '../../constants';
 
 type Props = {
@@ -173,9 +173,11 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
                 height={13}
               />
             </IconWrapper>
-            <Title role="heading">
-              {datePickerWidget.settings.name || t('date_picker_widget.name')}
-            </Title>
+            <TitleWrapper role="heading">
+              <Title variant="body-bold">
+                {datePickerWidget.settings.name || t('date_picker_widget.name')}
+              </Title>
+            </TitleWrapper>
           </TitleContainer>
         )}
       </Container>

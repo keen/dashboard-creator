@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 
-import { DatePickerContent, FiltersContent } from './components';
+import { DatePickerContent, FiltersContent, WidgetFilter } from './components';
 
 import { getInterimQuery } from '../../modules/queries';
 import {
@@ -9,10 +9,9 @@ import {
   FilterWidget,
   getWidget,
 } from '../../modules/widgets';
-
 import { RootState } from '../../rootReducer';
+import { WidgetItem } from '../../modules/widgets/types';
 
-import { WidgetFilter } from './components';
 import { Container } from './ChartWidgetFilter.styles';
 
 import { FilterMeta } from './types';
@@ -32,10 +31,9 @@ const ChartWidgetFilter: FC<Props> = ({ widgetId }) => {
       const { data, isActive, widget: datePickerWidget } = getWidget(
         state,
         widget.datePickerId
-      );
+      ) as WidgetItem<DatePickerWidget>;
       if (isActive) {
-        const filterWidget = datePickerWidget as DatePickerWidget;
-        return { data, name: filterWidget.settings.name };
+        return { data, name: datePickerWidget.settings.name };
       }
       return null;
     }
@@ -44,10 +42,12 @@ const ChartWidgetFilter: FC<Props> = ({ widgetId }) => {
 
   const filtersData = useSelector((state: RootState) => {
     if ('filterIds' in widget && widget.filterIds.length > 0) {
-      const filters = widget.filterIds.reduce(
+      return widget.filterIds.reduce(
         (activeFilters: FilterMeta[], id: string) => {
-          const { data, isActive, widget } = getWidget(state, id);
-          const filterWidget = widget as FilterWidget;
+          const { data, isActive, widget } = getWidget(
+            state,
+            id
+          ) as WidgetItem<FilterWidget>;
           if (isActive && data?.filter) {
             const { propertyName, propertyValue } = data.filter;
             return [
@@ -55,19 +55,15 @@ const ChartWidgetFilter: FC<Props> = ({ widgetId }) => {
               {
                 propertyName,
                 propertyValue,
-                filterName: filterWidget.settings.name,
+                filterName: widget.settings.name,
               },
             ];
           }
-
           return activeFilters;
         },
         []
       );
-
-      return filters;
     }
-
     return [];
   });
 

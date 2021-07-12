@@ -27,11 +27,8 @@ export const TitleContainer = styled.div`
   box-sizing: border-box;
 `;
 
-export const Title = styled.div`
-  font-size: 14px;
+export const TitleWrapper = styled.div`
   margin-left: 5px;
-  font-family: 'Lato Bold', sans-serif;
-  color: ${colors.blue[500]};
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
