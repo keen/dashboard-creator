@@ -637,6 +637,96 @@ describe('getDatePickerWidgetConnections()', () => {
       ]);
     });
   });
+  describe('Scenario 2: Return date picker connections with widgets without errors', () => {
+    const dashboardId = '@dashboard/01';
+    const datePickerId = '@date-picker/01';
+
+    const state = {
+      widgets: {
+        items: {
+          '@widget/01': {
+            widget: {
+              id: '@widget/01',
+              type: 'visualization',
+              datePickerId: '@date-picker/01',
+              filterIds: [],
+              position: { y: 5 },
+              settings: {
+                widgetSettings: {},
+              },
+            },
+            data: {
+              query: {
+                analysis_type: 'count',
+                event_collection: 'purchases',
+              },
+            },
+          },
+          '@widget/02': {
+            widget: {
+              type: 'date-picker',
+              position: { y: 5 },
+            },
+          },
+          '@widget/03': {
+            error: {},
+            widget: {
+              id: '@widget/03',
+              type: 'visualization',
+              datePickerId: '@date-picker/01',
+              filterIds: [],
+              position: { y: 5 },
+              settings: {
+                widgetSettings: {},
+              },
+            },
+            data: {
+              query: {
+                analysis_type: 'count',
+                event_collection: 'purchases',
+              },
+            },
+          },
+        },
+      },
+      dashboards: {
+        items: {
+          [dashboardId]: {
+            settings: {
+              widgets: ['@widget/01', '@widget/02', '@widget/03'],
+            },
+          },
+        },
+      },
+    };
+
+    function* wrapper() {
+      return yield* getDatePickerWidgetConnections(
+        dashboardId,
+        datePickerId,
+        false
+      );
+    }
+
+    const test = sagaHelper(wrapper());
+
+    test('gets application state', (result) => {
+      expect(result).toEqual(select());
+
+      return state;
+    });
+
+    test('returns date picker widget connections', (result) => {
+      expect(result).toEqual([
+        {
+          isConnected: true,
+          positionIndex: 1,
+          title: null,
+          widgetId: '@widget/01',
+        },
+      ]);
+    });
+  });
 });
 
 describe('setDatePickerModifiers()', () => {
