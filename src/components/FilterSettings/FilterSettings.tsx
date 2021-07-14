@@ -243,7 +243,7 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
                 fontWeight="normal"
                 color={colors.white[500]}
               >
-                ${t('filter_settings.enter_filter_name_first')}
+                {t('filter_settings.enter_filter_name_first')}
               </BodyText>
             )}
             tooltipPortal={modalContainer}

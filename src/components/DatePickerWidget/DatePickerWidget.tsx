@@ -88,11 +88,19 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
   const [isOpen, setOpen] = useState(false);
   const [dropdown, setDropdown] = useState({ top: 0, left: 0, width: 0 });
   const [localData, setLocalData] = useState(initialData);
+  const MIN_DROPDOWN_WIDTH = 320;
 
   const containerRef = useRef(null);
   const dropdownContainerRef = useRef(null);
 
   const { timezones, isLoading, error } = useSelector(getTimezoneState);
+
+  const getDropdownXPositionThatFitsViewport = (left, right, dropdownWidth) => {
+    if (window && window.innerWidth < left + dropdownWidth) {
+      return right - dropdownWidth;
+    }
+    return left;
+  };
 
   const outsideClick = useCallback(
     (e) => {
@@ -110,16 +118,25 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
 
   useEffect(() => {
     if (isOpen && containerRef.current) {
-      const { left, bottom, width } = getRelativeBoundingRect(
-        DROPDOWN_CONTAINER_ID,
-        containerRef.current
-      );
+      const {
+        left,
+        right,
+        bottom,
+        width: parentWidth,
+      } = getRelativeBoundingRect(DROPDOWN_CONTAINER_ID, containerRef.current);
+
+      const dropdownWidth =
+        parentWidth > MIN_DROPDOWN_WIDTH ? parentWidth : MIN_DROPDOWN_WIDTH;
 
       setDropdown((state) => ({
         ...state,
-        left,
+        left: getDropdownXPositionThatFitsViewport(
+          left,
+          right,
+          MIN_DROPDOWN_WIDTH
+        ),
         top: bottom,
-        width,
+        width: dropdownWidth,
       }));
     }
 

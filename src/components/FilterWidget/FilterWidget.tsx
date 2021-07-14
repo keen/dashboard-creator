@@ -65,7 +65,7 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
   const dispatch = useDispatch();
 
   const widget = useSelector((state: RootState) => getWidget(state, id));
-
+  const MIN_DROPDOWN_WIDTH = 220;
   const filterWidget = widget.widget as FilterWidget;
   const [isOpen, setOpen] = useState(false);
   const [dropdown, setDropdown] = useState({ x: 0, y: 0, width: 0 });
@@ -75,6 +75,13 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
 
   const containerRef = useRef(null);
   const dropdownContainerRef = useRef(null);
+
+  const getDropdownXPositionThatFitsViewport = (left, right, dropdownWidth) => {
+    if (window && window.innerWidth < left + dropdownWidth) {
+      return right - dropdownWidth;
+    }
+    return left;
+  };
 
   useEffect(() => {
     const outsideClick = (e) => {
@@ -88,16 +95,25 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
     };
 
     if (isOpen && containerRef.current) {
-      const { left, bottom, width } = getRelativeBoundingRect(
-        DROPDOWN_CONTAINER_ID,
-        containerRef.current
-      );
+      const {
+        left,
+        bottom,
+        right,
+        width: parentWidth,
+      } = getRelativeBoundingRect(DROPDOWN_CONTAINER_ID, containerRef.current);
+
+      const dropdownWidth =
+        parentWidth > MIN_DROPDOWN_WIDTH ? parentWidth : MIN_DROPDOWN_WIDTH;
 
       setDropdown((state) => ({
         ...state,
-        x: left,
+        x: getDropdownXPositionThatFitsViewport(
+          left,
+          right,
+          MIN_DROPDOWN_WIDTH
+        ),
         y: bottom,
-        width,
+        width: dropdownWidth,
       }));
     }
 
