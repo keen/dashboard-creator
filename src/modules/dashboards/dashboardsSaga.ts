@@ -21,7 +21,6 @@ import {
   fetchDashboardListError,
   registerDashboard,
   updateDashboard,
-  deleteDashboardSuccess,
   updateDashboardMeta,
   removeWidgetFromDashboard as removeWidgetFromDashboardAction,
   initializeDashboardWidgets as initializeDashboardWidgetsAction,
@@ -31,14 +30,11 @@ import {
   saveDashboardMeta as saveDashboardMetaAction,
   viewDashboard as viewDashboardAction,
   viewPublicDashboard as viewPublicDashboardAction,
-  deleteDashboard as deleteDashboardAction,
   setDashboardPublicAccess as setDashboardPublicAccessAction,
   regenerateAccessKey as regenerateAccessKeyAction,
   regenerateAccessKeySuccess,
   regenerateAccessKeyError,
   exportDashboardToHtml as exportDashboardToHtmlAction,
-  showDeleteConfirmation,
-  hideDeleteConfirmation,
   saveDashboardMetaSuccess,
   saveDashboardMetaError,
   setDashboardList,
@@ -55,6 +51,8 @@ import {
   saveDashboard,
   cloneDashboard,
   resetDashboardFilters,
+  deleteAccessKey,
+  deleteDashboard,
 } from './saga';
 
 import { serializeDashboard } from './serializers';
@@ -108,8 +106,6 @@ import {
   VIEW_DASHBOARD,
   VIEW_PUBLIC_DASHBOARD,
   SHOW_DELETE_CONFIRMATION,
-  CONFIRM_DASHBOARD_DELETE,
-  HIDE_DELETE_CONFIRMATION,
   SET_DASHBOARD_LIST_ORDER,
   DASHBOARD_LIST_ORDER_KEY,
   SET_DASHBOARD_PUBLIC_ACCESS,
@@ -269,14 +265,6 @@ export function* updateAccessKey(dashboardId: string) {
   });
 }
 
-export function* deleteAccessKey(publicAcessKey: string) {
-  const client = yield getContext(KEEN_ANALYSIS);
-  yield client.del({
-    url: client.url('projectId', `keys/${publicAcessKey}`),
-    api_key: client.masterKey(),
-  });
-}
-
 export function* updateAccessKeyOptions() {
   const state: RootState = yield select();
   const dashboardId = yield select(appSelectors.getActiveDashboard);
@@ -312,63 +300,6 @@ export function* createDashboard({
   yield put(push(ROUTES.EDITOR));
 
   yield put(saveDashboardAction(dashboardId));
-}
-
-export function* deleteDashboard({
-  payload,
-}: ReturnType<typeof deleteDashboardAction>) {
-  const { dashboardId } = payload;
-  const { publicAccessKey } = yield select(getDashboardMeta, dashboardId);
-  yield put(showDeleteConfirmation(dashboardId));
-  const notificationManager = yield getContext(NOTIFICATION_MANAGER);
-
-  const action = yield take([
-    CONFIRM_DASHBOARD_DELETE,
-    HIDE_DELETE_CONFIRMATION,
-  ]);
-
-  if (action.type === CONFIRM_DASHBOARD_DELETE) {
-    yield put(hideDeleteConfirmation());
-    try {
-      const blobApi = yield getContext(BLOB_API);
-      yield blobApi.deleteDashboard(dashboardId);
-
-      const activeDashboardId = yield select(appSelectors.getActiveDashboard);
-      if (activeDashboardId) {
-        yield put(push(ROUTES.MANAGEMENT));
-        yield put(appActions.setActiveDashboard(null));
-      }
-
-      yield put(deleteDashboardSuccess(dashboardId));
-      yield put(themeActions.removeDashboardTheme({ dashboardId }));
-
-      yield notificationManager.showNotification({
-        type: 'info',
-        message: 'notifications.dashboard_delete_success',
-        autoDismiss: true,
-      });
-    } catch (err) {
-      yield notificationManager.showNotification({
-        type: 'error',
-        message: 'notifications.dashboard_delete_error',
-        showDismissButton: true,
-        autoDismiss: false,
-      });
-    }
-
-    try {
-      if (publicAccessKey) {
-        yield call(deleteAccessKey, publicAccessKey);
-      }
-    } catch (err) {
-      yield notificationManager.showNotification({
-        type: 'error',
-        message: 'dashboard_share.access_key_api_error',
-        showDismissButton: true,
-        autoDismiss: false,
-      });
-    }
-  }
 }
 
 export function* removeWidgetFromDashboard({
