@@ -62,9 +62,8 @@ const WidgetTiles: FC<Props> = ({ settings, onUpdateSettings, colors }) => {
 
   const currentEditTheme = useSelector(themeSelectors.getCurrentEditTheme);
   const colorSuggestions = getColorSuggestions(colors, currentEditTheme);
-  const [borderWidthDropdownIsOpen, setBorderWidthDropdownIsOpen] = useState(
-    false
-  );
+  const [borderWidthDropdownIsOpen, setBorderWidthDropdownIsOpen] =
+    useState(false);
 
   const {
     setPosition: setBorderWidthDropdownPosition,

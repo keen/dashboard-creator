@@ -86,12 +86,10 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
     widgetType
   );
 
-  const [
-    widgetCustomization,
-    setCustomizationSettings,
-  ] = useState<SerializedSettings>(() =>
-    serializeInputSettings(widgetType, chartSettings, widgetSettings)
-  );
+  const [widgetCustomization, setCustomizationSettings] =
+    useState<SerializedSettings>(() =>
+      serializeInputSettings(widgetType, chartSettings, widgetSettings)
+    );
 
   const onApplyConfiguration = useCallback(() => {
     const availableWidgets = getAvailableWidgets(querySettings);

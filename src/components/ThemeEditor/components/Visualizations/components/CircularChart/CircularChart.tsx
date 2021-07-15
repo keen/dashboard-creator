@@ -54,9 +54,8 @@ const CircularChart: FC<Props> = ({ settings, colorSuggestions, onChange }) => {
             fontSizeSuggestions={VALUES_FONT_SIZES}
             availableSettings={{ bold: true, italic: true, fontSize: true }}
             onChange={(typographySettings) => {
-              const mappedLabelsTypography = mapOutputTypographySettings(
-                typographySettings
-              );
+              const mappedLabelsTypography =
+                mapOutputTypographySettings(typographySettings);
               const updatedSettings: Partial<Theme> = {
                 pie: {
                   labels: {
@@ -105,9 +104,8 @@ const CircularChart: FC<Props> = ({ settings, colorSuggestions, onChange }) => {
                     ...settings.donut.total,
                     label: {
                       ...settings.donut.total.label,
-                      typography: mapOutputTypographySettings(
-                        typographySettings
-                      ),
+                      typography:
+                        mapOutputTypographySettings(typographySettings),
                     },
                   },
                 },
@@ -145,9 +143,8 @@ const CircularChart: FC<Props> = ({ settings, colorSuggestions, onChange }) => {
                     ...settings.donut.total,
                     value: {
                       ...settings.donut.total.value,
-                      typography: mapOutputTypographySettings(
-                        typographySettings
-                      ),
+                      typography:
+                        mapOutputTypographySettings(typographySettings),
                     },
                   },
                 },

@@ -53,14 +53,10 @@ test('allows user to set "fontSize" for values', () => {
 
   fireEvent.click(fontSizeElement);
 
-  const {
-    fontFamily: _pieFontFamily,
-    ...pieLabelsTypography
-  } = settings.pie.labels.typography;
-  const {
-    fontFamily: _donutFontFamily,
-    ...donutLabelsTypography
-  } = settings.donut.labels.typography;
+  const { fontFamily: _pieFontFamily, ...pieLabelsTypography } =
+    settings.pie.labels.typography;
+  const { fontFamily: _donutFontFamily, ...donutLabelsTypography } =
+    settings.donut.labels.typography;
 
   expect(onChange).toHaveBeenCalledWith({
     ...settings,
@@ -97,10 +93,8 @@ test('allows user to set "bold" text for donut total label', () => {
 
   fireEvent.click(element);
 
-  const {
-    fontFamily: _donutFontFamily,
-    ...donutLabelsTypography
-  } = settings.donut.total.label.typography;
+  const { fontFamily: _donutFontFamily, ...donutLabelsTypography } =
+    settings.donut.total.label.typography;
 
   expect(onChange).toHaveBeenCalledWith({
     ...settings,
@@ -131,10 +125,8 @@ test('allows user to set "italic" text for donut total value', () => {
 
   fireEvent.click(element);
 
-  const {
-    fontFamily: _donutFontFamily,
-    ...donutLabelsTypography
-  } = settings.donut.total.value.typography;
+  const { fontFamily: _donutFontFamily, ...donutLabelsTypography } =
+    settings.donut.total.value.typography;
 
   expect(onChange).toHaveBeenCalledWith({
     ...settings,

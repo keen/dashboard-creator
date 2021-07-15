@@ -11,7 +11,11 @@ const useMarkerRef = (
       isSticky,
     };
 
-  const { ref: inViewRef, inView, entry } = useInView({
+  const {
+    ref: inViewRef,
+    inView,
+    entry,
+  } = useInView({
     threshold: 1,
   });
 

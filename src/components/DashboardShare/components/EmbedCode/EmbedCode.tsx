@@ -79,11 +79,8 @@ const EmbedCode: FC<Props> = ({ dashboardId, isPublic }) => {
       if (tooltipHide.current) clearTimeout(tooltipHide.current);
       copyToClipboard(value);
 
-      const {
-        top,
-        left,
-        height,
-      }: ClientRect = containerRef.current.getBoundingClientRect();
+      const { top, left, height }: ClientRect =
+        containerRef.current.getBoundingClientRect();
 
       const tooltipX = e.pageX - left - window.scrollX;
       const tooltipY = e.pageY - top - height - window.scrollY;
