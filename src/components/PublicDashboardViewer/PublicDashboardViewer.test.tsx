@@ -57,6 +57,9 @@ const render = (storeState: any = {}, overProps: any = {}) => {
     widgets: {
       items: {},
     },
+    queries: {
+      interimQueries: {},
+    },
     ...storeState,
   };
 

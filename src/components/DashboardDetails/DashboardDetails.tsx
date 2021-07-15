@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Icon } from '@keen.io/icons';
 import { Badge } from '@keen.io/ui-core';
+import { BodyText } from '@keen.io/typography';
 import { colors } from '@keen.io/colors';
 
 import DashboardViewSwitch from '../DashboardViewSwitch';
@@ -13,6 +14,7 @@ import {
   Header,
   BackButton,
   BackText,
+  Container,
 } from './DashboardDetails.styles';
 
 import { backMotion } from './motion';
@@ -40,7 +42,7 @@ const DashboardDetails: FC<Props> = ({
   const { t } = useTranslation();
 
   return (
-    <div>
+    <Container>
       <Header>
         {useDashboardSwitcher ? (
           <DashboardViewSwitch title={title} />
@@ -68,10 +70,14 @@ const DashboardDetails: FC<Props> = ({
           <motion.div variants={backMotion}>
             <Icon type="button-arrow-left" fill={colors.blue[300]} />
           </motion.div>
-          <BackText>{t('dashboard_details.back')}</BackText>
+          <BackText>
+            <BodyText variant="body2" color={colors.blue[200]}>
+              {t('dashboard_details.back')}
+            </BodyText>
+          </BackText>
         </BackButton>
       )}
-    </div>
+    </Container>
   );
 };
 

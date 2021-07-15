@@ -6,6 +6,9 @@ import { DEFAULT_BACKGROUND_COLOR } from '../../constants';
 
 export const Navigation = styled.div`
   padding: 30px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 export const Container = styled.div<{ background?: string }>`
@@ -45,4 +48,10 @@ export const DropdownContainer = styled.div`
   position: absolute;
   top: 0;
   left: 0;
+`;
+
+export const ClearFilters = styled.div`
+  padding: 0 10px;
+  cursor: pointer;
+  flex-shrink: 0;
 `;
