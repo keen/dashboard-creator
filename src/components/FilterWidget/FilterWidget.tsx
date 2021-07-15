@@ -40,6 +40,8 @@ type Props = {
   id: string;
   /** Disable chart interactions */
   disableInteractions?: boolean;
+  /** Minimal dropdown width */
+  minDropdownWidth?: number;
 };
 
 const Row = ({ data, index, style }) => {
@@ -60,12 +62,15 @@ const Row = ({ data, index, style }) => {
   );
 };
 
-const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
+const FilterWidget: FC<Props> = ({
+  id,
+  disableInteractions,
+  minDropdownWidth = 220,
+}) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
   const widget = useSelector((state: RootState) => getWidget(state, id));
-  const MIN_DROPDOWN_WIDTH = 220;
   const filterWidget = widget.widget as FilterWidget;
   const [isOpen, setOpen] = useState(false);
   const [dropdown, setDropdown] = useState({ x: 0, y: 0, width: 0 });
@@ -103,15 +108,11 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
       } = getRelativeBoundingRect(DROPDOWN_CONTAINER_ID, containerRef.current);
 
       const dropdownWidth =
-        parentWidth > MIN_DROPDOWN_WIDTH ? parentWidth : MIN_DROPDOWN_WIDTH;
+        parentWidth > minDropdownWidth ? parentWidth : minDropdownWidth;
 
       setDropdown((state) => ({
         ...state,
-        x: getDropdownXPositionThatFitsViewport(
-          left,
-          right,
-          MIN_DROPDOWN_WIDTH
-        ),
+        x: getDropdownXPositionThatFitsViewport(left, right, minDropdownWidth),
         y: bottom,
         width: dropdownWidth,
       }));

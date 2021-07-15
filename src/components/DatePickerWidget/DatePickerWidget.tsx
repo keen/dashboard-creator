@@ -64,9 +64,15 @@ type Props = {
   id: string;
   /** Disable chart interactions */
   disableInteractions?: boolean;
+  /** Minimal dropdown width */
+  minDropdownWidth?: number;
 };
 
-const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
+const DatePickerWidget: FC<Props> = ({
+  id,
+  disableInteractions,
+  minDropdownWidth = 320,
+}) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { modalContainer, widgetsConfiguration } = useContext(AppContext);
@@ -88,7 +94,6 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
   const [isOpen, setOpen] = useState(false);
   const [dropdown, setDropdown] = useState({ top: 0, left: 0, width: 0 });
   const [localData, setLocalData] = useState(initialData);
-  const MIN_DROPDOWN_WIDTH = 320;
 
   const containerRef = useRef(null);
   const dropdownContainerRef = useRef(null);
@@ -126,14 +131,14 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
       } = getRelativeBoundingRect(DROPDOWN_CONTAINER_ID, containerRef.current);
 
       const dropdownWidth =
-        parentWidth > MIN_DROPDOWN_WIDTH ? parentWidth : MIN_DROPDOWN_WIDTH;
+        parentWidth > minDropdownWidth ? parentWidth : minDropdownWidth;
 
       setDropdown((state) => ({
         ...state,
         left: getDropdownXPositionThatFitsViewport(
           left,
           right,
-          MIN_DROPDOWN_WIDTH
+          minDropdownWidth
         ),
         top: bottom,
         width: dropdownWidth,
