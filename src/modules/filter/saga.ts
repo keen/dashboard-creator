@@ -105,8 +105,11 @@ export function* getDetachedFilterWidgetConnections(
     settings: { widgets: widgetsIds },
   } = getDashboard(state, dashboardId);
 
-  const detachedWidgets: FilterConnection[] = widgetsIds
+  const widgetsWithoutErrors = widgetsIds
     .map((widgetId) => getWidget(state, widgetId))
+    .filter((widget) => !widget.error);
+
+  const detachedWidgets: FilterConnection[] = widgetsWithoutErrors
     .sort(
       (widgetA, widgetB) =>
         widgetA.widget.position.y - widgetB.widget.position.y

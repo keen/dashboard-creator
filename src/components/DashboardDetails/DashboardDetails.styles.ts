@@ -8,21 +8,18 @@ export const Header = styled.div`
 `;
 
 export const Title = styled.div`
-  font-family: 'Lato Bold', sans-serif;
+  font-family: 'Lato', sans-serif;
+  font-weight: bold;
   font-size: 20px;
   color: ${colors.blue[500]};
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;
 
 export const BackButton = styled(motion.div)`
   margin: 10px 0 0 10px;
-
   display: inline-flex;
-
-  color: ${colors.blue[200]};
-  font-family: 'Lato Regular', sans-serif;
-  font-size: 14px;
-  line-height: 17px;
-
   cursor: pointer;
 `;
 
@@ -32,4 +29,8 @@ export const BackText = styled.div`
 
 export const Tag = styled.div`
   margin-left: 10px;
+`;
+
+export const Container = styled.div`
+  min-width: 0;
 `;

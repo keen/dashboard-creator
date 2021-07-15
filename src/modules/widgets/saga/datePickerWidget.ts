@@ -361,16 +361,22 @@ export function* resetDatePickerWidgets({
 }: ReturnType<typeof resetDatePickerWidgetsAction>) {
   const { dashboardId } = payload;
   const state = yield select();
-  const {
-    settings: { widgets: widgetsIds },
-  } = getDashboard(state, dashboardId);
+  const dashboard = getDashboard(state, dashboardId);
 
-  const datePickersUpdate = widgetsIds
-    .map((widgetId) => getWidgetSettings(state, widgetId))
-    .filter(({ type }) => type === 'date-picker')
-    .map(({ id }) => put(setWidgetState(id, { isActive: false, data: null })));
+  if (dashboard) {
+    const {
+      settings: { widgets: widgetsIds },
+    } = dashboard;
 
-  yield all(datePickersUpdate);
+    const datePickersUpdate = widgetsIds
+      .map((widgetId) => getWidgetSettings(state, widgetId))
+      .filter(({ type }) => type === 'date-picker')
+      .map(({ id }) =>
+        put(setWidgetState(id, { isActive: false, data: null }))
+      );
+
+    yield all(datePickersUpdate);
+  }
 }
 
 /**

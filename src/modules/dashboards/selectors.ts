@@ -14,8 +14,15 @@ export const getDashboardsMetadata = ({ dashboards }: RootState) =>
 export const getDashboardsLoadState = ({ dashboards }: RootState) =>
   dashboards.metadata.isInitiallyLoaded;
 
-export const getDashboardSettings = ({ dashboards }: RootState, id: string) =>
-  dashboards.items[id].settings;
+export const getDashboardSettings = ({ dashboards }: RootState, id: string) => {
+  if (dashboards.items[id]) {
+    return dashboards.items[id].settings;
+  }
+
+  return {
+    widgets: [],
+  };
+};
 
 export const getDeleteConfirmation = ({ dashboards }: RootState) =>
   dashboards.deleteConfirmation;

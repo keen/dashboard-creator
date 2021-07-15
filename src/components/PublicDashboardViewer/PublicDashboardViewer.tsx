@@ -1,8 +1,9 @@
 import React, { FC } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence } from 'framer-motion';
 import { Title } from '@keen.io/ui-core';
+import { BodyText } from '@keen.io/typography';
 import { colors } from '@keen.io/colors';
 
 import {
@@ -12,10 +13,16 @@ import {
   Container,
   Content,
   DropdownContainer,
+  ClearFilters,
 } from './PublicDashboardViewer.styles';
 
-import { getDashboard, getDashboardMeta } from '../../modules/dashboards';
+import {
+  getDashboard,
+  getDashboardMeta,
+  resetDashboardFilters,
+} from '../../modules/dashboards';
 import { themeSelectors } from '../../modules/theme';
+import { getInterimQueriesLength } from '../../modules/queries';
 import { modalMotion } from './motion';
 
 import Grid from '../Grid';
@@ -33,6 +40,7 @@ type Props = {
 
 const PublicDashboardViewer: FC<Props> = ({ dashboardId }) => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const {
     widgetsId,
     isInitialized,
@@ -75,6 +83,10 @@ const PublicDashboardViewer: FC<Props> = ({ dashboardId }) => {
   const metadata = useSelector((state: RootState) =>
     getDashboardMeta(state, dashboardId)
   );
+  const hasInterimQueries = useSelector((state: RootState) => {
+    const interimQueriesLength = getInterimQueriesLength(state);
+    return !!interimQueriesLength;
+  });
 
   return (
     <Container background={pageBackground}>
@@ -85,6 +97,19 @@ const PublicDashboardViewer: FC<Props> = ({ dashboardId }) => {
               title={metadata.title}
               useDashboardSwitcher={false}
             />
+          )}
+          {hasInterimQueries && (
+            <ClearFilters
+              onClick={() => dispatch(resetDashboardFilters(dashboardId))}
+            >
+              <BodyText
+                variant="body2"
+                fontWeight="bold"
+                color={colors.blue[500]}
+              >
+                {t('viewer.clear_filters')}
+              </BodyText>
+            </ClearFilters>
           )}
         </Navigation>
         <AnimatePresence>

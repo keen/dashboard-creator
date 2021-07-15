@@ -612,14 +612,20 @@ export function* resetFilterWidgets({
 }: ReturnType<typeof resetFilterWidgetsAction>) {
   const { dashboardId } = payload;
   const state = yield select();
-  const {
-    settings: { widgets: widgetsIds },
-  } = getDashboard(state, dashboardId);
+  const dashboard = getDashboard(state, dashboardId);
 
-  const datePickersUpdate = widgetsIds
-    .map((widgetId) => getWidgetSettings(state, widgetId))
-    .filter(({ type }) => type === 'filter')
-    .map(({ id }) => put(setWidgetState(id, { isActive: false, data: null })));
+  if (dashboard) {
+    const {
+      settings: { widgets: widgetsIds },
+    } = dashboard;
 
-  yield all(datePickersUpdate);
+    const datePickersUpdate = widgetsIds
+      .map((widgetId) => getWidgetSettings(state, widgetId))
+      .filter(({ type }) => type === 'filter')
+      .map(({ id }) =>
+        put(setWidgetState(id, { isActive: false, data: null }))
+      );
+
+    yield all(datePickersUpdate);
+  }
 }
