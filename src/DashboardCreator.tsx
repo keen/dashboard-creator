@@ -238,6 +238,9 @@ export class DashboardCreator {
         timezone: {
           defaultTimezoneForQuery: defaultTimezoneForQuery,
           timezoneSelectionDisabled: !!this.disableTimezoneSelection,
+          isLoading: false,
+          error: false,
+          timezones: [],
         },
       },
       middleware: reduxMiddlewares,
