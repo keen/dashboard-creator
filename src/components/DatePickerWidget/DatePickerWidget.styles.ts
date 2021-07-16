@@ -25,13 +25,6 @@ export const TitleContainer = styled.div`
   box-sizing: border-box;
 `;
 
-export const TitleWrapper = styled.div`
-  margin: 2px 0 0 10px;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-`;
-
 export const Bar = styled.div`
   padding: 10px 20px;
   border-top: solid 1px ${colors.white[300]};
@@ -77,5 +70,6 @@ export const ErrorContainer = styled.div`
 
 export const IconWrapper = styled.div`
   flex-shrink: 0;
+  margin-right: 5px;
   display: inline-flex;
 `;
