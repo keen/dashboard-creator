@@ -41,39 +41,44 @@ type Props = {
 const PublicDashboardViewer: FC<Props> = ({ dashboardId }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { widgetsId, isInitialized, gridGap, pageBackground, error } =
-    useSelector((state: RootState) => {
-      const dashboard = getDashboard(state, dashboardId);
-      const themeSettings = themeSelectors.getThemeByDashboardId(
-        state,
-        dashboardId
-      );
+  const {
+    widgetsId,
+    isInitialized,
+    gridGap,
+    pageBackground,
+    error,
+  } = useSelector((state: RootState) => {
+    const dashboard = getDashboard(state, dashboardId);
+    const themeSettings = themeSelectors.getThemeByDashboardId(
+      state,
+      dashboardId
+    );
 
-      if (dashboard && themeSettings) {
-        const { initialized, error } = dashboard;
-        const {
-          settings: {
-            page: { gridGap, background },
-          },
-        } = themeSettings;
-
-        return {
-          isInitialized: initialized,
-          error,
-          pageBackground: background,
-          widgetsId: dashboard.settings?.widgets,
-          gridGap,
-        };
-      }
+    if (dashboard && themeSettings) {
+      const { initialized, error } = dashboard;
+      const {
+        settings: {
+          page: { gridGap, background },
+        },
+      } = themeSettings;
 
       return {
-        widgetsId: [],
-        error: dashboard?.error,
-        gridGap: null,
-        pageBackground: null,
-        isInitialized: false,
+        isInitialized: initialized,
+        error,
+        pageBackground: background,
+        widgetsId: dashboard.settings?.widgets,
+        gridGap,
       };
-    });
+    }
+
+    return {
+      widgetsId: [],
+      error: dashboard?.error,
+      gridGap: null,
+      pageBackground: null,
+      isInitialized: false,
+    };
+  });
 
   const metadata = useSelector((state: RootState) =>
     getDashboardMeta(state, dashboardId)

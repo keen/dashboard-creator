@@ -64,8 +64,10 @@ const Editor: FC<Props> = ({ dashboardId }) => {
   const [containerWidth, setContainerWidth] = useState(0);
   const [droppableWidget, setDroppableWidget] = useState(null);
   const { modalContainer, enableFixedEditorBar } = useContext(AppContext);
-  const { isOpen: chartWidgetEditorOpen, changeQueryConfirmation } =
-    useSelector(chartEditorSelectors.getChartEditor);
+  const {
+    isOpen: chartWidgetEditorOpen,
+    changeQueryConfirmation,
+  } = useSelector(chartEditorSelectors.getChartEditor);
 
   const {
     isOpen: textWidgetEditorOpen,
@@ -127,9 +129,12 @@ const Editor: FC<Props> = ({ dashboardId }) => {
     [droppableWidget]
   );
 
-  const { lastModificationDate, title, tags, isPublic } = useSelector(
-    (state: RootState) => getDashboardMeta(state, dashboardId)
-  );
+  const {
+    lastModificationDate,
+    title,
+    tags,
+    isPublic,
+  } = useSelector((state: RootState) => getDashboardMeta(state, dashboardId));
 
   return (
     <EditorContext.Provider

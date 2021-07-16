@@ -413,8 +413,9 @@ export function* viewPublicDashboard({
 
   try {
     const blobApi = yield getContext(BLOB_API);
-    const dashboardMeta: DashboardMetaData =
-      yield blobApi.getDashboardMetaDataById(dashboardId);
+    const dashboardMeta: DashboardMetaData = yield blobApi.getDashboardMetaDataById(
+      dashboardId
+    );
 
     yield put(setDashboardList([dashboardMeta]));
     const { isPublic } = dashboardMeta;
