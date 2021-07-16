@@ -37,7 +37,6 @@ const TextWidgetEditor: FC<Props> = ({
   return (
     <Modal
       isOpen={isOpen}
-      adjustPositionToScroll={false}
       onClose={() => dispatch(textEditorActions.closeEditor())}
     >
       {(_, closeHandler) => (

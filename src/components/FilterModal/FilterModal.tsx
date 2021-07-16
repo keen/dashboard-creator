@@ -14,11 +14,7 @@ const FilterModal: FC = () => {
   const { isEditorOpen } = useSelector(getFilterSettings);
 
   return (
-    <Modal
-      adjustPositionToScroll={false}
-      isOpen={isEditorOpen}
-      onClose={() => dispatch(closeEditor())}
-    >
+    <Modal isOpen={isEditorOpen} onClose={() => dispatch(closeEditor())}>
       {(_, closeHandler) => (
         <>
           <ModalHeader onClose={closeHandler}>
