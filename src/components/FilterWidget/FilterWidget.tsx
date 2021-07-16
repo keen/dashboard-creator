@@ -1,11 +1,12 @@
 import React, { FC, useRef, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
+import { FixedSizeList as ReactWindowList } from 'react-window';
 import { transparentize } from 'polished';
+import { Dropdown, Portal, Loader, Button } from '@keen.io/ui-core';
+import { BodyText } from '@keen.io/typography';
 import { Icon } from '@keen.io/icons';
 import { colors } from '@keen.io/colors';
-import { Dropdown, Portal, Loader, Button, Title } from '@keen.io/ui-core';
-import { FixedSizeList as ReactWindowList } from 'react-window';
 
 import {
   Container,
@@ -19,7 +20,6 @@ import {
   SelectedPropertiesNumber,
   DropdownHeader,
   IconWrapper,
-  TitleWrapper,
 } from './FilterWidget.styles';
 
 import { getWidget } from '../../modules/widgets';
@@ -200,16 +200,26 @@ const FilterWidget: FC<Props> = ({
                 height={13}
               />
             </IconWrapper>
-            <TitleWrapper role="heading">
-              <Title variant="body-bold">
-                {filterWidget.settings.name}
-                {widget.isActive && (
-                  <SelectedPropertiesNumber data-testid="applied-properties-number">
-                    {widget.data.filter.propertyValue.length}
-                  </SelectedPropertiesNumber>
-                )}
-              </Title>
-            </TitleWrapper>
+            <BodyText
+              variant="body2"
+              fontWeight="bold"
+              enableTextEllipsis
+              role="heading"
+            >
+              {filterWidget.settings.name}
+            </BodyText>
+            {widget.isActive && (
+              <SelectedPropertiesNumber data-testid="applied-properties-number">
+                <BodyText
+                  variant="body3"
+                  fontWeight="bold"
+                  color={colors.black[400]}
+                  lineHeight={1}
+                >
+                  {widget.data.filter.propertyValue.length}
+                </BodyText>
+              </SelectedPropertiesNumber>
+            )}
           </TitleContainer>
         }
       </Container>
