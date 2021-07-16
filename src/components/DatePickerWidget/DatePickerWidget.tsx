@@ -26,14 +26,12 @@ import {
   TIME_PICKER_CLASS,
   MousePositionedTooltip,
   TimezoneError,
-  Title,
 } from '@keen.io/ui-core';
 import { BodyText } from '@keen.io/typography';
 
 import TimeframeLabel from '../TimeframeLabel';
 import {
   Container,
-  TitleWrapper,
   Bar,
   SettingsContainer,
   TitleContainer,
@@ -195,11 +193,14 @@ const DatePickerWidget: FC<Props> = ({
                 height={13}
               />
             </IconWrapper>
-            <TitleWrapper role="heading">
-              <Title variant="body-bold">
-                {datePickerWidget.settings.name || t('date_picker_widget.name')}
-              </Title>
-            </TitleWrapper>
+            <BodyText
+              variant="body2"
+              fontWeight="bold"
+              enableTextEllipsis
+              role="heading"
+            >
+              {datePickerWidget.settings.name || t('date_picker_widget.name')}
+            </BodyText>
           </TitleContainer>
         )}
       </Container>
