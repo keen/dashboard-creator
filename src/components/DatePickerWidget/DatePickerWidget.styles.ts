@@ -23,6 +23,9 @@ export const TitleContainer = styled.div`
   width: 100%;
   padding: 0 20px;
   box-sizing: border-box;
+  font-size: 14px;
+  font-family: 'Lato Bold', sans-serif;
+  color: ${colors.blue[500]};
 `;
 
 export const TitleWrapper = styled.div`

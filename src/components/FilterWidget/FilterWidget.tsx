@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { transparentize } from 'polished';
 import { Icon } from '@keen.io/icons';
 import { colors } from '@keen.io/colors';
-import { Dropdown, Portal, Loader, Button, Title } from '@keen.io/ui-core';
+import { Dropdown, Portal, Loader, Button } from '@keen.io/ui-core';
 import { FixedSizeList as ReactWindowList } from 'react-window';
 
 import {
@@ -201,15 +201,13 @@ const FilterWidget: FC<Props> = ({
               />
             </IconWrapper>
             <TitleWrapper role="heading">
-              <Title variant="body-bold">
-                {filterWidget.settings.name}
-                {widget.isActive && (
-                  <SelectedPropertiesNumber data-testid="applied-properties-number">
-                    {widget.data.filter.propertyValue.length}
-                  </SelectedPropertiesNumber>
-                )}
-              </Title>
+              {filterWidget.settings.name}
             </TitleWrapper>
+            {widget.isActive && (
+              <SelectedPropertiesNumber data-testid="applied-properties-number">
+                {widget.data.filter.propertyValue.length}
+              </SelectedPropertiesNumber>
+            )}
           </TitleContainer>
         }
       </Container>
