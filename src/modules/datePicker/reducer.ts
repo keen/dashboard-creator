@@ -7,11 +7,13 @@ import {
   CLOSE_EDITOR,
   SET_EDITOR_CONNECTIONS,
   UPDATE_CONNECTION,
+  SET_NAME,
 } from './constants';
 
 export const initialState: ReducerState = {
   isEditorOpen: false,
   widgetConnections: [],
+  name: '',
 };
 
 const datePickerReducer = (
@@ -43,9 +45,15 @@ const datePickerReducer = (
         ...state,
         isEditorOpen: true,
       };
+    case SET_NAME:
+      return {
+        ...state,
+        name: action.payload.name,
+      };
     case CLOSE_EDITOR:
       return {
         ...state,
+        name: '',
         widgetConnections: [],
         isEditorOpen: false,
       };

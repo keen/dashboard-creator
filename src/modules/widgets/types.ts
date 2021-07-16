@@ -13,6 +13,8 @@ export type GridPosition = {
   y: number;
   minH?: number;
   minW?: number;
+  maxW?: number;
+  maxH?: number;
 };
 
 export type WidgetsPosition = (GridPosition & { i: string })[];
@@ -61,6 +63,7 @@ export interface DatePickerWidget extends BaseWidget {
   type: 'date-picker';
   settings: {
     widgets: string[];
+    name: string;
   };
 }
 
@@ -70,6 +73,7 @@ export interface FilterWidget extends BaseWidget {
     widgets: string[];
     eventStream: string | null;
     targetProperty: string | null;
+    name: string;
     filter: FilterSettings;
   };
 }

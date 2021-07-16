@@ -29,7 +29,6 @@ import {
   GRID_COLS_EDIT_MODE,
   GRID_COLS_VIEW_MODE,
   GRID_CONTAINER_PADDING,
-  DISABLED_WIDGET_RESIZE,
 } from './constants';
 
 type Props = {
@@ -97,13 +96,30 @@ const Grid: FC<Props> = ({
   // This allows new element to be positioned correctly inside the grid after drop.
   const generateLayouts = () => {
     return {
-      lg: widgets.map((widget) => ({
-        i: widget.id,
-        static: false,
-        isResizable:
-          isEditorMode && !DISABLED_WIDGET_RESIZE.includes(widget.type),
-        ...widget.position,
-      })),
+      lg: widgets.map((widget) => {
+        let widgetPosition = widget.position;
+        if (widget.type === 'filter') {
+          widgetPosition = {
+            ...widgetPosition,
+            minW: 1,
+            minH: 2,
+            maxH: 2,
+          };
+        } else if (widget.type === 'date-picker') {
+          widgetPosition = {
+            ...widgetPosition,
+            minW: 4,
+            minH: 2,
+            maxH: 2,
+          };
+        }
+        return {
+          i: widget.id,
+          static: false,
+          isResizable: isEditorMode,
+          ...widgetPosition,
+        };
+      }),
     };
   };
 
@@ -134,7 +150,7 @@ const Grid: FC<Props> = ({
               type="resize"
               width={15}
               height={15}
-              fill={colors.white[500]}
+              fill={colors.white[400]}
             />
           </div>
         }

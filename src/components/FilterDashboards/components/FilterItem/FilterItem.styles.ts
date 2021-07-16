@@ -8,4 +8,8 @@ export const Container = styled.label`
 
 export const Label = styled.span`
   margin-left: 4px;
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;

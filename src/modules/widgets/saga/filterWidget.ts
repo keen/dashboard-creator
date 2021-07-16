@@ -36,6 +36,7 @@ import {
   APPLY_EDITOR_SETTINGS,
   CLOSE_EDITOR,
   getFilterSettings,
+  filterActions,
 } from '../../filter';
 
 import {
@@ -229,6 +230,7 @@ export function* applyFilterUpdates(filterWidgetId: string) {
     widgetConnections: updatedConnections,
     eventStream,
     targetProperty,
+    name,
   }: ReducerState = yield select(getFilterSettings);
 
   const connectedCharts = updatedConnections
@@ -258,7 +260,8 @@ export function* applyFilterUpdates(filterWidgetId: string) {
       filterWidgetId,
       connectedCharts,
       eventStream,
-      targetProperty
+      targetProperty,
+      name
     )
   );
 }
@@ -427,8 +430,9 @@ export function* editFilterWidget({
   yield put(setupDashboardEventStreams(dashboardId));
 
   const {
-    settings: { eventStream, targetProperty },
+    settings: { eventStream, targetProperty, name },
   }: FilterWidget = yield select(getWidgetSettings, filterWidgetId);
+
   const widgetConnections: FilterConnection[] = yield call(
     getFilterWidgetConnections,
     dashboardId,
@@ -448,6 +452,7 @@ export function* editFilterWidget({
   yield put(setEventStream(eventStream));
   yield put(setTargetProperty(targetProperty));
   yield put(setEditorConnections(widgetConnections));
+  yield put(filterActions.setName(name));
 
   yield call(
     updateWidgetsDistinction,

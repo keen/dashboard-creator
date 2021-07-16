@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { transparentize } from 'polished';
 import { motion } from 'framer-motion';
 import { colors } from '@keen.io/colors';
+import { space, SpaceProps } from 'styled-system';
 
 export const Content = styled.div`
   width: 500px;
@@ -9,13 +10,14 @@ export const Content = styled.div`
   box-sizing: border-box;
 `;
 
-export const Description = styled.div`
+export const Description = styled.div<SpaceProps>`
   display: flex;
   align-items: center;
   margin-bottom: 20px;
   font-family: 'Lato Bold', sans-serif;
   font-size: 14px;
   color: ${colors.black[100]};
+  ${space};
 `;
 
 export const TooltipMotion = styled(motion.div)`
@@ -53,4 +55,10 @@ export const EmptyConnections = styled.div`
   font-family: 'Lato Regular', sans-serif;
   font-size: 14px;
   color: ${transparentize(0.5, colors.black[100])};
+`;
+
+export const DisplayNameContainer = styled.div`
+  border-bottom: solid 1px ${colors.white[300]};
+  padding-bottom: 20px;
+  margin-bottom: 20px;
 `;

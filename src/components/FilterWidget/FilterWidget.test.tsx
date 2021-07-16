@@ -66,7 +66,7 @@ beforeEach(() => {
   createBodyElementById(DROPDOWN_CONTAINER_ID);
 });
 
-test('should render selected target property', () => {
+test('should render filter widget name', () => {
   const widgetId = '@widget/01';
 
   const state = {
@@ -79,6 +79,7 @@ test('should render selected target property', () => {
             id: widgetId,
             settings: {
               targetProperty: 'geo_info.city',
+              name: 'filterWidgetName',
             },
           },
         },
@@ -90,7 +91,7 @@ test('should render selected target property', () => {
   } = render({ ...state }, { id: widgetId });
 
   const heading = getByRole('heading');
-  expect(heading.textContent).toEqual('city');
+  expect(heading.textContent).toEqual('filterWidgetName');
 });
 
 test('should render applied properties number', () => {

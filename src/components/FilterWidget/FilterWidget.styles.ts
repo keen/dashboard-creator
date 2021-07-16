@@ -6,6 +6,7 @@ import { colors } from '@keen.io/colors';
 
 export const Container = styled.div<{ isOpen?: boolean }>`
   height: 100%;
+  width: 100%;
   display: flex;
 
   ${(props) =>
@@ -21,13 +22,16 @@ export const TitleContainer = styled.div`
   justify-content: center;
   flex: 1;
   cursor: pointer;
+  width: 100%;
+  padding: 0 20px;
+  box-sizing: border-box;
 `;
 
-export const Title = styled.div`
-  font-size: 14px;
+export const TitleWrapper = styled.div`
   margin-left: 5px;
-  font-family: 'Lato Bold', sans-serif;
-  color: ${colors.blue[500]};
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 `;
 
 export const DropdownContainer = styled.div<
@@ -104,4 +108,9 @@ export const SelectedPropertiesNumber = styled.div`
   border-radius: 50%;
   font-size: 13px;
   margin-left: 2px;
+`;
+
+export const IconWrapper = styled.div`
+  flex-shrink: 0;
+  display: inline-flex;
 `;

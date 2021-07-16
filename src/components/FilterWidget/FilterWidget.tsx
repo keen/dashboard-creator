@@ -4,12 +4,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { transparentize } from 'polished';
 import { Icon } from '@keen.io/icons';
 import { colors } from '@keen.io/colors';
-import { Dropdown, Portal, Loader, Button } from '@keen.io/ui-core';
+import { Dropdown, Portal, Loader, Button, Title } from '@keen.io/ui-core';
 import { FixedSizeList as ReactWindowList } from 'react-window';
 
 import {
   Container,
-  Title,
   DropdownContainer,
   TitleContainer,
   FilterButtonSecondary,
@@ -19,6 +18,8 @@ import {
   EmptySearch,
   SelectedPropertiesNumber,
   DropdownHeader,
+  IconWrapper,
+  TitleWrapper,
 } from './FilterWidget.styles';
 
 import { getWidget } from '../../modules/widgets';
@@ -31,7 +32,7 @@ import {
   unapplyFilterWidget,
 } from '../../modules/widgets/actions';
 import { FilterItem, SearchTags } from '../FilterDashboards/components';
-import { FilterWidget } from '../../modules/widgets/types';
+import { FilterWidget } from '../../modules/widgets';
 import { DROPDOWN_CONTAINER_ID } from '../../constants';
 
 type Props = {
@@ -39,6 +40,8 @@ type Props = {
   id: string;
   /** Disable chart interactions */
   disableInteractions?: boolean;
+  /** Minimal dropdown width */
+  minDropdownWidth?: number;
 };
 
 const Row = ({ data, index, style }) => {
@@ -59,12 +62,15 @@ const Row = ({ data, index, style }) => {
   );
 };
 
-const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
+const FilterWidget: FC<Props> = ({
+  id,
+  disableInteractions,
+  minDropdownWidth = 220,
+}) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
   const widget = useSelector((state: RootState) => getWidget(state, id));
-
   const filterWidget = widget.widget as FilterWidget;
   const [isOpen, setOpen] = useState(false);
   const [dropdown, setDropdown] = useState({ x: 0, y: 0, width: 0 });
@@ -72,15 +78,15 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
   const [searchPhrase, setSearchPhrase] = useState('');
   const [activeProperties, setActiveProperties] = useState([]);
 
-  let targetProperty = null;
-
-  if (filterWidget.settings && filterWidget.settings.targetProperty) {
-    const properties = filterWidget.settings.targetProperty.split('.');
-    targetProperty = properties[properties.length - 1];
-  }
-
   const containerRef = useRef(null);
   const dropdownContainerRef = useRef(null);
+
+  const getDropdownXPositionThatFitsViewport = (left, right, dropdownWidth) => {
+    if (window && window.innerWidth < left + dropdownWidth) {
+      return right - dropdownWidth;
+    }
+    return left;
+  };
 
   useEffect(() => {
     const outsideClick = (e) => {
@@ -94,16 +100,21 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
     };
 
     if (isOpen && containerRef.current) {
-      const { left, bottom, width } = getRelativeBoundingRect(
-        DROPDOWN_CONTAINER_ID,
-        containerRef.current
-      );
+      const {
+        left,
+        bottom,
+        right,
+        width: parentWidth,
+      } = getRelativeBoundingRect(DROPDOWN_CONTAINER_ID, containerRef.current);
+
+      const dropdownWidth =
+        parentWidth > minDropdownWidth ? parentWidth : minDropdownWidth;
 
       setDropdown((state) => ({
         ...state,
-        x: left,
+        x: getDropdownXPositionThatFitsViewport(left, right, minDropdownWidth),
         y: bottom,
-        width,
+        width: dropdownWidth,
       }));
     }
 
@@ -181,20 +192,24 @@ const FilterWidget: FC<Props> = ({ id, disableInteractions }) => {
       >
         {
           <TitleContainer>
-            <Icon
-              type="funnel-widget-vertical"
-              fill={transparentize(0.6, colors.blue[500])}
-              width={13}
-              height={13}
-            />
-            <Title role="heading">
-              {targetProperty}
-              {widget.isActive && (
-                <SelectedPropertiesNumber data-testid="applied-properties-number">
-                  {widget.data.filter.propertyValue.length}
-                </SelectedPropertiesNumber>
-              )}
-            </Title>
+            <IconWrapper>
+              <Icon
+                type="funnel-widget-vertical"
+                fill={transparentize(0.6, colors.blue[500])}
+                width={13}
+                height={13}
+              />
+            </IconWrapper>
+            <TitleWrapper role="heading">
+              <Title variant="body-bold">
+                {filterWidget.settings.name}
+                {widget.isActive && (
+                  <SelectedPropertiesNumber data-testid="applied-properties-number">
+                    {widget.data.filter.propertyValue.length}
+                  </SelectedPropertiesNumber>
+                )}
+              </Title>
+            </TitleWrapper>
           </TitleContainer>
         }
       </Container>

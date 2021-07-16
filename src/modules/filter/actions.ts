@@ -17,6 +17,7 @@ import {
   SETUP_DASHBOARD_EVENT_STREAMS,
   SET_SCHEMA_PROCESSING,
   SET_SCHEMA_PROCESSING_ERROR,
+  SET_NAME,
 } from './constants';
 
 export const openEditor = createAction(OPEN_EDITOR);
@@ -41,6 +42,12 @@ export const setEventStream = createAction(
     },
   })
 );
+
+export const setName = createAction(SET_NAME, (name: string) => ({
+  payload: {
+    name,
+  },
+}));
 
 export const setEditorConnections = createAction(
   SET_EDITOR_CONNECTIONS,
@@ -135,4 +142,5 @@ export type FilterActions =
   | ReturnType<typeof setEventStreamsPool>
   | ReturnType<typeof setupDashboardEventStreams>
   | ReturnType<typeof setSchemaProcessingError>
-  | ReturnType<typeof setSchemaProcessing>;
+  | ReturnType<typeof setSchemaProcessing>
+  | ReturnType<typeof setName>;

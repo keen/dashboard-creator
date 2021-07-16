@@ -14,6 +14,7 @@ import {
   SET_EVENT_STREAMS_POOL,
   SET_SCHEMA_PROCESSING,
   SET_SCHEMA_PROCESSING_ERROR,
+  SET_NAME,
 } from './constants';
 
 export const initialState: ReducerState = {
@@ -26,6 +27,7 @@ export const initialState: ReducerState = {
   detachedWidgetConnections: [],
   eventStreamsPool: [],
   eventStream: null,
+  name: '',
   eventStreamSchema: {
     schema: {},
     tree: {},
@@ -85,6 +87,11 @@ const filterReducer = (
       return {
         ...state,
         targetProperty: action.payload.targetProperty,
+      };
+    case SET_NAME:
+      return {
+        ...state,
+        name: action.payload.name,
       };
     case SET_EVENT_STREAM_SCHEMA:
       return {
