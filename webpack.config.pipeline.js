@@ -4,7 +4,6 @@ const { merge } = require('webpack-merge');
 
 const CopyPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const loadConfig = require('./webpack/load-config');
 const buildOptimization = require('./webpack/build-optimization');
@@ -13,6 +12,8 @@ const commonConfig = require('./webpack.common');
 
 module.exports = (env) => {
   const applicationName = env.APP_NAME;
+  const artifactName = env.ARTIFACT_NAME;
+
   const applicationConfig = loadConfig();
 
   const defaultWebpackConfig = commonConfig(applicationName);
@@ -22,41 +23,38 @@ module.exports = (env) => {
     mode: 'production',
     devtool: 'source-map',
     target: 'web',
+    entry: {
+      main: path.resolve(__dirname, 'src', `${applicationName}.ts`),
+    },
     output: {
-      path: path.resolve(__dirname, 'dist', applicationName),
+      path: path.resolve(__dirname, 'artifact'),
       filename: `[name].min.js`,
       libraryTarget: 'umd',
     },
     optimization: buildOptimization,
-     plugins: [
+    plugins: [
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
       /* Create HTML template file */
       new HtmlWebpackPlugin({
         inject: true,
         scriptLoading: 'blocking',
         templateParameters: {
-          'config': JSON.stringify(applicationConfig)
+          'config': JSON.stringify(applicationConfig),
+          'artifactName': artifactName,
         },
-        template: path.join(__dirname, 'public', `${applicationName}.html`),
+        template: path.join(__dirname, 'webpack', 'index.html'),
        }),
        /* Copy translation files to application distribution */
        new CopyPlugin({
         patterns: [
           {
             from: path.resolve(__dirname, 'public', 'locales'),
-            to: path.resolve(__dirname, 'dist', 'locales'),
+            to: path.resolve(__dirname, 'artifact', 'locales'),
           },
         ],
       }),
     ]
   });
-
-  if (env && env.ANALYZE_BUNDLE) {
-    /* Creates artifact with information about application bundle */
-    config.plugins.push(
-      new BundleAnalyzerPlugin()
-    );
-  };
 
   return config;
 };
