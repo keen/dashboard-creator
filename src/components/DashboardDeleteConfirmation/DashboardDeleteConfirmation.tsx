@@ -72,7 +72,6 @@ const DashboardDeleteConfirmation: FC = () => {
   return (
     <Modal
       isOpen={isVisible}
-      adjustPositionToScroll={false}
       onClose={() => dispatch(hideDeleteConfirmation())}
     >
       {(_, closeHandler) => (
