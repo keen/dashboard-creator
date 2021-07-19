@@ -46,7 +46,7 @@ import {
   clearDatePickerModifiers,
   applyDatePickerModifiers,
   getWidget,
-  DatePickerWidget,
+  DatePickerWidget as DatePickerWidgetType,
 } from '../../modules/widgets';
 
 import { RootState } from '../../rootReducer';
@@ -77,7 +77,7 @@ const DatePickerWidget: FC<Props> = ({
   const { isActive, data, widget } = useSelector((state: RootState) =>
     getWidget(state, id)
   );
-  const datePickerWidget = widget as DatePickerWidget;
+  const datePickerWidget = widget as DatePickerWidgetType;
 
   const datePickerConfiguration = widgetsConfiguration?.datePicker;
 

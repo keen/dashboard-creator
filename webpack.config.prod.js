@@ -1,33 +1,53 @@
 const webpack = require('webpack');
 const path = require('path');
-const merge = require('webpack-merge');
+const {merge} = require('webpack-merge');
 
 const CopyPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const commonConfig = require('./webpack.common');
+const { version } = require('./package.json');
 
 module.exports = (env) => {
   const config = merge(commonConfig(env.APP_NAME), {
     context: __dirname,
     mode: 'production',
     devtool: 'source-map',
-
-    entry: {
-      main: `./src/${env.APP_NAME}.ts`,
-    },
     target: 'web',
-
     output: {
       path: path.resolve(__dirname, 'dist', env.APP_NAME),
       filename: `[name].min.js`,
-      /* Isolates jsonp context for multiple webpack apps */
-      // @TODO: Remove after migration to Webpack 5
-      jsonpFunction: 'keen-dashboard-creator',
       libraryTarget: 'umd',
     },
-
+    module: {
+      rules: [
+        {
+          test: /\.(ts|js)x?$/,
+          exclude: /node_modules/,
+          use: [
+            {
+              loader: 'babel-loader',
+              options: {
+                presets: [
+                  '@babel/preset-typescript',
+                  '@babel/preset-react',
+                  ['@babel/preset-env',
+                    {
+                      corejs: '3.6',
+                      useBuiltIns: 'entry',
+                    }]
+                ],
+                plugins: [
+                  "@babel/plugin-proposal-class-properties",
+                  "@babel/plugin-transform-runtime",
+                ]
+              }
+            },
+          ],
+        },
+      ]
+    },
     optimization: {
       runtimeChunk: 'single',
       splitChunks: {
@@ -49,10 +69,11 @@ module.exports = (env) => {
          }),
        ],
      },
-
      plugins: [
        new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-       new webpack.optimize.ModuleConcatenationPlugin(),
+       new webpack.DefinePlugin({
+          '__APP_VERSION__': JSON.stringify(version),
+        }),
        new CopyPlugin({
         patterns: [
           {
@@ -63,7 +84,6 @@ module.exports = (env) => {
       }),
     ]
   });
-
   if (env && env.ANALYZE_BUNDLE) {
     config.plugins.push(
       new BundleAnalyzerPlugin()

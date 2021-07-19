@@ -61,7 +61,7 @@ export {
   SET_EVENT_STREAM,
   APPLY_EDITOR_SETTINGS,
   CLOSE_EDITOR,
-  ReducerState,
-  SchemaPropertiesList,
   filterActions,
 };
+
+export type { ReducerState, SchemaPropertiesList };
