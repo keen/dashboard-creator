@@ -1,18 +1,18 @@
 import { FetchMock } from 'jest-fetch-mock';
 
-import BlobAPI from './BlobAPI';
+import DashboardAPI from './DashboardAPI';
 
-import { BlobAPIHeaders } from './types';
+import { DashboardAPIHeaders } from './types';
 
 const apiUrl = 'apiUrl';
 const projectId = 'projectId';
 const accessKey = 'accessKey';
 const masterKey = 'masterKey';
 
-let blobAPI: BlobAPI;
+let dashboardAPI: DashboardAPI;
 
 beforeEach(() => {
-  blobAPI = new BlobAPI({
+  dashboardAPI = new DashboardAPI({
     accessKey,
     masterKey,
     projectId,
@@ -39,31 +39,28 @@ const metadata = {
 
 test('calls API to get blob objects metadata', () => {
   (fetch as FetchMock).mockResponseOnce(JSON.stringify({}));
-  blobAPI.getDashboards();
+  dashboardAPI.getDashboards();
 
-  expect(fetch).toHaveBeenCalledWith(`${baseUrl}/metadata/dashboard`, {
+  expect(fetch).toHaveBeenCalledWith(`${baseUrl}/dashboards/metadata`, {
     headers: { Authorization: accessKey },
   });
 });
 
 test('calls API to get dashboard blob object', () => {
   (fetch as FetchMock).mockResponseOnce(JSON.stringify({}));
-  blobAPI.getDashboardById(dashboardId);
+  dashboardAPI.getDashboardById(dashboardId);
 
-  expect(fetch).toHaveBeenCalledWith(
-    `${baseUrl}/blobs/dashboard/${dashboardId}`,
-    {
-      headers: { Authorization: accessKey },
-    }
-  );
+  expect(fetch).toHaveBeenCalledWith(`${baseUrl}/dashboards/${dashboardId}`, {
+    headers: { Authorization: accessKey },
+  });
 });
 
 test('calls API to get dashboard blob object metadata', () => {
   (fetch as FetchMock).mockResponseOnce(JSON.stringify({}));
-  blobAPI.getDashboardMetaDataById(dashboardId);
+  dashboardAPI.getDashboardMetaDataById(dashboardId);
 
   expect(fetch).toHaveBeenCalledWith(
-    `${baseUrl}/metadata/dashboard/${dashboardId}`,
+    `${baseUrl}/dashboards/${dashboardId}/metadata`,
     {
       headers: { Authorization: accessKey },
     }
@@ -73,27 +70,24 @@ test('calls API to get dashboard blob object metadata', () => {
 test('calls API to save dashboard blob object', () => {
   (fetch as FetchMock).mockResponseOnce(JSON.stringify({}));
   const body = { widgets: [], version: '0.0.1' };
-  blobAPI.saveDashboard(dashboardId, body, metadata);
+  dashboardAPI.saveDashboard(dashboardId, body, metadata);
 
-  expect(fetch).toHaveBeenCalledWith(
-    `${baseUrl}/blobs/dashboard/${dashboardId}`,
-    {
-      body: JSON.stringify(body),
-      method: 'PUT',
-      headers: {
-        Authorization: masterKey,
-        [BlobAPIHeaders.MetaData]: JSON.stringify(metadata),
-      },
-    }
-  );
+  expect(fetch).toHaveBeenCalledWith(`${baseUrl}/dashboards/${dashboardId}`, {
+    body: JSON.stringify(body),
+    method: 'PUT',
+    headers: {
+      Authorization: masterKey,
+      [DashboardAPIHeaders.MetaData]: JSON.stringify(metadata),
+    },
+  });
 });
 
 test('calls API to save dashboard blob object metadata', () => {
   (fetch as FetchMock).mockResponseOnce(JSON.stringify({}));
-  blobAPI.saveDashboardMeta(dashboardId, metadata);
+  dashboardAPI.saveDashboardMeta(dashboardId, metadata);
 
   expect(fetch).toHaveBeenCalledWith(
-    `${baseUrl}/metadata/dashboard/${dashboardId}`,
+    `${baseUrl}/dashboards/${dashboardId}/metadata`,
     {
       body: JSON.stringify(metadata),
       method: 'PUT',
@@ -107,15 +101,12 @@ test('calls API to save dashboard blob object metadata', () => {
 
 test('calls API to delete dashboard blob object', () => {
   (fetch as FetchMock).mockResponseOnce(JSON.stringify({}));
-  blobAPI.deleteDashboard(dashboardId);
+  dashboardAPI.deleteDashboard(dashboardId);
 
-  expect(fetch).toHaveBeenCalledWith(
-    `${baseUrl}/blobs/dashboard/${dashboardId}`,
-    {
-      method: 'DELETE',
-      headers: {
-        Authorization: masterKey,
-      },
-    }
-  );
+  expect(fetch).toHaveBeenCalledWith(`${baseUrl}/dashboards/${dashboardId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: masterKey,
+    },
+  });
 });

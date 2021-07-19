@@ -25,7 +25,11 @@ import {
   HIDE_DELETE_CONFIRMATION,
 } from '../constants';
 
-import { NOTIFICATION_MANAGER, BLOB_API, ROUTES } from '../../../constants';
+import {
+  NOTIFICATION_MANAGER,
+  DASHBOARD_API,
+  ROUTES,
+} from '../../../constants';
 import { getDashboardMeta } from '../selectors';
 
 import { appActions, appSelectors } from '../../app';
@@ -35,7 +39,7 @@ const dashboardId = '@dashboard/01';
 describe('deleteDashboard()', () => {
   const action = deleteDashboardAction(dashboardId);
 
-  const blobApiMock = {
+  const dashboardApiMock = {
     deleteDashboard: jest.fn(),
   };
 
@@ -107,13 +111,15 @@ describe('deleteDashboard()', () => {
     });
 
     test('gets BlobAPI instance from context', (result) => {
-      expect(result).toEqual(getContext(BLOB_API));
+      expect(result).toEqual(getContext(DASHBOARD_API));
 
-      return blobApiMock;
+      return dashboardApiMock;
     });
 
     test('calls dashboard delete method with dashboard identifer', () => {
-      expect(blobApiMock.deleteDashboard).toHaveBeenCalledWith(dashboardId);
+      expect(dashboardApiMock.deleteDashboard).toHaveBeenCalledWith(
+        dashboardId
+      );
     });
 
     test('get active dashboard identifer', (result) => {
@@ -180,13 +186,15 @@ describe('deleteDashboard()', () => {
     });
 
     test('gets BlobAPI instance from context', (result) => {
-      expect(result).toEqual(getContext(BLOB_API));
+      expect(result).toEqual(getContext(DASHBOARD_API));
 
-      return blobApiMock;
+      return dashboardApiMock;
     });
 
     test('calls dashboard delete method with dashboard identifer', () => {
-      expect(blobApiMock.deleteDashboard).toHaveBeenCalledWith(dashboardId);
+      expect(dashboardApiMock.deleteDashboard).toHaveBeenCalledWith(
+        dashboardId
+      );
     });
 
     test('get active dashboard identifer', (result) => {
@@ -264,13 +272,15 @@ describe('deleteDashboard()', () => {
     });
 
     test('gets BlobAPI instance from context', (result) => {
-      expect(result).toEqual(getContext(BLOB_API));
+      expect(result).toEqual(getContext(DASHBOARD_API));
 
-      return blobApiMock;
+      return dashboardApiMock;
     });
 
     test('calls dashboard delete method with dashboard identifer', () => {
-      expect(blobApiMock.deleteDashboard).toHaveBeenCalledWith(dashboardId);
+      expect(dashboardApiMock.deleteDashboard).toHaveBeenCalledWith(
+        dashboardId
+      );
 
       return new Error();
     });

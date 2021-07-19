@@ -22,7 +22,7 @@ import { dashboardsSelectors } from '../selectors';
 import { themeSelectors } from '../../theme';
 import { serializeWidget, Widget } from '../../widgets';
 
-import { BLOB_API } from '../../../constants';
+import { DASHBOARD_API } from '../../../constants';
 
 import { DashboardSettings, DashboardMetaData } from '../types';
 
@@ -93,7 +93,7 @@ const state = {
   },
 };
 
-const blobApiMock = {
+const dashboardApiMock = {
   saveDashboard: jest.fn(),
 };
 
@@ -146,15 +146,15 @@ describe('Scenario 1: User succesfully saved dashboard', () => {
   });
 
   test('gets BlobAPI instance from context', (result) => {
-    expect(result).toEqual(getContext(BLOB_API));
+    expect(result).toEqual(getContext(DASHBOARD_API));
 
-    return blobApiMock;
+    return dashboardApiMock;
   });
 
   test('calls saveDashboard', () => {
     const { settings, ...restSavedQueryWidget } = savedQueryWidget;
 
-    expect(blobApiMock.saveDashboard).toHaveBeenCalledWith(
+    expect(dashboardApiMock.saveDashboard).toHaveBeenCalledWith(
       dashboardId,
       {
         ...dashboard,

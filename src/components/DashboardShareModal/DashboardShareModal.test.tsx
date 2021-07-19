@@ -9,7 +9,7 @@ import configureStore from 'redux-mock-store';
 
 import DashboardShareModal from './DashboardShareModal';
 
-import { BlobAPI } from '../../api';
+import { DashboardAPI } from '../../api';
 
 import { AppContext, APIContext } from '../../contexts';
 import { createBodyElementById } from '../../utils/test/createBodyElementById';
@@ -72,7 +72,9 @@ const render = (storeState: any = {}, overProps: any = {}) => {
         } as any
       }
     >
-      <APIContext.Provider value={{ keenAnalysis, blobApi: {} as BlobAPI }}>
+      <APIContext.Provider
+        value={{ keenAnalysis, dashboardApi: {} as DashboardAPI }}
+      >
         <Provider store={store}>
           <DashboardShareModal {...props} />
         </Provider>

@@ -24,7 +24,7 @@ import { Theme } from '@keen.io/charts';
 
 import App from './App';
 import { APIContext, AppContext } from './contexts';
-import { BlobAPI } from './api';
+import { DashboardAPI } from './api';
 import { appActions, Scopes } from './modules/app';
 import { NotificationManager } from './modules/notifications';
 
@@ -71,7 +71,7 @@ export class DashboardCreator {
   private readonly projectId: string;
 
   /** Dashboards API url */
-  private dashboardsApiUrl = 'blob-service.us-west-2.prod.aws.keen.io';
+  private dashboardsApiUrl = 'dashboard-service.us-west-2.test.aws.keen.io';
 
   /** Analytics API url */
   private analyticsApiUrl = 'api.keen.io';
@@ -156,7 +156,7 @@ export class DashboardCreator {
    *
    */
   private createDashboardsAPI() {
-    return new BlobAPI({
+    return new DashboardAPI({
       projectId: this.projectId,
       accessKey: this.accessKey,
       masterKey: this.masterKey,
@@ -198,14 +198,14 @@ export class DashboardCreator {
    *
    */
   render(initialView: View = 'management', dashboardId: string = null) {
-    const blobApi = this.createDashboardsAPI();
+    const dashboardApi = this.createDashboardsAPI();
     const keenAnalysis = this.createAnalytisAPI();
 
     createI18n(this.translationsSettings);
 
     const notificationPubSub = new PubSub();
     const sagaMiddleware = createSagaMiddleware({
-      blobApi,
+      dashboardApi,
       keenAnalysis,
       i18n,
       notificationManager: new NotificationManager({
@@ -284,7 +284,7 @@ export class DashboardCreator {
                   enableFixedEditorBar: this.enableFixedEditorBar,
                 }}
               >
-                <APIContext.Provider value={{ blobApi, keenAnalysis }}>
+                <APIContext.Provider value={{ dashboardApi, keenAnalysis }}>
                   <App />
                 </APIContext.Provider>
               </AppContext.Provider>

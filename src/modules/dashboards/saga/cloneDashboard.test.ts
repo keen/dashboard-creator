@@ -21,7 +21,11 @@ import { appActions, appSelectors } from '../../app';
 import { registerWidgets } from '../../widgets';
 import { themeActions } from '../../theme';
 
-import { BLOB_API, NOTIFICATION_MANAGER, ROUTES } from '../../../constants';
+import {
+  DASHBOARD_API,
+  NOTIFICATION_MANAGER,
+  ROUTES,
+} from '../../../constants';
 import { DashboardSettings } from '../types';
 
 const dashboardId = '@dashboard/01';
@@ -88,7 +92,7 @@ const metaData = {
   publicAccessKey: null,
 };
 
-const blobApiMock = {
+const dashboardApiMock = {
   getDashboardById: jest.fn(),
   getDashboardMetaDataById: jest.fn(),
   saveDashboard: jest.fn(),
@@ -113,19 +117,19 @@ describe('Scenario 1: User clone dashboard from dashboard view', () => {
   });
 
   test('gets BlobAPI from context', (result) => {
-    expect(result).toEqual(getContext(BLOB_API));
+    expect(result).toEqual(getContext(DASHBOARD_API));
 
-    return blobApiMock;
+    return dashboardApiMock;
   });
 
   test('calls getDashboardById with dashboard identifer', () => {
-    expect(blobApiMock.getDashboardById).toHaveBeenCalledWith(dashboardId);
+    expect(dashboardApiMock.getDashboardById).toHaveBeenCalledWith(dashboardId);
 
     return model;
   });
 
   test('calls getDashboardMetaDataById with dashboard identifer', () => {
-    expect(blobApiMock.getDashboardMetaDataById).toHaveBeenCalledWith(
+    expect(dashboardApiMock.getDashboardMetaDataById).toHaveBeenCalledWith(
       dashboardId
     );
 
@@ -133,7 +137,7 @@ describe('Scenario 1: User clone dashboard from dashboard view', () => {
   });
 
   test('calls saveDashboard', () => {
-    expect(blobApiMock.saveDashboard).toHaveBeenCalled();
+    expect(dashboardApiMock.saveDashboard).toHaveBeenCalled();
   });
 
   test('triggers addClonedDashboard action', (result) => {
@@ -203,19 +207,19 @@ describe('Scenario 2: User clone dashboard from management', () => {
   });
 
   test('gets BlobAPI from context', (result) => {
-    expect(result).toEqual(getContext(BLOB_API));
+    expect(result).toEqual(getContext(DASHBOARD_API));
 
-    return blobApiMock;
+    return dashboardApiMock;
   });
 
   test('calls getDashboardById with dashboard identifer', () => {
-    expect(blobApiMock.getDashboardById).toHaveBeenCalledWith(dashboardId);
+    expect(dashboardApiMock.getDashboardById).toHaveBeenCalledWith(dashboardId);
 
     return model;
   });
 
   test('calls getDashboardMetaDataById with dashboard identifier', () => {
-    expect(blobApiMock.getDashboardMetaDataById).toHaveBeenCalledWith(
+    expect(dashboardApiMock.getDashboardMetaDataById).toHaveBeenCalledWith(
       dashboardId
     );
 
@@ -223,7 +227,7 @@ describe('Scenario 2: User clone dashboard from management', () => {
   });
 
   test('calls saveDashboard', () => {
-    expect(blobApiMock.saveDashboard).toHaveBeenCalled();
+    expect(dashboardApiMock.saveDashboard).toHaveBeenCalled();
   });
 
   test('triggers addClonedDashboard action', (result) => {
@@ -271,19 +275,19 @@ describe('Scenario 3: User fails to clone dashboard', () => {
   });
 
   test('gets BlobAPI from context', (result) => {
-    expect(result).toEqual(getContext(BLOB_API));
+    expect(result).toEqual(getContext(DASHBOARD_API));
 
-    return blobApiMock;
+    return dashboardApiMock;
   });
 
   test('calls getDashboardById with dashboard identifer', () => {
-    expect(blobApiMock.getDashboardById).toHaveBeenCalledWith(dashboardId);
+    expect(dashboardApiMock.getDashboardById).toHaveBeenCalledWith(dashboardId);
 
     return model;
   });
 
   test('calls getDashboardMetaDataById with dashboard identifer', () => {
-    expect(blobApiMock.getDashboardMetaDataById).toHaveBeenCalledWith(
+    expect(dashboardApiMock.getDashboardMetaDataById).toHaveBeenCalledWith(
       dashboardId
     );
 
@@ -291,7 +295,7 @@ describe('Scenario 3: User fails to clone dashboard', () => {
   });
 
   test('calls saveDashboard', () => {
-    expect(blobApiMock.saveDashboard).toHaveBeenCalled();
+    expect(dashboardApiMock.saveDashboard).toHaveBeenCalled();
 
     return new Error();
   });

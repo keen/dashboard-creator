@@ -23,7 +23,7 @@ import { APIError } from '../../../api';
 
 import { DashboardError } from '../types';
 
-import { ROUTES, BLOB_API } from '../../../constants';
+import { ROUTES, DASHBOARD_API } from '../../../constants';
 
 const dashboardId = '@dashboard/01';
 
@@ -54,7 +54,7 @@ describe('Scenario 2: User succesfully views dashboard not serialized in state',
   const action = viewDashboardAction(dashboardId);
   const test = sagaHelper(viewDashboard(action));
 
-  const blobApiMock = {
+  const dashboardApiMock = {
     getDashboardById: jest.fn(),
   };
 
@@ -79,13 +79,15 @@ describe('Scenario 2: User succesfully views dashboard not serialized in state',
   });
 
   test('gets BlobAPI instance from context', (result) => {
-    expect(result).toEqual(getContext(BLOB_API));
+    expect(result).toEqual(getContext(DASHBOARD_API));
 
-    return blobApiMock;
+    return dashboardApiMock;
   });
 
   test('fetch dashboard from API', () => {
-    expect(blobApiMock.getDashboardById).toHaveBeenLastCalledWith(dashboardId);
+    expect(dashboardApiMock.getDashboardById).toHaveBeenLastCalledWith(
+      dashboardId
+    );
 
     return {
       version: '@version',
@@ -134,7 +136,7 @@ describe('Scenario 3: User views dashboard that do not exist', () => {
   const action = viewDashboardAction(dashboardId);
   const test = sagaHelper(viewDashboard(action));
 
-  const blobApiMock = {
+  const dashboardApiMock = {
     getDashboardById: jest.fn(),
   };
 
@@ -159,13 +161,15 @@ describe('Scenario 3: User views dashboard that do not exist', () => {
   });
 
   test('gets BlobAPI instance from context', (result) => {
-    expect(result).toEqual(getContext(BLOB_API));
+    expect(result).toEqual(getContext(DASHBOARD_API));
 
-    return blobApiMock;
+    return dashboardApiMock;
   });
 
   test('fetch dashboard from API', () => {
-    expect(blobApiMock.getDashboardById).toHaveBeenLastCalledWith(dashboardId);
+    expect(dashboardApiMock.getDashboardById).toHaveBeenLastCalledWith(
+      dashboardId
+    );
 
     return new APIError('@message', StatusCodes.NOT_FOUND);
   });
@@ -181,7 +185,7 @@ describe('Scenario 4: User views dashboard and internal server error occured dur
   const action = viewDashboardAction(dashboardId);
   const test = sagaHelper(viewDashboard(action));
 
-  const blobApiMock = {
+  const dashboardApiMock = {
     getDashboardById: jest.fn(),
   };
 
@@ -206,13 +210,15 @@ describe('Scenario 4: User views dashboard and internal server error occured dur
   });
 
   test('gets BlobAPI instance from context', (result) => {
-    expect(result).toEqual(getContext(BLOB_API));
+    expect(result).toEqual(getContext(DASHBOARD_API));
 
-    return blobApiMock;
+    return dashboardApiMock;
   });
 
   test('fetch dashboard from API', () => {
-    expect(blobApiMock.getDashboardById).toHaveBeenLastCalledWith(dashboardId);
+    expect(dashboardApiMock.getDashboardById).toHaveBeenLastCalledWith(
+      dashboardId
+    );
 
     return new APIError('@message', StatusCodes.INTERNAL_SERVER_ERROR);
   });

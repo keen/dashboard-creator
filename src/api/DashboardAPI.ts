@@ -1,10 +1,10 @@
 import { handleResponse } from './utils';
 
-import { BlobAPIOptions, BlobAPIHeaders } from './types';
+import { DashboardAPIOptions, DashboardAPIHeaders } from './types';
 
 import { DashboardModel, DashboardMetaData } from '../modules/dashboards';
 
-class BlobAPI {
+class DashboardAPI {
   /** Authorization read access key */
   private readonly readKey: string;
 
@@ -14,28 +14,28 @@ class BlobAPI {
   /** API base url */
   private readonly baseUrl: string;
 
-  constructor({ url, accessKey, masterKey, projectId }: BlobAPIOptions) {
+  constructor({ url, accessKey, masterKey, projectId }: DashboardAPIOptions) {
     this.masterKey = masterKey;
     this.readKey = accessKey;
     this.baseUrl = `${url}/projects/${projectId}`;
   }
 
   getDashboardById = (id: string): Promise<DashboardModel> =>
-    fetch(`${this.baseUrl}/blobs/dashboard/${id}`, {
+    fetch(`${this.baseUrl}/dashboards/${id}`, {
       headers: {
         Authorization: this.readKey,
       },
     }).then(handleResponse);
 
   getDashboardMetaDataById = (id: string): Promise<DashboardMetaData> =>
-    fetch(`${this.baseUrl}/metadata/dashboard/${id}`, {
+    fetch(`${this.baseUrl}/dashboards/${id}/metadata`, {
       headers: {
         Authorization: this.readKey,
       },
     }).then(handleResponse);
 
   getDashboards = (): Promise<DashboardMetaData[]> =>
-    fetch(`${this.baseUrl}/metadata/dashboard`, {
+    fetch(`${this.baseUrl}/dashboards/metadata`, {
       headers: {
         Authorization: this.readKey,
       },
@@ -46,27 +46,29 @@ class BlobAPI {
     body: DashboardModel,
     metadata: DashboardMetaData
   ) =>
-    fetch(`${this.baseUrl}/blobs/dashboard/${id}`, {
+    fetch(`${this.baseUrl}/dashboards/${id}`, {
       method: 'PUT',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: this.masterKey,
-        [BlobAPIHeaders.MetaData]: JSON.stringify(metadata),
+        [DashboardAPIHeaders.MetaData]: JSON.stringify(metadata),
       },
       body: JSON.stringify(body),
     });
 
   saveDashboardMeta = (id: string, metadata: DashboardMetaData) =>
-    fetch(`${this.baseUrl}/metadata/dashboard/${id}`, {
+    fetch(`${this.baseUrl}/dashboards/${id}/metadata`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         Authorization: this.masterKey,
+        [DashboardAPIHeaders.MetaData]: JSON.stringify(metadata),
       },
       body: JSON.stringify(metadata),
     }).then(handleResponse);
 
   deleteDashboard = (dashboardId: string) =>
-    fetch(`${this.baseUrl}/blobs/dashboard/${dashboardId}`, {
+    fetch(`${this.baseUrl}/dashboards/${dashboardId}`, {
       method: 'DELETE',
       headers: {
         Authorization: this.masterKey,
@@ -74,4 +76,4 @@ class BlobAPI {
     });
 }
 
-export default BlobAPI;
+export default DashboardAPI;
