@@ -152,7 +152,7 @@ export class DashboardCreator {
   /**
    * Creates dashboards api instance
    *
-   * @return Blob API instance
+   * @return Dashboard API instance
    *
    */
   private createDashboardsAPI() {

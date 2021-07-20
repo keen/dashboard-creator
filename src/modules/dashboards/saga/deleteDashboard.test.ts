@@ -110,7 +110,7 @@ describe('deleteDashboard()', () => {
       expect(result).toEqual(put(hideDeleteConfirmation()));
     });
 
-    test('gets BlobAPI instance from context', (result) => {
+    test('gets DashboardAPI instance from context', (result) => {
       expect(result).toEqual(getContext(DASHBOARD_API));
 
       return dashboardApiMock;
@@ -185,7 +185,7 @@ describe('deleteDashboard()', () => {
       expect(result).toEqual(put(hideDeleteConfirmation()));
     });
 
-    test('gets BlobAPI instance from context', (result) => {
+    test('gets DashboardAPI instance from context', (result) => {
       expect(result).toEqual(getContext(DASHBOARD_API));
 
       return dashboardApiMock;
@@ -271,7 +271,7 @@ describe('deleteDashboard()', () => {
       expect(result).toEqual(put(hideDeleteConfirmation()));
     });
 
-    test('gets BlobAPI instance from context', (result) => {
+    test('gets DashboardAPI instance from context', (result) => {
       expect(result).toEqual(getContext(DASHBOARD_API));
 
       return dashboardApiMock;

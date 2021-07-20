@@ -145,7 +145,7 @@ describe('Scenario 1: User succesfully saved dashboard', () => {
     return [updatedMetadata];
   });
 
-  test('gets BlobAPI instance from context', (result) => {
+  test('gets DashboardAPI instance from context', (result) => {
     expect(result).toEqual(getContext(DASHBOARD_API));
 
     return dashboardApiMock;

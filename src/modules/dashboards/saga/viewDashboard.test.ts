@@ -78,7 +78,7 @@ describe('Scenario 2: User succesfully views dashboard not serialized in state',
     expect(result).toEqual(put(push(ROUTES.VIEWER)));
   });
 
-  test('gets BlobAPI instance from context', (result) => {
+  test('gets DashboardAPI instance from context', (result) => {
     expect(result).toEqual(getContext(DASHBOARD_API));
 
     return dashboardApiMock;
@@ -160,7 +160,7 @@ describe('Scenario 3: User views dashboard that do not exist', () => {
     expect(result).toEqual(put(push(ROUTES.VIEWER)));
   });
 
-  test('gets BlobAPI instance from context', (result) => {
+  test('gets DashboardAPI instance from context', (result) => {
     expect(result).toEqual(getContext(DASHBOARD_API));
 
     return dashboardApiMock;
@@ -209,7 +209,7 @@ describe('Scenario 4: User views dashboard and internal server error occured dur
     expect(result).toEqual(put(push(ROUTES.VIEWER)));
   });
 
-  test('gets BlobAPI instance from context', (result) => {
+  test('gets DashboardAPI instance from context', (result) => {
     expect(result).toEqual(getContext(DASHBOARD_API));
 
     return dashboardApiMock;

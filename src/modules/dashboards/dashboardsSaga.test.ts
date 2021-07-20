@@ -114,7 +114,7 @@ describe('viewPublicDashboard()', () => {
       expect(result).toEqual(put(appActions.setActiveDashboard(dashboardId)));
     });
 
-    test('gets BlobAPI instance from context', (result) => {
+    test('gets DashboardAPI instance from context', (result) => {
       expect(result).toEqual(getContext(DASHBOARD_API));
 
       return dashboardApiMock;
@@ -189,7 +189,7 @@ describe('viewPublicDashboard()', () => {
       expect(result).toEqual(put(appActions.setActiveDashboard(dashboardId)));
     });
 
-    test('gets BlobAPI instance from context', (result) => {
+    test('gets DashboardAPI instance from context', (result) => {
       expect(result).toEqual(getContext(DASHBOARD_API));
 
       return dashboardApiMock;

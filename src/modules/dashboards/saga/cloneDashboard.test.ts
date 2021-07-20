@@ -116,7 +116,7 @@ describe('Scenario 1: User clone dashboard from dashboard view', () => {
     return notificationManagerMock;
   });
 
-  test('gets BlobAPI from context', (result) => {
+  test('gets DashboardAPI from context', (result) => {
     expect(result).toEqual(getContext(DASHBOARD_API));
 
     return dashboardApiMock;
@@ -206,7 +206,7 @@ describe('Scenario 2: User clone dashboard from management', () => {
     return notificationManagerMock;
   });
 
-  test('gets BlobAPI from context', (result) => {
+  test('gets DashboardAPI from context', (result) => {
     expect(result).toEqual(getContext(DASHBOARD_API));
 
     return dashboardApiMock;
@@ -274,7 +274,7 @@ describe('Scenario 3: User fails to clone dashboard', () => {
     return notificationManagerMock;
   });
 
-  test('gets BlobAPI from context', (result) => {
+  test('gets DashboardAPI from context', (result) => {
     expect(result).toEqual(getContext(DASHBOARD_API));
 
     return dashboardApiMock;
