@@ -35,7 +35,7 @@ export {
   datePickerSaga,
   APPLY_EDITOR_SETTINGS,
   CLOSE_EDITOR,
-  ReducerState,
-  DatePickerConnection,
   datePickerActions,
 };
+
+export type { ReducerState, DatePickerConnection };
