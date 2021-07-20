@@ -1,7 +1,7 @@
 export const previewMotion = {
   transition: { duration: 0.3 },
-  animate: { top: 0, opacity: 1 },
-  initial: { top: '100%', opacity: 0 },
+  animate: { opacity: 1 },
+  initial: { opacity: 0 },
   exit: { opacity: 0 },
 };
 
