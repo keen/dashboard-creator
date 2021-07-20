@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <title><%= htmlWebpackPlugin.options.title %></title>
+  <link rel="stylesheet" type="text/css" href="https://static.keen.io/assets/keen-fonts.css" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+<body class="dev-body">
+  <div id="root"></div>
+  <div id="modal-root"></div>
+  <script type="application/javascript">
+      /**
+        As Dashboard Creator build split chunks based on components tree.
+        We need to specify chunks CDN location to dynamically fetch required bundles.
+      */
+      window.dashboardCreatorResourcesBasePath = 'https://staging-static.keen.io/build/<%= artifactName %>/';
+  </script>
+</body>
+<script type="text/javascript">
+  const theme = {
+    metric: {
+      value: {
+        typography: {
+          fontColor: 'red',
+          fontSize: 10
+        },
+      },
+    }
+  };
+
+   new KeenDashboardCreator({
+     container: '#root',
+     backend: {
+       analyticsApiUrl: 'staging-api.keen.io',
+       dashboardsApiUrl: 'https://blob-service.us-west-2.test.aws.keen.io',
+     },
+     defaultTimezoneForQuery: "Africa/Nairobi",
+     disableTimezoneSelection: true,
+     onViewChange: (view, dashboardId) => console.log('View Change', view, dashboardId),
+     translations: {
+     backend: {
+       loadPath: 'https://staging-static.keen.io/build/<%= artifactName %>/locales/{{lng}}/{{ns}}.json'
+      }
+     },
+     widgetsConfiguration: {
+       datePicker: {
+         defaultTimezone: 'Africa/Nairobi',
+         disableTimezoneSelection: false
+       }
+     },
+     modalContainer: '#modal-root',
+     project: <%= config %>,
+     theme,
+     createSharedDashboardUrl: (accessKey, dashboardId) => `https://dashboards.keen.io/${dashboardId}/${accessKey}`,
+   }).render();
+  </script>
+</html>
