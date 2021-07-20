@@ -77,6 +77,7 @@ test('calls API to save dashboard blob object', () => {
     method: 'PUT',
     headers: {
       Authorization: masterKey,
+      'Content-Type': 'application/json',
       [DashboardAPIHeaders.MetaData]: JSON.stringify(metadata),
     },
   });

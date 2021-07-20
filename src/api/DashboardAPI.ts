@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { handleResponse } from './utils';
 
 import { DashboardAPIOptions, DashboardAPIHeaders } from './types';
@@ -62,7 +63,6 @@ class DashboardAPI {
       headers: {
         'Content-Type': 'application/json',
         Authorization: this.masterKey,
-        [DashboardAPIHeaders.MetaData]: JSON.stringify(metadata),
       },
       body: JSON.stringify(metadata),
     }).then(handleResponse);
