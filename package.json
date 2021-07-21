@@ -9,8 +9,8 @@
   ],
   "scripts": {
     "start:dashboard-creator": "concurrently --kill-others \"NODE_ENV=development webpack serve --mode development --env APP_NAME=dashboard-creator --config webpack.config.dev.js\"",
-    "start:public-dashboard": "concurrently --kill-others \"NODE_ENV=development webpack-dev-server --env.APP_NAME=public-dashboard\"",
-    "start:chargify-dashboard": "concurrently --kill-others \"NODE_ENV=development webpack-dev-server --env.APP_NAME=chargify-dashboard\"",
+    "start:public-dashboard": "concurrently --kill-others \"NODE_ENV=development webpack serve --mode development --env APP_NAME=public-dashboard --config webpack.config.dev.js\"",
+    "start:chargify-dashboard": "concurrently --kill-others \"NODE_ENV=development webpack serve --mode development --env APP_NAME=chargify-dashboard --config webpack.config.dev.js\"",
     "test": "jest",
     "test:ci": "jest --maxWorkers=2 --coverage",
     "test:watch": "NODE_ENV=test jest --watch",
