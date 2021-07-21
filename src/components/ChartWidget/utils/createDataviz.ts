@@ -1,9 +1,11 @@
+import deepMerge from 'deepmerge';
+
 import { KeenDataviz } from '@keen.io/dataviz';
 import { Theme } from '@keen.io/charts';
+import { Tag } from '@keen.io/widgets';
 
 import { ChartWidget } from '../../../modules/widgets';
 import { DashboardSettings } from '../../../modules/dashboards';
-import { Tag } from '@keen.io/widgets';
 
 type Options = {
   widget: ChartWidget;
@@ -62,13 +64,25 @@ const createDataviz = ({
     },
   };
 
+  const composedChartSettings = () => {
+    if ('theme' in chartSettings) {
+      return {
+        ...chartSettings,
+        theme: deepMerge(theme, chartSettings.theme, {
+          arrayMerge: (_target, source) => source,
+        }),
+      };
+    }
+    return {
+      ...chartSettings,
+      theme: theme,
+    };
+  };
+
   return new KeenDataviz({
     container,
     type: visualizationType as any,
-    settings: {
-      ...chartSettings,
-      theme,
-    },
+    settings: composedChartSettings(),
     widget: {
       ...extendedWidgetSettings,
       tags,

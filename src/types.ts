@@ -1,4 +1,17 @@
-import { Theme } from '@keen.io/charts';
+import {
+  BarChartSettings,
+  BubbleChartSettings,
+  ChoroplethChartSettings,
+  DonutChartSettings,
+  FunnelChartSettings,
+  GaugeChartSettings,
+  HeatmapChartSettings,
+  LineChartSettings,
+  MetricChartSettings,
+  PieChartSettings,
+  TableChartSettings,
+  Theme,
+} from '@keen.io/charts';
 
 import { Scopes } from './modules/app';
 
@@ -69,3 +82,18 @@ export type DatePickerWidgetConfiguration = {
 export type WidgetsConfiguration = {
   datePicker?: DatePickerWidgetConfiguration;
 };
+
+type ComponentSettings =
+  | BubbleChartSettings
+  | BarChartSettings
+  | LineChartSettings
+  | GaugeChartSettings
+  | PieChartSettings
+  | DonutChartSettings
+  | MetricChartSettings
+  | FunnelChartSettings
+  | HeatmapChartSettings
+  | TableChartSettings
+  | ChoroplethChartSettings
+  | Record<string, any>;
+export type ChartSettings = ComponentSettings & { theme?: Theme };

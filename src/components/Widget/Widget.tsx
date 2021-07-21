@@ -30,6 +30,7 @@ import FilterManagement from '../FilterManagement';
 import { editFilterWidget } from '../../modules/widgets/actions';
 import { appSelectors } from '../../modules/app';
 import { themeSelectors } from '../../modules/theme';
+import { VisualizationSettings } from '../../modules/widgets/types';
 
 type Props = {
   /** Widget identifier */
@@ -44,9 +45,43 @@ type Props = {
   onEditWidget?: () => void;
 };
 
+const ChartVisualization = ({
+  widgetId,
+  isEditorMode,
+  onRemoveWidget,
+  isHighlighted,
+  isDetached,
+  title,
+  error,
+  enableHover,
+}: Partial<RenderOptions> & { enableHover: boolean }) => {
+  return (
+    <>
+      <ChartWidget id={widgetId} disableInteractions={isEditorMode} />
+      {isEditorMode && (
+        <ChartManagement
+          widgetId={widgetId}
+          error={error}
+          isHoverActive={enableHover}
+          onRemoveWidget={onRemoveWidget}
+        />
+      )}
+      {(isHighlighted || isDetached || title) && (
+        <WidgetCover
+          isHighlighted={isHighlighted}
+          isDetached={isDetached}
+          title={title}
+        />
+      )}
+      {!isEditorMode && <ChartWidgetFilter widgetId={widgetId} />}
+    </>
+  );
+};
+
 const renderWidget = ({
   widgetType,
   widgetId,
+  visualizationSettings,
   isEditorMode,
   isHoverActive,
   isHighlighted,
@@ -92,7 +127,7 @@ const renderWidget = ({
         return <TextWidget id={widgetId} />;
       }
     case 'visualization':
-      return (
+      return visualizationSettings?.widgetSettings?.card.enabled ? (
         <StyledCard
           isFadeOut={isFadeOut}
           isHighlighted={isHighlighted}
@@ -102,24 +137,27 @@ const renderWidget = ({
           borderColor={tileSettings.borderColor}
           hasShadow={tileSettings.hasShadow}
         >
-          <ChartWidget id={widgetId} disableInteractions={isEditorMode} />
-          {isEditorMode && (
-            <ChartManagement
-              widgetId={widgetId}
-              error={error}
-              isHoverActive={enableHover}
-              onRemoveWidget={onRemoveWidget}
-            />
-          )}
-          {(isHighlighted || isDetached || title) && (
-            <WidgetCover
-              isHighlighted={isHighlighted}
-              isDetached={isDetached}
-              title={title}
-            />
-          )}
-          {!isEditorMode && <ChartWidgetFilter widgetId={widgetId} />}
+          <ChartVisualization
+            widgetId={widgetId}
+            isEditorMode={isEditorMode}
+            onRemoveWidget={onRemoveWidget}
+            isHighlighted={isHighlighted}
+            isDetached={isDetached}
+            title={title}
+            error={error}
+            enableHover={enableHover}
+          />
         </StyledCard>
+      ) : (
+        <ChartVisualization
+          widgetId={widgetId}
+          isEditorMode={isEditorMode}
+          onRemoveWidget={onRemoveWidget}
+          isHighlighted={isHighlighted}
+          isDetached={isDetached}
+          title={title}
+          enableHover={enableHover}
+        />
       );
     case 'image':
       return (
@@ -174,7 +212,7 @@ const Widget: FC<Props> = ({
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const {
-    widget: { id: widgetId, type: widgetType },
+    widget: { id: widgetId, type: widgetType, settings },
     error,
     isHighlighted,
     isFadeOut,
@@ -207,6 +245,7 @@ const Widget: FC<Props> = ({
   return renderWidget({
     widgetType,
     widgetId,
+    visualizationSettings: settings as VisualizationSettings,
     isEditorMode,
     isDetached,
     isHoverActive,

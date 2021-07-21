@@ -1,10 +1,7 @@
 import { Query } from '@keen.io/query';
-import {
-  PickerWidgets,
-  ChartSettings,
-  WidgetSettings,
-} from '@keen.io/widget-picker';
+import { PickerWidgets, WidgetSettings } from '@keen.io/widget-picker';
 import { TextSettings } from '@keen.io/widgets';
+import { ChartSettings } from '../../types';
 
 export enum EditorSection {
   QUERY = 'query',

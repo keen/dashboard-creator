@@ -1,10 +1,12 @@
 import { WidgetType } from '../../types';
 import { DashboardSettings } from '../../modules/dashboards';
 import { WidgetError } from '../../modules/widgets';
+import { VisualizationSettings } from '../../modules/widgets/types';
 
 export type RenderOptions = {
   widgetType: WidgetType;
   widgetId: string;
+  visualizationSettings: VisualizationSettings;
   isEditorMode: boolean;
   isHoverActive: boolean;
   isHighlighted: boolean;

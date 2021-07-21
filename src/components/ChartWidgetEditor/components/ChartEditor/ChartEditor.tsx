@@ -1,9 +1,18 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import React, { FC, useState, useEffect, useCallback, useContext } from 'react';
+import React, {
+  FC,
+  useState,
+  useEffect,
+  useCallback,
+  useContext,
+  useMemo,
+} from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import deepEqual from 'deep-equal';
+import deepMerge from 'deepmerge';
+
 import { getAvailableWidgets, WidgetSettings } from '@keen.io/widget-picker';
 import WidgetCustomization, {
   SerializedSettings,
@@ -49,6 +58,7 @@ import { TOOLTIP_MOTION } from '../../../../constants';
 
 import { ChartEditorError } from './types';
 import SaveQueryWarning from '../SaveQueryWarning';
+import { ChartSettings } from '../../../../types';
 
 type Props = {
   /** Close editor event handler */
@@ -86,11 +96,26 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
     widgetType
   );
 
+  const composedChartSettings = useMemo(() => {
+    if ('theme' in chartSettings) {
+      return {
+        ...chartSettings,
+        theme: deepMerge(baseTheme, chartSettings.theme, {
+          arrayMerge: (_target, source) => source,
+        }),
+      };
+    }
+    return {
+      ...chartSettings,
+      theme: baseTheme,
+    };
+  }, [widgetType, chartSettings]);
+
   const [
     widgetCustomization,
     setCustomizationSettings,
   ] = useState<SerializedSettings>(() =>
-    serializeInputSettings(widgetType, chartSettings, widgetSettings)
+    serializeInputSettings(widgetType, composedChartSettings, widgetSettings)
   );
 
   const onApplyConfiguration = useCallback(() => {
@@ -152,8 +177,10 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
       </AnimatePresence>
       <VisualizationContainer>
         <WidgetVisualization
-          visualization={visualization}
-          baseTheme={baseTheme}
+          visualization={{
+            ...visualization,
+            chartSettings: composedChartSettings as ChartSettings,
+          }}
           isQueryPerforming={isQueryPerforming}
           isSavedQuery={isSavedQuery}
           outdatedAnalysisResults={outdatedAnalysisResults}
@@ -210,6 +237,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
       ) : (
         <SectionContainer>
           <WidgetCustomization
+            widgetType={widgetType}
             customizationSections={customizationSections}
             chartSettings={widgetCustomization.chart}
             widgetSettings={widgetCustomization.widget}
