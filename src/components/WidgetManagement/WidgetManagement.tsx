@@ -28,6 +28,10 @@ type Props = {
   onCloneWidget: () => void;
   /** Edit button label */
   editButtonLabel: string;
+  /** Enables or disables edit possibility */
+  editAllowed?: boolean;
+  /** Enables or disables clone functionallity */
+  cloneAllowed?: boolean;
 };
 
 const WidgetManagement: FC<Props> = ({
@@ -36,6 +40,8 @@ const WidgetManagement: FC<Props> = ({
   onRemoveWidget,
   onCloneWidget,
   editButtonLabel,
+  editAllowed = true,
+  cloneAllowed = true,
 }) => {
   const { t } = useTranslation();
   const [removeConfirmation, setRemoveConfirmation] = useState(false);
@@ -67,13 +73,15 @@ const WidgetManagement: FC<Props> = ({
         {showManagementSettings && (
           <Cover className={DRAG_HANDLE_ELEMENT} {...settingsMotion}>
             <ButtonsContainer>
-              <PreventDragPropagation>
-                <div data-testid="edit-widget">
-                  <Button variant="blank" onClick={onEditWidget}>
-                    {editButtonLabel}
-                  </Button>
-                </div>
-              </PreventDragPropagation>
+              {editAllowed && (
+                <PreventDragPropagation>
+                  <div data-testid="edit-widget">
+                    <Button variant="blank" onClick={onEditWidget}>
+                      {editButtonLabel}
+                    </Button>
+                  </div>
+                </PreventDragPropagation>
+              )}
               <PreventDragPropagation>
                 <div data-testid="delete-widget">
                   <CircleButton
@@ -83,15 +91,17 @@ const WidgetManagement: FC<Props> = ({
                   />
                 </div>
               </PreventDragPropagation>
-              <PreventDragPropagation>
-                <div data-testid="clone-widget">
-                  <CircleButton
-                    variant="blank"
-                    onClick={onCloneWidget}
-                    icon={<Icon type="clone" fill={colors.black[500]} />}
-                  />
-                </div>
-              </PreventDragPropagation>
+              {cloneAllowed && (
+                <PreventDragPropagation>
+                  <div data-testid="clone-widget">
+                    <CircleButton
+                      variant="blank"
+                      onClick={onCloneWidget}
+                      icon={<Icon type="clone" fill={colors.black[500]} />}
+                    />
+                  </div>
+                </PreventDragPropagation>
+              )}
             </ButtonsContainer>
           </Cover>
         )}

@@ -102,7 +102,11 @@
     "connections_description": "Which charts should be associated with this filter?",
     "settings_error": "Please, finish filter widget configuration",
     "schema_processing_error": "We cannot display properties list at the moment. Please try again later.",
-    "empty_schema_error": "No strings properties in schema"
+    "empty_schema_error": "No strings properties in schema",
+    "filter_display_name": "Filter display name",
+    "filter_display_name_placeholder": "Enter name",
+    "enter_filter_name_first": "Enter filter name first"
+
   },
   "filter_widget": {
     "search_value": "Search value",
@@ -123,7 +127,9 @@
     "cancel_button": "Cancel",
     "empty_connections": "Add charts to the dashboard and then configure Date Range widget",
     "description": "Which charts should be associated with the Date Range widget?",
-    "tooltip_hint": "Date Range will affect only timeframes of associated charts."
+    "tooltip_hint": "Date Range will affect only timeframes of associated charts.",
+    "filter_display_name": "Data Range Display Name",
+    "filter_display_name_placeholder": "Date Range"
   },
   "date_picker_widget": {
     "name": "Date Range",

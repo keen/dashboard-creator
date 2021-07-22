@@ -63,6 +63,7 @@ export const createWidget = (
           ...baseWidget,
           settings: {
             widgets: [],
+            name: '',
           },
         } as DatePickerWidget,
         isConfigured
@@ -75,6 +76,7 @@ export const createWidget = (
             widgets: [],
             eventStream: null,
             targetProperty: null,
+            name: '',
           },
         } as FilterWidget,
         isConfigured

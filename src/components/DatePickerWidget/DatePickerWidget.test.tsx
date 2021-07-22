@@ -158,7 +158,7 @@ test('allows user to clear date picker modifiers', () => {
   `);
 });
 
-test('should render widget title for inactive widget', () => {
+test('should render widget name for inactive widget', () => {
   const widgetId = '@widget/02';
   const state = {
     widgets: {
@@ -166,6 +166,11 @@ test('should render widget title for inactive widget', () => {
         [widgetId]: {
           isActive: false,
           data: null,
+          widget: {
+            settings: {
+              name: 'datePickerName',
+            },
+          },
         },
       },
     },
@@ -174,7 +179,7 @@ test('should render widget title for inactive widget', () => {
   const {
     wrapper: { getByText },
   } = render({ ...state }, { id: widgetId });
-  expect(getByText('date_picker_widget.name')).toBeInTheDocument();
+  expect(getByText('datePickerName')).toBeInTheDocument();
 });
 
 test('Should render default timezone if widget has no data', async () => {

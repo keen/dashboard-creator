@@ -155,7 +155,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
         }}
       />
       {enableFixedEditorBar && <span ref={setMarkerRef}></span>}
-      <EditorContainer isFixed={enableFixedEditorBar}>
+      <EditorContainer isFixed={enableFixedEditorBar} isSticky={isSticky}>
         <EditorBar
           isSticky={isSticky}
           isSaving={isSaving}

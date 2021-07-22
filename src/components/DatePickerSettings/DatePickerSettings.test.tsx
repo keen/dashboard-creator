@@ -11,6 +11,7 @@ const render = (storeState: any = {}, overProps: any = {}) => {
   const state = {
     datePicker: {
       isEditorOpen: true,
+      name: 'datePickerName',
       widgetConnections: [
         {
           widgetId: '@widget/01',
@@ -60,6 +61,12 @@ test('allows user to apply date picker widget settings', () => {
 
   expect(store.getActions()).toMatchInlineSnapshot(`
     Array [
+      Object {
+        "payload": Object {
+          "name": "datePickerName",
+        },
+        "type": "@date-picker/SET_NAME",
+      },
       Object {
         "payload": undefined,
         "type": "@date-picker/APPLY_SETTINGS",

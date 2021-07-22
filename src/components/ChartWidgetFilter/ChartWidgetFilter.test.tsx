@@ -72,6 +72,11 @@ const render = (storeState: any = {}, overProps: any = {}) => {
             timezone: 'UTC',
             timeframe: 'this_7_days',
           },
+          widget: {
+            settings: {
+              name: 'datePickerName',
+            },
+          },
         },
         [filterId]: {
           isActive: false,
@@ -161,6 +166,11 @@ test('renders summary of applied filters', () => {
             timezone: 'UTC',
             timeframe: 'this_7_days',
           },
+          widget: {
+            settings: {
+              name: 'datePickerName',
+            },
+          },
         },
         [filterId]: {
           isActive: true,
@@ -168,6 +178,11 @@ test('renders summary of applied filters', () => {
             filter: {
               propertyName: 'propertyName',
               propertyValue: 'propertyValue',
+            },
+          },
+          widget: {
+            settings: {
+              name: 'filterName',
             },
           },
         },

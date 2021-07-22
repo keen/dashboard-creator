@@ -3,7 +3,7 @@ import { AnimatePresence } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Icon } from '@keen.io/icons';
-import { Button, Tooltip, ModalFooter } from '@keen.io/ui-core';
+import { Button, Tooltip, ModalFooter, Input } from '@keen.io/ui-core';
 import { colors } from '@keen.io/colors';
 
 import {
@@ -16,16 +16,17 @@ import {
   Hint,
   TooltipContent,
   TooltipMotion,
+  DisplayNameContainer,
 } from './DatePickerSettings.styles';
 import WidgetConnections from '../WidgetConnections';
 
 import {
   getDatePickerSettings,
-  applySettings,
-  updateConnection,
+  datePickerActions,
 } from '../../modules/datePicker';
 
 import { TOOLTIP_MOTION } from '../../constants';
+import { Field } from '../FilterSettings/FilterSettings.styles';
 
 type Props = {
   onCancel: () => void;
@@ -34,15 +35,33 @@ type Props = {
 const DatePickerSettings: FC<Props> = ({ onCancel }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { widgetConnections } = useSelector(getDatePickerSettings);
+
+  const { widgetConnections, name } = useSelector(getDatePickerSettings);
 
   const [showHint, setHintVisibility] = useState(false);
-
   const isEmptyConnectionsList = widgetConnections.length === 0;
+
+  const [filterName, setFilterName] = useState(name);
 
   return (
     <div>
       <Content>
+        <DisplayNameContainer>
+          <Description marginBottom={1}>
+            {t('date_picker_settings.filter_display_name')}
+          </Description>
+          <Field width={300} marginRight={15}>
+            <Input
+              type="text"
+              variant="solid"
+              placeholder={t(
+                'date_picker_settings.filter_display_name_placeholder'
+              )}
+              value={filterName}
+              onChange={(e) => setFilterName(e.target.value)}
+            />
+          </Field>
+        </DisplayNameContainer>
         <Description>
           {t('date_picker_settings.description')}
           <Hint
@@ -88,7 +107,9 @@ const DatePickerSettings: FC<Props> = ({ onCancel }) => {
                 })
               )}
               onUpdateConnection={(widgetId, isConnected) =>
-                dispatch(updateConnection(widgetId, isConnected))
+                dispatch(
+                  datePickerActions.updateConnection(widgetId, isConnected)
+                )
               }
             />
           </Connections>
@@ -96,7 +117,13 @@ const DatePickerSettings: FC<Props> = ({ onCancel }) => {
       </Content>
       <ModalFooter>
         <FooterContent>
-          <Button variant="secondary" onClick={() => dispatch(applySettings())}>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              dispatch(datePickerActions.setName(filterName));
+              dispatch(datePickerActions.applySettings());
+            }}
+          >
             {t('date_picker_settings.confirm_button')}
           </Button>
           <CancelButton>

@@ -4,8 +4,9 @@ import { colors } from '@keen.io/colors';
 
 export const Container = styled.div<{ isOpen?: boolean }>`
   height: 100%;
-  display: flex;
+  width: 100%;
 
+  display: flex;
   ${(props) =>
     props.isOpen &&
     css`
@@ -19,13 +20,9 @@ export const TitleContainer = styled.div`
   justify-content: center;
   flex: 1;
   cursor: pointer;
-`;
-
-export const Title = styled.div`
-  margin: 2px 0 0 10px;
-  font-size: 14px;
-  font-family: 'Lato Bold', sans-serif;
-  color: ${colors.blue[500]};
+  width: 100%;
+  padding: 0 20px;
+  box-sizing: border-box;
 `;
 
 export const Bar = styled.div`
@@ -69,4 +66,10 @@ export const Separator = styled.div`
 
 export const ErrorContainer = styled.div`
   padding: 15px 10px;
+`;
+
+export const IconWrapper = styled.div`
+  flex-shrink: 0;
+  margin-right: 5px;
+  display: inline-flex;
 `;

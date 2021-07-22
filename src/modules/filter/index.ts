@@ -11,6 +11,7 @@ import {
   setEditorConnections,
   setEditorDetachedConnections,
   setupDashboardEventStreams,
+  setName,
 } from './actions';
 import { ReducerState, SchemaPropertiesList } from './types';
 
@@ -25,6 +26,20 @@ import {
 } from './constants';
 import { getFilterSettings } from './selectors';
 
+const filterActions = {
+  openEditor,
+  closeEditor,
+  resetEditor,
+  applySettings,
+  updateConnection,
+  setEventStream,
+  setTargetProperty,
+  setEditorConnections,
+  setEditorDetachedConnections,
+  setupDashboardEventStreams,
+  setName,
+};
+
 export {
   getFilterSettings,
   filterReducer,
@@ -33,6 +48,7 @@ export {
   setupDashboardEventStreams,
   setEventStream,
   setTargetProperty,
+  setName,
   setEditorConnections,
   setEditorDetachedConnections,
   updateConnection,
@@ -45,6 +61,7 @@ export {
   SET_EVENT_STREAM,
   APPLY_EDITOR_SETTINGS,
   CLOSE_EDITOR,
-  ReducerState,
-  SchemaPropertiesList,
+  filterActions,
 };
+
+export type { ReducerState, SchemaPropertiesList };

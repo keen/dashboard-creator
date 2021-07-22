@@ -27,22 +27,26 @@ import {
   MousePositionedTooltip,
   TimezoneError,
 } from '@keen.io/ui-core';
+import { BodyText } from '@keen.io/typography';
 
 import TimeframeLabel from '../TimeframeLabel';
 import {
   Container,
-  Title,
   Bar,
   SettingsContainer,
   TitleContainer,
   ErrorContainer,
+  IconWrapper,
 } from './DatePickerWidget.styles';
+import TimezoneLoader from './components/TimezoneLoader';
+import { DEFAULT_TIMEFRAME, ABSOLUTE_TAB, RELATIVE_TAB } from './constants';
 
 import {
   setDatePickerModifiers,
   clearDatePickerModifiers,
   applyDatePickerModifiers,
   getWidget,
+  DatePickerWidget as DatePickerWidgetType,
 } from '../../modules/widgets';
 
 import { RootState } from '../../rootReducer';
@@ -50,11 +54,7 @@ import { AppContext } from '../../contexts';
 
 import { getEventPath, getRelativeBoundingRect } from '../../utils';
 
-import { DEFAULT_TIMEFRAME, ABSOLUTE_TAB, RELATIVE_TAB } from './constants';
-
-import { BodyText } from '@keen.io/typography';
 import { getTimezoneState } from '../../modules/timezone';
-import TimezoneLoader from './components/TimezoneLoader';
 import { DEFAULT_TIMEZONE, DROPDOWN_CONTAINER_ID } from '../../constants';
 
 type Props = {
@@ -62,15 +62,22 @@ type Props = {
   id: string;
   /** Disable chart interactions */
   disableInteractions?: boolean;
+  /** Minimal dropdown width */
+  minDropdownWidth?: number;
 };
 
-const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
+const DatePickerWidget: FC<Props> = ({
+  id,
+  disableInteractions,
+  minDropdownWidth = 320,
+}) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { modalContainer, widgetsConfiguration } = useContext(AppContext);
-  const { isActive, data } = useSelector((state: RootState) =>
+  const { isActive, data, widget } = useSelector((state: RootState) =>
     getWidget(state, id)
   );
+  const datePickerWidget = widget as DatePickerWidgetType;
 
   const datePickerConfiguration = widgetsConfiguration?.datePicker;
 
@@ -91,6 +98,13 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
 
   const { timezones, isLoading, error } = useSelector(getTimezoneState);
 
+  const getDropdownXPositionThatFitsViewport = (left, right, dropdownWidth) => {
+    if (window && window.innerWidth < left + dropdownWidth) {
+      return right - dropdownWidth;
+    }
+    return left;
+  };
+
   const outsideClick = useCallback(
     (e) => {
       const path = getEventPath(e);
@@ -107,16 +121,25 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
 
   useEffect(() => {
     if (isOpen && containerRef.current) {
-      const { left, bottom, width } = getRelativeBoundingRect(
-        DROPDOWN_CONTAINER_ID,
-        containerRef.current
-      );
+      const {
+        left,
+        right,
+        bottom,
+        width: parentWidth,
+      } = getRelativeBoundingRect(DROPDOWN_CONTAINER_ID, containerRef.current);
+
+      const dropdownWidth =
+        parentWidth > minDropdownWidth ? parentWidth : minDropdownWidth;
 
       setDropdown((state) => ({
         ...state,
-        left,
+        left: getDropdownXPositionThatFitsViewport(
+          left,
+          right,
+          minDropdownWidth
+        ),
         top: bottom,
-        width,
+        width: dropdownWidth,
       }));
     }
 
@@ -162,13 +185,22 @@ const DatePickerWidget: FC<Props> = ({ id, disableInteractions }) => {
           />
         ) : (
           <TitleContainer>
-            <Icon
-              type="date-picker"
-              fill={transparentize(0.6, colors.blue[500])}
-              width={13}
-              height={13}
-            />
-            <Title role="heading">{t('date_picker_widget.name')}</Title>
+            <IconWrapper>
+              <Icon
+                type="date-picker"
+                fill={transparentize(0.6, colors.blue[500])}
+                width={13}
+                height={13}
+              />
+            </IconWrapper>
+            <BodyText
+              variant="body2"
+              fontWeight="bold"
+              enableTextEllipsis
+              role="heading"
+            >
+              {datePickerWidget.settings.name || t('date_picker_widget.name')}
+            </BodyText>
           </TitleContainer>
         )}
       </Container>

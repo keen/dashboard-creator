@@ -12,18 +12,20 @@ import { getCustomTimeframe } from '../../../../utils';
 import { TIMEFRAME_FORMAT } from '../../../../constants';
 
 type Props = {
+  /** Name */
+  name: string;
   /** Timeframe */
   timeframe: Timeframe;
   /** Timezone */
   timezone: string;
 };
-const DatePickerContent: FC<Props> = ({ timeframe, timezone }) => {
+const DatePickerContent: FC<Props> = ({ timeframe, timezone, name }) => {
   const { t } = useTranslation();
   return (
     <>
       <TitleContainer>
         <BodyText variant="body2" fontWeight="bold" color={colors.black[100]}>
-          {t('dashboard_timepicker.timeframe_modified')}
+          {name || t('dashboard_timepicker.timeframe_modified')}
         </BodyText>
       </TitleContainer>
       {typeof timeframe === 'string' ? (

@@ -13,6 +13,8 @@ export type GridPosition = {
   y: number;
   minH?: number;
   minW?: number;
+  maxW?: number;
+  maxH?: number;
 };
 
 export type WidgetsPosition = (GridPosition & { i: string })[];
@@ -61,6 +63,7 @@ export interface DatePickerWidget extends BaseWidget {
   type: 'date-picker';
   settings: {
     widgets: string[];
+    name: string;
   };
 }
 
@@ -70,6 +73,7 @@ export interface FilterWidget extends BaseWidget {
     widgets: string[];
     eventStream: string | null;
     targetProperty: string | null;
+    name: string;
     filter: FilterSettings;
   };
 }
@@ -81,7 +85,12 @@ export type Widget =
   | DatePickerWidget
   | FilterWidget;
 
+export enum AnalysisError {
+  RESOURCE_NOT_FOUND = 'ResourceNotFoundError',
+}
+
 export enum WidgetErrors {
+  SAVED_QUERY_NOT_EXIST = 'SAVED_QUERY_NOT_EXIST',
   INCONSISTENT_FILTER = 'INCONSISTENT_FILTER',
   DETACHED_QUERY = 'DETACHED_QUERY',
   CANNOT_INITIALIZE = 'CANNOT_INITIALIZE',

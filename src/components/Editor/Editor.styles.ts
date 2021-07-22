@@ -1,7 +1,10 @@
 import styled, { css } from 'styled-components';
 import { UI_LAYERS } from '@keen.io/ui-core';
 
-export const EditorContainer = styled.div<{ isFixed?: boolean }>`
+export const EditorContainer = styled.div<{
+  isFixed?: boolean;
+  isSticky?: boolean;
+}>`
   margin-bottom: 40px;
 
   ${({ isFixed }) =>
@@ -9,6 +12,11 @@ export const EditorContainer = styled.div<{ isFixed?: boolean }>`
     css`
       position: sticky;
       top: 10px;
+    `};
+
+  ${({ isSticky }) =>
+    isSticky &&
+    css`
       z-index: ${UI_LAYERS.fixedBar};
     `};
 `;

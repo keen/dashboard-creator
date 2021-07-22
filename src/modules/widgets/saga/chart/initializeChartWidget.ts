@@ -23,7 +23,12 @@ import {
 
 import { KEEN_ANALYSIS } from '../../../../constants';
 
-import { WidgetItem, ChartWidget, WidgetErrors } from '../../types';
+import {
+  WidgetItem,
+  ChartWidget,
+  WidgetErrors,
+  AnalysisError,
+} from '../../types';
 
 /**
  * Flow responsible for initializing chart widget.
@@ -96,13 +101,19 @@ export function* initializeChartWidget({
       yield put(setWidgetState(id, widgetState));
     }
   } catch (err) {
-    const { body } = err;
+    const { body, error_code: code } = err;
+    let errorCode = WidgetErrors.CANNOT_INITIALIZE;
+
+    if (code === AnalysisError.RESOURCE_NOT_FOUND) {
+      errorCode = WidgetErrors.SAVED_QUERY_NOT_EXIST;
+    }
+
     yield put(
       setWidgetState(id, {
         isInitialized: true,
         error: {
           message: body,
-          code: WidgetErrors.CANNOT_INITIALIZE,
+          code: errorCode,
         },
       })
     );

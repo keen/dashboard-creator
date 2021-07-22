@@ -31,6 +31,8 @@ import { widgetsSaga } from './widgetsSaga';
 import { createWidgetId } from './utils';
 import {
   Widget,
+  WidgetError,
+  WidgetErrors,
   GridPosition,
   WidgetsPosition,
   ChartWidget,
@@ -41,8 +43,9 @@ import {
   FilterSettings,
 } from './types';
 
-export {
+export type {
   Widget,
+  WidgetError,
   GridPosition,
   WidgetsPosition,
   ChartWidget,
@@ -51,6 +54,10 @@ export {
   TextWidget,
   FilterWidget,
   FilterSettings,
+};
+
+export {
+  WidgetErrors,
   widgetsReducer,
   widgetsSaga,
   createWidget,

@@ -1,7 +1,31 @@
 version: 2.1
 
 orbs:
+  aws-cli: circleci/aws-cli@0.1.19
   slack: circleci/slack@3.4.2
+
+commands:
+  upload-artifact:
+    description: "Assumes role and uploads atrifact on S3"
+    parameters:
+      artifact_name:
+        type: string
+      role_arn:
+        type: string
+      bucket_name:
+        type: string
+      cf_dist_id:
+        type: string
+    steps:
+      - run:
+          command: |
+            response=$(aws sts assume-role --role-arn << parameters.role_arn >> --role-session-name s3-access)
+            export AWS_ACCESS_KEY_ID=$(echo $response | jq -r .Credentials.AccessKeyId)
+            export AWS_SECRET_ACCESS_KEY=$(echo $response | jq -r .Credentials.SecretAccessKey)
+            export AWS_SESSION_TOKEN=$(echo $response | jq -r .Credentials.SessionToken)
+            export AWS_SECURITY_TOKEN=$(echo $response | jq -r .Credentials.SessionToken)
+            aws s3 sync artifact s3://<< parameters.bucket_name >>/build/<< parameters.artifact_name >> --acl public-read
+            aws cloudfront create-invalidation --distribution-id << parameters.cf_dist_id >> --paths "/build/<< parameters.artifact_name >>/*"
 
 executors:
   nodejs:
@@ -62,6 +86,52 @@ jobs:
       - run:
           name: Publish
           command: yarn publish --tag next
+  build-s3-artifact:
+    executor: nodejs
+    working_directory: ~/tmp
+    steps:
+      - checkout
+      - restore_cache:
+          key: npm-deps-{{ arch }}-{{ .Branch }}-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install dependencies
+          command: yarn install
+      - run:
+          name: Create project config
+          command: echo $APP_CONFIG > config.js
+      - run:
+          name: Build
+          command: npx webpack --config webpack.config.pipeline.js --progress --env ARTIFACT_NAME=${CIRCLE_BRANCH} --env APP_NAME=dashboard-creator --mode production
+      - persist_to_workspace:
+          root: artifact
+          paths:
+            - "*"
+  deploy-s3-artifact:
+    executor: aws-cli/default
+    working_directory: ~/tmp
+    parameters:
+      bucket_name:
+        type: string
+        default: keen-test-static
+      role_arn:
+        type: string
+        default: ${ROLE_ARN_STAGE}
+      artifact_name:
+        type: string
+        default: ${ARTIFACT_NAME}
+      cf_dist_id:
+        type: string
+        default: ${CF_DISTRIBUTION_ID}
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/tmp/artifact
+      - aws-cli/install
+      - upload-artifact:
+          artifact_name: ${CIRCLE_BRANCH}
+          cf_dist_id: ${CF_DISTRIBUTION_ID}
+          bucket_name: << parameters.bucket_name >>
+          role_arn: << parameters.role_arn >>
   build:
     executor: nodejs
     working_directory: ~/tmp
@@ -110,6 +180,43 @@ workflows:
       - build:
           filters:
             branches:
+              only: /.*/
+            tags:
+              ignore: /.*/
+  spin-environment:
+    jobs:
+      - approve-s3-deployment:
+          type: approval
+          filters:
+            branches:
+              ignore:
+                - develop
+                - main
+              only: /.*/
+            tags:
+              ignore: /.*/
+      - build-s3-artifact:
+          filters:
+            branches:
+              ignore:
+                - develop
+                - main
+              only: /.*/
+            tags:
+              ignore: /.*/
+          requires:
+            - approve-s3-deployment
+      - deploy-s3-artifact:
+          bucket_name: keen-test-static
+          role_arn: ${ROLE_ARN_STAGE}
+          requires:
+            - build-s3-artifact
+          context: aws
+          filters:
+            branches:
+              ignore:
+                - develop
+                - main
               only: /.*/
             tags:
               ignore: /.*/

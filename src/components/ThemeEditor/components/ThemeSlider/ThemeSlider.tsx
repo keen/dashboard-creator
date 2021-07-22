@@ -49,7 +49,6 @@ const ThemeSlider: FC<Props> = ({
     <Container>
       <IntervalSlider
         railSettings={{ size: 4, borderRadius: 3 }}
-        colorSteps={0}
         colors={[colors.gray[400]]}
         intervals={intervals}
         initialValue={initialValue}

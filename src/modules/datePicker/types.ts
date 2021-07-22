@@ -1,6 +1,7 @@
 export type ReducerState = {
   isEditorOpen: boolean;
   widgetConnections: DatePickerConnection[];
+  name: string;
 };
 
 export type DatePickerConnection = {

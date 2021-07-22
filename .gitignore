@@ -4,6 +4,7 @@
 
 node_modules
 dist
+artifact
 coverage
 config.js
 .idea/
