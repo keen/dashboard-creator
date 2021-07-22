@@ -62,3 +62,23 @@ test('allows user to clone widget', () => {
 
   expect(props.onCloneWidget).toHaveBeenCalled();
 });
+
+test('do not allows user to clone widget', () => {
+  const {
+    wrapper: { queryByTestId },
+  } = render({
+    cloneAllowed: false,
+  });
+
+  expect(queryByTestId('clone-widget')).not.toBeInTheDocument();
+});
+
+test('do not allows user to edit widget', () => {
+  const {
+    wrapper: { queryByTestId },
+  } = render({
+    editAllowed: false,
+  });
+
+  expect(queryByTestId('edit-widget')).not.toBeInTheDocument();
+});

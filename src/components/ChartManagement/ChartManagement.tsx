@@ -4,11 +4,18 @@ import { useDispatch } from 'react-redux';
 
 import WidgetManagement from '../WidgetManagement';
 
-import { editChartWidget, cloneWidget } from '../../modules/widgets';
+import {
+  editChartWidget,
+  cloneWidget,
+  WidgetError,
+  WidgetErrors,
+} from '../../modules/widgets';
 
 type Props = {
   /** Widget identifier */
   widgetId: string;
+  /** Widget error */
+  error: WidgetError;
   /** Hover state indicator */
   isHoverActive: boolean;
   /** Remove widget event handler */
@@ -17,11 +24,13 @@ type Props = {
 
 const ChartManagement: FC<Props> = ({
   widgetId,
+  error,
   isHoverActive,
   onRemoveWidget,
 }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const disableManagement = error?.code === WidgetErrors.SAVED_QUERY_NOT_EXIST;
 
   return (
     <WidgetManagement
@@ -29,6 +38,8 @@ const ChartManagement: FC<Props> = ({
       onCloneWidget={() => dispatch(cloneWidget(widgetId))}
       onEditWidget={() => dispatch(editChartWidget(widgetId))}
       onRemoveWidget={onRemoveWidget}
+      editAllowed={!disableManagement}
+      cloneAllowed={!disableManagement}
       editButtonLabel={t('widget.edit_chart')}
     />
   );
