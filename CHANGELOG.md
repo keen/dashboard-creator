@@ -4,7 +4,6 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [3.1.1](https://github.com/keen/explorer/compare/v3.0.3-rc.0...v3.1.1) (2021-07-21)
 
-
 ### Features
 
 * 🎸 Filter widget name added ([052e876](https://github.com/keen/explorer/commit/052e87659c0cafcbd33a7b6dab30a3a6fd62dd3a))
@@ -20,6 +19,8 @@ All notable changes to this project will be documented in this file. See [standa
 * 🐛 filter naming ([acf8f3e](https://github.com/keen/explorer/commit/acf8f3ea352b37e10007ef51deb5e042a680354a))
 * 🐛 modal position ([e988397](https://github.com/keen/explorer/commit/e98839781ccee07fae714d34817f2aefc442863a))
 * 🐛 sticky bar overflow ([1a3de6d](https://github.com/keen/explorer/commit/1a3de6deb5b09329331a81965827c1f8ca77d2a0))
+
+### [3.0.3](https://github.com/keen/explorer/compare/v3.0.3-rc.0...v3.0.3) (2021-07-15)
 
 ### [3.0.2](https://github.com/keen/explorer/compare/v3.0.2-rc.0...v3.0.2) (2021-07-13)
 
