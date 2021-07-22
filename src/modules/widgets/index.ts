@@ -31,6 +31,8 @@ import { widgetsSaga } from './widgetsSaga';
 import { createWidgetId } from './utils';
 import {
   Widget,
+  WidgetError,
+  WidgetErrors,
   GridPosition,
   WidgetsPosition,
   ChartWidget,
@@ -43,6 +45,7 @@ import {
 
 export type {
   Widget,
+  WidgetError,
   GridPosition,
   WidgetsPosition,
   ChartWidget,
@@ -54,6 +57,7 @@ export type {
 };
 
 export {
+  WidgetErrors,
   widgetsReducer,
   widgetsSaga,
   createWidget,

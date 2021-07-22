@@ -53,6 +53,7 @@ const renderWidget = ({
   isDetached,
   isFadeOut,
   title,
+  error,
   onRemoveWidget,
   onEditWidget,
   dashboardSettings,
@@ -105,6 +106,7 @@ const renderWidget = ({
           {isEditorMode && (
             <ChartManagement
               widgetId={widgetId}
+              error={error}
               isHoverActive={enableHover}
               onRemoveWidget={onRemoveWidget}
             />
@@ -173,6 +175,7 @@ const Widget: FC<Props> = ({
   const dispatch = useDispatch();
   const {
     widget: { id: widgetId, type: widgetType },
+    error,
     isHighlighted,
     isFadeOut,
     isDetached,
@@ -212,6 +215,7 @@ const Widget: FC<Props> = ({
     title: widgetTitle,
     onRemoveWidget,
     onEditWidget,
+    error,
     dashboardSettings: dashboardWidgetSettings,
   });
 };

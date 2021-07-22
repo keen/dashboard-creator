@@ -1,5 +1,6 @@
 import { WidgetType } from '../../types';
 import { DashboardSettings } from '../../modules/dashboards';
+import { WidgetError } from '../../modules/widgets';
 
 export type RenderOptions = {
   widgetType: WidgetType;
@@ -10,6 +11,7 @@ export type RenderOptions = {
   isDetached: boolean;
   isFadeOut: boolean;
   title?: string;
+  error?: WidgetError;
   onRemoveWidget: () => void;
   onEditWidget: () => void;
   dashboardSettings?: Pick<DashboardSettings, 'tiles'>;

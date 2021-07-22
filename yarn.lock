@@ -1850,7 +1850,7 @@
     styled-system "^5.1.5"
     webfontloader "^1.6.28"
 
-"@keen.io/widget-customization@^0.0.20":
+"@keen.io/widget-customization@0.0.20":
   version "0.0.20"
   resolved "https://registry.yarnpkg.com/@keen.io/widget-customization/-/widget-customization-0.0.20.tgz#db4828fda86698dd0e35ef5a9b9d3b6be8d66153"
   integrity sha512-755W4+K5nr7HzKX+0/qm7uZnnbjYAAknJkNMgVGTorrtrIBEU+vfczyo5fF1QnyrT86dVz4mcOB5Hy2rJJR3nw==
