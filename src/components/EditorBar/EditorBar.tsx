@@ -14,6 +14,8 @@ import {
 } from './EditorBar.styles';
 
 import SubmitButton from '../SubmitButton';
+import PermissionGate from '../PermissionGate';
+import { Scopes } from '../../modules/app';
 
 type Props = {
   /** Finish edit event handler */
@@ -60,9 +62,11 @@ const EditorBar: FC<Props> = ({
             <Message>{timeAgo}</Message>
           )}
         </SavingIndicator>
-        <EditTheme role="button" onClick={onEditTheme}>
-          <BodyText variant="body2">{t('editor_bar.theming')}</BodyText>
-        </EditTheme>
+        <PermissionGate scopes={[Scopes.EDIT_DASHBOARD_THEME]}>
+          <EditTheme role="button" onClick={onEditTheme}>
+            <BodyText variant="body2">{t('editor_bar.theming')}</BodyText>
+          </EditTheme>
+        </PermissionGate>
         <SubmitButton onClick={onFinishEdit}>
           {t('editor_bar.finish_edition')}
         </SubmitButton>

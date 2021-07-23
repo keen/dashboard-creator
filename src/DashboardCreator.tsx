@@ -59,6 +59,7 @@ export class DashboardCreator {
   private readonly userPermissions: Scopes[] = [
     Scopes.EDIT_DASHBOARD,
     Scopes.SHARE_DASHBOARD,
+    Scopes.EDIT_DASHBOARD_THEME,
   ];
 
   /** Master key for Keen project */
