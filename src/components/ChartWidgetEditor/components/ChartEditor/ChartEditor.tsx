@@ -1,17 +1,9 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import React, {
-  FC,
-  useState,
-  useEffect,
-  useCallback,
-  useContext,
-  useMemo,
-} from 'react';
+import React, { FC, useState, useEffect, useCallback, useContext } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import deepEqual from 'deep-equal';
-import deepMerge from 'deepmerge';
 
 import { getAvailableWidgets, WidgetSettings } from '@keen.io/widget-picker';
 import WidgetCustomization, {
@@ -46,7 +38,7 @@ import {
   EditorSection,
 } from '../../../../modules/chartEditor';
 
-import { themeSelectors } from '../../../../modules/theme';
+import { themeHooks } from '../../../../modules/theme';
 import { AppContext } from '../../../../contexts';
 
 import WidgetVisualization from '../WidgetVisualization';
@@ -58,7 +50,6 @@ import { TOOLTIP_MOTION } from '../../../../constants';
 
 import { ChartEditorError } from './types';
 import SaveQueryWarning from '../SaveQueryWarning';
-import { ChartSettings } from '../../../../types';
 
 type Props = {
   /** Close editor event handler */
@@ -86,7 +77,6 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
     queryError,
   } = useSelector(chartEditorSelectors.getChartEditor);
 
-  const baseTheme = useSelector(themeSelectors.getActiveDashboardTheme);
   const { modalContainer } = useContext(AppContext);
   const { type: widgetType, widgetSettings, chartSettings } = visualization;
 
@@ -96,26 +86,24 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
     widgetType
   );
 
-  const composedChartSettings = useMemo(() => {
-    if ('theme' in chartSettings) {
-      return {
-        ...chartSettings,
-        theme: deepMerge(baseTheme, chartSettings.theme, {
-          arrayMerge: (_target, source) => source,
-        }),
-      };
-    }
-    return {
-      ...chartSettings,
-      theme: baseTheme,
-    };
-  }, [widgetType, chartSettings]);
+  const {
+    themedChartSettings,
+    themedWidgetSettings,
+  } = themeHooks.useApplyWidgetTheming({
+    chartSettings,
+    widgetSettings,
+    dependencies: [widgetType, chartSettings, widgetSettings],
+  });
 
   const [
     widgetCustomization,
     setCustomizationSettings,
   ] = useState<SerializedSettings>(() =>
-    serializeInputSettings(widgetType, composedChartSettings, widgetSettings)
+    serializeInputSettings(
+      widgetType,
+      themedChartSettings,
+      themedWidgetSettings
+    )
   );
 
   const onApplyConfiguration = useCallback(() => {
@@ -179,7 +167,8 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
         <WidgetVisualization
           visualization={{
             ...visualization,
-            chartSettings: composedChartSettings as ChartSettings,
+            widgetSettings: themedWidgetSettings,
+            chartSettings: themedChartSettings,
           }}
           isQueryPerforming={isQueryPerforming}
           isSavedQuery={isSavedQuery}

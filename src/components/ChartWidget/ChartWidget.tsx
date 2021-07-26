@@ -21,10 +21,7 @@ import {
   ChartWidget as ChartWidgetType,
 } from '../../modules/widgets';
 import { getInterimQuery } from '../../modules/queries';
-import {
-  themeSelectors,
-  mergeSettingsWithFontFallback,
-} from '../../modules/theme';
+import { themeSelectors, themeHooks } from '../../modules/theme';
 import { getPresentationTimezone } from '../../modules/timezone';
 import { RootState } from '../../rootReducer';
 
@@ -35,6 +32,7 @@ import getChartInput from '../../utils/getChartInput';
 import { createDataviz } from './utils';
 import { useTranslation } from 'react-i18next';
 import { WidgetItem } from '../../modules/widgets/types';
+import { PickerWidgets } from '@keen.io/widget-picker';
 
 type Props = {
   /** Widget identifier */
@@ -76,13 +74,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
     getInterimQuery(state, id)
   );
 
-  const {
-    theme,
-    settings,
-    settings: {
-      page: { chartTitlesFont },
-    },
-  } = useSelector((state: RootState) =>
+  const { theme, settings } = useSelector((state: RootState) =>
     themeSelectors.getActiveDashboardThemeSettings(state)
   );
 
@@ -117,16 +109,28 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
     tags.push({ label: t('tags.saved_query'), variant: 'gray' });
   }
 
+  const {
+    themedChartSettings,
+    themedWidgetSettings,
+  } = themeHooks.useApplyWidgetTheming({
+    chartSettings: widget.settings?.chartSettings,
+    widgetSettings: widget.settings?.widgetSettings,
+    dependencies: [
+      showVisualization,
+      inView,
+      widget.settings?.chartSettings,
+      widget.settings?.widgetSettings,
+      theme,
+    ],
+    composeCondition: showVisualization && inView,
+  });
+
   useEffect(() => {
     if (showVisualization && inView) {
-      const widgetWithTheming = mergeSettingsWithFontFallback(
-        chartTitlesFont,
-        widget as ChartWidgetType
-      );
-
       datavizRef.current = createDataviz({
-        widget: widgetWithTheming,
-        theme,
+        visualizationType: widget.settings.visualizationType as PickerWidgets,
+        chartSettings: themedChartSettings,
+        widgetSettings: themedWidgetSettings,
         tags,
         container: containerRef.current,
         presentationTimezone: getTimezone(chartData),
