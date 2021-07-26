@@ -1,10 +1,12 @@
 import React from 'react';
 import moment from 'moment';
 import { render as rtlRender, fireEvent } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import configureStore from 'redux-mock-store';
 
 import EditorBar from './EditorBar';
 
-const render = (overProps: any = {}) => {
+const render = (overProps: any = {}, overStore: any = {}) => {
   const props = {
     onFinishEdit: jest.fn(),
     lastSaveTime: null,
@@ -12,10 +14,22 @@ const render = (overProps: any = {}) => {
     ...overProps,
   };
 
+  const mockStore = configureStore([]);
+  const store = mockStore({
+    app: {
+      user: {
+        permissions: [],
+      },
+    },
+    ...overStore,
+  });
+
   const wrapper = rtlRender(
-    <EditorBar {...props}>
-      <div>Children Element</div>
-    </EditorBar>
+    <Provider store={store}>
+      <EditorBar {...props}>
+        <div>Children Element</div>
+      </EditorBar>
+    </Provider>
   );
 
   return {
@@ -60,4 +74,27 @@ test('allows user to finish dashboard edition', () => {
   fireEvent.click(finishButton);
 
   expect(props.onFinishEdit).toHaveBeenCalled();
+});
+
+test('theming button is not visible when permissions are not granted', () => {
+  const {
+    wrapper: { queryByText },
+  } = render();
+
+  expect(queryByText('editor_bar.theming')).toBeNull();
+});
+
+test('theming button is visible when permissions are granted', () => {
+  const {
+    wrapper: { getByText },
+  } = render(
+    {},
+    {
+      app: {
+        user: { permissions: ['edit-dashboard', 'edit-dashboard-theme'] },
+      },
+    }
+  );
+
+  expect(getByText('editor_bar.theming')).toBeInTheDocument();
 });
