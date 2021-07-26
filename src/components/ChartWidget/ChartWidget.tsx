@@ -8,9 +8,11 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import { useInView } from 'react-intersection-observer';
+
 import { Loader } from '@keen.io/ui-core';
 import { ErrorWidget } from '@keen.io/widgets';
 import { colors } from '@keen.io/colors';
+import { PickerWidgets } from '@keen.io/widget-picker';
 
 import WidgetPlaceholder from '../WidgetPlaceholder';
 import { Container, LoaderWrapper } from './ChartWidget.styles';
@@ -32,7 +34,6 @@ import getChartInput from '../../utils/getChartInput';
 import { createDataviz } from './utils';
 import { useTranslation } from 'react-i18next';
 import { WidgetItem } from '../../modules/widgets/types';
-import { PickerWidgets } from '@keen.io/widget-picker';
 
 type Props = {
   /** Widget identifier */
