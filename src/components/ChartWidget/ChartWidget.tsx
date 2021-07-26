@@ -8,9 +8,11 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import { useInView } from 'react-intersection-observer';
+
 import { Loader } from '@keen.io/ui-core';
 import { ErrorWidget } from '@keen.io/widgets';
 import { colors } from '@keen.io/colors';
+import { PickerWidgets } from '@keen.io/widget-picker';
 
 import WidgetPlaceholder from '../WidgetPlaceholder';
 import { Container, LoaderWrapper } from './ChartWidget.styles';
@@ -21,10 +23,7 @@ import {
   ChartWidget as ChartWidgetType,
 } from '../../modules/widgets';
 import { getInterimQuery } from '../../modules/queries';
-import {
-  themeSelectors,
-  mergeSettingsWithFontFallback,
-} from '../../modules/theme';
+import { themeSelectors, themeHooks } from '../../modules/theme';
 import { getPresentationTimezone } from '../../modules/timezone';
 import { RootState } from '../../rootReducer';
 
@@ -76,13 +75,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
     getInterimQuery(state, id)
   );
 
-  const {
-    theme,
-    settings,
-    settings: {
-      page: { chartTitlesFont },
-    },
-  } = useSelector((state: RootState) =>
+  const { theme, settings } = useSelector((state: RootState) =>
     themeSelectors.getActiveDashboardThemeSettings(state)
   );
 
@@ -117,16 +110,28 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
     tags.push({ label: t('tags.saved_query'), variant: 'gray' });
   }
 
+  const {
+    themedChartSettings,
+    themedWidgetSettings,
+  } = themeHooks.useApplyWidgetTheming({
+    chartSettings: widget.settings?.chartSettings,
+    widgetSettings: widget.settings?.widgetSettings,
+    dependencies: [
+      showVisualization,
+      inView,
+      widget.settings?.chartSettings,
+      widget.settings?.widgetSettings,
+      theme,
+    ],
+    composeCondition: showVisualization && inView,
+  });
+
   useEffect(() => {
     if (showVisualization && inView) {
-      const widgetWithTheming = mergeSettingsWithFontFallback(
-        chartTitlesFont,
-        widget as ChartWidgetType
-      );
-
       datavizRef.current = createDataviz({
-        widget: widgetWithTheming,
-        theme,
+        visualizationType: widget.settings.visualizationType as PickerWidgets,
+        chartSettings: themedChartSettings,
+        widgetSettings: themedWidgetSettings,
         tags,
         container: containerRef.current,
         presentationTimezone: getTimezone(chartData),

@@ -10,7 +10,6 @@ import {
   WidgetPicker,
 } from '@keen.io/widget-picker';
 import { Button, FadeLoader } from '@keen.io/ui-core';
-import { WidgetSettings } from '@keen.io/widgets';
 
 import {
   Placeholder,
@@ -28,10 +27,7 @@ import { DISABLE_WIDGETS } from './constants';
 
 import { VisualizationSettings } from './types';
 import { getPresentationTimezone } from '../../../../modules/timezone';
-import {
-  themeSelectors,
-  mergeSettingsWithFontFallback,
-} from '../../../../modules/theme';
+import { themeSelectors } from '../../../../modules/theme';
 
 type Props = {
   /** Query run indicator */
@@ -71,11 +67,7 @@ const WidgetVisualization: FC<Props> = ({
     [analysisResult]
   );
 
-  const {
-    type,
-    chartSettings,
-    widgetSettings: baseWidgetSettings,
-  } = visualization;
+  const { type, chartSettings, widgetSettings } = visualization;
 
   const tags = [];
 
@@ -113,28 +105,6 @@ const WidgetVisualization: FC<Props> = ({
     themeSelectors.getActiveDashboardThemeSettings
   );
 
-  const widgetSettings = {
-    ...baseWidgetSettings,
-    legend: {
-      ...baseWidgetSettings.legend,
-      typography: {
-        ...dashboardWidgetSettings.legend.typography,
-      },
-    },
-    title: {
-      ...baseWidgetSettings.title,
-      typography: dashboardWidgetSettings.title.typography,
-    },
-    subtitle: {
-      ...baseWidgetSettings.subtitle,
-      typography: dashboardWidgetSettings.subtitle.typography,
-    },
-  };
-
-  const {
-    page: { chartTitlesFont },
-  } = dashboardWidgetSettings;
-
   return (
     <Container>
       {analysisResult ? (
@@ -144,7 +114,7 @@ const WidgetVisualization: FC<Props> = ({
               widgets={widgets}
               currentWidget={type}
               chartSettings={chartSettings as WidgetPickerChartSettings}
-              widgetSettings={widgetSettings}
+              widgetSettings={visualization.widgetSettings}
               disabledWidgetOptions={getSimpleOptionsWidgets(querySettings)}
               onUpdateSettings={(widgetType, chartSettings, widgetSettings) =>
                 onChangeVisualization({
@@ -161,10 +131,7 @@ const WidgetVisualization: FC<Props> = ({
                 visualization={type}
                 chartSettings={chartSettings}
                 tags={tags}
-                widgetSettings={mergeSettingsWithFontFallback<WidgetSettings>(
-                  chartTitlesFont,
-                  widgetSettings
-                )}
+                widgetSettings={widgetSettings}
                 analysisResults={analysisResult}
                 presentationTimezone={getTimezone(analysisResult)}
                 dashboardSettings={dashboardWidgetSettings}

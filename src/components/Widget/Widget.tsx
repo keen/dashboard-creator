@@ -127,7 +127,7 @@ const renderWidget = ({
         return <TextWidget id={widgetId} />;
       }
     case 'visualization':
-      return visualizationSettings?.widgetSettings?.card.enabled ? (
+      return visualizationSettings?.widgetSettings?.card?.enabled ? (
         <StyledCard
           isFadeOut={isFadeOut}
           isHighlighted={isHighlighted}

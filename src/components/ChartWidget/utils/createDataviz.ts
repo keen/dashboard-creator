@@ -1,15 +1,14 @@
-import deepMerge from 'deepmerge';
-
 import { KeenDataviz } from '@keen.io/dataviz';
-import { Theme } from '@keen.io/charts';
-import { Tag } from '@keen.io/widgets';
+import { Tag, WidgetSettings } from '@keen.io/widgets';
+import { PickerWidgets } from '@keen.io/widget-picker';
 
-import { ChartWidget } from '../../../modules/widgets';
 import { DashboardSettings } from '../../../modules/dashboards';
+import { ChartSettings } from '../../../types';
 
 type Options = {
-  widget: ChartWidget;
-  theme: Partial<Theme>;
+  visualizationType: PickerWidgets;
+  widgetSettings: WidgetSettings;
+  chartSettings: ChartSettings;
   container: HTMLElement;
   presentationTimezone?: string | number;
   dashboardSettings: DashboardSettings;
@@ -29,62 +28,22 @@ type Options = {
  *
  */
 const createDataviz = ({
-  widget,
-  theme,
+  visualizationType,
+  widgetSettings,
+  chartSettings,
   container,
   presentationTimezone,
   dashboardSettings,
   tags,
 }: Options) => {
-  const {
-    settings: { visualizationType, chartSettings, widgetSettings },
-  } = widget;
-
   const { tiles } = dashboardSettings;
-
-  const extendedWidgetSettings = {
-    ...widgetSettings,
-    legend: {
-      ...widgetSettings.legend,
-      ...dashboardSettings.legend,
-    },
-    title: {
-      ...widgetSettings.title,
-      typography: {
-        ...widgetSettings.title?.typography,
-        ...dashboardSettings.title?.typography,
-      },
-    },
-    subtitle: {
-      ...widgetSettings.subtitle,
-      typography: {
-        ...widgetSettings.subtitle?.typography,
-        ...dashboardSettings.subtitle?.typography,
-      },
-    },
-  };
-
-  const composedChartSettings = () => {
-    if ('theme' in chartSettings) {
-      return {
-        ...chartSettings,
-        theme: deepMerge(theme, chartSettings.theme, {
-          arrayMerge: (_target, source) => source,
-        }),
-      };
-    }
-    return {
-      ...chartSettings,
-      theme: theme,
-    };
-  };
 
   return new KeenDataviz({
     container,
     type: visualizationType as any,
-    settings: composedChartSettings(),
+    settings: chartSettings,
     widget: {
-      ...extendedWidgetSettings,
+      ...widgetSettings,
       tags,
       card: {
         backgroundColor: 'transparent',
