@@ -42,6 +42,13 @@ const render = (storeState: any = {}, overProps: any = {}) => {
             gridY: {
               enabled: false,
             },
+            funnel: {
+              header: {
+                badge: {
+                  enabled: true,
+                },
+              },
+            },
           },
           settings: createDashboardSettings(),
         },
