@@ -154,6 +154,28 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
     }));
   };
 
+  const onChangeVisualization = ({
+    type,
+    chartSettings,
+    widgetSettings: defaultWidgetSettings,
+  }) => {
+    dispatch(chartEditorActions.setQueryChange(true));
+    const chart = serializeOutputSettings(type, widgetCustomization.chart);
+    dispatch(
+      chartEditorActions.setVisualizationSettings({
+        type,
+        chartSettings: {
+          ...chartSettings,
+          ...chart,
+        },
+        widgetSettings: {
+          ...defaultWidgetSettings,
+          ...(widgetCustomization.widget as WidgetSettings),
+        },
+      })
+    );
+  };
+
   return (
     <Container id="chart-editor">
       <AnimatePresence>
@@ -179,30 +201,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
             setError(null);
             dispatch(chartEditorActions.runQuery());
           }}
-          onChangeVisualization={({
-            type,
-            chartSettings,
-            widgetSettings: defaultWidgetSettings,
-          }) => {
-            dispatch(chartEditorActions.setQueryChange(true));
-            const chart = serializeOutputSettings(
-              type,
-              widgetCustomization.chart
-            );
-            dispatch(
-              chartEditorActions.setVisualizationSettings({
-                type,
-                chartSettings: {
-                  ...chartSettings,
-                  ...chart,
-                },
-                widgetSettings: {
-                  ...defaultWidgetSettings,
-                  ...(widgetCustomization.widget as WidgetSettings),
-                },
-              })
-            );
-          }}
+          onChangeVisualization={onChangeVisualization}
         />
       </VisualizationContainer>
       <NavBar>

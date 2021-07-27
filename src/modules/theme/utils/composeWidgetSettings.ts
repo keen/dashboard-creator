@@ -30,7 +30,6 @@ export const composeWidgetSettings = (
     composedWidgetSettings = {
       ...composedWidgetSettings,
       card: {
-        ...dashboardSettings.tiles,
         enabled: true,
       },
     };
