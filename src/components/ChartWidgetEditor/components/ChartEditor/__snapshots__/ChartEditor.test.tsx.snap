@@ -9,10 +9,14 @@ Array [
   Object {
     "payload": Object {
       "card": Object {
+        "background": "#ffffff",
         "backgroundColor": "#FFFFFF",
+        "borderColor": "none",
         "borderRadius": 0,
+        "borderWidth": 0,
         "enabled": true,
         "hasShadow": true,
+        "padding": 20,
       },
       "legend": Object {
         "alignment": "left",
@@ -62,10 +66,14 @@ Array [
   Object {
     "payload": Object {
       "card": Object {
+        "background": "#ffffff",
         "backgroundColor": "#FFFFFF",
+        "borderColor": "none",
         "borderRadius": 0,
+        "borderWidth": 0,
         "enabled": true,
         "hasShadow": true,
+        "padding": 20,
       },
       "legend": Object {
         "alignment": "left",

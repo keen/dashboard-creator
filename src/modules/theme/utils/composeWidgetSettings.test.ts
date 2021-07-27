@@ -90,6 +90,9 @@ const composedWidgetSettings = {
       fontColor: '#1D2729',
     },
   },
+  card: {
+    enabled: true,
+  },
 };
 
 test('composes widget settings with dashboard settings', () => {
