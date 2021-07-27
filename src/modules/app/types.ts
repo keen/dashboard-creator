@@ -5,6 +5,7 @@ import { View } from '../../types';
 export enum Scopes {
   EDIT_DASHBOARD = 'edit-dashboard',
   SHARE_DASHBOARD = 'share-dashboard',
+  EDIT_DASHBOARD_THEME = 'edit-dashboard-theme',
 }
 
 export type ReducerState = {
