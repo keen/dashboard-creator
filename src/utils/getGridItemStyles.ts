@@ -8,8 +8,11 @@ import { GridPosition } from '../modules/widgets';
  * @return void
  *
  */
-const getGridItemStyles = ({ y }: GridPosition) => ({
+const getGridItemStyles = ({
+  y,
+}: GridPosition): Record<string, number | string> => ({
   zIndex: y,
+  overflow: 'hidden',
 });
 
 export default getGridItemStyles;
