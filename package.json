@@ -57,7 +57,7 @@
     "@keen.io/toast-notifications": "^1.1.82",
     "@keen.io/typography": "^1.1.1",
     "@keen.io/ui-core": "^2.32.0",
-    "@keen.io/widget-customization": "^0.0.22",
+    "@keen.io/widget-customization": "^0.0.23",
     "@keen.io/widget-picker": "^1.2.129",
     "@reduxjs/toolkit": "^1.4.0",
     "camelcase-keys": "^6.2.2",
