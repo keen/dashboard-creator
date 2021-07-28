@@ -9,7 +9,7 @@ export const composeWidgetSettings = (
   widgetSettings: WidgetSettings,
   dashboardSettings: DashboardSettings
 ) => {
-  const composedWidgetSettingsSettings = {
+  let composedWidgetSettings = {
     ...widgetSettings,
     legend: {
       ...widgetSettings.legend,
@@ -26,8 +26,16 @@ export const composeWidgetSettings = (
       typography: dashboardSettings.subtitle.typography,
     },
   };
+  if (!widgetSettings.hasOwnProperty('card')) {
+    composedWidgetSettings = {
+      ...composedWidgetSettings,
+      card: {
+        enabled: true,
+      },
+    };
+  }
   return mergeSettingsWithFontFallback<WidgetSettings>(
     dashboardSettings.page.chartTitlesFont,
-    composedWidgetSettingsSettings
+    composedWidgetSettings
   );
 };

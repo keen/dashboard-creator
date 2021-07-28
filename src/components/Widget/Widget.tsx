@@ -30,7 +30,7 @@ import FilterWidget from '../FilterWidget/FilterWidget';
 import FilterManagement from '../FilterManagement';
 import { editFilterWidget } from '../../modules/widgets/actions';
 import { appSelectors } from '../../modules/app';
-import { themeSelectors } from '../../modules/theme';
+import { themeHooks, themeSelectors } from '../../modules/theme';
 import { VisualizationSettings } from '../../modules/widgets/types';
 
 type Props = {
@@ -86,7 +86,7 @@ const ChartVisualization = ({
 const renderWidget = ({
   widgetType,
   widgetId,
-  visualizationSettings,
+  widgetSettings,
   isEditorMode,
   isHoverActive,
   isHighlighted,
@@ -132,7 +132,7 @@ const renderWidget = ({
         return <TextWidget id={widgetId} />;
       }
     case 'visualization':
-      return visualizationSettings?.widgetSettings?.card?.enabled ? (
+      return widgetSettings?.card?.enabled ? (
         <StyledCard
           isFadeOut={isFadeOut}
           isHighlighted={isHighlighted}
@@ -226,6 +226,8 @@ const Widget: FC<Props> = ({
     isTitleCover,
   } = useSelector((rootState: RootState) => getWidget(rootState, id));
 
+  const visualizationSettings = settings as VisualizationSettings;
+
   const widgetTitle = useSelector((state: RootState) => {
     if (!isTitleCover) return;
 
@@ -237,12 +239,20 @@ const Widget: FC<Props> = ({
   });
 
   let onEditWidget = null;
+
   if (widgetType === 'filter') {
     onEditWidget = () => dispatch(editFilterWidget(id));
   }
   if (widgetType === 'date-picker') {
     onEditWidget = () => dispatch(editDatePickerWidget(id));
   }
+
+  const { themedWidgetSettings } = themeHooks.useApplyWidgetTheming({
+    chartSettings: visualizationSettings?.chartSettings,
+    widgetSettings: visualizationSettings?.widgetSettings,
+    dependencies: [widgetType, visualizationSettings],
+    composeCondition: widgetType === 'visualization' && !!visualizationSettings,
+  });
 
   const { settings: dashboardWidgetSettings } = useSelector(
     themeSelectors.getActiveDashboardThemeSettings
@@ -251,7 +261,7 @@ const Widget: FC<Props> = ({
   return renderWidget({
     widgetType,
     widgetId,
-    visualizationSettings: settings as VisualizationSettings,
+    widgetSettings: themedWidgetSettings,
     isEditorMode,
     isDetached,
     isHoverActive,

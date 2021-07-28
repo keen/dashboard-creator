@@ -9,10 +9,7 @@ Array [
   Object {
     "payload": Object {
       "card": Object {
-        "backgroundColor": "#FFFFFF",
-        "borderRadius": 0,
         "enabled": true,
-        "hasShadow": true,
       },
       "legend": Object {
         "alignment": "left",
@@ -62,10 +59,7 @@ Array [
   Object {
     "payload": Object {
       "card": Object {
-        "backgroundColor": "#FFFFFF",
-        "borderRadius": 0,
         "enabled": true,
-        "hasShadow": true,
       },
       "legend": Object {
         "alignment": "left",
