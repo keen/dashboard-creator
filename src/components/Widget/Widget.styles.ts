@@ -59,6 +59,9 @@ export const FilterContainer = styled.div<{ isFadeOut?: boolean }>`
 export const ChartVisualizationContainer = styled.div<{
   enableOverflow: boolean;
 }>`
+  height: 100%;
+  width: 100%;
+
   ${({ enableOverflow }) =>
     enableOverflow &&
     css`
