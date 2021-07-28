@@ -6,6 +6,7 @@ import {
   StyledCard,
   TextManagementContainer,
   FilterContainer,
+  ChartVisualizationContainer,
 } from './Widget.styles';
 
 import ChartWidget from '../ChartWidget';
@@ -54,9 +55,13 @@ const ChartVisualization = ({
   title,
   error,
   enableHover,
-}: Partial<RenderOptions> & { enableHover: boolean }) => {
+  enableOverflow,
+}: Partial<RenderOptions> & {
+  enableHover: boolean;
+  enableOverflow?: boolean;
+}) => {
   return (
-    <>
+    <ChartVisualizationContainer enableOverflow={enableOverflow}>
       <ChartWidget id={widgetId} disableInteractions={isEditorMode} />
       {isEditorMode && (
         <ChartManagement
@@ -74,7 +79,7 @@ const ChartVisualization = ({
         />
       )}
       {!isEditorMode && <ChartWidgetFilter widgetId={widgetId} />}
-    </>
+    </ChartVisualizationContainer>
   );
 };
 
@@ -157,6 +162,7 @@ const renderWidget = ({
           isDetached={isDetached}
           title={title}
           enableHover={enableHover}
+          enableOverflow
         />
       );
     case 'image':

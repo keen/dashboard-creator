@@ -8,7 +8,7 @@ import { GridPosition } from '../modules/widgets';
  * @return void
  *
  */
-const getGridItemStyles = ({ y }: GridPosition) => ({
+const getGridItemStyles = ({ y }: GridPosition): Record<string, number> => ({
   zIndex: y,
 });
 
