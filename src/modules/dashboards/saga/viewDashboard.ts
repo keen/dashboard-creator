@@ -20,7 +20,7 @@ import { enhanceDashboard } from '../utils';
 
 import { APIError } from '../../../api';
 
-import { BLOB_API, ROUTES } from '../../../constants';
+import { DASHBOARD_API, ROUTES } from '../../../constants';
 
 import { DashboardModel, DashboardError } from '../types';
 
@@ -42,10 +42,10 @@ export function* viewDashboard({
     yield put(appActions.setActiveDashboard(dashboardId));
     yield put(push(ROUTES.VIEWER));
 
-    const blobApi = yield getContext(BLOB_API);
+    const dashboardApi = yield getContext(DASHBOARD_API);
 
     try {
-      const responseBody: DashboardModel = yield blobApi.getDashboardById(
+      const responseBody: DashboardModel = yield dashboardApi.getDashboardById(
         dashboardId
       );
 

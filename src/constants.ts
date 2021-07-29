@@ -1,6 +1,6 @@
 import { View } from './types';
 
-export const BLOB_API = 'BLOB_API';
+export const DASHBOARD_API = 'DASHBOARD_API';
 export const TRANSLATIONS = 'I18N';
 export const KEEN_ANALYSIS = 'KEEN_ANALYSIS';
 export const PUBSUB = 'PUBSUB';

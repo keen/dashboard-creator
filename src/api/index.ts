@@ -1,4 +1,4 @@
-import BlobAPI from './BlobAPI';
+import DashboardAPI from './DashboardAPI';
 import APIError from './APIError';
 
-export { BlobAPI, APIError };
+export { DashboardAPI, APIError };

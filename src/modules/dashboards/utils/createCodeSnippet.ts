@@ -37,7 +37,7 @@ const createCodeSnippet = ({
       },
       backend: {
         analyticsApiUrl: 'api.keen.io',
-        dashboardsApiUrl: 'https://blob-service.keen.io',
+        dashboardsApiUrl: 'https://dashboard-service.k-n.io',
       },
       project: {
         id: '${projectId}',
@@ -88,7 +88,7 @@ const createCodeSnippet = ({
       },
       backend: {
         analyticsApiUrl: 'api.keen.io',
-        dashboardsApiUrl: 'https://blob-service.keen.io',
+        dashboardsApiUrl: 'https://dashboard-service.k-n.io',
       },
       project: {
         id: '${projectId}',

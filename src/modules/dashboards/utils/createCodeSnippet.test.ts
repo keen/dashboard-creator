@@ -43,7 +43,7 @@ test('return code snippet for provided projectId and dashboardId', () => {
           },
           backend: {
             analyticsApiUrl: 'api.keen.io',
-            dashboardsApiUrl: 'https://blob-service.keen.io',
+            dashboardsApiUrl: 'https://dashboard-service.k-n.io',
           },
           project: {
             id: 'projectId',
@@ -105,7 +105,7 @@ test('return code snippet for body section', () => {
           },
           backend: {
             analyticsApiUrl: 'api.keen.io',
-            dashboardsApiUrl: 'https://blob-service.keen.io',
+            dashboardsApiUrl: 'https://dashboard-service.k-n.io',
           },
           project: {
             id: 'projectId',

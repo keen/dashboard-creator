@@ -2,12 +2,12 @@ import createMiddleware from 'redux-saga';
 import { i18n } from 'i18next';
 import { getPubSub } from '@keen.io/pubsub';
 
-import { BlobAPI } from './api';
+import { DashboardAPI } from './api';
 import { NotificationManager } from './modules/notifications';
 
 import {
   PUBSUB,
-  BLOB_API,
+  DASHBOARD_API,
   TRANSLATIONS,
   KEEN_ANALYSIS,
   NOTIFICATION_MANAGER,
@@ -16,14 +16,14 @@ import {
 
 type SagaContext = {
   i18n: i18n;
-  blobApi: BlobAPI;
+  dashboardApi: DashboardAPI;
   keenAnalysis: any;
   notificationManager: NotificationManager;
   analyticsApiHost: string;
 };
 
 const createSagaMiddleware = ({
-  blobApi,
+  dashboardApi,
   keenAnalysis,
   i18n,
   notificationManager,
@@ -31,7 +31,7 @@ const createSagaMiddleware = ({
 }: SagaContext) =>
   createMiddleware({
     context: {
-      [BLOB_API]: blobApi,
+      [DASHBOARD_API]: dashboardApi,
       [KEEN_ANALYSIS]: keenAnalysis,
       [TRANSLATIONS]: i18n,
       [PUBSUB]: getPubSub(),

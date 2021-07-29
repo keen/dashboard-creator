@@ -89,7 +89,7 @@ import {
 import { APIError } from '../../api';
 
 import {
-  BLOB_API,
+  DASHBOARD_API,
   KEEN_ANALYSIS,
   NOTIFICATION_MANAGER,
   ROUTES,
@@ -135,10 +135,10 @@ import { findBiggestYPositionOfWidgets } from './utils/findBiggestYPositionOfWid
 import { appActions, appSelectors } from '../app';
 
 export function* fetchDashboardList() {
-  const blobApi = yield getContext(BLOB_API);
+  const dashboardApi = yield getContext(DASHBOARD_API);
 
   try {
-    const responseBody = yield blobApi.getDashboards();
+    const responseBody = yield dashboardApi.getDashboards();
 
     yield put(fetchDashboardListSuccess(responseBody));
   } catch (err) {
@@ -153,8 +153,8 @@ export function* saveDashboardMetadata({
   const notificationManager = yield getContext(NOTIFICATION_MANAGER);
 
   try {
-    const blobApi = yield getContext(BLOB_API);
-    yield blobApi.saveDashboardMeta(dashboardId, metadata);
+    const dashboardApi = yield getContext(DASHBOARD_API);
+    yield dashboardApi.saveDashboardMeta(dashboardId, metadata);
     yield put(updateDashboardMeta(dashboardId, metadata));
 
     yield put(saveDashboardMetaSuccess());
@@ -180,10 +180,10 @@ function* generateAccessKeyOptions(dashboardId: string) {
   const queries = new Set();
 
   if (!dashboard) {
-    const blobApi = yield getContext(BLOB_API);
+    const dashboardApi = yield getContext(DASHBOARD_API);
 
     try {
-      const responseBody: DashboardModel = yield blobApi.getDashboardById(
+      const responseBody: DashboardModel = yield dashboardApi.getDashboardById(
         dashboardId
       );
       const { widgets } = responseBody;
@@ -351,10 +351,10 @@ export function* editDashboard({
     yield put(appActions.setActiveDashboard(dashboardId));
     yield put(push(ROUTES.EDITOR));
 
-    const blobApi = yield getContext(BLOB_API);
+    const dashboardApi = yield getContext(DASHBOARD_API);
 
     try {
-      const responseBody: DashboardModel = yield blobApi.getDashboardById(
+      const responseBody: DashboardModel = yield dashboardApi.getDashboardById(
         dashboardId
       );
       const { theme, settings, ...dashboard } = enhanceDashboard(responseBody);
@@ -412,8 +412,8 @@ export function* viewPublicDashboard({
   yield put(appActions.setActiveDashboard(dashboardId));
 
   try {
-    const blobApi = yield getContext(BLOB_API);
-    const dashboardMeta: DashboardMetaData = yield blobApi.getDashboardMetaDataById(
+    const dashboardApi = yield getContext(DASHBOARD_API);
+    const dashboardMeta: DashboardMetaData = yield dashboardApi.getDashboardMetaDataById(
       dashboardId
     );
 
@@ -421,7 +421,7 @@ export function* viewPublicDashboard({
     const { isPublic } = dashboardMeta;
 
     if (isPublic) {
-      const responseBody: DashboardModel = yield blobApi.getDashboardById(
+      const responseBody: DashboardModel = yield dashboardApi.getDashboardById(
         dashboardId
       );
 

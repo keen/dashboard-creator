@@ -57,7 +57,11 @@ import { DashboardModel, DashboardMetaData, DashboardError } from './types';
 
 import { SAVE_DASHBOARD_METADATA_SUCCESS } from './constants';
 
-import { NOTIFICATION_MANAGER, BLOB_API, KEEN_ANALYSIS } from '../../constants';
+import {
+  NOTIFICATION_MANAGER,
+  DASHBOARD_API,
+  KEEN_ANALYSIS,
+} from '../../constants';
 import {
   getCachedDashboardIds,
   getDashboard,
@@ -97,7 +101,7 @@ describe('viewPublicDashboard()', () => {
 
   describe('Scenario 1: User access public dashboard', () => {
     const test = sagaHelper(viewPublicDashboard(action));
-    const blobApiMock = {
+    const dashboardApiMock = {
       getDashboardMetaDataById: jest.fn(),
       getDashboardById: jest.fn(),
     };
@@ -110,14 +114,14 @@ describe('viewPublicDashboard()', () => {
       expect(result).toEqual(put(appActions.setActiveDashboard(dashboardId)));
     });
 
-    test('gets BlobAPI instance from context', (result) => {
-      expect(result).toEqual(getContext(BLOB_API));
+    test('gets DashboardAPI instance from context', (result) => {
+      expect(result).toEqual(getContext(DASHBOARD_API));
 
-      return blobApiMock;
+      return dashboardApiMock;
     });
 
     test('fetch dashboard metadata', () => {
-      expect(blobApiMock.getDashboardMetaDataById).toHaveBeenCalledWith(
+      expect(dashboardApiMock.getDashboardMetaDataById).toHaveBeenCalledWith(
         dashboardId
       );
 
@@ -129,7 +133,9 @@ describe('viewPublicDashboard()', () => {
     });
 
     test('fetch dashboard', () => {
-      expect(blobApiMock.getDashboardById).toHaveBeenCalledWith(dashboardId);
+      expect(dashboardApiMock.getDashboardById).toHaveBeenCalledWith(
+        dashboardId
+      );
 
       return dashboard;
     });
@@ -171,7 +177,7 @@ describe('viewPublicDashboard()', () => {
 
   describe('Scenario 2: User access not public dashboard', () => {
     const test = sagaHelper(viewPublicDashboard(action));
-    const blobApiMock = {
+    const dashboardApiMock = {
       getDashboardMetaDataById: jest.fn(),
     };
 
@@ -183,14 +189,14 @@ describe('viewPublicDashboard()', () => {
       expect(result).toEqual(put(appActions.setActiveDashboard(dashboardId)));
     });
 
-    test('gets BlobAPI instance from context', (result) => {
-      expect(result).toEqual(getContext(BLOB_API));
+    test('gets DashboardAPI instance from context', (result) => {
+      expect(result).toEqual(getContext(DASHBOARD_API));
 
-      return blobApiMock;
+      return dashboardApiMock;
     });
 
     test('fetch dashboard metadata', () => {
-      expect(blobApiMock.getDashboardMetaDataById).toHaveBeenCalledWith(
+      expect(dashboardApiMock.getDashboardMetaDataById).toHaveBeenCalledWith(
         dashboardId
       );
 

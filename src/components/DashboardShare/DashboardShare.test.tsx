@@ -11,7 +11,7 @@ import configureStore from 'redux-mock-store';
 
 import DashboardShare from './DashboardShare';
 
-import { BlobAPI } from '../../api';
+import { DashboardAPI } from '../../api';
 
 import { AppContext, APIContext } from '../../contexts';
 
@@ -87,7 +87,9 @@ const render = (
         } as any
       }
     >
-      <APIContext.Provider value={{ keenAnalysis, blobApi: {} as BlobAPI }}>
+      <APIContext.Provider
+        value={{ keenAnalysis, dashboardApi: {} as DashboardAPI }}
+      >
         <Provider store={store}>
           <DashboardShare {...props} />
         </Provider>

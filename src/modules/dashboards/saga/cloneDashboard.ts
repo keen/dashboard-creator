@@ -17,7 +17,11 @@ import { themeActions, themeSelectors } from '../../theme';
 import { serializeDashboard } from '../serializers';
 import { createDashboardSettings, createWidgetsUniqueIds } from '../utils';
 
-import { BLOB_API, NOTIFICATION_MANAGER, ROUTES } from '../../../constants';
+import {
+  DASHBOARD_API,
+  NOTIFICATION_MANAGER,
+  ROUTES,
+} from '../../../constants';
 
 import { DashboardModel } from '../types';
 
@@ -35,15 +39,17 @@ export function* cloneDashboard({
 
   const notificationManager = yield getContext(NOTIFICATION_MANAGER);
   try {
-    const blobApi = yield getContext(BLOB_API);
+    const dashboardApi = yield getContext(DASHBOARD_API);
 
-    const model: DashboardModel = yield blobApi.getDashboardById(dashboardId);
+    const model: DashboardModel = yield dashboardApi.getDashboardById(
+      dashboardId
+    );
     const { theme, settings } = model;
 
     const uniqueIdWidgets = createWidgetsUniqueIds(model.widgets);
 
     const newDashboardId = uuid();
-    const metaData = yield blobApi.getDashboardMetaDataById(dashboardId);
+    const metaData = yield dashboardApi.getDashboardMetaDataById(dashboardId);
     const newMetaData = {
       ...metaData,
       id: newDashboardId,
@@ -57,7 +63,7 @@ export function* cloneDashboard({
       widgets: uniqueIdWidgets,
     };
 
-    yield blobApi.saveDashboard(newDashboardId, newModel, newMetaData);
+    yield dashboardApi.saveDashboard(newDashboardId, newModel, newMetaData);
 
     yield put(addClonedDashboard(newMetaData));
 

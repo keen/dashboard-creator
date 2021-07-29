@@ -1,11 +1,11 @@
 import { createContext } from 'react';
 
-import { BlobAPI } from '../api';
+import { DashboardAPI } from '../api';
 
 export const APIContext = createContext<{
-  blobApi: BlobAPI;
+  dashboardApi: DashboardAPI;
   keenAnalysis: any;
 }>({
-  blobApi: null,
+  dashboardApi: null,
   keenAnalysis: null,
 });
