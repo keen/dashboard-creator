@@ -1,13 +1,15 @@
 import React, { FC, useMemo, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence } from 'framer-motion';
+import { useSelector } from 'react-redux';
+
 import {
+  ChartSettings as WidgetPickerChartSettings,
   getAvailableWidgets,
   getSimpleOptionsWidgets,
   WidgetPicker,
 } from '@keen.io/widget-picker';
 import { Button, FadeLoader } from '@keen.io/ui-core';
-import { Theme } from '@keen.io/charts';
 
 import {
   Placeholder,
@@ -25,12 +27,7 @@ import { DISABLE_WIDGETS } from './constants';
 
 import { VisualizationSettings } from './types';
 import { getPresentationTimezone } from '../../../../modules/timezone';
-import { useSelector } from 'react-redux';
-import {
-  themeSelectors,
-  mergeSettingsWithFontFallback,
-} from '../../../../modules/theme';
-import { WidgetSettings } from '@keen.io/widgets';
+import { themeSelectors } from '../../../../modules/theme';
 
 type Props = {
   /** Query run indicator */
@@ -45,8 +42,6 @@ type Props = {
   onChangeVisualization: (settings: VisualizationSettings) => void;
   /** Run query event handler */
   onRunQuery: () => void;
-  /** Base theme */
-  baseTheme: Partial<Theme>;
   /** Query results */
   analysisResult?: Record<string, any>;
   /** Is saved query */
@@ -57,7 +52,6 @@ const WidgetVisualization: FC<Props> = ({
   visualization,
   outdatedAnalysisResults,
   isQueryPerforming,
-  baseTheme,
   querySettings,
   analysisResult,
   onRunQuery,
@@ -73,11 +67,7 @@ const WidgetVisualization: FC<Props> = ({
     [analysisResult]
   );
 
-  const {
-    type,
-    chartSettings,
-    widgetSettings: baseWidgetSettings,
-  } = visualization;
+  const { type, chartSettings, widgetSettings } = visualization;
 
   const tags = [];
 
@@ -86,7 +76,7 @@ const WidgetVisualization: FC<Props> = ({
   }
 
   useEffect(() => {
-    if (!widgets.includes(type)) {
+    if (!!analysisResult && !widgets.includes(type)) {
       const [defaultWidget] = widgets;
       const { chartSettings, widgetSettings } = getDefaultSettings(
         defaultWidget
@@ -115,28 +105,6 @@ const WidgetVisualization: FC<Props> = ({
     themeSelectors.getActiveDashboardThemeSettings
   );
 
-  const widgetSettings = {
-    ...baseWidgetSettings,
-    legend: {
-      ...baseWidgetSettings.legend,
-      typography: {
-        ...dashboardWidgetSettings.legend.typography,
-      },
-    },
-    title: {
-      ...baseWidgetSettings.title,
-      typography: dashboardWidgetSettings.title.typography,
-    },
-    subtitle: {
-      ...baseWidgetSettings.subtitle,
-      typography: dashboardWidgetSettings.subtitle.typography,
-    },
-  };
-
-  const {
-    page: { chartTitlesFont },
-  } = dashboardWidgetSettings;
-
   return (
     <Container>
       {analysisResult ? (
@@ -145,8 +113,8 @@ const WidgetVisualization: FC<Props> = ({
             <WidgetPicker
               widgets={widgets}
               currentWidget={type}
-              chartSettings={chartSettings}
-              widgetSettings={widgetSettings}
+              chartSettings={chartSettings as WidgetPickerChartSettings}
+              widgetSettings={visualization.widgetSettings}
               disabledWidgetOptions={getSimpleOptionsWidgets(querySettings)}
               onUpdateSettings={(widgetType, chartSettings, widgetSettings) =>
                 onChangeVisualization({
@@ -161,13 +129,9 @@ const WidgetVisualization: FC<Props> = ({
             <DatavizContainer>
               <Dataviz
                 visualization={type}
-                visualizationTheme={baseTheme}
                 chartSettings={chartSettings}
                 tags={tags}
-                widgetSettings={mergeSettingsWithFontFallback<WidgetSettings>(
-                  chartTitlesFont,
-                  widgetSettings
-                )}
+                widgetSettings={widgetSettings}
                 analysisResults={analysisResult}
                 presentationTimezone={getTimezone(analysisResult)}
                 dashboardSettings={dashboardWidgetSettings}

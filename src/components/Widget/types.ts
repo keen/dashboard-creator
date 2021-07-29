@@ -1,3 +1,4 @@
+import { WidgetSettings } from '@keen.io/widgets';
 import { WidgetType } from '../../types';
 import { DashboardSettings } from '../../modules/dashboards';
 import { WidgetError } from '../../modules/widgets';
@@ -5,6 +6,7 @@ import { WidgetError } from '../../modules/widgets';
 export type RenderOptions = {
   widgetType: WidgetType;
   widgetId: string;
+  widgetSettings: WidgetSettings;
   isEditorMode: boolean;
   isHoverActive: boolean;
   isHighlighted: boolean;

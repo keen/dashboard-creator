@@ -18,9 +18,14 @@ import {
 } from './utils';
 
 import { ThemeEditorSection, ThemeSettings } from './types';
+import { useApplyWidgetTheming } from './hooks';
 
 const themeReducer = themeSlice.reducer;
 const themeActions = themeSlice.actions;
+
+const themeHooks = {
+  useApplyWidgetTheming,
+};
 
 export {
   themeSaga,
@@ -28,6 +33,7 @@ export {
   themeActions,
   themeSagaActions,
   themeSelectors,
+  themeHooks,
   extendTheme,
   getColorSuggestions,
   mergeSettingsWithFontFallback,

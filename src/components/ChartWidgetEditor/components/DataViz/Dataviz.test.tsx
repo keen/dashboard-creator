@@ -23,8 +23,16 @@ const initialProps = {
     query: {},
     result: 20,
   },
-  chartSettings: {},
-  widgetSettings: {} as WidgetSettings,
+  chartSettings: {
+    gridX: {
+      enabled: true,
+    },
+  },
+  widgetSettings: {
+    card: {
+      enabled: false,
+    },
+  } as WidgetSettings,
   dashboardSettings: {
     tiles: {
       background: 'transparent',
@@ -49,23 +57,20 @@ test('creates KeenDataviz instance', () => {
 });
 
 test('creates KeenDataviz instance with theme settings', () => {
-  const theme = { colors: ['red', 'green'] };
-  const {
-    dashboardSettings: { tiles },
-  } = initialProps;
-  const { background, ...card } = tiles;
-  const cardSettings = { ...card, backgroundColor: background };
-
-  render(<DataViz {...initialProps} visualizationTheme={theme as any} />);
+  render(<DataViz {...initialProps} />);
 
   expect(KeenDataviz).toHaveBeenCalledWith(
     expect.objectContaining({
       type: 'bar',
       settings: {
-        theme,
+        gridX: {
+          enabled: true,
+        },
       },
       widget: {
-        card: cardSettings,
+        card: {
+          enabled: false,
+        },
         tags: [],
       },
     })

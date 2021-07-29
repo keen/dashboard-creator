@@ -55,3 +55,17 @@ export const FilterContainer = styled.div<{ isFadeOut?: boolean }>`
 
   ${(props) => props.isFadeOut && getFadeOutStyles()}
 `;
+
+export const ChartVisualizationContainer = styled.div<{
+  enableOverflow: boolean;
+}>`
+  height: 100%;
+  width: 100%;
+
+  ${({ enableOverflow }) =>
+    enableOverflow &&
+    css`
+      overflow: hidden;
+      position: relative;
+    `}
+`;
