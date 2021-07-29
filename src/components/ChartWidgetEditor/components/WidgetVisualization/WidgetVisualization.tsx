@@ -76,7 +76,7 @@ const WidgetVisualization: FC<Props> = ({
   }
 
   useEffect(() => {
-    if (!widgets.includes(type)) {
+    if (!!analysisResult && !widgets.includes(type)) {
       const [defaultWidget] = widgets;
       const { chartSettings, widgetSettings } = getDefaultSettings(
         defaultWidget
