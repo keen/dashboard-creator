@@ -71,7 +71,7 @@ export class DashboardCreator {
   private readonly projectId: string;
 
   /** Dashboards API url */
-  private dashboardsApiUrl = 'dashboard-service.us-west-2.test.aws.keen.io';
+  private dashboardsApiUrl = 'dashboard-service.k-n.io';
 
   /** Analytics API url */
   private analyticsApiUrl = 'api.keen.io';
