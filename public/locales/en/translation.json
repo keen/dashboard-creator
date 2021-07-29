@@ -614,6 +614,13 @@
   "widget_customization_heatmap_settings": {
     "title": "Heatmap Chart Components"
   },
+  "widget_customization_slider_settings": {
+    "label": "Slider",
+    "positionLabel": "Slider Position"
+  },
+  "widget_customization_reverse_axes_settings": {
+    "label": "Reverse Axes"
+  },
   "tags": {
     "saved_query": "Saved query"
   }
