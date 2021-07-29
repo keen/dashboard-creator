@@ -8,11 +8,27 @@ Array [
   },
   Object {
     "payload": Object {
+      "card": Object {
+        "enabled": true,
+      },
+      "legend": Object {
+        "alignment": "left",
+        "enabled": true,
+        "layout": "horizontal",
+        "position": "top",
+        "typography": Object {
+          "fontColor": "#1D2729",
+          "fontFamily": "Gangster Grotesk, Arial, Helvetica, sans-serif",
+          "fontSize": 12,
+          "fontStyle": "normal",
+          "fontWeight": "normal",
+        },
+      },
       "subtitle": Object {
         "content": "CHART_SUBTITLE",
         "typography": Object {
           "fontColor": "#1D2729",
-          "fontFamily": "Lato, sans-serif",
+          "fontFamily": "Gangster Grotesk, Arial, Helvetica, sans-serif",
           "fontSize": 14,
           "fontStyle": "normal",
           "fontWeight": "normal",
@@ -22,7 +38,7 @@ Array [
         "content": "",
         "typography": Object {
           "fontColor": "#27566D",
-          "fontFamily": "Gangster Grotesk, sans-serif",
+          "fontFamily": "Gangster Grotesk, Arial, Helvetica, sans-serif",
           "fontSize": 20,
           "fontStyle": "normal",
           "fontWeight": "normal",
@@ -42,11 +58,27 @@ Array [
   },
   Object {
     "payload": Object {
+      "card": Object {
+        "enabled": true,
+      },
+      "legend": Object {
+        "alignment": "left",
+        "enabled": true,
+        "layout": "horizontal",
+        "position": "top",
+        "typography": Object {
+          "fontColor": "#1D2729",
+          "fontFamily": "Gangster Grotesk, Arial, Helvetica, sans-serif",
+          "fontSize": 12,
+          "fontStyle": "normal",
+          "fontWeight": "normal",
+        },
+      },
       "subtitle": Object {
         "content": "",
         "typography": Object {
           "fontColor": "#1D2729",
-          "fontFamily": "Lato, sans-serif",
+          "fontFamily": "Gangster Grotesk, Arial, Helvetica, sans-serif",
           "fontSize": 14,
           "fontStyle": "normal",
           "fontWeight": "normal",
@@ -56,7 +88,7 @@ Array [
         "content": "CHART_TITLE",
         "typography": Object {
           "fontColor": "#27566D",
-          "fontFamily": "Gangster Grotesk, sans-serif",
+          "fontFamily": "Gangster Grotesk, Arial, Helvetica, sans-serif",
           "fontSize": 20,
           "fontStyle": "normal",
           "fontWeight": "normal",

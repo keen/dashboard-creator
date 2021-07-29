@@ -4,6 +4,7 @@ import { AnimatePresence } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import deepEqual from 'deep-equal';
+
 import { getAvailableWidgets, WidgetSettings } from '@keen.io/widget-picker';
 import WidgetCustomization, {
   SerializedSettings,
@@ -37,7 +38,7 @@ import {
   EditorSection,
 } from '../../../../modules/chartEditor';
 
-import { themeSelectors } from '../../../../modules/theme';
+import { themeHooks } from '../../../../modules/theme';
 import { AppContext } from '../../../../contexts';
 
 import WidgetVisualization from '../WidgetVisualization';
@@ -76,7 +77,6 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
     queryError,
   } = useSelector(chartEditorSelectors.getChartEditor);
 
-  const baseTheme = useSelector(themeSelectors.getActiveDashboardTheme);
   const { modalContainer } = useContext(AppContext);
   const { type: widgetType, widgetSettings, chartSettings } = visualization;
 
@@ -86,11 +86,24 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
     widgetType
   );
 
+  const {
+    themedChartSettings,
+    themedWidgetSettings,
+  } = themeHooks.useApplyWidgetTheming({
+    chartSettings,
+    widgetSettings,
+    dependencies: [widgetType, chartSettings, widgetSettings],
+  });
+
   const [
     widgetCustomization,
     setCustomizationSettings,
   ] = useState<SerializedSettings>(() =>
-    serializeInputSettings(widgetType, chartSettings, widgetSettings)
+    serializeInputSettings(
+      widgetType,
+      themedChartSettings,
+      themedWidgetSettings
+    )
   );
 
   const onApplyConfiguration = useCallback(() => {
@@ -141,6 +154,28 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
     }));
   };
 
+  const onChangeVisualization = ({
+    type,
+    chartSettings,
+    widgetSettings: defaultWidgetSettings,
+  }) => {
+    dispatch(chartEditorActions.setQueryChange(true));
+    const chart = serializeOutputSettings(type, widgetCustomization.chart);
+    dispatch(
+      chartEditorActions.setVisualizationSettings({
+        type,
+        chartSettings: {
+          ...chartSettings,
+          ...chart,
+        },
+        widgetSettings: {
+          ...defaultWidgetSettings,
+          ...(widgetCustomization.widget as WidgetSettings),
+        },
+      })
+    );
+  };
+
   return (
     <Container id="chart-editor">
       <AnimatePresence>
@@ -152,8 +187,11 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
       </AnimatePresence>
       <VisualizationContainer>
         <WidgetVisualization
-          visualization={visualization}
-          baseTheme={baseTheme}
+          visualization={{
+            ...visualization,
+            widgetSettings: themedWidgetSettings,
+            chartSettings: themedChartSettings,
+          }}
           isQueryPerforming={isQueryPerforming}
           isSavedQuery={isSavedQuery}
           outdatedAnalysisResults={outdatedAnalysisResults}
@@ -163,30 +201,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
             setError(null);
             dispatch(chartEditorActions.runQuery());
           }}
-          onChangeVisualization={({
-            type,
-            chartSettings,
-            widgetSettings: defaultWidgetSettings,
-          }) => {
-            dispatch(chartEditorActions.setQueryChange(true));
-            const chart = serializeOutputSettings(
-              type,
-              widgetCustomization.chart
-            );
-            dispatch(
-              chartEditorActions.setVisualizationSettings({
-                type,
-                chartSettings: {
-                  ...chartSettings,
-                  ...chart,
-                },
-                widgetSettings: {
-                  ...defaultWidgetSettings,
-                  ...(widgetCustomization.widget as WidgetSettings),
-                },
-              })
-            );
-          }}
+          onChangeVisualization={onChangeVisualization}
         />
       </VisualizationContainer>
       <NavBar>
@@ -210,6 +225,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
       ) : (
         <SectionContainer>
           <WidgetCustomization
+            widgetType={widgetType}
             customizationSections={customizationSections}
             chartSettings={widgetCustomization.chart}
             widgetSettings={widgetCustomization.widget}

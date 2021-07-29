@@ -35,7 +35,21 @@ const render = (storeState: any = {}, overProps: any = {}) => {
     theme: {
       dashboards: {
         [activeDashboardId]: {
-          theme: {},
+          theme: {
+            gridX: {
+              enabled: true,
+            },
+            gridY: {
+              enabled: false,
+            },
+            funnel: {
+              header: {
+                badge: {
+                  enabled: true,
+                },
+              },
+            },
+          },
           settings: createDashboardSettings(),
         },
       },

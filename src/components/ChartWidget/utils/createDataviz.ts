@@ -1,13 +1,14 @@
 import { KeenDataviz } from '@keen.io/dataviz';
-import { Theme } from '@keen.io/charts';
+import { Tag, WidgetSettings } from '@keen.io/widgets';
+import { PickerWidgets } from '@keen.io/widget-picker';
 
-import { ChartWidget } from '../../../modules/widgets';
 import { DashboardSettings } from '../../../modules/dashboards';
-import { Tag } from '@keen.io/widgets';
+import { ChartSettings } from '../../../types';
 
 type Options = {
-  widget: ChartWidget;
-  theme: Partial<Theme>;
+  visualizationType: PickerWidgets;
+  widgetSettings: WidgetSettings;
+  chartSettings: ChartSettings;
   container: HTMLElement;
   presentationTimezone?: string | number;
   dashboardSettings: DashboardSettings;
@@ -27,50 +28,22 @@ type Options = {
  *
  */
 const createDataviz = ({
-  widget,
-  theme,
+  visualizationType,
+  widgetSettings,
+  chartSettings,
   container,
   presentationTimezone,
   dashboardSettings,
   tags,
 }: Options) => {
-  const {
-    settings: { visualizationType, chartSettings, widgetSettings },
-  } = widget;
-
   const { tiles } = dashboardSettings;
-
-  const extendedWidgetSettings = {
-    ...widgetSettings,
-    legend: {
-      ...widgetSettings.legend,
-      ...dashboardSettings.legend,
-    },
-    title: {
-      ...widgetSettings.title,
-      typography: {
-        ...widgetSettings.title?.typography,
-        ...dashboardSettings.title?.typography,
-      },
-    },
-    subtitle: {
-      ...widgetSettings.subtitle,
-      typography: {
-        ...widgetSettings.subtitle?.typography,
-        ...dashboardSettings.subtitle?.typography,
-      },
-    },
-  };
 
   return new KeenDataviz({
     container,
     type: visualizationType as any,
-    settings: {
-      ...chartSettings,
-      theme,
-    },
+    settings: chartSettings,
     widget: {
-      ...extendedWidgetSettings,
+      ...widgetSettings,
       tags,
       card: {
         backgroundColor: 'transparent',
