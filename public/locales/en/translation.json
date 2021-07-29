@@ -611,6 +611,9 @@
   "widget_customization_circular_settings": {
     "title": "Donut & Pie Chart Components"
   },
+  "widget_customization_heatmap_settings": {
+    "title": "Heatmap Chart Components"
+  },
   "tags": {
     "saved_query": "Saved query"
   }
