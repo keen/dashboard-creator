@@ -605,6 +605,10 @@
     "title": "Choropleth Chart Components",
     "slider": "Slider"
   },
+  "widget_customization_funnel_settings": {
+    "title": "Funnel Chart Components",
+    "percentages": "Percentages"
+  },
   "widget_customization_table_settings": {
     "title": "Table Chart Components"
   },
