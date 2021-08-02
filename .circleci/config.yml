@@ -189,18 +189,12 @@ workflows:
           type: approval
           filters:
             branches:
-              ignore:
-                - develop
-                - main
               only: /.*/
             tags:
               ignore: /.*/
       - build-s3-artifact:
           filters:
             branches:
-              ignore:
-                - develop
-                - main
               only: /.*/
             tags:
               ignore: /.*/
@@ -214,9 +208,6 @@ workflows:
           context: aws
           filters:
             branches:
-              ignore:
-                - develop
-                - main
               only: /.*/
             tags:
               ignore: /.*/

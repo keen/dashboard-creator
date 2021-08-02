@@ -1,10 +1,10 @@
-export type BlobAPIOptions = {
+export type DashboardAPIOptions = {
   url: string;
   accessKey: string;
   masterKey?: string;
   projectId: string;
 };
 
-export enum BlobAPIHeaders {
+export enum DashboardAPIHeaders {
   MetaData = 'X-Keen-Blob-Metadata',
 }

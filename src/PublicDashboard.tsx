@@ -24,7 +24,7 @@ import { ToastProvider } from '@keen.io/toast-notifications';
 import { screenBreakpoints } from '@keen.io/ui-core';
 
 import { APIContext, AppContext } from './contexts';
-import { BlobAPI } from './api';
+import { DashboardAPI } from './api';
 import { NotificationManager } from './modules/notifications';
 import { viewPublicDashboard } from './modules/dashboards';
 
@@ -57,7 +57,7 @@ export class PublicDashboard {
   private readonly accessKey: string;
 
   /** Dashboards API url */
-  private dashboardsApiUrl = 'blob-service.us-west-2.prod.aws.keen.io';
+  private dashboardsApiUrl = 'dashboard-service.k-n.io';
 
   /** Analytics API url */
   private analyticsApiUrl = 'api.keen.io';
@@ -96,7 +96,7 @@ export class PublicDashboard {
   }
 
   render() {
-    const blobApi = new BlobAPI({
+    const dashboardApi = new DashboardAPI({
       projectId: this.projectId,
       accessKey: this.accessKey,
       url: this.dashboardsApiUrl,
@@ -113,7 +113,7 @@ export class PublicDashboard {
     const notificationPubSub = new PubSub();
 
     const sagaMiddleware = createSagaMiddleware({
-      blobApi,
+      dashboardApi,
       keenAnalysis,
       i18n,
       analyticsApiHost: this.analyticsApiUrl,
@@ -164,7 +164,7 @@ export class PublicDashboard {
                   widgetsConfiguration: this.widgetsConfiguration,
                 }}
               >
-                <APIContext.Provider value={{ blobApi, keenAnalysis }}>
+                <APIContext.Provider value={{ dashboardApi, keenAnalysis }}>
                   <PublicDashboardViewer dashboardId={this.dashboardId} />
                 </APIContext.Provider>
               </AppContext.Provider>

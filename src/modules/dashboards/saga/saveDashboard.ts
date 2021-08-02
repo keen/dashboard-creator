@@ -12,7 +12,7 @@ import { dashboardsSelectors } from '../selectors';
 import { themeSelectors } from '../../theme';
 import { widgetsSelectors, Widget } from '../../widgets';
 
-import { BLOB_API } from '../../../constants';
+import { DASHBOARD_API } from '../../../constants';
 
 import { Dashboard, DashboardMetaData } from '../types';
 
@@ -85,8 +85,8 @@ export function* saveDashboard({
       lastModificationDate: +new Date(),
     };
 
-    const blobApi = yield getContext(BLOB_API);
-    yield blobApi.saveDashboard(
+    const dashboardApi = yield getContext(DASHBOARD_API);
+    yield dashboardApi.saveDashboard(
       dashboardId,
       serializedDashboard,
       updatedMetadata

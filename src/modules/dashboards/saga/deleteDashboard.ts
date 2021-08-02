@@ -16,7 +16,11 @@ import { getDashboardMeta } from '../selectors';
 
 import { themeActions } from '../../theme';
 
-import { BLOB_API, NOTIFICATION_MANAGER, ROUTES } from '../../../constants';
+import {
+  DASHBOARD_API,
+  NOTIFICATION_MANAGER,
+  ROUTES,
+} from '../../../constants';
 import {
   CONFIRM_DASHBOARD_DELETE,
   HIDE_DELETE_CONFIRMATION,
@@ -47,8 +51,8 @@ export function* deleteDashboard({
   if (action.type === CONFIRM_DASHBOARD_DELETE) {
     yield put(hideDeleteConfirmation());
     try {
-      const blobApi = yield getContext(BLOB_API);
-      yield blobApi.deleteDashboard(dashboardId);
+      const dashboardApi = yield getContext(DASHBOARD_API);
+      yield dashboardApi.deleteDashboard(dashboardId);
 
       const activeDashboardId = yield select(appSelectors.getActiveDashboard);
       if (activeDashboardId) {

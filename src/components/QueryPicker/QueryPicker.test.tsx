@@ -9,7 +9,7 @@ import configureStore from 'redux-mock-store';
 
 import QueryPicker from './QueryPicker';
 
-import { BlobAPI } from '../../api';
+import { DashboardAPI } from '../../api';
 
 import { SELECT_SAVED_QUERY } from '../../modules/queries';
 import { savedQueriesResponse } from '../../modules/queries/fixtures';
@@ -33,7 +33,9 @@ const render = (overProps: any = {}, keenAnalysisInstance: any = {}) => {
   };
 
   const wrapper = rtlRender(
-    <APIContext.Provider value={{ keenAnalysis, blobApi: {} as BlobAPI }}>
+    <APIContext.Provider
+      value={{ keenAnalysis, dashboardApi: {} as DashboardAPI }}
+    >
       <Provider store={store}>
         <QueryPicker {...props} />
       </Provider>
