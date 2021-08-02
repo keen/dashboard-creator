@@ -50,6 +50,8 @@ import {
   createWidget,
 } from '../widgets';
 
+import { themeSelectors } from '../theme';
+
 import { serializeDashboard } from './serializers';
 import { createCodeSnippet, createDashboardSettings } from './utils';
 
@@ -138,6 +140,11 @@ describe('viewPublicDashboard()', () => {
       );
 
       return dashboard;
+    });
+
+    test('get base dashboard theme', (result) => {
+      expect(result).toEqual(select(themeSelectors.getBaseTheme));
+      return {};
     });
 
     test('register dashboard widgets', (result) => {

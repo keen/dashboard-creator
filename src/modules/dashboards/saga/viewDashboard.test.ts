@@ -2,6 +2,7 @@ import sagaHelper from 'redux-saga-testing';
 import { select, put, getContext } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
 import { StatusCodes } from 'http-status-codes';
+import { theme } from '@keen.io/charts';
 
 import { viewDashboard } from './viewDashboard';
 
@@ -17,7 +18,7 @@ import { createDashboardSettings } from '../utils';
 
 import { appActions } from '../../app';
 import { registerWidgets } from '../../widgets';
-import { themeActions, themeSagaActions } from '../../theme';
+import { themeActions, themeSagaActions, themeSelectors } from '../../theme';
 
 import { APIError } from '../../../api';
 
@@ -53,6 +54,11 @@ describe('Scenario 1: User succesfully views already serialized dashboard', () =
 describe('Scenario 2: User succesfully views dashboard not serialized in state', () => {
   const action = viewDashboardAction(dashboardId);
   const test = sagaHelper(viewDashboard(action));
+
+  const baseTheme = {
+    ...theme,
+    colors: ['red', 'blue'],
+  };
 
   const dashboardApiMock = {
     getDashboardById: jest.fn(),
@@ -96,6 +102,12 @@ describe('Scenario 2: User succesfully views dashboard not serialized in state',
     };
   });
 
+  test('get base dashboard theme', (result) => {
+    expect(result).toEqual(select(themeSelectors.getBaseTheme));
+
+    return baseTheme;
+  });
+
   test('register widgets', (result) => {
     expect(result).toEqual(put(registerWidgets([])));
   });
@@ -117,7 +129,7 @@ describe('Scenario 2: User succesfully views dashboard not serialized in state',
         themeActions.setDashboardTheme({
           dashboardId,
           settings: createDashboardSettings(),
-          theme: undefined,
+          theme: baseTheme,
         })
       )
     );
