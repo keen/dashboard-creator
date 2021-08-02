@@ -1,6 +1,7 @@
 import { put, select, getContext } from 'redux-saga/effects';
 import { StatusCodes } from 'http-status-codes';
 import { push } from 'connected-react-router';
+import { Theme } from '@keen.io/charts';
 
 import {
   setDashboardError,
@@ -15,7 +16,7 @@ import { dashboardsSelectors } from '../selectors';
 
 import { registerWidgets } from '../../widgets';
 import { appActions } from '../../app';
-import { themeActions, themeSagaActions } from '../../theme';
+import { themeActions, themeSagaActions, themeSelectors } from '../../theme';
 import { enhanceDashboard } from '../utils';
 
 import { APIError } from '../../../api';
@@ -49,7 +50,12 @@ export function* viewDashboard({
         dashboardId
       );
 
-      const { theme, settings, ...dashboard } = enhanceDashboard(responseBody);
+      const baseTheme: Theme = yield select(themeSelectors.getBaseTheme);
+      const { theme, settings, ...dashboard } = enhanceDashboard(
+        responseBody,
+        baseTheme
+      );
+
       const serializedDashboard = serializeDashboard(dashboard);
       const { widgets } = responseBody;
 

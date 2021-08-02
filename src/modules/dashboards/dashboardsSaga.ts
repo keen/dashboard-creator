@@ -280,7 +280,7 @@ export function* createDashboard({
 }: ReturnType<typeof createDashboardAction>) {
   const { dashboardId } = payload;
 
-  const theme: Partial<Theme> = yield select(themeSelectors.getBaseTheme);
+  const theme: Theme = yield select(themeSelectors.getBaseTheme);
   const serializedDashboard: Dashboard = {
     version: __APP_VERSION__,
     widgets: [],
@@ -357,7 +357,13 @@ export function* editDashboard({
       const responseBody: DashboardModel = yield dashboardApi.getDashboardById(
         dashboardId
       );
-      const { theme, settings, ...dashboard } = enhanceDashboard(responseBody);
+
+      const baseTheme: Theme = yield select(themeSelectors.getBaseTheme);
+
+      const { theme, settings, ...dashboard } = enhanceDashboard(
+        responseBody,
+        baseTheme
+      );
       const serializedDashboard = serializeDashboard(dashboard);
       const { widgets } = responseBody;
 
@@ -425,7 +431,12 @@ export function* viewPublicDashboard({
         dashboardId
       );
 
-      const { theme, settings, ...dashboard } = enhanceDashboard(responseBody);
+      const baseTheme: Theme = yield select(themeSelectors.getBaseTheme);
+
+      const { theme, settings, ...dashboard } = enhanceDashboard(
+        responseBody,
+        baseTheme
+      );
       const serializedDashboard = serializeDashboard(dashboard);
       const { widgets } = responseBody;
 
