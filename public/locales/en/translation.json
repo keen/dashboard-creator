@@ -30,6 +30,7 @@
     "widget_x_axis_title": "X-Axis",
     "widget_y_axis_title": "Y-Axis",
     "axis_labels": "Labels",
+    "axis_titles": "Title",
     "charts_section_title": "Charts Elements",
     "visualizations_section_title": "Visualizations Types",
     "tooltip_color_mode": "Color mode",
@@ -624,6 +625,12 @@
   },
   "widget_customization_reverse_axes_settings": {
     "label": "Reverse Axes"
+  },
+  "widget_customization_axis_settings": {
+    "x_axis_title": "X-Axis Title",
+    "x_axis_title_placeholder": "Enter axis title",
+    "y_axis_title": "Y-Axis Title",
+    "y_axis_title_placeholder": "Enter axis title"
   },
   "tags": {
     "saved_query": "Saved query"
