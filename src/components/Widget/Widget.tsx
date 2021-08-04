@@ -17,21 +17,26 @@ import DatePickerWidget from '../DatePickerWidget';
 import ImageManagement from '../ImageManagement';
 import ChartManagement from '../ChartManagement';
 import TextManagement from '../TextManagement';
+import ChartWidgetFilter from '../ChartWidgetFilter';
+import FilterWidget from '../FilterWidget';
+import FilterManagement from '../FilterManagement';
 
 import WidgetCover from './components/WidgetCover';
 
-import { editDatePickerWidget, getWidget } from '../../modules/widgets';
+import { cardSettings } from './utils';
+
+import {
+  editDatePickerWidget,
+  getWidget,
+  VisualizationSettings,
+} from '../../modules/widgets';
 import { getDashboardSettings } from '../../modules/dashboards';
+import { editFilterWidget } from '../../modules/widgets/actions';
+import { appSelectors } from '../../modules/app';
+import { themeSelectors } from '../../modules/theme';
 
 import { RootState } from '../../rootReducer';
 import { RenderOptions } from './types';
-import ChartWidgetFilter from '../ChartWidgetFilter';
-import FilterWidget from '../FilterWidget/FilterWidget';
-import FilterManagement from '../FilterManagement';
-import { editFilterWidget } from '../../modules/widgets/actions';
-import { appSelectors } from '../../modules/app';
-import { themeHooks, themeSelectors } from '../../modules/theme';
-import { VisualizationSettings } from '../../modules/widgets/types';
 
 type Props = {
   /** Widget identifier */
@@ -46,47 +51,9 @@ type Props = {
   onEditWidget?: () => void;
 };
 
-const ChartVisualization = ({
-  widgetId,
-  isEditorMode,
-  onRemoveWidget,
-  isHighlighted,
-  isDetached,
-  title,
-  error,
-  enableHover,
-  enableOverflow,
-}: Partial<RenderOptions> & {
-  enableHover: boolean;
-  enableOverflow?: boolean;
-}) => {
-  return (
-    <ChartVisualizationContainer enableOverflow={enableOverflow}>
-      <ChartWidget id={widgetId} disableInteractions={isEditorMode} />
-      {isEditorMode && (
-        <ChartManagement
-          widgetId={widgetId}
-          error={error}
-          isHoverActive={enableHover}
-          onRemoveWidget={onRemoveWidget}
-        />
-      )}
-      {(isHighlighted || isDetached || title) && (
-        <WidgetCover
-          isHighlighted={isHighlighted}
-          isDetached={isDetached}
-          title={title}
-        />
-      )}
-      {!isEditorMode && <ChartWidgetFilter widgetId={widgetId} />}
-    </ChartVisualizationContainer>
-  );
-};
-
 const renderWidget = ({
   widgetType,
   widgetId,
-  widgetSettings,
   isEditorMode,
   isHoverActive,
   isHighlighted,
@@ -94,6 +61,7 @@ const renderWidget = ({
   isFadeOut,
   title,
   error,
+  cardEnabled,
   onRemoveWidget,
   onEditWidget,
   dashboardSettings,
@@ -132,7 +100,29 @@ const renderWidget = ({
         return <TextWidget id={widgetId} />;
       }
     case 'visualization':
-      return widgetSettings?.card?.enabled ? (
+      const node = (
+        <ChartVisualizationContainer enableOverflow={!cardEnabled}>
+          <ChartWidget id={widgetId} disableInteractions={isEditorMode} />
+          {isEditorMode && (
+            <ChartManagement
+              widgetId={widgetId}
+              error={error}
+              isHoverActive={enableHover}
+              onRemoveWidget={onRemoveWidget}
+            />
+          )}
+          {(isHighlighted || isDetached || title) && (
+            <WidgetCover
+              isHighlighted={isHighlighted}
+              isDetached={isDetached}
+              title={title}
+            />
+          )}
+          {!isEditorMode && <ChartWidgetFilter widgetId={widgetId} />}
+        </ChartVisualizationContainer>
+      );
+
+      return cardEnabled ? (
         <StyledCard
           isFadeOut={isFadeOut}
           isHighlighted={isHighlighted}
@@ -142,28 +132,10 @@ const renderWidget = ({
           borderColor={tileSettings.borderColor}
           hasShadow={tileSettings.hasShadow}
         >
-          <ChartVisualization
-            widgetId={widgetId}
-            isEditorMode={isEditorMode}
-            onRemoveWidget={onRemoveWidget}
-            isHighlighted={isHighlighted}
-            isDetached={isDetached}
-            title={title}
-            error={error}
-            enableHover={enableHover}
-          />
+          {node}
         </StyledCard>
       ) : (
-        <ChartVisualization
-          widgetId={widgetId}
-          isEditorMode={isEditorMode}
-          onRemoveWidget={onRemoveWidget}
-          isHighlighted={isHighlighted}
-          isDetached={isDetached}
-          title={title}
-          enableHover={enableHover}
-          enableOverflow
-        />
+        node
       );
     case 'image':
       return (
@@ -247,13 +219,6 @@ const Widget: FC<Props> = ({
     onEditWidget = () => dispatch(editDatePickerWidget(id));
   }
 
-  const { themedWidgetSettings } = themeHooks.useApplyWidgetTheming({
-    chartSettings: visualizationSettings?.chartSettings,
-    widgetSettings: visualizationSettings?.widgetSettings,
-    dependencies: [widgetType, visualizationSettings],
-    composeCondition: widgetType === 'visualization' && !!visualizationSettings,
-  });
-
   const { settings: dashboardWidgetSettings } = useSelector(
     themeSelectors.getActiveDashboardThemeSettings
   );
@@ -261,17 +226,17 @@ const Widget: FC<Props> = ({
   return renderWidget({
     widgetType,
     widgetId,
-    widgetSettings: themedWidgetSettings,
     isEditorMode,
     isDetached,
     isHoverActive,
     isHighlighted,
     isFadeOut,
-    title: widgetTitle,
     onRemoveWidget,
     onEditWidget,
     error,
+    title: widgetTitle,
     dashboardSettings: dashboardWidgetSettings,
+    cardEnabled: cardSettings(widgetType, visualizationSettings),
   });
 };
 

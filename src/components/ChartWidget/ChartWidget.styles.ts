@@ -16,4 +16,5 @@ export const LoaderWrapper = styled.div`
   align-items: center;
   justify-content: center;
   flex: 1;
+  height: 100%;
 `;
