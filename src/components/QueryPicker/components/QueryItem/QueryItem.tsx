@@ -1,13 +1,11 @@
 import React, { FC, useMemo } from 'react';
 import { Icon } from '@keen.io/icons';
 import { colors } from '@keen.io/colors';
+import { getVisualizationIcon } from '@keen.io/widget-picker';
 
 import { Container, Name } from './QueryItem.styles';
 
-import {
-  getVisualizationIcon,
-  QueryVisualization,
-} from '../../../../modules/queries';
+import { QueryVisualization } from '../../../../modules/queries';
 
 type Props = {
   /** Query name */
