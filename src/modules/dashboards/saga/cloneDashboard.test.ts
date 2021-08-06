@@ -89,7 +89,7 @@ const metaData = {
   tags: [],
   lastModificationDate: 0,
   isPublic: false,
-  publicAccessKey: null,
+  publicAccessKey: '@public-access-key',
 };
 
 const dashboardApiMock = {
@@ -142,7 +142,13 @@ describe('Scenario 1: User clone dashboard from dashboard view', () => {
 
   test('triggers addClonedDashboard action', (result) => {
     expect(result).toEqual(
-      put(addClonedDashboard({ ...metaData, title: 'Clone' }))
+      put(
+        addClonedDashboard({
+          ...metaData,
+          publicAccessKey: null,
+          title: 'Clone',
+        })
+      )
     );
   });
 
@@ -232,7 +238,13 @@ describe('Scenario 2: User clone dashboard from management', () => {
 
   test('triggers addClonedDashboard action', (result) => {
     expect(result).toEqual(
-      put(addClonedDashboard({ ...metaData, title: 'Clone' }))
+      put(
+        addClonedDashboard({
+          ...metaData,
+          publicAccessKey: null,
+          title: 'Clone',
+        })
+      )
     );
   });
 
