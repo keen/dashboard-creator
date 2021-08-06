@@ -13,5 +13,5 @@ export const cardSettings = (
     }
   }
 
-  return false;
+  return true;
 };
