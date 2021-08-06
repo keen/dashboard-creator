@@ -164,7 +164,11 @@ const DashboardShare: FC<Props> = ({ dashboardId }) => {
         <PublicLink dashboardId={dashboardId} isPublic={isPublic} />
       )}
       {activeTab === EMBED_HTML_VIEW_ID && (
-        <EmbedCode dashboardId={dashboardId} isPublic={isPublic} />
+        <EmbedCode
+          dashboardId={dashboardId}
+          isPublic={isPublic}
+          publicAccessKey={publicAccessKey}
+        />
       )}
     </ModalWrapper>
   );

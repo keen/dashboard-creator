@@ -8,6 +8,7 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import { useInView } from 'react-intersection-observer';
+import { useTranslation } from 'react-i18next';
 
 import { Loader } from '@keen.io/ui-core';
 import { ErrorWidget } from '@keen.io/widgets';
@@ -32,7 +33,6 @@ import { RESIZE_WIDGET_EVENT } from '../../constants';
 
 import getChartInput from '../../utils/getChartInput';
 import { createDataviz } from './utils';
-import { useTranslation } from 'react-i18next';
 import { WidgetItem } from '../../modules/widgets/types';
 
 type Props = {

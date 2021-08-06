@@ -40,6 +40,7 @@ import {
   TextWidget,
   FilterWidget,
   ImageWidget,
+  VisualizationSettings,
   FilterSettings,
 } from './types';
 
@@ -54,6 +55,7 @@ export type {
   TextWidget,
   FilterWidget,
   FilterSettings,
+  VisualizationSettings,
 };
 
 export {

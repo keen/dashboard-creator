@@ -397,9 +397,21 @@ describe('exportDashboardToHtml()', () => {
     return keenAnalysisMock;
   });
 
+  test('get dashboard metadata', (result) => {
+    expect(result).toEqual(select(getDashboardMeta, dashboardId));
+
+    return {
+      publicAccessKey: '@public-access-key',
+    };
+  });
+
   test('creates code snippet', (result) => {
     expect(result).toEqual(
-      createCodeSnippet({ projectId, userKey, dashboardId })
+      createCodeSnippet({
+        projectId,
+        userKey: '@public-access-key',
+        dashboardId,
+      })
     );
     return snippet;
   });
