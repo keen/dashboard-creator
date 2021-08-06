@@ -41,13 +41,17 @@ SyntaxHighlighter.registerLanguage('xml', xml);
 SyntaxHighlighter.registerLanguage('javascript', js);
 
 type Props = {
+  /* Dashboard identifier */
   dashboardId: string;
+  /* Public state */
   isPublic?: boolean;
+  /* Dashboard public access key */
+  publicAccessKey?: string;
 };
 
 type Buttons = 'download' | 'copy';
 
-const EmbedCode: FC<Props> = ({ dashboardId, isPublic }) => {
+const EmbedCode: FC<Props> = ({ dashboardId, publicAccessKey, isPublic }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -62,15 +66,27 @@ const EmbedCode: FC<Props> = ({ dashboardId, isPublic }) => {
   const containerRef = useRef(null);
 
   const {
-    project: { id: projectId, userKey },
+    project: { id: projectId },
   } = useContext(AppContext);
 
   const codeHead = useMemo(
-    () => createCodeSnippet({ projectId, userKey, dashboardId, type: 'head' }),
+    () =>
+      createCodeSnippet({
+        projectId,
+        userKey: publicAccessKey,
+        dashboardId,
+        type: 'head',
+      }),
     [dashboardId]
   );
   const codeBody = useMemo(
-    () => createCodeSnippet({ projectId, userKey, dashboardId, type: 'body' }),
+    () =>
+      createCodeSnippet({
+        projectId,
+        userKey: publicAccessKey,
+        dashboardId,
+        type: 'body',
+      }),
     [dashboardId]
   );
 
