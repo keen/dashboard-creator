@@ -55,6 +55,7 @@ export function* cloneDashboard({
       id: newDashboardId,
       title: metaData.title ? `${metaData.title} Clone` : 'Clone',
       isPublic: false,
+      publicAccessKey: null,
       lastModificationDate: +new Date(),
     };
 

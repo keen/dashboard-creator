@@ -572,10 +572,13 @@ export function* exportDashboardToHtml({
 }: ReturnType<typeof exportDashboardToHtmlAction>) {
   const { dashboardId } = payload;
   const client = yield getContext(KEEN_ANALYSIS);
-  const { projectId, readKey: userKey } = client.config;
+
+  const { publicAccessKey } = yield select(getDashboardMeta, dashboardId);
+  const { projectId } = client.config;
+
   const codeSnippet = yield createCodeSnippet({
     projectId,
-    userKey,
+    userKey: publicAccessKey,
     dashboardId,
   });
   exportToHtml({ data: codeSnippet, fileName: dashboardId });
