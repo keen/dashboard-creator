@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.1.1](https://github.com/keen/explorer/compare/v4.1.0...v4.1.1) (2021-08-06)
+
+
+### Bug Fixes
+
+* 🐛 card fix ([63fde55](https://github.com/keen/explorer/commit/63fde5574abe46d0d79bc0acd9b46a583957d836))
+
 ## [4.1.0](https://github.com/keen/explorer/compare/v4.1.0-rc.2...v4.1.0) (2021-08-06)
 
 
