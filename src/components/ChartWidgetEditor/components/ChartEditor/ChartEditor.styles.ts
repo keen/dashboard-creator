@@ -31,6 +31,7 @@ export const NotificationBar = styled(motion.div)`
 
 export const VisualizationContainer = styled.div`
   padding: 10px;
+  position: relative;
 `;
 
 export const SectionContainer = styled.div`
@@ -47,4 +48,13 @@ export const Cancel = styled.div`
 export const Footer = styled.div`
   display: flex;
   padding: 10px 25px;
+`;
+
+export const IconContainer = styled.div`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: absolute;
+  top: 15px;
+  right: 15px;
 `;
