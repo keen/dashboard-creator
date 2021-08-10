@@ -614,7 +614,8 @@
     "title": "Table Chart Components"
   },
   "widget_customization_circular_settings": {
-    "title": "Donut & Pie Chart Components"
+    "title": "Donut & Pie Chart Components",
+    "label": "Value Mode"
   },
   "widget_customization_heatmap_settings": {
     "title": "Heatmap Chart Components"
