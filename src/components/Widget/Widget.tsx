@@ -59,6 +59,7 @@ const renderWidget = ({
   isHighlighted,
   isDetached,
   isFadeOut,
+  isInitialized,
   title,
   error,
   cardEnabled,
@@ -103,7 +104,7 @@ const renderWidget = ({
       const node = (
         <ChartVisualizationContainer enableOverflow={!cardEnabled}>
           <ChartWidget id={widgetId} disableInteractions={isEditorMode} />
-          {isEditorMode && (
+          {isEditorMode && isInitialized && (
             <ChartManagement
               widgetId={widgetId}
               error={error}
@@ -196,6 +197,7 @@ const Widget: FC<Props> = ({
     isFadeOut,
     isDetached,
     isTitleCover,
+    isInitialized,
   } = useSelector((rootState: RootState) => getWidget(rootState, id));
 
   const visualizationSettings = settings as VisualizationSettings;
@@ -231,6 +233,7 @@ const Widget: FC<Props> = ({
     isHoverActive,
     isHighlighted,
     isFadeOut,
+    isInitialized,
     onRemoveWidget,
     onEditWidget,
     error,
