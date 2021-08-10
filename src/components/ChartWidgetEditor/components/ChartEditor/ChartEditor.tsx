@@ -4,6 +4,7 @@ import { AnimatePresence } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import deepEqual from 'deep-equal';
+import { transparentize } from 'polished';
 
 import { getAvailableWidgets, WidgetSettings } from '@keen.io/widget-picker';
 import WidgetCustomization, {
@@ -21,6 +22,7 @@ import {
 } from '@keen.io/ui-core';
 import { colors } from '@keen.io/colors';
 import { BodyText } from '@keen.io/typography';
+import { Icon } from '@keen.io/icons';
 
 import {
   Container,
@@ -30,6 +32,7 @@ import {
   Cancel,
   NavBar,
   Footer,
+  IconContainer,
 } from './ChartEditor.styles';
 
 import {
@@ -203,6 +206,14 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
           }}
           onChangeVisualization={onChangeVisualization}
         />
+        <IconContainer onClick={onClose} data-testid="close-handler">
+          <Icon
+            type="close"
+            width={16}
+            height={16}
+            fill={transparentize(0.5, colors.black[100])}
+          />
+        </IconContainer>
       </VisualizationContainer>
       <NavBar>
         <Navigation
