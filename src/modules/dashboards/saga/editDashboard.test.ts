@@ -2,12 +2,15 @@ import sagaHelper from 'redux-saga-testing';
 import { select, put, call, getContext } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
 
-import { editDashboard as editDashboardAction } from '../actions';
+import {
+  initializeDashboardWidgets,
+  registerDashboard,
+  editDashboard as editDashboardAction,
+} from '../actions';
 
 import { prepareDashboard } from './prepareDashboard';
 import { editDashboard } from './editDashboard';
 
-import { initializeDashboardWidgets, registerDashboard } from '../actions';
 import { dashboardsSelectors } from '../selectors';
 import { createDashboardSettings } from '../utils';
 
