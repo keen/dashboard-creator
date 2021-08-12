@@ -1,23 +1,18 @@
-import { put, select, getContext } from 'redux-saga/effects';
+import { put, select, call, getContext } from 'redux-saga/effects';
 import { StatusCodes } from 'http-status-codes';
 import { push } from 'connected-react-router';
-import { Theme } from '@keen.io/charts';
 
 import {
   setDashboardError,
   registerDashboard,
-  updateDashboard,
   initializeDashboardWidgets,
   viewDashboard as viewDashboardAction,
 } from '../actions';
 
-import { serializeDashboard } from '../serializers';
+import { prepareDashboard } from './prepareDashboard';
 import { dashboardsSelectors } from '../selectors';
 
-import { registerWidgets } from '../../widgets';
 import { appActions } from '../../app';
-import { themeActions, themeSagaActions, themeSelectors } from '../../theme';
-import { enhanceDashboard } from '../utils';
 
 import { APIError } from '../../../api';
 
@@ -50,26 +45,13 @@ export function* viewDashboard({
         dashboardId
       );
 
-      const baseTheme: Theme = yield select(themeSelectors.getBaseTheme);
-      const { theme, settings, ...dashboard } = enhanceDashboard(
-        responseBody,
-        baseTheme
+      const { widgetIds } = yield call(
+        prepareDashboard,
+        dashboardId,
+        responseBody
       );
 
-      const serializedDashboard = serializeDashboard(dashboard);
-      const { widgets } = responseBody;
-
-      yield put(registerWidgets(widgets));
-      yield put(updateDashboard(dashboardId, serializedDashboard));
-      yield put(
-        themeActions.setDashboardTheme({ dashboardId, settings, theme })
-      );
-
-      yield put(themeSagaActions.loadDashboardFonts());
-
-      yield put(
-        initializeDashboardWidgets(dashboardId, serializedDashboard.widgets)
-      );
+      yield put(initializeDashboardWidgets(dashboardId, widgetIds));
     } catch (err) {
       const error: APIError = err;
       if (error.statusCode === StatusCodes.NOT_FOUND) {

@@ -11,7 +11,6 @@ import {
   call,
   takeEvery,
 } from 'redux-saga/effects';
-import { StatusCodes } from 'http-status-codes';
 import { push } from 'connected-react-router';
 import { exportToHtml } from '@keen.io/ui-core';
 import { Theme } from '@keen.io/charts';
@@ -29,7 +28,6 @@ import {
   saveDashboard as saveDashboardAction,
   saveDashboardMeta as saveDashboardMetaAction,
   viewDashboard as viewDashboardAction,
-  viewPublicDashboard as viewPublicDashboardAction,
   setDashboardPublicAccess as setDashboardPublicAccessAction,
   regenerateAccessKey as regenerateAccessKeyAction,
   regenerateAccessKeySuccess,
@@ -37,8 +35,6 @@ import {
   exportDashboardToHtml as exportDashboardToHtmlAction,
   saveDashboardMetaSuccess,
   saveDashboardMetaError,
-  setDashboardList,
-  setDashboardError,
   setDashboardListOrder,
   updateCachedDashboardIds,
   unregisterDashboard,
@@ -48,14 +44,15 @@ import {
 
 import {
   viewDashboard,
+  viewPublicDashboard,
   saveDashboard,
   cloneDashboard,
   resetDashboardFilters,
   deleteAccessKey,
   deleteDashboard,
+  editDashboard,
 } from './saga';
 
-import { serializeDashboard } from './serializers';
 import {
   getCachedDashboardIds,
   getDashboard,
@@ -65,7 +62,6 @@ import { themeSelectors } from '../theme/selectors';
 
 import {
   initializeWidget,
-  registerWidgets,
   removeWidget,
   getWidget,
   getWidgetSettings,
@@ -78,15 +74,12 @@ import {
   removeConnectionFromDatePicker,
 } from '../widgets/saga/datePickerWidget';
 
-import { themeActions, themeSagaActions } from '../theme';
+import { themeActions } from '../theme';
 import {
-  enhanceDashboard,
   createDashboardSettings,
   createPublicDashboardKeyName,
   createCodeSnippet,
 } from './utils';
-
-import { APIError } from '../../api';
 
 import {
   DASHBOARD_API,
@@ -119,13 +112,8 @@ import {
 } from './constants';
 
 import { RootState } from '../../rootReducer';
-import {
-  DashboardModel,
-  Dashboard,
-  DashboardMetaData,
-  DashboardError,
-} from './types';
-import { unregisterWidget, clearFilterData } from '../widgets/actions';
+import { DashboardModel, Dashboard, DashboardMetaData } from './types';
+import { unregisterWidget } from '../widgets/actions';
 import {
   removeConnectionFromFilter,
   removeFilterConnections,
@@ -336,139 +324,6 @@ export function* removeWidgetFromDashboard({
   }
 
   yield put(removeWidget(widgetId));
-}
-
-export function* editDashboard({
-  payload,
-}: ReturnType<typeof editDashboardAction>) {
-  const { dashboardId } = payload;
-  const state: RootState = yield select();
-  const dashboard = yield getDashboard(state, dashboardId);
-
-  if (!dashboard) {
-    yield put(registerDashboard(dashboardId));
-
-    yield put(appActions.setActiveDashboard(dashboardId));
-    yield put(push(ROUTES.EDITOR));
-
-    const dashboardApi = yield getContext(DASHBOARD_API);
-
-    try {
-      const responseBody: DashboardModel = yield dashboardApi.getDashboardById(
-        dashboardId
-      );
-
-      const baseTheme: Theme = yield select(themeSelectors.getBaseTheme);
-
-      const { theme, settings, ...dashboard } = enhanceDashboard(
-        responseBody,
-        baseTheme
-      );
-      const serializedDashboard = serializeDashboard(dashboard);
-      const { widgets } = responseBody;
-
-      yield put(registerWidgets(widgets));
-      yield put(updateDashboard(dashboardId, serializedDashboard));
-      yield put(
-        themeActions.setDashboardTheme({ dashboardId, theme, settings })
-      );
-
-      yield put(themeSagaActions.loadDashboardFonts());
-
-      yield put(
-        initializeDashboardWidgetsAction(
-          dashboardId,
-          serializedDashboard.widgets
-        )
-      );
-    } catch (err) {
-      console.error(err);
-    }
-  } else {
-    const widgets = dashboard.settings.widgets;
-    if (widgets && widgets.length > 0) {
-      const connectedWidgets = yield all(
-        widgets.map((id: string) => select(getWidget, id))
-      );
-      const filtersToReset = connectedWidgets.filter(
-        (widget) => widget.widget.type === 'filter'
-      );
-      yield all(
-        filtersToReset.map((filter) => put(clearFilterData(filter.widget.id)))
-      );
-    }
-    yield put(appActions.setActiveDashboard(dashboardId));
-    yield put(push(ROUTES.EDITOR));
-  }
-}
-
-/**
- * Flow responsible for initializing public dashboard viewer.
- *
- * @param dashboardId - Dashboard identifer
- * @return void
- *
- */
-export function* viewPublicDashboard({
-  payload,
-}: ReturnType<typeof viewPublicDashboardAction>) {
-  const { dashboardId } = payload;
-
-  yield put(registerDashboard(dashboardId));
-  yield put(appActions.setActiveDashboard(dashboardId));
-
-  try {
-    const dashboardApi = yield getContext(DASHBOARD_API);
-    const dashboardMeta: DashboardMetaData = yield dashboardApi.getDashboardMetaDataById(
-      dashboardId
-    );
-
-    yield put(setDashboardList([dashboardMeta]));
-    const { isPublic } = dashboardMeta;
-
-    if (isPublic) {
-      const responseBody: DashboardModel = yield dashboardApi.getDashboardById(
-        dashboardId
-      );
-
-      const baseTheme: Theme = yield select(themeSelectors.getBaseTheme);
-
-      const { theme, settings, ...dashboard } = enhanceDashboard(
-        responseBody,
-        baseTheme
-      );
-      const serializedDashboard = serializeDashboard(dashboard);
-      const { widgets } = responseBody;
-
-      yield put(registerWidgets(widgets));
-      yield put(updateDashboard(dashboardId, serializedDashboard));
-      yield put(
-        themeActions.setDashboardTheme({ dashboardId, settings, theme })
-      );
-
-      yield put(themeSagaActions.loadDashboardFonts());
-
-      yield put(
-        initializeDashboardWidgetsAction(
-          dashboardId,
-          serializedDashboard.widgets
-        )
-      );
-    } else {
-      yield put(
-        setDashboardError(dashboardId, DashboardError.ACCESS_NOT_PUBLIC)
-      );
-    }
-  } catch (err) {
-    const error: APIError = err;
-    if (error.statusCode === StatusCodes.NOT_FOUND) {
-      yield put(setDashboardError(dashboardId, DashboardError.NOT_EXIST));
-    } else {
-      yield put(
-        setDashboardError(dashboardId, DashboardError.VIEW_PUBLIC_DASHBOARD)
-      );
-    }
-  }
 }
 
 export function* initializeDashboardWidgets({
