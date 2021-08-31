@@ -7,14 +7,16 @@ import {
   saveDashboardSuccess,
   saveDashboardError,
 } from '../actions';
+
 import { dashboardsSelectors } from '../selectors';
+import { computeDashboardMetadata } from '../utils';
 
 import { themeSelectors } from '../../theme';
 import { widgetsSelectors, Widget } from '../../widgets';
 
 import { DASHBOARD_API } from '../../../constants';
 
-import { Dashboard, DashboardMetaData } from '../types';
+import { Dashboard, DashboardModel, DashboardMetaData } from '../types';
 
 import { RootState } from '../../../rootReducer';
 
@@ -42,7 +44,7 @@ export function* saveDashboard({
       dashboardId
     );
 
-    const serializedDashboard = {
+    const serializedDashboard: DashboardModel = {
       ...dashboard,
       widgets: dashboard.widgets
         .map((widgetId) => widgetsSelectors.getWidgetSettings(state, widgetId))
@@ -60,18 +62,6 @@ export function* saveDashboard({
       theme,
     };
 
-    const { widgets } = serializedDashboard;
-    const queries = widgets.reduce((acc, widget) => {
-      if (
-        widget.type === 'visualization' &&
-        widget.query &&
-        typeof widget.query === 'string'
-      ) {
-        acc.add(widget.query);
-      }
-      return acc;
-    }, new Set([]));
-
     const dashboardsMeta = yield select(
       dashboardsSelectors.getDashboardsMetadata
     );
@@ -81,8 +71,8 @@ export function* saveDashboard({
 
     const updatedMetadata: DashboardMetaData = {
       ...metadata,
-      queries: queries.size,
       lastModificationDate: +new Date(),
+      ...computeDashboardMetadata(serializedDashboard),
     };
 
     const dashboardApi = yield getContext(DASHBOARD_API);

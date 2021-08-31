@@ -34,6 +34,7 @@ const metadata = {
   tags: [],
   lastModificationDate: 0,
   isPublic: false,
+  savedQueries: [],
   publicAccessKey: null,
 };
 

@@ -9,12 +9,6 @@ jest.mock('uuid', () => {
 });
 
 import {
-  registerDashboard,
-  setDashboardList,
-  updateDashboard,
-  setDashboardError,
-  initializeDashboardWidgets,
-  viewPublicDashboard as viewPublicDashboardAction,
   removeWidgetFromDashboard as removeWidgetFromDashboardAction,
   regenerateAccessKey as regenerateAccessKeyAction,
   saveDashboardMeta as saveDashboardMetaAction,
@@ -28,7 +22,7 @@ import {
   regenerateAccessKeySuccess,
   regenerateAccessKeyError,
 } from './actions';
-import { themeActions, themeSagaActions } from '../theme';
+
 import { deleteAccessKey } from './saga';
 import {
   removeWidgetFromDashboard,
@@ -43,26 +37,16 @@ import {
 
 import {
   removeWidget,
-  registerWidgets,
   getWidgetSettings,
   getWidget,
   createWidget,
 } from '../widgets';
 
-import { themeSelectors } from '../theme';
-
-import { serializeDashboard } from './serializers';
-import { createCodeSnippet, createDashboardSettings } from './utils';
-
-import { DashboardModel, DashboardMetaData, DashboardError } from './types';
+import { createCodeSnippet } from './utils';
 
 import { SAVE_DASHBOARD_METADATA_SUCCESS } from './constants';
 
-import {
-  NOTIFICATION_MANAGER,
-  DASHBOARD_API,
-  KEEN_ANALYSIS,
-} from '../../constants';
+import { NOTIFICATION_MANAGER, KEEN_ANALYSIS } from '../../constants';
 import {
   getCachedDashboardIds,
   getDashboard,
@@ -71,7 +55,7 @@ import {
 import { removeConnectionFromFilter } from '../widgets/saga/filterWidget';
 
 import { unregisterWidget } from '../widgets/actions';
-import { appActions, appSelectors } from '../app';
+import { appSelectors } from '../app';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
