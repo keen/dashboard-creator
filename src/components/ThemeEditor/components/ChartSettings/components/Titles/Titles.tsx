@@ -21,9 +21,11 @@ type Props = {
   settings: Pick<DashboardSettings, 'title' | 'subtitle'>;
   /* Change event handler */
   onChange: (settings: Pick<DashboardSettings, 'title' | 'subtitle'>) => void;
+  /** Color suggestions used in color picker */
+  colorSuggestions: string[];
 };
 
-const Titles: FC<Props> = ({ settings, onChange }) => {
+const Titles: FC<Props> = ({ settings, onChange, colorSuggestions }) => {
   const { t } = useTranslation();
   const { modalContentRef } = useContext(ThemeModalContext);
 
@@ -73,6 +75,7 @@ const Titles: FC<Props> = ({ settings, onChange }) => {
           </TextWrapper>
           <TypographySettings
             scrollableContainerRef={modalContentRef}
+            colorSuggestions={colorSuggestions}
             settings={mappedSettings.title}
             fontSizeSuggestions={AVAILABLE_FONT_SIZES.TITLE}
             availableSettings={TITLES_SETTINGS}
@@ -87,6 +90,7 @@ const Titles: FC<Props> = ({ settings, onChange }) => {
           </TextWrapper>
           <TypographySettings
             scrollableContainerRef={modalContentRef}
+            colorSuggestions={colorSuggestions}
             settings={mappedSettings.subtitle}
             fontSizeSuggestions={AVAILABLE_FONT_SIZES.SUBTITLE}
             availableSettings={TITLES_SETTINGS}
