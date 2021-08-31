@@ -8,7 +8,11 @@ import { Grid, Legend, Titles, Tooltip, Axis } from './components';
 
 import SettingsDivider from '../SettingsDivider';
 
-import { themeSelectors, ThemeSettings } from '../../../../modules/theme';
+import {
+  getColorSuggestions,
+  themeSelectors,
+  ThemeSettings,
+} from '../../../../modules/theme';
 import { DashboardSettings } from '../../../../modules/dashboards';
 
 type Props = {
@@ -27,10 +31,13 @@ const ChartSettings: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
   const { theme, settings: chartSettings } = currentSettings;
   const { colors: defaultColors } = useSelector(themeSelectors.getBaseTheme);
 
+  const colorSuggestions = getColorSuggestions(defaultColors, currentSettings);
+
   return (
     <Container>
       <Titles
         settings={chartSettings}
+        colorSuggestions={colorSuggestions}
         onChange={(settings) =>
           onUpdateSettings(theme, {
             title: settings.title,
@@ -41,6 +48,7 @@ const ChartSettings: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
       <SettingsDivider />
       <Legend
         settings={chartSettings}
+        colorSuggestions={colorSuggestions}
         onChange={(settings) => {
           onUpdateSettings(theme, {
             legend: settings,
@@ -53,7 +61,7 @@ const ChartSettings: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
           gridX: theme.gridX,
           gridY: theme.gridY,
         }}
-        colorSuggestions={defaultColors}
+        colorSuggestions={colorSuggestions}
         onChange={(settings) => {
           onUpdateSettings(
             {
@@ -67,6 +75,7 @@ const ChartSettings: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
       <SettingsDivider />
       <Axis
         settings={theme.axisX}
+        colorSuggestions={colorSuggestions}
         sectionTitle={t('theme_editor.widget_x_axis_title')}
         onChange={(settings) => {
           onUpdateSettings({ axisX: settings }, chartSettings);
@@ -75,6 +84,7 @@ const ChartSettings: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
       <SettingsDivider />
       <Axis
         settings={theme.axisY}
+        colorSuggestions={colorSuggestions}
         sectionTitle={t('theme_editor.widget_y_axis_title')}
         onChange={(settings) => {
           onUpdateSettings({ axisY: settings }, chartSettings);
