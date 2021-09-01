@@ -43,7 +43,7 @@ type MetaData = {
   /* Number of queries used on dashboard */
   queries: number;
   /* Collection of saved queries used on dashboard */
-  savedQueries: number;
+  savedQueries: string[];
   /* Tags used for filtering on dashboards list */
   tags: string[];
   /* Timestamp representing last modification date */
