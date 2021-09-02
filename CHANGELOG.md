@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.2.0](https://github.com/keen/explorer/compare/v4.1.1...v4.2.0) (2021-09-02)
+
+
+### Features
+
+* 🎸 Circural charts value mode ([079a2f5](https://github.com/keen/explorer/commit/079a2f50e6ae7450c5b344699c32f4c3832a70fc))
+
+
+### Bug Fixes
+
+* 🐛 add missing translation ([3733ba1](https://github.com/keen/explorer/commit/3733ba1eb48a80e75bb39d2895cb6e9c93116c21))
+* 🐛 Choropleth interactions fix ([abe85a7](https://github.com/keen/explorer/commit/abe85a77f0f4191c300acab4034f045ce0bbc145))
+* 🐛 close indicators added to text/chart modals ([0893016](https://github.com/keen/explorer/commit/0893016ccea44c969a2b60af7534ea5b6a6cf6d1))
+* 🐛 edit widget when initialized ([133ac51](https://github.com/keen/explorer/commit/133ac51df74f207e122570b83b44433bf276a3d6))
+* 🐛 Missing color suggestions in theming palette ([7fcb0c7](https://github.com/keen/explorer/commit/7fcb0c7eb49068b57a057b9610be619cd4957645))
+* 🐛 Pie format value fix ([9dac5d7](https://github.com/keen/explorer/commit/9dac5d757861341ea9b052f467c9e6cc71967b55))
+
 ### [4.1.1](https://github.com/keen/explorer/compare/v4.1.0...v4.1.1) (2021-08-06)
 
 
