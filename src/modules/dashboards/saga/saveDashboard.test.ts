@@ -99,10 +99,11 @@ const dashboardApiMock = {
 
 const updatedMetadata: DashboardMetaData = {
   id: dashboardId,
-  widgets: 0,
+  widgets: 2,
   queries: 1,
   title: 'Dashboard',
   tags: [],
+  savedQueries: ['purchases'],
   lastModificationDate: 0,
   isPublic: true,
   publicAccessKey: 'public-access-key',

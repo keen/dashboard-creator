@@ -22,9 +22,11 @@ type Props = {
   settings: Pick<DashboardSettings, 'legend'>;
   /* Change event handler */
   onChange: (settings: DashboardSettings['legend']) => void;
+  /** Color suggestions used in color picker */
+  colorSuggestions: string[];
 };
 
-const Legend: FC<Props> = ({ settings, onChange }) => {
+const Legend: FC<Props> = ({ settings, onChange, colorSuggestions }) => {
   const { t } = useTranslation();
   const { modalContentRef } = useContext(ThemeModalContext);
 
@@ -56,6 +58,7 @@ const Legend: FC<Props> = ({ settings, onChange }) => {
           <TypographySettings
             scrollableContainerRef={modalContentRef}
             settings={labelTypographySettings}
+            colorSuggestions={colorSuggestions}
             fontSizeSuggestions={AVAILABLE_FONT_SIZES}
             availableSettings={LEGEND_LABELS_SETTINGS}
             onChange={(settings) => onSettingsChange(settings)}

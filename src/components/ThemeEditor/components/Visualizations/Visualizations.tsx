@@ -5,7 +5,11 @@ import { Theme } from '@keen.io/charts';
 import { CircularChart, Funnel, Metric, Table, Line } from './components';
 import SettingsDivider from '../SettingsDivider';
 
-import { ThemeSettings, themeSelectors } from '../../../../modules/theme';
+import {
+  ThemeSettings,
+  themeSelectors,
+  getColorSuggestions,
+} from '../../../../modules/theme';
 import { DashboardSettings } from '../../../../modules/dashboards';
 
 type Props = {
@@ -26,6 +30,8 @@ const Visualizations: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
 
   const { colors: defaultColors } = useSelector(themeSelectors.getBaseTheme);
 
+  const colorSuggestions = getColorSuggestions(defaultColors, currentSettings);
+
   return (
     <div>
       <Line
@@ -40,7 +46,7 @@ const Visualizations: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
         onChange={(themeSettings) =>
           onUpdateSettings(themeSettings, dashboardSettings)
         }
-        colorSuggestions={defaultColors}
+        colorSuggestions={colorSuggestions}
       />
       <SettingsDivider />
       <Funnel
@@ -48,7 +54,7 @@ const Visualizations: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
         onChange={(funnelSettings) =>
           onUpdateSettings({ funnel: funnelSettings }, dashboardSettings)
         }
-        colorSuggestions={defaultColors}
+        colorSuggestions={colorSuggestions}
       />
       <SettingsDivider />
       <Metric
@@ -56,7 +62,7 @@ const Visualizations: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
         onChange={(metricSettings) =>
           onUpdateSettings({ metric: metricSettings }, dashboardSettings)
         }
-        colorSuggestions={defaultColors}
+        colorSuggestions={colorSuggestions}
       />
       <SettingsDivider />
       <Table
@@ -64,7 +70,7 @@ const Visualizations: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
         onChange={(tableSettings) =>
           onUpdateSettings({ table: tableSettings }, dashboardSettings)
         }
-        colorSuggestions={defaultColors}
+        colorSuggestions={colorSuggestions}
       />
     </div>
   );

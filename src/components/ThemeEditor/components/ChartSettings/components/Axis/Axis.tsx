@@ -26,9 +26,16 @@ type Props = {
   onChange: (settings: Axis) => void;
   /** Section title */
   sectionTitle: string;
+  /** Color suggestions used in color picker */
+  colorSuggestions: string[];
 };
 
-const XAxis: FC<Props> = ({ sectionTitle, settings, onChange }) => {
+const XAxis: FC<Props> = ({
+  sectionTitle,
+  settings,
+  onChange,
+  colorSuggestions,
+}) => {
   const { t } = useTranslation();
   const { modalContentRef } = useContext(ThemeModalContext);
 
@@ -80,6 +87,7 @@ const XAxis: FC<Props> = ({ sectionTitle, settings, onChange }) => {
           <TypographySettings
             scrollableContainerRef={modalContentRef}
             settings={mappedLabelTypography}
+            colorSuggestions={colorSuggestions}
             fontSizeSuggestions={AVAILABLE_FONT_SIZES}
             availableSettings={AXIS_LABELS_SETTINGS}
             onChange={(settings) => onLabelSettingsChange(settings)}
@@ -94,6 +102,7 @@ const XAxis: FC<Props> = ({ sectionTitle, settings, onChange }) => {
           <TypographySettings
             scrollableContainerRef={modalContentRef}
             settings={mapInputTypographySettings(titlesTypography)}
+            colorSuggestions={colorSuggestions}
             fontSizeSuggestions={AVAILABLE_FONT_SIZES}
             availableSettings={AXIS_TITLES_SETTINGS}
             onChange={(settings) => onTitleSettingsChange(settings)}

@@ -8,6 +8,9 @@ export const Container = styled.div<{ disableInteractions: boolean }>`
     props.disableInteractions &&
     css`
       pointer-events: none;
+      g {
+        pointer-events: none;
+      }
     `};
 `;
 

@@ -10,6 +10,7 @@ export type RenderOptions = {
   isHighlighted: boolean;
   isDetached: boolean;
   isFadeOut: boolean;
+  isInitialized: boolean;
   title?: string;
   cardEnabled?: boolean;
   error?: WidgetError;

@@ -40,12 +40,14 @@ import {
   TextWidget,
   FilterWidget,
   ImageWidget,
+  WidgetItem,
   VisualizationSettings,
   FilterSettings,
 } from './types';
 
 export type {
   Widget,
+  WidgetItem,
   WidgetError,
   GridPosition,
   WidgetsPosition,

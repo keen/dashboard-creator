@@ -1,14 +1,13 @@
 import sagaHelper from 'redux-saga-testing';
-import { select, put, getContext } from 'redux-saga/effects';
+import { select, put, call, getContext } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
 import { StatusCodes } from 'http-status-codes';
-import { theme } from '@keen.io/charts';
 
 import { viewDashboard } from './viewDashboard';
+import { prepareDashboard } from './prepareDashboard';
 
 import {
   viewDashboard as viewDashboardAction,
-  updateDashboard,
   setDashboardError,
   initializeDashboardWidgets,
   registerDashboard,
@@ -17,11 +16,8 @@ import { dashboardsSelectors } from '../selectors';
 import { createDashboardSettings } from '../utils';
 
 import { appActions } from '../../app';
-import { registerWidgets } from '../../widgets';
-import { themeActions, themeSagaActions, themeSelectors } from '../../theme';
 
 import { APIError } from '../../../api';
-
 import { DashboardError } from '../types';
 
 import { ROUTES, DASHBOARD_API } from '../../../constants';
@@ -55,9 +51,10 @@ describe('Scenario 2: User succesfully views dashboard not serialized in state',
   const action = viewDashboardAction(dashboardId);
   const test = sagaHelper(viewDashboard(action));
 
-  const baseTheme = {
-    ...theme,
-    colors: ['red', 'blue'],
+  const dashboardModel = {
+    version: '@version',
+    settings: createDashboardSettings(),
+    widgets: [],
   };
 
   const dashboardApiMock = {
@@ -95,52 +92,21 @@ describe('Scenario 2: User succesfully views dashboard not serialized in state',
       dashboardId
     );
 
+    return dashboardModel;
+  });
+
+  test('prepares dashboard model', (result) => {
+    expect(result).toEqual(call(prepareDashboard, dashboardId, dashboardModel));
+
     return {
-      version: '@version',
-      settings: createDashboardSettings(),
-      widgets: [],
+      widgetIds: ['@widget/01', '@widget/02'],
     };
   });
 
-  test('get base dashboard theme', (result) => {
-    expect(result).toEqual(select(themeSelectors.getBaseTheme));
-
-    return baseTheme;
-  });
-
-  test('register widgets', (result) => {
-    expect(result).toEqual(put(registerWidgets([])));
-  });
-
-  test('updates dashboard model', (result) => {
-    expect(result).toEqual(
-      put(
-        updateDashboard(dashboardId, {
-          version: '@version',
-          widgets: [],
-        })
-      )
-    );
-  });
-
-  test('set dashboard theme', (result) => {
-    expect(result).toEqual(
-      put(
-        themeActions.setDashboardTheme({
-          dashboardId,
-          settings: createDashboardSettings(),
-          theme: baseTheme,
-        })
-      )
-    );
-  });
-
-  test('loads fonts used on dashboard', (result) => {
-    expect(result).toEqual(put(themeSagaActions.loadDashboardFonts()));
-  });
-
   test('initializes dashboard widgets', (result) => {
-    expect(result).toEqual(put(initializeDashboardWidgets(dashboardId, [])));
+    expect(result).toEqual(
+      put(initializeDashboardWidgets(dashboardId, ['@widget/01', '@widget/02']))
+    );
   });
 });
 

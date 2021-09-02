@@ -244,6 +244,18 @@ test('calls "onClose" event handler', () => {
   expect(props.onClose).toHaveBeenCalled();
 });
 
+test('clicking "close" icon calls "onClose" handler', () => {
+  const {
+    props,
+    wrapper: { getByTestId },
+  } = render();
+
+  const closeIcon = getByTestId('close-handler');
+  fireEvent.click(closeIcon);
+
+  expect(props.onClose).toHaveBeenCalled();
+});
+
 test('shows saved query updated message', () => {
   const storeState = {
     chartEditor: {

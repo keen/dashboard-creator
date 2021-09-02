@@ -9,12 +9,6 @@ jest.mock('uuid', () => {
 });
 
 import {
-  registerDashboard,
-  setDashboardList,
-  updateDashboard,
-  setDashboardError,
-  initializeDashboardWidgets,
-  viewPublicDashboard as viewPublicDashboardAction,
   removeWidgetFromDashboard as removeWidgetFromDashboardAction,
   regenerateAccessKey as regenerateAccessKeyAction,
   saveDashboardMeta as saveDashboardMetaAction,
@@ -28,14 +22,13 @@ import {
   regenerateAccessKeySuccess,
   regenerateAccessKeyError,
 } from './actions';
-import { themeActions, themeSagaActions } from '../theme';
+
 import { deleteAccessKey } from './saga';
 import {
   removeWidgetFromDashboard,
   updateAccessKeyOptions,
   regenerateAccessKey,
   createAccessKey,
-  viewPublicDashboard,
   exportDashboardToHtml,
   updateCachedDashboardsList,
   calculateYPositionAndAddWidget,
@@ -44,26 +37,16 @@ import {
 
 import {
   removeWidget,
-  registerWidgets,
   getWidgetSettings,
   getWidget,
   createWidget,
 } from '../widgets';
 
-import { themeSelectors } from '../theme';
-
-import { serializeDashboard } from './serializers';
-import { createCodeSnippet, createDashboardSettings } from './utils';
-
-import { DashboardModel, DashboardMetaData, DashboardError } from './types';
+import { createCodeSnippet } from './utils';
 
 import { SAVE_DASHBOARD_METADATA_SUCCESS } from './constants';
 
-import {
-  NOTIFICATION_MANAGER,
-  DASHBOARD_API,
-  KEEN_ANALYSIS,
-} from '../../constants';
+import { NOTIFICATION_MANAGER, KEEN_ANALYSIS } from '../../constants';
 import {
   getCachedDashboardIds,
   getDashboard,
@@ -72,160 +55,10 @@ import {
 import { removeConnectionFromFilter } from '../widgets/saga/filterWidget';
 
 import { unregisterWidget } from '../widgets/actions';
-import { appActions, appSelectors } from '../app';
+import { appSelectors } from '../app';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
-
-describe('viewPublicDashboard()', () => {
-  const dashboardId = '@dashboard/01';
-  const action = viewPublicDashboardAction(dashboardId);
-
-  const dashboardMetadata: DashboardMetaData = {
-    id: dashboardId,
-    widgets: 0,
-    queries: 2,
-    title: 'Dashboard',
-    tags: [],
-    lastModificationDate: 1606895352390,
-    isPublic: true,
-    publicAccessKey: 'public-access-key',
-  };
-
-  const dashboard: DashboardModel = {
-    version: '0.0.1',
-    widgets: [],
-    settings: createDashboardSettings(),
-    theme: {
-      colors: ['navyblue'],
-    },
-  };
-
-  describe('Scenario 1: User access public dashboard', () => {
-    const test = sagaHelper(viewPublicDashboard(action));
-    const dashboardApiMock = {
-      getDashboardMetaDataById: jest.fn(),
-      getDashboardById: jest.fn(),
-    };
-
-    test('accessed dashboard is registered', (result) => {
-      expect(result).toEqual(put(registerDashboard(dashboardId)));
-    });
-
-    test('set active dashboard', (result) => {
-      expect(result).toEqual(put(appActions.setActiveDashboard(dashboardId)));
-    });
-
-    test('gets DashboardAPI instance from context', (result) => {
-      expect(result).toEqual(getContext(DASHBOARD_API));
-
-      return dashboardApiMock;
-    });
-
-    test('fetch dashboard metadata', () => {
-      expect(dashboardApiMock.getDashboardMetaDataById).toHaveBeenCalledWith(
-        dashboardId
-      );
-
-      return dashboardMetadata;
-    });
-
-    test('set dashboards list', (result) => {
-      expect(result).toEqual(put(setDashboardList([dashboardMetadata])));
-    });
-
-    test('fetch dashboard', () => {
-      expect(dashboardApiMock.getDashboardById).toHaveBeenCalledWith(
-        dashboardId
-      );
-
-      return dashboard;
-    });
-
-    test('get base dashboard theme', (result) => {
-      expect(result).toEqual(select(themeSelectors.getBaseTheme));
-      return {};
-    });
-
-    test('register dashboard widgets', (result) => {
-      expect(result).toEqual(put(registerWidgets([])));
-    });
-
-    test('updates dashboard', (result) => {
-      const { theme, settings, ...dashboardSettings } = serializeDashboard(
-        dashboard
-      );
-
-      expect(result).toEqual(
-        put(updateDashboard(dashboardId, dashboardSettings))
-      );
-    });
-
-    test('set dashboard theme', (result) => {
-      expect(result).toEqual(
-        put(
-          themeActions.setDashboardTheme({
-            dashboardId,
-            theme: dashboard.theme,
-            settings: dashboard.settings,
-          })
-        )
-      );
-    });
-
-    test('load dashboard fonts', (result) => {
-      expect(result).toEqual(put(themeSagaActions.loadDashboardFonts()));
-    });
-
-    test('initializes dashboard widgets', (result) => {
-      expect(result).toEqual(put(initializeDashboardWidgets(dashboardId, [])));
-    });
-  });
-
-  describe('Scenario 2: User access not public dashboard', () => {
-    const test = sagaHelper(viewPublicDashboard(action));
-    const dashboardApiMock = {
-      getDashboardMetaDataById: jest.fn(),
-    };
-
-    test('accessed dashboard is registered', (result) => {
-      expect(result).toEqual(put(registerDashboard(dashboardId)));
-    });
-
-    test('set active dashboard', (result) => {
-      expect(result).toEqual(put(appActions.setActiveDashboard(dashboardId)));
-    });
-
-    test('gets DashboardAPI instance from context', (result) => {
-      expect(result).toEqual(getContext(DASHBOARD_API));
-
-      return dashboardApiMock;
-    });
-
-    test('fetch dashboard metadata', () => {
-      expect(dashboardApiMock.getDashboardMetaDataById).toHaveBeenCalledWith(
-        dashboardId
-      );
-
-      return {
-        ...dashboardMetadata,
-        isPublic: false,
-      };
-    });
-
-    test('set dashboards list', (result) => {
-      expect(result).toEqual(
-        put(setDashboardList([{ ...dashboardMetadata, isPublic: false }]))
-      );
-    });
-
-    test('set dashboard error', (result) => {
-      expect(result).toEqual(
-        put(setDashboardError(dashboardId, DashboardError.ACCESS_NOT_PUBLIC))
-      );
-    });
-  });
-});
 
 describe('removeWidgetFromDashboard()', () => {
   const action = removeWidgetFromDashboardAction(dashboardId, widgetId);
