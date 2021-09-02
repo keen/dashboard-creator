@@ -8,8 +8,10 @@ import createWidgetsUniqueIds from './createWidgetsUniqueIds';
 import enhanceDashboard from './enhanceDashboard';
 import createDashboardSettings from './createDashboardSettings';
 import extendDashboardSettings from './extendDashboardSettings';
+import computeDashboardMetadata from './computeDashboardMetadata';
 
 export {
+  computeDashboardMetadata,
   extendDashboardSettings,
   createDashboardSettings,
   enhanceDashboard,

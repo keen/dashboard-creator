@@ -11,6 +11,7 @@ export type DashboardMetaData = {
   lastModificationDate: number;
   isPublic: boolean;
   publicAccessKey: null | string;
+  savedQueries: string[];
 };
 
 export type DashboardSettings = {

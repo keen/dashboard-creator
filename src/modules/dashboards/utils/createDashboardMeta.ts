@@ -8,6 +8,7 @@ const createDashboardMeta = (dashboardId: string): DashboardMetaData => ({
   tags: [],
   lastModificationDate: +new Date(),
   isPublic: false,
+  savedQueries: [],
   publicAccessKey: null,
 });
 

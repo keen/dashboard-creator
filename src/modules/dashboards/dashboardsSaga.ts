@@ -20,7 +20,6 @@ import {
   fetchDashboardListError,
   registerDashboard,
   updateDashboard,
-  updateDashboardMeta,
   removeWidgetFromDashboard as removeWidgetFromDashboardAction,
   initializeDashboardWidgets as initializeDashboardWidgetsAction,
   createDashboard as createDashboardAction,
@@ -33,8 +32,6 @@ import {
   regenerateAccessKeySuccess,
   regenerateAccessKeyError,
   exportDashboardToHtml as exportDashboardToHtmlAction,
-  saveDashboardMetaSuccess,
-  saveDashboardMetaError,
   setDashboardListOrder,
   updateCachedDashboardIds,
   unregisterDashboard,
@@ -51,6 +48,7 @@ import {
   deleteAccessKey,
   deleteDashboard,
   editDashboard,
+  saveDashboardMetadata,
 } from './saga';
 
 import {
@@ -131,34 +129,6 @@ export function* fetchDashboardList() {
     yield put(fetchDashboardListSuccess(responseBody));
   } catch (err) {
     yield put(fetchDashboardListError());
-  }
-}
-
-export function* saveDashboardMetadata({
-  payload,
-}: ReturnType<typeof saveDashboardMetaAction>) {
-  const { dashboardId, metadata } = payload;
-  const notificationManager = yield getContext(NOTIFICATION_MANAGER);
-
-  try {
-    const dashboardApi = yield getContext(DASHBOARD_API);
-    yield dashboardApi.saveDashboardMeta(dashboardId, metadata);
-    yield put(updateDashboardMeta(dashboardId, metadata));
-
-    yield put(saveDashboardMetaSuccess());
-    yield notificationManager.showNotification({
-      type: 'info',
-      message: 'notifications.dashboard_meta_success',
-      autoDismiss: true,
-    });
-  } catch (err) {
-    yield put(saveDashboardMetaError());
-    yield notificationManager.showNotification({
-      type: 'error',
-      message: 'notifications.dashboard_meta_error',
-      showDismissButton: true,
-      autoDismiss: false,
-    });
   }
 }
 

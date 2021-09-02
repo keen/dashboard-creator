@@ -90,6 +90,7 @@ const metaData = {
   lastModificationDate: 0,
   isPublic: false,
   publicAccessKey: '@public-access-key',
+  savedQueries: [],
 };
 
 const dashboardApiMock = {
