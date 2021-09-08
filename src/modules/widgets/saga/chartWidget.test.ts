@@ -31,6 +31,7 @@ import { TRANSLATIONS } from '../../../constants';
 
 import { WidgetItem, WidgetErrors } from '../types';
 import { chartEditorActions, chartEditorSelectors } from '../../chartEditor';
+import { getConnectedDashboards } from '../../dashboards/saga';
 
 describe('handleInconsistentFilters()', () => {
   describe('Scenario 1: Handle filter settings inconsistency', () => {
@@ -575,6 +576,7 @@ describe('editChartSavedQuery()', () => {
 
   describe('Scenario 2: User edits query and widget settings ', () => {
     const test = sagaHelper(editChartSavedQuery(widgetId));
+    const query = 'purchases';
 
     test('get chart editor state', (result) => {
       expect(result).toEqual(select(chartEditorSelectors.getChartEditor));
@@ -592,6 +594,18 @@ describe('editChartSavedQuery()', () => {
       expect(result).toEqual(
         put(chartEditorActions.showQueryUpdateConfirmation())
       );
+    });
+
+    test('selects query name', (result) => {
+      expect(result).toEqual(select(getWidgetSettings, widgetId));
+
+      return {
+        query,
+      };
+    });
+
+    test('checks connected dashboards', (result) => {
+      expect(result).toEqual(call(getConnectedDashboards, query));
     });
 
     test('waits for user action', (result) => {

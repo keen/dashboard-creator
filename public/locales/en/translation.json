@@ -56,14 +56,15 @@
     "line_markers": "Marker Size"
   },
   "confirm_query_change": {
-    "title": "You Edited Saved Query",
-    "message": "What do you want to update?",
-    "connect_saved_query": "Connected Saved Query",
-    "connect_saved_query_message": "If Saved Query is used in other places, it will change there too. Some charts may not work properly due to applied changes.",
-    "create_ad_hoc_query": "Only this widget",
-    "create_ad_hoc_query_message": "The chart will be disconnected from Saved Query and will use  Ad-hoc Query from now.",
+    "title": "Saved Query Edited",
     "cancel": "Cancel",
-    "save": "Save"
+    "update_with_dashboards_connected": "When you update this Saved Query, changes will be also automatically saved for the following dashboards:",
+    "update_no_dashboards_connected": "Do you want to save edits only for this chart or update the Saved Query?",
+    "update_ad_hoc_query": "Update Only This Chart",
+    "update_save_query": "Update Saved Query",
+    "not_connected_saved_query": "This Saved Query is not used on other dashboards.",
+    "untitled_dashboard": "Untitled Dashboard",
+    "dashboard_connection_error": "Unable to get the dashboards list. Try again later"
   },
   "public_dashboard_errors": {
     "generic_title": "This dashboard can’t be reached",
@@ -278,8 +279,6 @@
     "cancel": "Cancel",
     "run_query_placeholder": "Run Query to visualize your data",
     "run_query": "Run Query",
-    "save_query_edit": "Saved Query edited",
-    "save_query_edit_tooltip": "You edited the Saved Query connected to the chart. In the next step you will be able to overwrite that Save Query or save edits just for this widget instance.",
     "run_query_loading": "Loading",
     "widget_error": "The selected visualization cannot be used with current query settings. Run query and select visualization.",
     "navigation_query": "QUERY",

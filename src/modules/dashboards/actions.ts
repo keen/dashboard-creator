@@ -5,6 +5,7 @@ import {
   Dashboard,
   DashboardError,
   DashboardListOrder,
+  ConnectedDashboard,
 } from './types';
 
 import {
@@ -57,6 +58,9 @@ import {
   REGENERATE_ACCESS_KEY_SUCCESS,
   REGENERATE_ACCESS_KEY_ERROR,
   RESET_DASHBOARD_FILTERS,
+  SET_CONNECTED_DASHBOARDS,
+  SET_CONNECTED_DASHBOARDS_LOADING,
+  SET_CONNECTED_DASHBOARDS_ERROR,
 } from './constants';
 import { WidgetType } from '../../types';
 
@@ -425,6 +429,33 @@ export const resetDashboardFilters = createAction(
   })
 );
 
+export const setConnectedDashboards = createAction(
+  SET_CONNECTED_DASHBOARDS,
+  (connectedDashboards: ConnectedDashboard[]) => ({
+    payload: {
+      connectedDashboards,
+    },
+  })
+);
+
+export const setConnectedDashboardsLoading = createAction(
+  SET_CONNECTED_DASHBOARDS_LOADING,
+  (isLoading: boolean) => ({
+    payload: {
+      isLoading,
+    },
+  })
+);
+
+export const setConnectedDashboardsError = createAction(
+  SET_CONNECTED_DASHBOARDS_ERROR,
+  (isError: boolean) => ({
+    payload: {
+      isError,
+    },
+  })
+);
+
 export type DashboardsActions =
   | ReturnType<typeof fetchDashboardList>
   | ReturnType<typeof fetchDashboardListSuccess>
@@ -475,4 +506,7 @@ export type DashboardsActions =
   | ReturnType<typeof updateCachedDashboardIds>
   | ReturnType<typeof unregisterDashboard>
   | ReturnType<typeof calculateYPositionAndAddWidget>
-  | ReturnType<typeof resetDashboardFilters>;
+  | ReturnType<typeof resetDashboardFilters>
+  | ReturnType<typeof setConnectedDashboards>
+  | ReturnType<typeof setConnectedDashboardsLoading>
+  | ReturnType<typeof setConnectedDashboardsError>;

@@ -40,7 +40,7 @@ export const SectionContainer = styled.div`
 
 export const Cancel = styled.div`
   cursor: pointer;
-  margin-left: 15px;
+  margin-left: 20px;
   display: flex;
   align-items: center;
 `;
@@ -48,6 +48,10 @@ export const Cancel = styled.div`
 export const Footer = styled.div`
   display: flex;
   padding: 10px 25px;
+`;
+
+export const RunQuery = styled.div`
+  margin-right: 10px;
 `;
 
 export const IconContainer = styled.div`

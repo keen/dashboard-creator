@@ -19,6 +19,7 @@ import {
   Alert,
   Anchor,
   MousePositionedTooltip,
+  FadeLoader,
 } from '@keen.io/ui-core';
 import { colors } from '@keen.io/colors';
 import { BodyText } from '@keen.io/typography';
@@ -33,6 +34,7 @@ import {
   NavBar,
   Footer,
   IconContainer,
+  RunQuery,
 } from './ChartEditor.styles';
 
 import {
@@ -52,7 +54,6 @@ import { CHART_EDITOR_ERRORS } from './constants';
 import { TOOLTIP_MOTION } from '../../../../constants';
 
 import { ChartEditorError } from './types';
-import SaveQueryWarning from '../SaveQueryWarning';
 
 type Props = {
   /** Close editor event handler */
@@ -74,7 +75,6 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
     editorSection,
     isEditMode,
     isSavedQuery,
-    hasQueryChanged,
     isDirtyQuery,
     isQueryPerforming,
     queryError,
@@ -117,6 +117,11 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
     }
     setError(ChartEditorError.WIDGET);
   }, [widgetType, querySettings, analysisResult]);
+
+  const onRunQuery = () => {
+    setError(null);
+    dispatch(chartEditorActions.runQuery());
+  };
 
   useEffect(() => {
     if (initialQuerySettings && localQuery) {
@@ -200,10 +205,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
           outdatedAnalysisResults={outdatedAnalysisResults}
           analysisResult={analysisResult}
           querySettings={querySettings}
-          onRunQuery={() => {
-            setError(null);
-            dispatch(chartEditorActions.runQuery());
-          }}
+          onRunQuery={onRunQuery}
           onChangeVisualization={onChangeVisualization}
         />
         <IconContainer onClick={onClose} data-testid="close-handler">
@@ -252,6 +254,18 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
         </SectionContainer>
       )}
       <Footer>
+        <RunQuery>
+          <Button
+            variant="success"
+            isDisabled={!outdatedAnalysisResults || isQueryPerforming}
+            icon={isQueryPerforming && <FadeLoader />}
+            onClick={onRunQuery}
+          >
+            {isQueryPerforming
+              ? t('chart_widget_editor.run_query_loading')
+              : t('chart_widget_editor.run_query')}
+          </Button>
+        </RunQuery>
         <MousePositionedTooltip
           isActive={isDirtyQuery || !analysisResult}
           renderContent={() => (
@@ -284,7 +298,6 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
         <Cancel>
           <Anchor onClick={onClose}>{t('chart_widget_editor.cancel')}</Anchor>
         </Cancel>
-        {isSavedQuery && hasQueryChanged && <SaveQueryWarning />}
       </Footer>
     </Container>
   );

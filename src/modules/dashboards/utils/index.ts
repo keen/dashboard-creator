@@ -9,6 +9,7 @@ import enhanceDashboard from './enhanceDashboard';
 import createDashboardSettings from './createDashboardSettings';
 import extendDashboardSettings from './extendDashboardSettings';
 import computeDashboardMetadata from './computeDashboardMetadata';
+import sortConnectedDashboards from './sortConnectedDashboards';
 
 export {
   computeDashboardMetadata,
@@ -22,4 +23,5 @@ export {
   createPublicDashboardKeyName,
   createCodeSnippet,
   createWidgetsUniqueIds,
+  sortConnectedDashboards,
 };
