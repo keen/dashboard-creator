@@ -8,6 +8,7 @@ import { editDashboard } from './editDashboard';
 import { viewPublicDashboard } from './viewPublicDashboard';
 import { prepareDashboard } from './prepareDashboard';
 import { saveDashboardMetadata } from './saveDashboardMetadata';
+import { getConnectedDashboards } from './getConnectedDashboards';
 
 export {
   viewPublicDashboard,
@@ -20,4 +21,5 @@ export {
   prepareDashboard,
   resetDashboardFilters,
   saveDashboardMetadata,
+  getConnectedDashboards,
 };

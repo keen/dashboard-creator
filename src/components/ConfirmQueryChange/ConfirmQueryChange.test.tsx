@@ -2,8 +2,17 @@ import React from 'react';
 import { render as rtlRender, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
+import { mockAllIsIntersecting } from 'react-intersection-observer/test-utils';
 
 import ConfirmQueryChange from './ConfirmQueryChange';
+
+afterEach(() => {
+  mockAllIsIntersecting(false);
+});
+
+beforeEach(() => {
+  mockAllIsIntersecting(true);
+});
 
 const render = (overProps: any = {}) => {
   const props = {
@@ -12,7 +21,15 @@ const render = (overProps: any = {}) => {
   };
 
   const mockStore = configureStore([]);
-  const store = mockStore({});
+  const store = mockStore({
+    dashboards: {
+      connectedDashboards: {
+        isLoading: false,
+        isError: false,
+        items: [],
+      },
+    },
+  });
 
   const wrapper = rtlRender(
     <Provider store={store}>
@@ -50,7 +67,7 @@ test('allows user to update saved query', () => {
 
   store.clearActions();
 
-  const button = getByText('confirm_query_change.save');
+  const button = getByText('confirm_query_change.update_save_query');
   fireEvent.click(button);
 
   expect(store.getActions()).toMatchInlineSnapshot(`
@@ -71,11 +88,8 @@ test('allows user to convert saved query to ad-hoc query', () => {
 
   store.clearActions();
 
-  const element = getByText('confirm_query_change.create_ad_hoc_query');
+  const element = getByText('confirm_query_change.update_ad_hoc_query');
   fireEvent.click(element);
-
-  const button = getByText('confirm_query_change.save');
-  fireEvent.click(button);
 
   expect(store.getActions()).toMatchInlineSnapshot(`
     Array [

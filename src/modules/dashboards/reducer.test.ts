@@ -24,6 +24,9 @@ import {
   clearTagsPool,
   setTagsFiltersPublic,
   setTagsFilters,
+  setConnectedDashboards,
+  setConnectedDashboardsError,
+  setConnectedDashboardsLoading,
 } from './actions';
 
 import { dashboardsMeta } from './fixtures';
@@ -615,4 +618,45 @@ test('set tagsFilters showOnlyPublicDashboards', () => {
   } = dashboardsReducer(initialState, action);
 
   expect(showOnlyPublicDashboards).toBeTruthy();
+});
+
+test('set dashboards connections', () => {
+  const dashboards = [
+    {
+      id: '@id-1',
+      title: '@dashboard-1',
+    },
+    {
+      id: '@id-2',
+      title: '@dashboard-2',
+    },
+    {
+      id: '@id-3',
+      title: '@dashboard-3',
+    },
+  ];
+  const action = setConnectedDashboards(dashboards);
+  const {
+    connectedDashboards: { items },
+  } = dashboardsReducer(initialState, action);
+
+  expect(items).toEqual(dashboards);
+});
+
+test('set dashboards connections error', () => {
+  const action = setConnectedDashboardsError(true);
+  const {
+    connectedDashboards: { isError },
+  } = dashboardsReducer(initialState, action);
+
+  expect(isError).toBeTruthy();
+});
+
+test('set dashboards connections loading', () => {
+  const action = setConnectedDashboardsLoading(true);
+  const {
+    connectedDashboards: { isLoading },
+  } = dashboardsReducer(initialState, action);
+
+  expect(isLoading).toBeTruthy();
 });

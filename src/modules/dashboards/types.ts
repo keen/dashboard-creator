@@ -69,6 +69,11 @@ export type DashboardItem = {
 
 export type DashboardListOrder = 'recent' | 'oldest' | 'az' | 'za';
 
+export type ConnectedDashboard = {
+  id: string;
+  title?: string;
+};
+
 export type ReducerState = {
   deleteConfirmation: {
     isVisible: boolean;
@@ -97,4 +102,9 @@ export type ReducerState = {
   items: Record<string, DashboardItem>;
   dashboardListOrder: DashboardListOrder;
   cachedDashboardIds: string[];
+  connectedDashboards: {
+    isLoading: boolean;
+    isError: boolean;
+    items: ConnectedDashboard[];
+  };
 };
