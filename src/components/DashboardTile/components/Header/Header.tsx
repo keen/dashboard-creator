@@ -67,29 +67,33 @@ const Header: FC<Props> = ({ title, excerpt, isPublic, tags, children }) => {
             isOpen={tagsOpen}
             variants={variants}
             animate={tagsOpen ? 'open' : 'closed'}
+            transition={{ ease: 'easeInOut' }}
           >
             {tagsOverflow && (
-              <DropIndicatorContainer isOpen={tagsOpen}>
+              <DropIndicatorContainer
+                isOpen={tagsOpen}
+                onMouseEnter={() => setTagsOpen(true)}
+                onMouseLeave={() => setTagsOpen(false)}
+              >
                 <DropIndicator
                   onClick={(e) => {
                     e.stopPropagation();
-                    setTagsOpen(!tagsOpen);
                   }}
                   isActive={tagsOpen}
                 />
               </DropIndicatorContainer>
             )}
-            {isPublic && (
-              <BadgeContainer>
+            <BadgeContainer>
+              {isPublic && (
                 <Badge variant="green">{t('dashboard_tile.public')}</Badge>
-              </BadgeContainer>
-            )}
-            {tags?.length > 0 &&
-              tags.map((tag) => (
-                <BadgeContainer key={tag}>
-                  <Badge variant="purple">{tag}</Badge>
-                </BadgeContainer>
-              ))}
+              )}
+              {tags?.length > 0 &&
+                tags.map((tag) => (
+                  <Badge key={tag} variant="purple" truncate>
+                    {tag}
+                  </Badge>
+                ))}
+            </BadgeContainer>
           </TagsWrapper>
         </AnimatePresence>
       </Details>
