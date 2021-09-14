@@ -8,6 +8,7 @@ import { transparentize } from 'polished';
 
 import { getAvailableWidgets, WidgetSettings } from '@keen.io/widget-picker';
 import WidgetCustomization, {
+  MENU_ITEMS_ENUM,
   SerializedSettings,
   serializeInputSettings,
   serializeOutputSettings,
@@ -66,6 +67,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
 
   const [localQuery, setLocalQuery] = useState(null);
   const [error, setError] = useState<ChartEditorError>(null);
+  const [activeMenuItem, setActiveMenuItem] = useState(null);
 
   const {
     analysisResult,
@@ -80,7 +82,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
     queryError,
   } = useSelector(chartEditorSelectors.getChartEditor);
 
-  const { modalContainer } = useContext(AppContext);
+  const { modalContainer, chartEventsPubSub } = useContext(AppContext);
   const { type: widgetType, widgetSettings, chartSettings } = visualization;
 
   const customizationSections = useCustomizationSections(
@@ -207,6 +209,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
           querySettings={querySettings}
           onRunQuery={onRunQuery}
           onChangeVisualization={onChangeVisualization}
+          inEditMode={activeMenuItem === MENU_ITEMS_ENUM.FORMATTING}
         />
         <IconContainer onClick={onClose} data-testid="close-handler">
           <Icon
@@ -250,6 +253,8 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
               updateChartSettings(chartSettings)
             }
             modalContainer={modalContainer}
+            onMenuItemChange={(menuItem) => setActiveMenuItem(menuItem)}
+            pubSub={chartEventsPubSub}
           />
         </SectionContainer>
       )}

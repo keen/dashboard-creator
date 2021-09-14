@@ -31,6 +31,7 @@ export const serializeSavedQuery = ({
       type,
       chartSettings: camelCase(chartSettings, {
         deep: true,
+        stopPaths: ['columns_names_mapping', 'format_value'],
       }),
       widgetSettings: camelCase(widgetSettings, {
         deep: true,
