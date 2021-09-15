@@ -9,6 +9,7 @@ import {
   Container,
   IncludesToday,
   IconContainer,
+  Timeframe,
 } from './RelativeTimeLabel.styles';
 
 import { getCustomTimeframe } from '../../utils';
@@ -36,9 +37,9 @@ const RelativeTimeLabel: FC<Props> = ({ timeframe, showIcon }) => {
           />
         </IconContainer>
       )}
-      <span>
+      <Timeframe>
         {getCustomTimeframe(timeframe, t('relative_time_label.label'))}
-      </span>{' '}
+      </Timeframe>{' '}
       {relativity === 'this' && (
         <IncludesToday>
           {interval === 'day'
