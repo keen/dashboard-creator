@@ -51,6 +51,18 @@ test('allows user to edit widget', () => {
   expect(props.onEditWidget).toHaveBeenCalled();
 });
 
+test('allows user to create new chart', () => {
+  const {
+    props,
+    wrapper: { getByText },
+  } = render({ onCreateWidget: jest.fn() });
+
+  const createButton = getByText('widget.create_widget');
+  fireEvent.click(createButton);
+
+  expect(props.onCreateWidget).toHaveBeenCalled();
+});
+
 test('allows user to clone widget', () => {
   const {
     props,

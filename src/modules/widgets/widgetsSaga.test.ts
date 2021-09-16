@@ -11,6 +11,7 @@ import {
   initializeWidget as initializeWidgetAction,
   cloneWidget as cloneWidgetAction,
   saveClonedWidget,
+  createNewChart as createNewChartAction,
 } from './actions';
 import {
   selectQueryForWidget,
@@ -18,6 +19,7 @@ import {
   reinitializeWidgets,
   initializeWidget,
   cloneWidget,
+  createNewChart,
 } from './widgetsSaga';
 
 import { getWidget, getWidgetSettings } from './selectors';
@@ -42,10 +44,43 @@ import {
 import { widget as widgetItem } from './fixtures';
 import { findBiggestYPositionOfWidgets } from '../dashboards/utils/findBiggestYPositionOfWidgets';
 import { appActions, appSelectors } from '../app';
-import { chartEditorActions } from '../chartEditor';
+import { chartEditorActions, chartEditorSelectors } from '../chartEditor';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
+const chartEditor = {
+  querySettings: {
+    analysis_type: 'percentile',
+    event_collection: 'logins',
+    order_by: null,
+  } as Query,
+  visualization: {
+    type: 'area',
+    chartSettings: {
+      groupMode: 'stacked',
+    },
+    widgetSettings: {},
+  },
+};
+
+const savedQuery: SavedQuery = {
+  id: '@query/01',
+  displayName: 'Query 01',
+  visualization: {
+    type: 'bar',
+    chartSettings: {
+      layout: 'vertical',
+      barPadding: 0.3,
+    },
+    widgetSettings: {},
+  },
+  settings: {
+    analysis_type: 'count',
+    timeframe: 'this_14_days',
+    event_collection: 'purchases',
+    order_by: null,
+  },
+};
 
 jest.mock('uuid', () => {
   return {
@@ -164,20 +199,6 @@ describe('createQueryForWidget()', () => {
 
   describe('Scenario 2: User applies chart widget configuration', () => {
     const test = sagaHelper(createQueryForWidget(widgetId));
-    const chartEditor = {
-      querySettings: {
-        analysis_type: 'percentile',
-        event_collection: 'logins',
-        order_by: null,
-      } as Query,
-      visualization: {
-        type: 'area',
-        chartSettings: {
-          groupMode: 'stacked',
-        },
-        widgetSettings: {},
-      },
-    };
 
     test('opens chart editor', (result) => {
       expect(result).toEqual(put(chartEditorActions.openEditor()));
@@ -236,24 +257,6 @@ describe('createQueryForWidget()', () => {
 describe('selectQueryForWidget()', () => {
   describe('Scenario 1: User selects existing save query', () => {
     const test = sagaHelper(selectQueryForWidget(widgetId));
-    const savedQuery: SavedQuery = {
-      id: '@query/01',
-      displayName: 'Query 01',
-      visualization: {
-        type: 'bar',
-        chartSettings: {
-          layout: 'vertical',
-          barPadding: 0.3,
-        },
-        widgetSettings: {},
-      },
-      settings: {
-        analysis_type: 'count',
-        timeframe: 'this_14_days',
-        event_collection: 'purchases',
-        order_by: null,
-      },
-    };
 
     test('shows query picker', (result) => {
       expect(result).toEqual(put(appActions.showQueryPicker()));
@@ -446,6 +449,251 @@ describe('cloneWidget()', () => {
     });
 
     test('trigger saveDashboard action', (result) => {
+      expect(result).toEqual(put(saveDashboard(dashboardId)));
+    });
+  });
+});
+
+describe('createNewChart()', () => {
+  const action = createNewChartAction(widgetId);
+
+  describe('Scenario 1: User creates new chart and close the modal', () => {
+    const test = sagaHelper(createNewChart(action));
+
+    test('shows query picker', (result) => {
+      expect(result).toEqual(put(appActions.showQueryPicker()));
+    });
+
+    test('user closes modal', (result) => {
+      expect(result).toEqual(
+        take([
+          SELECT_SAVED_QUERY,
+          CREATE_QUERY,
+          appActions.hideQueryPicker.type,
+        ])
+      );
+
+      return appActions.hideQueryPicker();
+    });
+
+    test('trigger query picker close', (result) => {
+      expect(result).toEqual(put(appActions.hideQueryPicker()));
+    });
+  });
+
+  describe('Scenario 2: User creates new query, chooses ad-hoc query and close editor', () => {
+    const test = sagaHelper(createNewChart(action));
+
+    test('shows query picker', (result) => {
+      expect(result).toEqual(put(appActions.showQueryPicker()));
+    });
+
+    test('user selects new query', (result) => {
+      expect(result).toEqual(
+        take([
+          SELECT_SAVED_QUERY,
+          CREATE_QUERY,
+          appActions.hideQueryPicker.type,
+        ])
+      );
+
+      return createQuery();
+    });
+
+    test('triggers query picker hide', (result) => {
+      expect(result).toEqual(put(appActions.hideQueryPicker()));
+    });
+
+    test('opens chart editor', (result) => {
+      expect(result).toEqual(put(chartEditorActions.openEditor()));
+    });
+
+    test('waits for user to close the modal', (result) => {
+      expect(result).toEqual(
+        take([
+          chartEditorActions.closeEditor.type,
+          chartEditorActions.applyConfiguration.type,
+        ])
+      );
+
+      return chartEditorActions.closeEditor();
+    });
+
+    test('triggers editor close', (result) => {
+      expect(result).toEqual(put(chartEditorActions.closeEditor()));
+    });
+
+    test('waits for editor unmount', (result) => {
+      expect(result).toEqual(take(chartEditorActions.editorUnmounted.type));
+
+      return chartEditorActions.editorUnmounted();
+    });
+
+    test('resets editor', (result) => {
+      expect(result).toEqual(put(chartEditorActions.resetEditor()));
+    });
+  });
+
+  describe('Scenario 3: User creates new query and chooses ad-hoc query', () => {
+    const test = sagaHelper(createNewChart(action));
+
+    test('shows query picker', (result) => {
+      expect(result).toEqual(put(appActions.showQueryPicker()));
+    });
+
+    test('user selects new query', (result) => {
+      expect(result).toEqual(
+        take([
+          SELECT_SAVED_QUERY,
+          CREATE_QUERY,
+          appActions.hideQueryPicker.type,
+        ])
+      );
+
+      return createQuery();
+    });
+
+    test('triggers query picker hide', (result) => {
+      expect(result).toEqual(put(appActions.hideQueryPicker()));
+    });
+
+    test('opens chart editor', (result) => {
+      expect(result).toEqual(put(chartEditorActions.openEditor()));
+    });
+
+    test('waits for user to close the modal', (result) => {
+      expect(result).toEqual(
+        take([
+          chartEditorActions.closeEditor.type,
+          chartEditorActions.applyConfiguration.type,
+        ])
+      );
+
+      return chartEditorActions.applyConfiguration();
+    });
+
+    test('gets chart editor settings', (result) => {
+      expect(result).toEqual(select(chartEditorSelectors.getChartEditor));
+
+      return chartEditor;
+    });
+
+    test('finishes chart widget configuration', (result) => {
+      const {
+        querySettings,
+        visualization: { type, chartSettings, widgetSettings },
+      } = chartEditor;
+      expect(result).toEqual(
+        put(
+          finishChartWidgetConfiguration(
+            widgetId,
+            querySettings,
+            type,
+            chartSettings,
+            widgetSettings
+          )
+        )
+      );
+    });
+
+    test('closes chart editor', (result) => {
+      expect(result).toEqual(put(chartEditorActions.closeEditor()));
+    });
+
+    test('waits for editor chart unmount', (result) => {
+      expect(result).toEqual(take(chartEditorActions.editorUnmounted.type));
+
+      return chartEditorActions.editorUnmounted();
+    });
+
+    test('resets chart editor', (result) => {
+      expect(result).toEqual(put(chartEditorActions.resetEditor()));
+    });
+
+    test('sets widget state', (result) => {
+      expect(result).toEqual(
+        put(setWidgetState(widgetId, { isInitialized: false, error: null }))
+      );
+    });
+
+    test('initializes chart widget', (result) => {
+      expect(result).toEqual(put(initializeChartWidgetAction(widgetId)));
+    });
+
+    test('selects active dashboard id', (result) => {
+      expect(result).toEqual(select(appSelectors.getActiveDashboard));
+
+      return dashboardId;
+    });
+
+    test('saves active dashboard', (result) => {
+      expect(result).toEqual(put(saveDashboard(dashboardId)));
+    });
+  });
+
+  describe('Scenario 4: User creates new query and selects saved query', () => {
+    const test = sagaHelper(createNewChart(action));
+
+    test('shows query picker', (result) => {
+      expect(result).toEqual(put(appActions.showQueryPicker()));
+    });
+
+    test('user selects new query', (result) => {
+      expect(result).toEqual(
+        take([
+          SELECT_SAVED_QUERY,
+          CREATE_QUERY,
+          appActions.hideQueryPicker.type,
+        ])
+      );
+
+      return selectSavedQuery(savedQuery);
+    });
+
+    test('triggers query picker hide', (result) => {
+      expect(result).toEqual(put(appActions.hideQueryPicker()));
+    });
+
+    test('finishes chart widget configuration', (result) => {
+      const {
+        id: queryId,
+        visualization: { type: widgetType, chartSettings, widgetSettings },
+      } = savedQuery;
+
+      expect(result).toEqual(
+        put(
+          finishChartWidgetConfiguration(
+            widgetId,
+            queryId,
+            widgetType,
+            chartSettings,
+            widgetSettings
+          )
+        )
+      );
+    });
+
+    test('sets widget state', (result) => {
+      expect(result).toEqual(
+        put(setWidgetState(widgetId, { isInitialized: false, error: null }))
+      );
+    });
+
+    test('initializes chart widget', (result) => {
+      expect(result).toEqual(put(initializeChartWidgetAction(widgetId)));
+    });
+
+    test('updates access keys', (result) => {
+      expect(result).toEqual(put(updateAccessKeyOptions()));
+    });
+
+    test('selects active dashboard id', (result) => {
+      expect(result).toEqual(select(appSelectors.getActiveDashboard));
+
+      return dashboardId;
+    });
+
+    test('saves active dashboard', (result) => {
       expect(result).toEqual(put(saveDashboard(dashboardId)));
     });
   });
