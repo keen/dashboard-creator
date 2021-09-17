@@ -21,6 +21,7 @@ export type SavedQueryMetadata = {
     chart_settings: Record<string, any>;
     widget_settings: Record<string, any>;
   };
+  tags?: string[];
 };
 
 export type QueryVisualization = {
@@ -34,4 +35,6 @@ export type SavedQuery = {
   displayName: string;
   settings: Query;
   visualization: QueryVisualization;
+  tags?: string[];
+  cached?: number;
 };
