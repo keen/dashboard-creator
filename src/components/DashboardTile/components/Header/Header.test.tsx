@@ -40,22 +40,6 @@ test('renders Header excerpt', () => {
   expect(getByText(excerpt)).toBeInTheDocument();
 });
 
-test('renders label for public dashboard', () => {
-  const {
-    wrapper: { getByText },
-  } = render({ isPublic: true });
-  expect(getByText('dashboard_tile.public')).toBeInTheDocument();
-});
-
-test('renders dashboard labels', () => {
-  const labels = ['label1', 'label2', 'label3'];
-  const {
-    wrapper: { getByText },
-  } = render({ tags: labels });
-
-  labels.forEach((label) => expect(getByText(label)).toBeInTheDocument());
-});
-
 test('allows to render children', () => {
   const children = <span>children</span>;
   const {

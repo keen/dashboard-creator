@@ -11,10 +11,12 @@ import {
   SavedQueries,
   Message,
   Description,
+  FiltersContainer,
+  SearchContainer,
 } from './QueryPicker.styles';
 
 import SearchInput from '../SearchInput';
-import { QueriesList } from './components';
+import { QueriesList, FilterQueries } from './components';
 import {
   createQuery,
   selectSavedQuery,
@@ -22,6 +24,8 @@ import {
   SavedQuery,
   SavedQueryAPIResponse,
 } from '../../modules/queries';
+
+import { createSavedQueryTagsPool } from '../../utils';
 
 import { APIContext } from '../../contexts';
 
@@ -35,6 +39,9 @@ const QueryPicker: FC = () => {
 
   const [searchPhrase, setSearchPhrase] = useState('');
   const [savedQueries, setSavedQueries] = useState<SavedQuery[]>([]);
+  const [tagsPool, setTagsPool] = useState([]);
+  const [tagsFilters, setTagsFilter] = useState([]);
+  const [onlyCachedQueries, setOnlyCachedQueries] = useState(false);
 
   const { keenAnalysis } = useContext(APIContext);
 
@@ -61,6 +68,19 @@ const QueryPicker: FC = () => {
 
   const filteredQueries = useMemo(() => {
     let queriesList = savedQueries;
+    if (savedQueries.length > 0) {
+      setTagsPool(createSavedQueryTagsPool(savedQueries));
+
+      if (tagsFilters.length > 0) {
+        queriesList = queriesList.filter(({ tags }) =>
+          tags?.some((tag) => tagsFilters.includes(tag))
+        );
+      }
+
+      if (onlyCachedQueries) {
+        queriesList = queriesList.filter(({ cached }) => cached);
+      }
+    }
 
     if (searchPhrase) {
       const phrase = searchPhrase.toLowerCase();
@@ -70,7 +90,7 @@ const QueryPicker: FC = () => {
     }
 
     return queriesList;
-  }, [searchPhrase, savedQueries]);
+  }, [searchPhrase, savedQueries, tagsFilters, onlyCachedQueries]);
 
   const isEmptyList = isLoaded && filteredQueries.length === 0;
   const isEmptySearch = searchPhrase && filteredQueries.length === 0;
@@ -96,12 +116,31 @@ const QueryPicker: FC = () => {
         )}
         {isLoaded && !error && (
           <>
-            <SearchInput
-              placeholder={t('query_picker.search_query_placeholder')}
-              searchPhrase={searchPhrase}
-              onChangePhrase={(phrase) => setSearchPhrase(phrase)}
-              onClearSearch={() => setSearchPhrase('')}
-            />
+            <FiltersContainer>
+              <SearchContainer>
+                <SearchInput
+                  placeholder={t('query_picker.search_query_placeholder')}
+                  searchPhrase={searchPhrase}
+                  onChangePhrase={(phrase) => setSearchPhrase(phrase)}
+                  onClearSearch={() => setSearchPhrase('')}
+                />
+              </SearchContainer>
+              <FilterQueries
+                tagsPool={tagsPool}
+                tagsFilters={tagsFilters}
+                showOnlyCachedQueries={onlyCachedQueries}
+                onUpdateCacheFilter={(isActive: boolean) => {
+                  setOnlyCachedQueries(isActive);
+                }}
+                onUpdateTagsFilters={(tags: string[]) => {
+                  setTagsFilter(tags);
+                }}
+                onClearFilters={() => {
+                  setTagsFilter([]);
+                  setOnlyCachedQueries(false);
+                }}
+              />
+            </FiltersContainer>
             {isEmptySearch ? (
               <Message>{t('query_picker.empty_search_results')}</Message>
             ) : (
