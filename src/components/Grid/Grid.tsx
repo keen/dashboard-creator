@@ -108,7 +108,7 @@ const Grid: FC<Props> = ({
         } else if (widget.type === 'date-picker') {
           widgetPosition = {
             ...widgetPosition,
-            minW: 4,
+            minW: 1,
             minH: 2,
             maxH: 2,
           };
