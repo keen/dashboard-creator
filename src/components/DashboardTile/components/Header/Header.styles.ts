@@ -27,19 +27,20 @@ export const Details = styled.div`
 `;
 
 export const BadgeContainer = styled.div`
-  margin-right: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 5px;
   line-height: 1;
+  margin-left: auto;
 `;
 
 export const TagsWrapper = styled(motion.div)<{ isOpen: boolean }>`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  align-content: flex-start;
   box-sizing: border-box;
+  will-change: height;
 
   margin-left: 6px;
-  padding: 0 25px 0 5px;
+  padding: 0 30px 0 5px;
   height: 20px;
   width: calc(100% - ${excerptWidth});
   overflow: hidden;
@@ -52,14 +53,10 @@ export const TagsWrapper = styled(motion.div)<{ isOpen: boolean }>`
     css`
       top: -5px;
       height: auto;
-      padding: 5px 25px 5px 5px;
+      padding: 5px 30px 5px 5px;
       background: ${colors.white[500]};
       box-shadow: 0 2px 4px 0 rgba(29, 39, 41, 0.15);
       z-index: ${UI_LAYERS.element};
-
-      ${BadgeContainer} {
-        margin-bottom: 5px;
-      }
     `}
 `;
 
