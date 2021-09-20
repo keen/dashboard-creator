@@ -61,6 +61,7 @@ import {
   SET_CONNECTED_DASHBOARDS,
   SET_CONNECTED_DASHBOARDS_LOADING,
   SET_CONNECTED_DASHBOARDS_ERROR,
+  FINISH_DASHBOARD_EDITION,
 } from './constants';
 import { WidgetType } from '../../types';
 
@@ -456,6 +457,15 @@ export const setConnectedDashboardsError = createAction(
   })
 );
 
+export const finishDashboardEdition = createAction(
+  FINISH_DASHBOARD_EDITION,
+  (dashboardId: string) => ({
+    payload: {
+      dashboardId,
+    },
+  })
+);
+
 export type DashboardsActions =
   | ReturnType<typeof fetchDashboardList>
   | ReturnType<typeof fetchDashboardListSuccess>
@@ -509,4 +519,5 @@ export type DashboardsActions =
   | ReturnType<typeof resetDashboardFilters>
   | ReturnType<typeof setConnectedDashboards>
   | ReturnType<typeof setConnectedDashboardsLoading>
-  | ReturnType<typeof setConnectedDashboardsError>;
+  | ReturnType<typeof setConnectedDashboardsError>
+  | ReturnType<typeof finishDashboardEdition>;
