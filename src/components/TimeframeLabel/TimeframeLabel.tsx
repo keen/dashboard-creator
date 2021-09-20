@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { transparentize } from 'polished';
+import { BodyText } from '@keen.io/typography';
 import { Timeframe as TimeframeItem } from '@keen.io/query';
 import { Icon } from '@keen.io/icons';
 import { colors } from '@keen.io/colors';
@@ -9,10 +10,10 @@ import { formatDate } from '@keen.io/time-utils';
 import RelativeTimeLabel from '../RelativeTimeLabel';
 import {
   Container,
-  Timeframe,
   TimeframeWrapper,
   Separator,
   IconContainer,
+  CalendarIconContainer,
 } from './TimeframeLabel.styles';
 
 import { TIMEFRAME_FORMAT } from '../../constants';
@@ -41,19 +42,39 @@ const TimeframeLabel: FC<Props> = ({ timeframe, timezone, onRemove }) => {
   ) : (
     <Container>
       <TimeframeWrapper>
-        <Icon
-          type="date-picker"
-          fill={transparentize(0.6, colors.blue[500])}
-          width={13}
-          height={13}
-        />
-        <Timeframe>
+        <CalendarIconContainer>
+          <Icon
+            type="date-picker"
+            fill={transparentize(0.6, colors.blue[500])}
+            width={13}
+            height={13}
+          />
+        </CalendarIconContainer>
+        <BodyText
+          variant="body2"
+          color={colors.blue[500]}
+          fontWeight="normal"
+          enableTextEllipsis
+        >
           {formatDate(timeframe.start, timezone, TIMEFRAME_FORMAT)}
-        </Timeframe>
-        <Separator>{t('dashboard_timepicker.separator')}</Separator>
-        <Timeframe>
+        </BodyText>
+        <Separator>
+          <BodyText
+            variant="body3"
+            color={colors.blue[100]}
+            fontWeight="normal"
+          >
+            {t('dashboard_timepicker.separator')}
+          </BodyText>
+        </Separator>
+        <BodyText
+          variant="body2"
+          color={colors.blue[500]}
+          fontWeight="normal"
+          enableTextEllipsis
+        >
           {formatDate(timeframe.end, timezone, TIMEFRAME_FORMAT)}
-        </Timeframe>
+        </BodyText>
       </TimeframeWrapper>
       <IconContainer onClick={onRemove} data-testid="remove-handler">
         <Icon type="close" width={10} height={10} fill={colors.red[200]} />

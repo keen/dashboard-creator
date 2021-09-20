@@ -4,6 +4,7 @@ import { WidgetsConfiguration } from '../types';
 
 export const AppContext = React.createContext<{
   notificationPubSub: PubSub;
+  chartEventsPubSub?: PubSub;
   modalContainer: string;
   analyticsApiUrl: string;
   project: {
