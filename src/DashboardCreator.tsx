@@ -205,6 +205,8 @@ export class DashboardCreator {
     createI18n(this.translationsSettings);
 
     const notificationPubSub = new PubSub();
+    const chartEventsPubSub = new PubSub();
+
     const sagaMiddleware = createSagaMiddleware({
       dashboardApi,
       keenAnalysis,
@@ -277,6 +279,7 @@ export class DashboardCreator {
               <AppContext.Provider
                 value={{
                   notificationPubSub,
+                  chartEventsPubSub,
                   project: projectSettings,
                   analyticsApiUrl: this.analyticsApiUrl,
                   modalContainer: this.modalContainer,

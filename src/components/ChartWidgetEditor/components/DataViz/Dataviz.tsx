@@ -1,4 +1,4 @@
-import React, { FC, useRef, useEffect } from 'react';
+import React, { FC, useRef, useEffect, useContext } from 'react';
 import { PickerWidgets } from '@keen.io/widget-picker';
 import { KeenDataviz } from '@keen.io/dataviz';
 import { WidgetSettings, Tag } from '@keen.io/widgets';
@@ -11,6 +11,7 @@ import { CONTAINER_ID } from './constants';
 import { DashboardSettings } from '../../../../modules/dashboards';
 
 import { ChartSettings } from '../../../../types';
+import { AppContext } from '../../../../contexts';
 
 type Props = {
   /** Query execution results */
@@ -27,6 +28,8 @@ type Props = {
   dashboardSettings?: Pick<DashboardSettings, 'tiles'>;
   /** Tags */
   tags?: Tag[];
+  /** Determines if chart is in edit mode */
+  inEditMode?: boolean;
 };
 
 const Dataviz: FC<Props> = ({
@@ -37,13 +40,18 @@ const Dataviz: FC<Props> = ({
   presentationTimezone,
   dashboardSettings = {},
   tags = [],
+  inEditMode,
 }) => {
   const datavizRef = useRef(null);
   const containerRef = useRef(null);
+  const { chartEventsPubSub } = useContext(AppContext);
   const { tiles } = dashboardSettings;
+
   useEffect(() => {
     datavizRef.current = new KeenDataviz({
       container: containerRef.current,
+      inEditMode,
+      eventBus: chartEventsPubSub,
       type: visualization,
       settings: chartSettings,
       widget: {
@@ -67,7 +75,13 @@ const Dataviz: FC<Props> = ({
     });
 
     datavizRef.current.render(getChartInput(analysisResults));
-  }, [visualization, chartSettings, widgetSettings, analysisResults]);
+  }, [
+    visualization,
+    chartSettings,
+    widgetSettings,
+    analysisResults,
+    inEditMode,
+  ]);
 
   return <Container id={CONTAINER_ID} ref={containerRef} />;
 };
