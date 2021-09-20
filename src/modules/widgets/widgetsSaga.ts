@@ -180,7 +180,10 @@ function* cancelWidgetConfiguration(widgetId: string) {
  * @return void
  *
  */
-export function* createQueryForWidget(widgetId: string) {
+export function* createQueryForWidget(
+  widgetId: string,
+  isExistingWidget = false
+) {
   yield put(chartEditorActions.openEditor());
   const action = yield take([
     chartEditorActions.closeEditor.type,
@@ -188,7 +191,11 @@ export function* createQueryForWidget(widgetId: string) {
   ]);
 
   if (action.type === chartEditorActions.closeEditor.type) {
-    yield* cancelWidgetConfiguration(widgetId);
+    if (isExistingWidget) {
+      yield put(chartEditorActions.closeEditor());
+    } else {
+      yield* cancelWidgetConfiguration(widgetId);
+    }
     yield take(chartEditorActions.editorUnmounted.type);
     yield put(chartEditorActions.resetEditor());
   } else {
@@ -211,11 +218,48 @@ export function* createQueryForWidget(widgetId: string) {
     yield take(chartEditorActions.editorUnmounted.type);
     yield put(chartEditorActions.resetEditor());
 
+    if (isExistingWidget) {
+      yield put(
+        setWidgetState(widgetId, { isInitialized: false, error: null })
+      );
+    }
+
     yield put(initializeChartWidgetAction(widgetId));
 
     const dashboardId = yield select(appSelectors.getActiveDashboard);
     yield put(saveDashboard(dashboardId));
   }
+}
+
+export function* selectSavedQueryForWidget(
+  query: SavedQuery,
+  widgetId: string,
+  isExistingWidget = false
+) {
+  const {
+    id: queryId,
+    visualization: { type: widgetType, chartSettings, widgetSettings },
+  } = query;
+
+  yield put(
+    finishChartWidgetConfiguration(
+      widgetId,
+      queryId,
+      widgetType,
+      chartSettings,
+      widgetSettings
+    )
+  );
+
+  if (isExistingWidget) {
+    yield put(setWidgetState(widgetId, { isInitialized: false, error: null }));
+  }
+
+  yield put(initializeChartWidgetAction(widgetId));
+  yield put(updateAccessKeyOptions());
+
+  const dashboardId = yield select(appSelectors.getActiveDashboard);
+  yield put(saveDashboard(dashboardId));
 }
 
 /**
@@ -239,28 +283,8 @@ export function* selectQueryForWidget(widgetId: string) {
     yield put(appActions.hideQueryPicker());
     yield call(createQueryForWidget, widgetId);
   } else if (action.type === SELECT_SAVED_QUERY) {
-    const {
-      query: {
-        id: queryId,
-        visualization: { type: widgetType, chartSettings, widgetSettings },
-      },
-    } = action.payload as { query: SavedQuery };
-
     yield put(appActions.hideQueryPicker());
-    yield put(
-      finishChartWidgetConfiguration(
-        widgetId,
-        queryId,
-        widgetType,
-        chartSettings,
-        widgetSettings
-      )
-    );
-    yield put(initializeChartWidgetAction(widgetId));
-    yield put(updateAccessKeyOptions());
-
-    const dashboardId = yield select(appSelectors.getActiveDashboard);
-    yield put(saveDashboard(dashboardId));
+    yield call(selectSavedQueryForWidget, action.payload.query, widgetId);
   }
 }
 
@@ -339,68 +363,10 @@ export function* createNewChart({
     yield put(appActions.hideQueryPicker());
   } else if (action.type === CREATE_QUERY) {
     yield put(appActions.hideQueryPicker());
-    yield put(chartEditorActions.openEditor());
-    const action = yield take([
-      chartEditorActions.closeEditor.type,
-      chartEditorActions.applyConfiguration.type,
-    ]);
-
-    if (action.type === chartEditorActions.closeEditor.type) {
-      yield put(chartEditorActions.closeEditor());
-      yield take(chartEditorActions.editorUnmounted.type);
-      yield put(chartEditorActions.resetEditor());
-    } else {
-      const {
-        querySettings,
-        visualization: { type, chartSettings, widgetSettings },
-      } = yield select(chartEditorSelectors.getChartEditor);
-
-      yield put(
-        finishChartWidgetConfiguration(
-          widgetId,
-          querySettings,
-          type,
-          chartSettings,
-          widgetSettings
-        )
-      );
-
-      yield put(chartEditorActions.closeEditor());
-      yield take(chartEditorActions.editorUnmounted.type);
-      yield put(chartEditorActions.resetEditor());
-
-      yield put(
-        setWidgetState(widgetId, { isInitialized: false, error: null })
-      );
-      yield put(initializeChartWidgetAction(widgetId));
-
-      const dashboardId = yield select(appSelectors.getActiveDashboard);
-      yield put(saveDashboard(dashboardId));
-    }
+    yield call(createQueryForWidget, widgetId, true);
   } else if (action.type === SELECT_SAVED_QUERY) {
-    const {
-      query: {
-        id: queryId,
-        visualization: { type: widgetType, chartSettings, widgetSettings },
-      },
-    } = action.payload as { query: SavedQuery };
-
     yield put(appActions.hideQueryPicker());
-    yield put(
-      finishChartWidgetConfiguration(
-        widgetId,
-        queryId,
-        widgetType,
-        chartSettings,
-        widgetSettings
-      )
-    );
-    yield put(setWidgetState(widgetId, { isInitialized: false, error: null }));
-    yield put(initializeChartWidgetAction(widgetId));
-    yield put(updateAccessKeyOptions());
-
-    const dashboardId = yield select(appSelectors.getActiveDashboard);
-    yield put(saveDashboard(dashboardId));
+    yield call(selectSavedQueryForWidget, action.payload.query, widgetId, true);
   }
 }
 
