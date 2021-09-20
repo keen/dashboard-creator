@@ -14,7 +14,6 @@ import {
   Excerpt,
   ActionsContainer,
   BadgeContainer,
-  DropIndicatorContainer,
 } from './Header.styles';
 
 type Props = {
@@ -69,21 +68,20 @@ const Header: FC<Props> = ({ title, excerpt, isPublic, tags, children }) => {
             animate={tagsOpen ? 'open' : 'closed'}
             transition={{ ease: 'easeInOut' }}
           >
-            {tagsOverflow && (
-              <DropIndicatorContainer
-                isOpen={tagsOpen}
-                onMouseEnter={() => setTagsOpen(true)}
-                onMouseLeave={() => setTagsOpen(false)}
-              >
-                <DropIndicator
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                  isActive={tagsOpen}
-                />
-              </DropIndicatorContainer>
-            )}
             <BadgeContainer>
+              {tagsOverflow && (
+                <div
+                  onMouseEnter={() => setTagsOpen(true)}
+                  onMouseLeave={() => setTagsOpen(false)}
+                >
+                  <DropIndicator
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                    isActive={tagsOpen}
+                  />
+                </div>
+              )}
               {isPublic && (
                 <Badge variant="green">{t('dashboard_tile.public')}</Badge>
               )}
