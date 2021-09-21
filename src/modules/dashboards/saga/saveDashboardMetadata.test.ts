@@ -24,7 +24,6 @@ const metadata: DashboardMetaData = {
   queries: 0,
   title: 'Dashboard',
   tags: [],
-  savedQueries: [],
   lastModificationDate: 0,
   isPublic: true,
   publicAccessKey: 'public-access-key',

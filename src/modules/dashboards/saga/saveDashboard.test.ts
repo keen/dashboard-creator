@@ -103,7 +103,6 @@ const updatedMetadata: DashboardMetaData = {
   queries: 1,
   title: 'Dashboard',
   tags: [],
-  savedQueries: ['purchases'],
   lastModificationDate: 0,
   isPublic: true,
   publicAccessKey: 'public-access-key',
