@@ -64,7 +64,8 @@
     "update_save_query": "Update Saved Query",
     "not_connected_saved_query": "This Saved Query is not used on other dashboards.",
     "untitled_dashboard": "Untitled Dashboard",
-    "dashboard_connection_error": "Unable to get the dashboards list. Try again later"
+    "dashboard_connection_error": "Unable to get the dashboards list. Try again later",
+    "dashboard_connection_disabled": "If Saved Query is used on other dashboards, it will change there too. You can keep the original Saved Query by updating only this chart."
   },
   "public_dashboard_errors": {
     "generic_title": "This dashboard can’t be reached",

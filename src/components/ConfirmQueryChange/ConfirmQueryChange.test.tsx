@@ -5,6 +5,7 @@ import configureStore from 'redux-mock-store';
 import { mockAllIsIntersecting } from 'react-intersection-observer/test-utils';
 
 import ConfirmQueryChange from './ConfirmQueryChange';
+import { AppContext } from '../../contexts';
 
 afterEach(() => {
   mockAllIsIntersecting(false);
@@ -14,7 +15,11 @@ beforeEach(() => {
   mockAllIsIntersecting(true);
 });
 
-const render = (overProps: any = {}) => {
+const render = (
+  storeState: any = {},
+  overProps: any = {},
+  contextValues = {}
+) => {
   const props = {
     isOpen: true,
     ...overProps,
@@ -29,11 +34,21 @@ const render = (overProps: any = {}) => {
         items: [],
       },
     },
+    ...storeState,
   });
+
+  const contextValue = {
+    features: {
+      enableDashboardConnections: false,
+    },
+    ...contextValues,
+  } as any;
 
   const wrapper = rtlRender(
     <Provider store={store}>
-      <ConfirmQueryChange {...props} />
+      <AppContext.Provider value={contextValue}>
+        <ConfirmQueryChange {...props} />
+      </AppContext.Provider>
     </Provider>
   );
 
@@ -120,4 +135,105 @@ test('allows user to close query change confirmation modal', () => {
       },
     ]
   `);
+});
+
+test('informs user that connected dashboards are disabled', () => {
+  const {
+    wrapper: { getByText },
+  } = render();
+
+  const notification = getByText(
+    'confirm_query_change.dashboard_connection_disabled'
+  );
+  expect(notification).toBeInTheDocument();
+});
+
+test('informs user that there is an error with dashboards connections', () => {
+  const {
+    wrapper: { getByText },
+  } = render(
+    {
+      dashboards: {
+        connectedDashboards: {
+          isLoading: false,
+          isError: true,
+          items: [],
+        },
+      },
+    },
+    {},
+    {
+      features: {
+        enableDashboardConnections: true,
+      },
+    }
+  );
+
+  const notification = getByText(
+    'confirm_query_change.dashboard_connection_error'
+  );
+  expect(notification).toBeInTheDocument();
+});
+
+test('informs user that there are no dashboards connections', () => {
+  const {
+    wrapper: { getByText },
+  } = render(
+    {
+      dashboards: {
+        connectedDashboards: {
+          isLoading: false,
+          isError: false,
+          items: [],
+        },
+      },
+    },
+    {},
+    {
+      features: {
+        enableDashboardConnections: true,
+      },
+    }
+  );
+
+  const notification = getByText(
+    'confirm_query_change.update_no_dashboards_connected'
+  );
+  expect(notification).toBeInTheDocument();
+});
+
+test('shows connected dashboards', () => {
+  const connectedDashboards = [
+    { id: '@id-1', title: '@title-1' },
+    { id: '@id-2', title: '@title-2' },
+    { id: '@id-3', title: '@title-3' },
+  ];
+  const {
+    wrapper: { getByText },
+  } = render(
+    {
+      dashboards: {
+        connectedDashboards: {
+          isLoading: false,
+          isError: false,
+          items: connectedDashboards,
+        },
+      },
+    },
+    {},
+    {
+      features: {
+        enableDashboardConnections: true,
+      },
+    }
+  );
+
+  const notification = getByText(
+    'confirm_query_change.update_with_dashboards_connected'
+  );
+  expect(notification).toBeInTheDocument();
+
+  for (const dashboard of connectedDashboards) {
+    expect(getByText(dashboard.title)).toBeInTheDocument();
+  }
 });
