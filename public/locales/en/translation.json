@@ -148,8 +148,9 @@
   "widget_errors": {
     "detached_query_title": "Unable to present result in {{chart}} chart",
     "detached_query_message": "Please check if query structure has changed or select other visualization",
-    "inconsistent_filter_title": "Unable to render visualization",
-    "inconsistent_filter_message": "Applied filter is not consistent with the query"
+    "inconsistent_filter_title": "Unable to render the visualization",
+    "inconsistent_filter_message": "Applied filter is not consistent with the query",
+    "resource_not_found": "The Saved Query does not exist"
   },
   "dashboard_details": {
     "untitled_dashboard": "Untitled dashboard",
@@ -259,7 +260,8 @@
     "remove": "Remove",
     "remove_confirm_button": "Yes, Delete",
     "remove_dismiss_button": "No, Keep It",
-    "remove_confirmation": "Are you sure you want to delete this widget?"
+    "remove_confirmation": "Are you sure you want to delete this widget?",
+    "create_widget": "Create New Chart"
   },
   "widget_item": {
     "chart": "Chart",
