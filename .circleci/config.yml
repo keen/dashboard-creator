@@ -30,7 +30,7 @@ commands:
 executors:
   nodejs:
     docker:
-      - image: circleci/node:latest
+      - image: cimg/node:12.16
 
 jobs:
   create_version:

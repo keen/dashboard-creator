@@ -1,6 +1,6 @@
 import React from 'react';
 import { PubSub } from '@keen.io/pubsub';
-import { WidgetsConfiguration } from '../types';
+import { Features, WidgetsConfiguration } from '../types';
 
 export const AppContext = React.createContext<{
   notificationPubSub: PubSub;
@@ -14,7 +14,7 @@ export const AppContext = React.createContext<{
   };
   createSharedDashboardUrl?: (accessKey: string, dashboardId: string) => string;
   widgetsConfiguration?: WidgetsConfiguration;
-  enableFixedEditorBar?: boolean;
+  features?: Features;
 }>({
   notificationPubSub: null,
   modalContainer: null,
@@ -26,5 +26,5 @@ export const AppContext = React.createContext<{
   },
   createSharedDashboardUrl: () => '',
   widgetsConfiguration: {},
-  enableFixedEditorBar: false,
+  features: {},
 });
