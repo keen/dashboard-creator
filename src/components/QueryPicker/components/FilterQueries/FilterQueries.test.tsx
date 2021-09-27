@@ -93,3 +93,29 @@ test('renders the number of active filters', async () => {
 
   expect(getByText('query_picker.filters.title (2)')).toBeInTheDocument();
 });
+
+test('allows user to search for a specific tag', async () => {
+  const {
+    wrapper: { getByText, getByPlaceholderText, queryByText },
+  } = render({
+    project: {
+      tagsPool: ['marketing', 'it'],
+    },
+  });
+
+  const element = getByText('query_picker.filters.title');
+  fireEvent.click(element);
+
+  await waitFor(() => {
+    const search = getByText('query_picker.filters.search_label');
+    fireEvent.click(search);
+
+    const input = getByPlaceholderText(
+      'query_picker.filters.search_tags_input_placeholder'
+    );
+    fireEvent.change(input, { target: { value: 'mar' } });
+
+    expect(getByText('marketing')).toBeInTheDocument();
+    expect(queryByText('it')).toBeNull();
+  });
+});
