@@ -19,6 +19,7 @@ import {
   savedQueryUpdated,
   saveClonedWidget,
   clearInconsistentFiltersError as clearInconsistentFiltersErrorAction,
+  createNewChart as createNewChartAction,
 } from './actions';
 
 import { getWidgetSettings, getWidget } from './selectors';
@@ -83,6 +84,7 @@ import {
   CLEAR_INCONSISTENT_FILTERS_ERROR_FROM_WIDGETS,
   UNAPPLY_FILTER_WIDGET,
   RESET_FILTER_WIDGETS,
+  CREATE_NEW_CHART,
 } from './constants';
 
 import { ChartWidget, WidgetErrors, WidgetItem } from './types';
@@ -178,7 +180,10 @@ function* cancelWidgetConfiguration(widgetId: string) {
  * @return void
  *
  */
-export function* createQueryForWidget(widgetId: string) {
+export function* createQueryForWidget(
+  widgetId: string,
+  isExistingWidget = false
+) {
   yield put(chartEditorActions.openEditor());
   const action = yield take([
     chartEditorActions.closeEditor.type,
@@ -186,7 +191,11 @@ export function* createQueryForWidget(widgetId: string) {
   ]);
 
   if (action.type === chartEditorActions.closeEditor.type) {
-    yield* cancelWidgetConfiguration(widgetId);
+    if (isExistingWidget) {
+      yield put(chartEditorActions.closeEditor());
+    } else {
+      yield* cancelWidgetConfiguration(widgetId);
+    }
     yield take(chartEditorActions.editorUnmounted.type);
     yield put(chartEditorActions.resetEditor());
   } else {
@@ -209,11 +218,48 @@ export function* createQueryForWidget(widgetId: string) {
     yield take(chartEditorActions.editorUnmounted.type);
     yield put(chartEditorActions.resetEditor());
 
+    if (isExistingWidget) {
+      yield put(
+        setWidgetState(widgetId, { isInitialized: false, error: null })
+      );
+    }
+
     yield put(initializeChartWidgetAction(widgetId));
 
     const dashboardId = yield select(appSelectors.getActiveDashboard);
     yield put(saveDashboard(dashboardId));
   }
+}
+
+export function* selectSavedQueryForWidget(
+  query: SavedQuery,
+  widgetId: string,
+  isExistingWidget = false
+) {
+  const {
+    id: queryId,
+    visualization: { type: widgetType, chartSettings, widgetSettings },
+  } = query;
+
+  yield put(
+    finishChartWidgetConfiguration(
+      widgetId,
+      queryId,
+      widgetType,
+      chartSettings,
+      widgetSettings
+    )
+  );
+
+  if (isExistingWidget) {
+    yield put(setWidgetState(widgetId, { isInitialized: false, error: null }));
+  }
+
+  yield put(initializeChartWidgetAction(widgetId));
+  yield put(updateAccessKeyOptions());
+
+  const dashboardId = yield select(appSelectors.getActiveDashboard);
+  yield put(saveDashboard(dashboardId));
 }
 
 /**
@@ -237,28 +283,8 @@ export function* selectQueryForWidget(widgetId: string) {
     yield put(appActions.hideQueryPicker());
     yield call(createQueryForWidget, widgetId);
   } else if (action.type === SELECT_SAVED_QUERY) {
-    const {
-      query: {
-        id: queryId,
-        visualization: { type: widgetType, chartSettings, widgetSettings },
-      },
-    } = action.payload as { query: SavedQuery };
-
     yield put(appActions.hideQueryPicker());
-    yield put(
-      finishChartWidgetConfiguration(
-        widgetId,
-        queryId,
-        widgetType,
-        chartSettings,
-        widgetSettings
-      )
-    );
-    yield put(initializeChartWidgetAction(widgetId));
-    yield put(updateAccessKeyOptions());
-
-    const dashboardId = yield select(appSelectors.getActiveDashboard);
-    yield put(saveDashboard(dashboardId));
+    yield call(selectSavedQueryForWidget, action.payload.query, widgetId);
   }
 }
 
@@ -321,6 +347,29 @@ export function* cloneWidget({
   yield put(saveDashboard(dashboardId));
 }
 
+export function* createNewChart({
+  payload,
+}: ReturnType<typeof createNewChartAction>) {
+  const { widgetId } = payload;
+
+  yield put(appActions.showQueryPicker());
+  const action = yield take([
+    SELECT_SAVED_QUERY,
+    CREATE_QUERY,
+    appActions.hideQueryPicker.type,
+  ]);
+
+  if (action.type === appActions.hideQueryPicker.type) {
+    yield put(appActions.hideQueryPicker());
+  } else if (action.type === CREATE_QUERY) {
+    yield put(appActions.hideQueryPicker());
+    yield call(createQueryForWidget, widgetId, true);
+  } else if (action.type === SELECT_SAVED_QUERY) {
+    yield put(appActions.hideQueryPicker());
+    yield call(selectSavedQueryForWidget, action.payload.query, widgetId, true);
+  }
+}
+
 export function* widgetsSaga() {
   yield takeLatest(SAVED_QUERY_UPDATED, reinitializeWidgets);
   yield takeLatest(CREATE_WIDGET, createWidget);
@@ -334,6 +383,7 @@ export function* widgetsSaga() {
   yield takeLatest(CLONE_WIDGET, cloneWidget);
   yield takeLatest(CLEAR_DATE_PICKER_MODIFIERS, clearDatePickerModifiers);
   yield takeLatest(EDIT_FILTER_WIDGET, editFilterWidget);
+  yield takeLatest(CREATE_NEW_CHART, createNewChart);
   yield takeEvery(RESET_DATE_PICKER_WIDGETS, resetDatePickerWidgets);
   yield takeEvery(INITIALIZE_WIDGET, initializeWidget);
   yield takeEvery(INITIALIZE_CHART_WIDGET, initializeChartWidget);

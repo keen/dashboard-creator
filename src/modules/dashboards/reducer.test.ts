@@ -24,6 +24,9 @@ import {
   clearTagsPool,
   setTagsFiltersPublic,
   setTagsFilters,
+  setConnectedDashboards,
+  setConnectedDashboardsError,
+  setConnectedDashboardsLoading,
 } from './actions';
 
 import { dashboardsMeta } from './fixtures';
@@ -307,7 +310,6 @@ test('serializes dashboards metadata', () => {
           "lastModificationDate": 1606895352390,
           "publicAccessKey": "@public/1",
           "queries": 0,
-          "savedQueries": Array [],
           "tags": Array [],
           "title": "Dashboard 1",
           "widgets": 5,
@@ -318,7 +320,6 @@ test('serializes dashboards metadata', () => {
           "lastModificationDate": 1606895352390,
           "publicAccessKey": "@public/2",
           "queries": 2,
-          "savedQueries": Array [],
           "tags": Array [],
           "title": "Dashboard 2",
           "widgets": 0,
@@ -329,7 +330,6 @@ test('serializes dashboards metadata', () => {
           "lastModificationDate": 1606895352390,
           "publicAccessKey": "@public/3",
           "queries": 0,
-          "savedQueries": Array [],
           "tags": Array [],
           "title": null,
           "widgets": 0,
@@ -615,4 +615,45 @@ test('set tagsFilters showOnlyPublicDashboards', () => {
   } = dashboardsReducer(initialState, action);
 
   expect(showOnlyPublicDashboards).toBeTruthy();
+});
+
+test('set dashboards connections', () => {
+  const dashboards = [
+    {
+      id: '@id-1',
+      title: '@dashboard-1',
+    },
+    {
+      id: '@id-2',
+      title: '@dashboard-2',
+    },
+    {
+      id: '@id-3',
+      title: '@dashboard-3',
+    },
+  ];
+  const action = setConnectedDashboards(dashboards);
+  const {
+    connectedDashboards: { items },
+  } = dashboardsReducer(initialState, action);
+
+  expect(items).toEqual(dashboards);
+});
+
+test('set dashboards connections error', () => {
+  const action = setConnectedDashboardsError(true);
+  const {
+    connectedDashboards: { isError },
+  } = dashboardsReducer(initialState, action);
+
+  expect(isError).toBeTruthy();
+});
+
+test('set dashboards connections loading', () => {
+  const action = setConnectedDashboardsLoading(true);
+  const {
+    connectedDashboards: { isLoading },
+  } = dashboardsReducer(initialState, action);
+
+  expect(isLoading).toBeTruthy();
 });

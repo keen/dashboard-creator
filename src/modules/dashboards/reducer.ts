@@ -42,6 +42,9 @@ import {
   UPDATE_CACHED_DASHBOARD_IDS,
   UPDATE_DASHBOARD,
   UPDATE_DASHBOARD_METADATA,
+  SET_CONNECTED_DASHBOARDS,
+  SET_CONNECTED_DASHBOARDS_LOADING,
+  SET_CONNECTED_DASHBOARDS_ERROR,
 } from './constants';
 
 import { ReducerState } from './types';
@@ -73,6 +76,11 @@ export const initialState: ReducerState = {
   },
   items: {},
   cachedDashboardIds: [],
+  connectedDashboards: {
+    isLoading: false,
+    isError: false,
+    items: [],
+  },
   dashboardListOrder: 'recent',
 };
 
@@ -426,6 +434,30 @@ const dashboardsReducer = (
         metadata: {
           ...state.metadata,
           isRegeneratingAccessKey: false,
+        },
+      };
+    case SET_CONNECTED_DASHBOARDS:
+      return {
+        ...state,
+        connectedDashboards: {
+          ...state.connectedDashboards,
+          items: action.payload.connectedDashboards,
+        },
+      };
+    case SET_CONNECTED_DASHBOARDS_LOADING:
+      return {
+        ...state,
+        connectedDashboards: {
+          ...state.connectedDashboards,
+          isLoading: action.payload.isLoading,
+        },
+      };
+    case SET_CONNECTED_DASHBOARDS_ERROR:
+      return {
+        ...state,
+        connectedDashboards: {
+          ...state.connectedDashboards,
+          isError: action.payload.isError,
         },
       };
     default:

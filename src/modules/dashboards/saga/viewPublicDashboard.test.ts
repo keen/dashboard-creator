@@ -33,7 +33,6 @@ const dashboardMetadata: DashboardMetaData = {
   lastModificationDate: 1606895352390,
   isPublic: true,
   publicAccessKey: 'public-access-key',
-  savedQueries: [],
 };
 
 const dashboard: DashboardModel = {

@@ -49,6 +49,7 @@ import {
   deleteDashboard,
   editDashboard,
   saveDashboardMetadata,
+  finishDashboardEdition,
 } from './saga';
 
 import {
@@ -107,6 +108,7 @@ import {
   CALCULATE_Y_POSITION_AND_ADD_WIDGET,
   SAVE_DASHBOARD_METADATA_SUCCESS,
   RESET_DASHBOARD_FILTERS,
+  FINISH_DASHBOARD_EDITION,
 } from './constants';
 
 import { RootState } from '../../rootReducer';
@@ -494,4 +496,5 @@ export function* dashboardsSaga() {
     calculateYPositionAndAddWidget
   );
   yield takeEvery(RESET_DASHBOARD_FILTERS, resetDashboardFilters);
+  yield takeEvery(FINISH_DASHBOARD_EDITION, finishDashboardEdition);
 }

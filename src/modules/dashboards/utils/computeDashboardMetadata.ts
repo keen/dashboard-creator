@@ -2,7 +2,7 @@ import { DashboardModel, DashboardMetaData } from '../types';
 
 const computeDashboardMetadata = (
   dashboard: DashboardModel
-): Pick<DashboardMetaData, 'queries' | 'widgets' | 'savedQueries'> => {
+): Pick<DashboardMetaData, 'queries' | 'widgets'> => {
   const { widgets } = dashboard;
 
   const savedQueries = widgets.reduce((acc, widget) => {
@@ -19,7 +19,6 @@ const computeDashboardMetadata = (
   return {
     queries: savedQueries.size,
     widgets: widgets.length,
-    savedQueries: [...savedQueries],
   };
 };
 

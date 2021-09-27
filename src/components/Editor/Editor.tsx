@@ -10,7 +10,6 @@ import { Content, EditorContainer } from './Editor.styles';
 import {
   addWidgetToDashboard,
   removeWidgetFromDashboard,
-  viewDashboard,
   getDashboard,
   saveDashboard,
   getDashboardMeta,
@@ -46,7 +45,10 @@ import Grid from '../Grid';
 import { ROUTES, RESIZE_WIDGET_EVENT } from '../../constants';
 
 import { RootState } from '../../rootReducer';
-import { calculateYPositionAndAddWidget } from '../../modules/dashboards/actions';
+import {
+  calculateYPositionAndAddWidget,
+  finishDashboardEdition,
+} from '../../modules/dashboards/actions';
 import { appActions } from '../../modules/app';
 import { chartEditorSelectors } from '../../modules/chartEditor';
 
@@ -63,7 +65,10 @@ const Editor: FC<Props> = ({ dashboardId }) => {
 
   const [containerWidth, setContainerWidth] = useState(0);
   const [droppableWidget, setDroppableWidget] = useState(null);
-  const { modalContainer, enableFixedEditorBar } = useContext(AppContext);
+  const {
+    modalContainer,
+    features: { enableFixedEditorBar },
+  } = useContext(AppContext);
   const {
     isOpen: chartWidgetEditorOpen,
     changeQueryConfirmation,
@@ -163,8 +168,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
             dispatch(themeSagaActions.editDashboardTheme(dashboardId))
           }
           onFinishEdit={() => {
-            dispatch(saveDashboard(dashboardId));
-            dispatch(viewDashboard(dashboardId));
+            dispatch(finishDashboardEdition(dashboardId));
           }}
           lastSaveTime={lastModificationDate}
         >

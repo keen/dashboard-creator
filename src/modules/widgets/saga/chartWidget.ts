@@ -19,11 +19,17 @@ import {
   updateAccessKeyOptions,
 } from '../../../modules/dashboards';
 
-import { NOTIFICATION_MANAGER, PUBSUB, TRANSLATIONS } from '../../../constants';
+import {
+  FEATURES,
+  NOTIFICATION_MANAGER,
+  PUBSUB,
+  TRANSLATIONS,
+} from '../../../constants';
 
 import { WidgetItem, ChartWidget, WidgetErrors } from '../types';
 import { appSelectors } from '../../app';
 import { chartEditorActions, chartEditorSelectors } from '../../chartEditor';
+import { getConnectedDashboards } from '../../dashboards/saga';
 
 /**
  * Creates ad-hoc query with date picker and filters modifiers.
@@ -195,6 +201,12 @@ export function* editChartSavedQuery(widgetId: string) {
   if (hasQueryChanged) {
     yield put(chartEditorActions.closeEditor());
     yield put(chartEditorActions.showQueryUpdateConfirmation());
+
+    const { query: queryName } = yield select(getWidgetSettings, widgetId);
+    const { enableDashboardConnections } = yield getContext(FEATURES);
+    if (enableDashboardConnections) {
+      yield call(getConnectedDashboards, queryName);
+    }
 
     const action = yield take([
       chartEditorActions.hideQueryUpdateConfirmation.type,

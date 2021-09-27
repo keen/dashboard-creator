@@ -46,6 +46,7 @@ import {
   CLEAR_INCONSISTENT_FILTERS_ERROR_FROM_WIDGETS,
   UNREGISTER_WIDGET,
   RESET_FILTER_WIDGETS,
+  CREATE_NEW_CHART,
 } from './constants';
 
 export const registerWidgets = createAction(
@@ -441,6 +442,15 @@ export const resetFilterWidgets = createAction(
   })
 );
 
+export const createNewChart = createAction(
+  CREATE_NEW_CHART,
+  (widgetId: string) => ({
+    payload: {
+      widgetId,
+    },
+  })
+);
+
 export type WidgetsActions =
   | ReturnType<typeof createWidget>
   | ReturnType<typeof removeWidget>
@@ -481,4 +491,5 @@ export type WidgetsActions =
   | ReturnType<typeof saveImage>
   | ReturnType<typeof unregisterWidget>
   | ReturnType<typeof resetFilterWidgets>
-  | ReturnType<typeof setChartWidgetVisualization>;
+  | ReturnType<typeof setChartWidgetVisualization>
+  | ReturnType<typeof createNewChart>;

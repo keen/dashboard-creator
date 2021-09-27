@@ -64,11 +64,17 @@ export const UNREGISTER_DASHBOARD = '@dashboard/UNREGISTER_DASHBOARD';
 export const CALCULATE_Y_POSITION_AND_ADD_WIDGET =
   '@dashboard/CALCULATE_Y_POSITION_AND_ADD_WIDGET';
 export const RESET_DASHBOARD_FILTERS = '@dashboard/RESET_DASHBOARD_FILTERS';
+export const SET_CONNECTED_DASHBOARDS = '@dashboard/SET_CONNECTED_DASHBOARDS';
+export const SET_CONNECTED_DASHBOARDS_LOADING =
+  '@dashboard/SET_CONNECTED_DASHBOARDS_LOADING';
+export const SET_CONNECTED_DASHBOARDS_ERROR =
+  '@dashboard/SET_CONNECTED_DASHBOARDS_ERROR';
 
 export const DASHBOARD_LIST_ORDER_KEY =
   '@keen-dashboard-creator/dashboard-list-order';
 
 export const PUBLIC_DASHBOARD_ID = '@keen-dashboard-creator';
+export const FINISH_DASHBOARD_EDITION = '@keen-finish-dashboard-edition';
 
 export const DASHBOARDS_ORDER = {
   recent: 'dashboard_list_order.recent',

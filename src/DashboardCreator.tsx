@@ -101,8 +101,8 @@ export class DashboardCreator {
   /** Widgets configuration **/
   private widgetsConfiguration = {};
 
-  /** Enable fixed Editor bar */
-  private enableFixedEditorBar = false;
+  /** Features */
+  private features = {};
 
   /** View change event handler */
   private onViewChange?: ViewUpdateHandler = null;
@@ -121,11 +121,12 @@ export class DashboardCreator {
       disableTimezoneSelection,
       defaultTimezoneForQuery,
       widgetsConfiguration,
-      enableFixedEditorBar,
+      features,
       onViewChange,
     } = config;
 
     const { id, masterKey, accessKey } = project;
+
     if (backend?.analyticsApiUrl)
       this.analyticsApiUrl = backend.analyticsApiUrl;
     if (backend?.dashboardsApiUrl)
@@ -147,7 +148,9 @@ export class DashboardCreator {
     this.defaultTimezoneForQuery = defaultTimezoneForQuery;
     this.disableTimezoneSelection = disableTimezoneSelection;
     this.widgetsConfiguration = widgetsConfiguration;
-    this.enableFixedEditorBar = enableFixedEditorBar;
+    if (features) {
+      this.features = features;
+    }
   }
 
   /**
@@ -205,6 +208,8 @@ export class DashboardCreator {
     createI18n(this.translationsSettings);
 
     const notificationPubSub = new PubSub();
+    const chartEventsPubSub = new PubSub();
+
     const sagaMiddleware = createSagaMiddleware({
       dashboardApi,
       keenAnalysis,
@@ -214,6 +219,7 @@ export class DashboardCreator {
         eventName: SHOW_TOAST_NOTIFICATION_EVENT,
       }),
       analyticsApiHost: this.analyticsApiUrl,
+      features: this.features,
     });
 
     const defaultTimezoneForQuery =
@@ -277,12 +283,13 @@ export class DashboardCreator {
               <AppContext.Provider
                 value={{
                   notificationPubSub,
+                  chartEventsPubSub,
                   project: projectSettings,
                   analyticsApiUrl: this.analyticsApiUrl,
                   modalContainer: this.modalContainer,
                   createSharedDashboardUrl: this.createSharedDashboardUrl,
                   widgetsConfiguration: this.widgetsConfiguration,
-                  enableFixedEditorBar: this.enableFixedEditorBar,
+                  features: this.features,
                 }}
               >
                 <APIContext.Provider value={{ dashboardApi, keenAnalysis }}>

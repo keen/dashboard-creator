@@ -11,14 +11,14 @@
     "dashboard_page_title": "Dashboard Page",
     "widget_tiles_title": "Widget Tiles",
     "background_color": "Background color",
-    "chart_titles_font": "Chart Titles Font",
-    "data_visualization_font": "Data Visualizations Font",
+    "chart_titles_font": "Chart Title Font",
+    "data_visualization_font": "Data Visualization Font",
     "space_between_widgets": "Space Between Widgets",
     "empty_search_results": "No font found with this name",
-    "tile_color": "Tile color",
+    "tile_color": "Tile Color",
     "border": "Border",
     "corner_rounding": "Corner Rounding",
-    "inner_margin": "Inner margin",
+    "inner_margin": "Inner Margin",
     "shadow": "Shadow",
     "widget_titles_title": "Titles",
     "titles_title": "Title",
@@ -31,16 +31,16 @@
     "widget_y_axis_title": "Y-Axis",
     "axis_labels": "Labels",
     "axis_titles": "Title",
-    "charts_section_title": "Charts Elements",
-    "visualizations_section_title": "Visualizations Types",
-    "tooltip_color_mode": "Color mode",
-    "tooltip_text_size": "Text size",
+    "charts_section_title": "Chart Elements",
+    "visualizations_section_title": "Visualization Types",
+    "tooltip_color_mode": "Color Mode",
+    "tooltip_text_size": "Text Size",
     "circular_chart_title": "Pie & Donut",
-    "circular_chart_values": "Values Style",
+    "circular_chart_values": "Value Style",
     "circular_total_value": "Donut Total Value",
     "circular_chart_total_label": "Donut Total Label",
     "funnel_title": "Funnel",
-    "funnel_steps_background": "Steps Background",
+    "funnel_steps_background": "Step Background",
     "funnel_value": "Value",
     "funnel_labels": "Labels",
     "funnel_badge": "Percentage Badge",
@@ -49,21 +49,23 @@
     "metric_secondary_value": "Secondary Value Badge",
     "table_title": "Table",
     "table_color": "Color",
-    "table_header_labels": "Header labels",
+    "table_header_labels": "Header Labels",
     "table_body_values": "Values",
     "line_title": "Line & Area",
-    "line_thickness": "Line thickness",
-    "line_markers": "Markers size"
+    "line_thickness": "Line Thickness",
+    "line_markers": "Marker Size"
   },
   "confirm_query_change": {
-    "title": "You Edited Saved Query",
-    "message": "What do you want to update?",
-    "connect_saved_query": "Connected Saved Query",
-    "connect_saved_query_message": "If Saved Query is used in other places, it will change there too. Some charts may not work properly due to applied changes.",
-    "create_ad_hoc_query": "Only this widget",
-    "create_ad_hoc_query_message": "The chart will be disconnected from Saved Query and will use  Ad-hoc Query from now.",
+    "title": "Saved Query Edited",
     "cancel": "Cancel",
-    "save": "Save"
+    "update_with_dashboards_connected": "When you update this Saved Query, changes will be also automatically saved for the following dashboards:",
+    "update_no_dashboards_connected": "Do you want to save edits only for this chart or update the Saved Query?",
+    "update_ad_hoc_query": "Update Only This Chart",
+    "update_save_query": "Update Saved Query",
+    "not_connected_saved_query": "This Saved Query is not used on other dashboards.",
+    "untitled_dashboard": "Untitled Dashboard",
+    "dashboard_connection_error": "Unable to get the dashboards list. Try again later",
+    "dashboard_connection_disabled": "If Saved Query is used on other dashboards, it will change there too. You can keep the original Saved Query by updating only this chart."
   },
   "public_dashboard_errors": {
     "generic_title": "This dashboard can’t be reached",
@@ -146,8 +148,9 @@
   "widget_errors": {
     "detached_query_title": "Unable to present result in {{chart}} chart",
     "detached_query_message": "Please check if query structure has changed or select other visualization",
-    "inconsistent_filter_title": "Unable to render visualization",
-    "inconsistent_filter_message": "Applied filter is not consistent with the query"
+    "inconsistent_filter_title": "Unable to render the visualization",
+    "inconsistent_filter_message": "Applied filter is not consistent with the query",
+    "resource_not_found": "The Saved Query does not exist"
   },
   "dashboard_details": {
     "untitled_dashboard": "Untitled dashboard",
@@ -257,7 +260,8 @@
     "remove": "Remove",
     "remove_confirm_button": "Yes, Delete",
     "remove_dismiss_button": "No, Keep It",
-    "remove_confirmation": "Are you sure you want to delete this widget?"
+    "remove_confirmation": "Are you sure you want to delete this widget?",
+    "create_widget": "Create New Chart"
   },
   "widget_item": {
     "chart": "Chart",
@@ -278,8 +282,6 @@
     "cancel": "Cancel",
     "run_query_placeholder": "Run Query to visualize your data",
     "run_query": "Run Query",
-    "save_query_edit": "Saved Query edited",
-    "save_query_edit_tooltip": "You edited the Saved Query connected to the chart. In the next step you will be able to overwrite that Save Query or save edits just for this widget instance.",
     "run_query_loading": "Loading",
     "widget_error": "The selected visualization cannot be used with current query settings. Run query and select visualization.",
     "navigation_query": "QUERY",
@@ -553,7 +555,7 @@
     "saved_query_name_tooltip": "Click to use as Chart Title"
   },
   "widget_customization_format_value_settings": {
-    "section_title": "Values Format",
+    "section_title": "Value Format",
     "section_description": "(See in metric chart or series details popup, axis that presents values)",
     "prefix": "Prefix",
     "suffix": "Suffix",
@@ -564,9 +566,42 @@
     "select_pattern_placeholder": "Select pattern",
     "select_operations_placeholder": "Select",
     "original_data": "Original data",
-    "full_number": "(Full number)",
     "separator": "Separate groups of thousands with a comma \" , \"",
-    "select_precision_first": "Select the precision first"
+    "select_precision_first": "Select the precision first",
+    "click_on_columns_to_select_data": "Click on the columns to format the data.",
+    "column_name_and_data_type": "Column Name & Data Type",
+    "column_name": "Column Name",
+    "data_type": "Data Type",
+    "values_format": "Values Format",
+    "boolean_not_supported": "Boolean not supported",
+    "selected_columns_use_different_data_type": "Selected columns use different data types.",
+    "specify_data_type_to_apply_proper_formatting": "Specify the data type to apply proper data formatting.",
+    "select_multiple_columns_to_apply_formatting": "Select multiple columns with the same data type to apply the same formatting.",
+    "deselect_all": "Deselect All",
+    "selected": "Selected",
+    "time_format": "Time Format",
+    "date_format": "Date Format",
+    "you_will_map_property": "You will map property to the different type. Some values may not be interpreted.",
+    "select_data_type": "Select data type",
+    "select_the_single_column_to_change_the_name": "Select the single column to change the name",
+    "select_the_date_format_first": "Select the Date format first"
+  },
+  "widget_customization_data_types": {
+    "datetime": "datetime",
+    "number": "number",
+    "string": "string"
+  },
+  "widget_customization_date_formats": {
+    "original": "Original format",
+    "YYYY-MM-DD": "YYYY-MM-DD",
+    "DD-MM-YYYY": "DD-MM-YYYY",
+    "MM-DD-YYYY": "MM-DD-YYYY",
+    "hidden":  "Don't show date"
+  },
+  "widget_customization_time_formats": {
+    "12-hour-clock": "12-hour clock",
+    "24-hour-clock": "24-hour clock",
+    "hidden": "Don't show time"
   },
   "widget_customization_section": {
     "clear_button": "Clear"
@@ -591,7 +626,10 @@
     "label": "Card"
   },
   "widget_customization_metric_settings": {
-    "title": "Metric Chart Settings"
+    "title": "Metric Chart Settings",
+    "display_icon": "Display Icon",
+    "icon_style": "Icon background",
+    "icon": "Icon"
   },
   "widget_customization_grid_settings": {
     "vertical_grid": "Vertical Grid",

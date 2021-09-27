@@ -105,14 +105,14 @@ beforeEach(() => {
 
 test('allows user to run query', () => {
   const {
-    wrapper: { getByText },
+    wrapper: { getAllByText },
     store,
   } = render();
 
   store.clearActions();
 
-  const button = getByText('chart_widget_editor.run_query');
-  fireEvent.click(button);
+  const button = getAllByText('chart_widget_editor.run_query');
+  fireEvent.click(button[0]);
 
   expect(store.getActions()).toMatchInlineSnapshot(`
     Array [
@@ -256,21 +256,6 @@ test('clicking "close" icon calls "onClose" handler', () => {
   expect(props.onClose).toHaveBeenCalled();
 });
 
-test('shows saved query updated message', () => {
-  const storeState = {
-    chartEditor: {
-      ...chartEditorInitialState,
-      hasQueryChanged: true,
-      isSavedQuery: true,
-    },
-  };
-  const {
-    wrapper: { getByText },
-  } = render(storeState);
-
-  expect(getByText('chart_widget_editor.save_query_edit')).toBeInTheDocument();
-});
-
 test('shows placeholder with run query button', () => {
   const storeState = {
     chartEditor: {
@@ -279,10 +264,10 @@ test('shows placeholder with run query button', () => {
     },
   };
   const {
-    wrapper: { getByText },
+    wrapper: { getAllByText },
   } = render(storeState);
 
-  expect(getByText('chart_widget_editor.run_query')).toBeInTheDocument();
+  expect(getAllByText('chart_widget_editor.run_query').length).toEqual(2);
 });
 
 test('does not allow user to apply chart editor configuration when query has error', () => {

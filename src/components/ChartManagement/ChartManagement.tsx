@@ -9,6 +9,7 @@ import {
   cloneWidget,
   WidgetError,
   WidgetErrors,
+  createNewChart,
 } from '../../modules/widgets';
 
 type Props = {
@@ -32,12 +33,15 @@ const ChartManagement: FC<Props> = ({
   const dispatch = useDispatch();
   const disableManagement = error?.code === WidgetErrors.SAVED_QUERY_NOT_EXIST;
 
+  const handleCreateNewChart = () => dispatch(createNewChart(widgetId));
+
   return (
     <WidgetManagement
       isHoverActive={isHoverActive}
       onCloneWidget={() => dispatch(cloneWidget(widgetId))}
       onEditWidget={() => dispatch(editChartWidget(widgetId))}
       onRemoveWidget={onRemoveWidget}
+      onCreateWidget={disableManagement && handleCreateNewChart}
       editAllowed={!disableManagement}
       cloneAllowed={!disableManagement}
       editButtonLabel={t('widget.edit_chart')}

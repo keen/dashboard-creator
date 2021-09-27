@@ -70,6 +70,15 @@ export const getCachedDashboardIds = ({ dashboards }: RootState) =>
 export const getDashboardAccessKeyRegenerating = ({ dashboards }: RootState) =>
   dashboards.metadata.isRegeneratingAccessKey;
 
+export const getConnectedDashboards = ({ dashboards }: RootState) =>
+  dashboards.connectedDashboards.items;
+
+export const getConnectedDashboardsError = ({ dashboards }: RootState) =>
+  dashboards.connectedDashboards.isError;
+
+export const getConnectedDashboardsLoading = ({ dashboards }: RootState) =>
+  dashboards.connectedDashboards.isLoading;
+
 export const dashboardsSelectors = {
   getDashboardMeta,
   getDashboardsMetadata,
@@ -86,4 +95,7 @@ export const dashboardsSelectors = {
   getTagsFilter,
   getTagsPool,
   getDashboard,
+  getConnectedDashboards,
+  getConnectedDashboardsError,
+  getConnectedDashboardsLoading,
 };

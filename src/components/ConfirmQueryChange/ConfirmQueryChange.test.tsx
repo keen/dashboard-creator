@@ -2,21 +2,53 @@ import React from 'react';
 import { render as rtlRender, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
+import { mockAllIsIntersecting } from 'react-intersection-observer/test-utils';
 
 import ConfirmQueryChange from './ConfirmQueryChange';
+import { AppContext } from '../../contexts';
 
-const render = (overProps: any = {}) => {
+afterEach(() => {
+  mockAllIsIntersecting(false);
+});
+
+beforeEach(() => {
+  mockAllIsIntersecting(true);
+});
+
+const render = (
+  storeState: any = {},
+  overProps: any = {},
+  contextValues = {}
+) => {
   const props = {
     isOpen: true,
     ...overProps,
   };
 
   const mockStore = configureStore([]);
-  const store = mockStore({});
+  const store = mockStore({
+    dashboards: {
+      connectedDashboards: {
+        isLoading: false,
+        isError: false,
+        items: [],
+      },
+    },
+    ...storeState,
+  });
+
+  const contextValue = {
+    features: {
+      enableDashboardConnections: false,
+    },
+    ...contextValues,
+  } as any;
 
   const wrapper = rtlRender(
     <Provider store={store}>
-      <ConfirmQueryChange {...props} />
+      <AppContext.Provider value={contextValue}>
+        <ConfirmQueryChange {...props} />
+      </AppContext.Provider>
     </Provider>
   );
 
@@ -50,7 +82,7 @@ test('allows user to update saved query', () => {
 
   store.clearActions();
 
-  const button = getByText('confirm_query_change.save');
+  const button = getByText('confirm_query_change.update_save_query');
   fireEvent.click(button);
 
   expect(store.getActions()).toMatchInlineSnapshot(`
@@ -71,11 +103,8 @@ test('allows user to convert saved query to ad-hoc query', () => {
 
   store.clearActions();
 
-  const element = getByText('confirm_query_change.create_ad_hoc_query');
+  const element = getByText('confirm_query_change.update_ad_hoc_query');
   fireEvent.click(element);
-
-  const button = getByText('confirm_query_change.save');
-  fireEvent.click(button);
 
   expect(store.getActions()).toMatchInlineSnapshot(`
     Array [
@@ -106,4 +135,105 @@ test('allows user to close query change confirmation modal', () => {
       },
     ]
   `);
+});
+
+test('informs user that connected dashboards are disabled', () => {
+  const {
+    wrapper: { getByText },
+  } = render();
+
+  const notification = getByText(
+    'confirm_query_change.dashboard_connection_disabled'
+  );
+  expect(notification).toBeInTheDocument();
+});
+
+test('informs user that there is an error with dashboards connections', () => {
+  const {
+    wrapper: { getByText },
+  } = render(
+    {
+      dashboards: {
+        connectedDashboards: {
+          isLoading: false,
+          isError: true,
+          items: [],
+        },
+      },
+    },
+    {},
+    {
+      features: {
+        enableDashboardConnections: true,
+      },
+    }
+  );
+
+  const notification = getByText(
+    'confirm_query_change.dashboard_connection_error'
+  );
+  expect(notification).toBeInTheDocument();
+});
+
+test('informs user that there are no dashboards connections', () => {
+  const {
+    wrapper: { getByText },
+  } = render(
+    {
+      dashboards: {
+        connectedDashboards: {
+          isLoading: false,
+          isError: false,
+          items: [],
+        },
+      },
+    },
+    {},
+    {
+      features: {
+        enableDashboardConnections: true,
+      },
+    }
+  );
+
+  const notification = getByText(
+    'confirm_query_change.update_no_dashboards_connected'
+  );
+  expect(notification).toBeInTheDocument();
+});
+
+test('shows connected dashboards', () => {
+  const connectedDashboards = [
+    { id: '@id-1', title: '@title-1' },
+    { id: '@id-2', title: '@title-2' },
+    { id: '@id-3', title: '@title-3' },
+  ];
+  const {
+    wrapper: { getByText },
+  } = render(
+    {
+      dashboards: {
+        connectedDashboards: {
+          isLoading: false,
+          isError: false,
+          items: connectedDashboards,
+        },
+      },
+    },
+    {},
+    {
+      features: {
+        enableDashboardConnections: true,
+      },
+    }
+  );
+
+  const notification = getByText(
+    'confirm_query_change.update_with_dashboards_connected'
+  );
+  expect(notification).toBeInTheDocument();
+
+  for (const dashboard of connectedDashboards) {
+    expect(getByText(dashboard.title)).toBeInTheDocument();
+  }
 });

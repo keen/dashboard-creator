@@ -1,29 +1,34 @@
-import React, { FC, useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { FC, useContext, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { useInView } from 'react-intersection-observer';
+import { transparentize } from 'polished';
+import { BodyText } from '@keen.io/typography';
+import { colors } from '@keen.io/colors';
 import {
   Anchor,
-  Radio,
   Modal,
   Button,
   ModalHeader,
   ModalFooter,
+  FadeLoader,
 } from '@keen.io/ui-core';
 
 import {
   Container,
   Content,
   Back,
-  RadioItem,
-  RadioLabel,
-  Message,
   Footer,
-  Hint,
+  NoDashboardConnection,
+  List,
+  ListItem,
+  Loader,
+  Error,
 } from './ConfirmQueryChange.styles';
 
-import { CONFIRM_OPTIONS, RADIO_GROUP } from './constants';
-import { EditAction } from './types';
 import { chartEditorActions } from '../../modules/chartEditor';
+import { dashboardsSelectors } from '../../modules/dashboards';
+import { AppContext } from '../../contexts';
 
 type Props = {
   /** Chart editor open indicator */
@@ -34,17 +39,27 @@ const ConfirmQueryChange: FC<Props> = ({ isOpen }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  const [editOption, setEditOption] = useState<EditAction>(
-    EditAction.UPDATE_SAVED_QUERY
-  );
-
   useEffect(() => {
     if (isOpen) {
       dispatch(chartEditorActions.queryUpdateConfirmationMounted());
     }
   }, [isOpen]);
 
-  const { editAction, hintMessage } = CONFIRM_OPTIONS[editOption];
+  const [inViewRef, inView] = useInView();
+
+  const connectedDashboards = useSelector(
+    dashboardsSelectors.getConnectedDashboards
+  );
+  const isConnectedDashboardsError = useSelector(
+    dashboardsSelectors.getConnectedDashboardsError
+  );
+  const isConnectedDashboardsLoading = useSelector(
+    dashboardsSelectors.getConnectedDashboardsLoading
+  );
+
+  const {
+    features: { enableDashboardConnections },
+  } = useContext(AppContext);
 
   return (
     <Modal
@@ -57,25 +72,93 @@ const ConfirmQueryChange: FC<Props> = ({ isOpen }) => {
           <ModalHeader onClose={closeHandler}>
             {t('confirm_query_change.title')}
           </ModalHeader>
-          <Content>
-            <Message>{t('confirm_query_change.message')}</Message>
-            <div>
-              {RADIO_GROUP.map(({ label, value, isActive }) => (
-                <RadioItem key={value} onClick={() => setEditOption(value)}>
-                  <Radio isActive={isActive(editOption)} />
-                  <RadioLabel>{t(label)}</RadioLabel>
-                </RadioItem>
-              ))}
-            </div>
+          <Content isOverflow={enableDashboardConnections && !inView}>
+            {enableDashboardConnections ? (
+              <>
+                {isConnectedDashboardsError && (
+                  <Error>
+                    <BodyText variant="body1" color={colors.red[500]}>
+                      {t('confirm_query_change.dashboard_connection_error')}
+                    </BodyText>
+                  </Error>
+                )}
+                {isConnectedDashboardsLoading && (
+                  <Loader>
+                    <FadeLoader
+                      color={colors.blue[500]}
+                      height={40}
+                      width={40}
+                    />
+                  </Loader>
+                )}
+                {!isConnectedDashboardsError && !isConnectedDashboardsLoading && (
+                  <>
+                    <BodyText variant="body1" color={colors.black[300]}>
+                      {!!connectedDashboards.length
+                        ? t(
+                            'confirm_query_change.update_with_dashboards_connected'
+                          )
+                        : t(
+                            'confirm_query_change.update_no_dashboards_connected'
+                          )}
+                    </BodyText>
+                    {!connectedDashboards.length && (
+                      <NoDashboardConnection>
+                        <BodyText
+                          variant="body1"
+                          color={transparentize(0.5, colors.black[300])}
+                        >
+                          {t('confirm_query_change.not_connected_saved_query')}
+                        </BodyText>
+                      </NoDashboardConnection>
+                    )}
+                    {!!connectedDashboards.length && (
+                      <List>
+                        {connectedDashboards.map(({ id, title }) => (
+                          <ListItem key={id}>
+                            <BodyText variant="body1" color={colors.black[300]}>
+                              {title ||
+                                t('confirm_query_change.untitled_dashboard')}
+                            </BodyText>
+                          </ListItem>
+                        ))}
+                        <div ref={inViewRef}></div>
+                      </List>
+                    )}
+                  </>
+                )}
+              </>
+            ) : (
+              <>
+                <BodyText variant="body1" color={colors.black[300]}>
+                  {t('confirm_query_change.update_no_dashboards_connected')}
+                </BodyText>
+                <NoDashboardConnection>
+                  <BodyText
+                    variant="body1"
+                    color={transparentize(0.5, colors.black[300])}
+                  >
+                    {t('confirm_query_change.dashboard_connection_disabled')}
+                  </BodyText>
+                </NoDashboardConnection>
+              </>
+            )}
           </Content>
-          <Hint>{t(hintMessage)}</Hint>
           <ModalFooter>
             <Footer>
               <Button
                 variant="secondary"
-                onClick={() => dispatch(editAction())}
+                onClick={() =>
+                  dispatch(chartEditorActions.confirmSaveQueryUpdate())
+                }
               >
-                {t('confirm_query_change.save')}
+                {t('confirm_query_change.update_save_query')}
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={() => dispatch(chartEditorActions.useQueryForWidget())}
+              >
+                {t('confirm_query_change.update_ad_hoc_query')}
               </Button>
               <Back>
                 <Anchor onClick={closeHandler}>
