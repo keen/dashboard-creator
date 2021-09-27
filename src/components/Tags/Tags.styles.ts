@@ -17,8 +17,8 @@ export const TagsWrapper = styled.div<{
   ${(props) =>
     props.tagsOverflow &&
     css`
-      padding-left: 0 5px;
-      margin-right: 30px;
+      padding: 0 5px;
+      margin-right: 25px;
     `}
 `;
 
@@ -35,6 +35,8 @@ export const TagsTooltip = styled(motion.div)<{
   background: ${colors.white[500]};
   box-shadow: 0 2px 4px 0 rgba(29, 39, 41, 0.15);
   z-index: ${UI_LAYERS.element};
+  overflow: hidden;
+  will-change: height, opacity;
 `;
 
 export const BadgeContainer = styled.div<{

@@ -55,6 +55,7 @@ const Tags: FC<Props> = ({ tags, extraTag = '' }) => {
           <AnimatePresence>
             <TagsTooltip
               variants={variants}
+              transition={{ ease: 'linear' }}
               initial="closed"
               animate={tagsOpen ? 'open' : 'closed'}
               x={contentPosition.x}
