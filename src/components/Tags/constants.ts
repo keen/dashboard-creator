@@ -3,3 +3,5 @@ export const DROP_INDICATOR = {
   height: 20,
   padding: 5,
 };
+
+export const TAGS_TOOLTIP_MIN_WIDTH = 135;

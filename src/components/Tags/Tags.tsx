@@ -1,9 +1,15 @@
-import React, { FC, useRef, useEffect, useState } from 'react';
+
+import React, { FC, useRef, useEffect, useState, useContext } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { Badge, DynamicPortal } from '@keen.io/ui-core';
-import { useDynamicContentPosition } from '@keen.io/react-hooks';
+import {
+  useDynamicContentPosition,
+  useOnParentScroll,
+} from '@keen.io/react-hooks';
 
 import DropIndicator from './components/DropIndicator';
+
+import { TAGS_TOOLTIP_MIN_WIDTH, DROP_INDICATOR } from './constants';
 
 import {
   TagsWrapper,
@@ -11,6 +17,8 @@ import {
   BadgeContainer,
   DropIndicatorContainer,
 } from './Tags.styles';
+
+import { QueryPickerContext } from '../QueryPicker/QueryPicker';
 
 type Props = {
   /** Tags */
@@ -28,15 +36,19 @@ const Tags: FC<Props> = ({ tags, extraTag = '' }) => {
   const tagsRef = useRef(null);
   const [tagsOpen, setTagsOpen] = useState(false);
   const [tagsOverflow, setTagsOverflow] = useState(false);
-  const [tagsWidth, setTagsWidth] = useState(0);
+  const [tagsWidth, setTagsWidth] = useState(TAGS_TOOLTIP_MIN_WIDTH);
+  
+  const { modalContentRef } = useContext(QueryPickerContext);
   const { setPosition, contentPosition } = useDynamicContentPosition(tagsRef);
 
   useEffect(() => {
     const { offsetHeight, scrollHeight, offsetWidth } = tagsRef.current;
     setTagsOverflow(scrollHeight > offsetHeight);
-    setTagsWidth(offsetWidth);
+    offsetWidth > TAGS_TOOLTIP_MIN_WIDTH && setTagsWidth(offsetWidth);
   }, [tagsRef, tags]);
 
+  useOnParentScroll(modalContentRef, () => setTagsOpen(false));
+  
   return (
     <>
       <TagsWrapper ref={tagsRef} tagsOverflow={tagsOverflow}>
@@ -55,11 +67,19 @@ const Tags: FC<Props> = ({ tags, extraTag = '' }) => {
           <AnimatePresence>
             <TagsTooltip
               variants={variants}
-              transition={{ ease: 'linear' }}
               initial="closed"
+              transition={{ ease: 'linear' }}
               animate={tagsOpen ? 'open' : 'closed'}
-              x={contentPosition.x}
-              y={contentPosition.y}
+              x={
+                contentPosition.x -
+                DROP_INDICATOR.width -
+                DROP_INDICATOR.padding
+              }
+              y={
+                contentPosition.y -
+                DROP_INDICATOR.height -
+                DROP_INDICATOR.padding
+              }
               width={tagsWidth}
             >
               <BadgeContainer maxWidth={tagsWidth} padding={true}>

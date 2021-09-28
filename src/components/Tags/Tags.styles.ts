@@ -28,10 +28,9 @@ export const TagsTooltip = styled(motion.div)<{
   width: number;
 }>`
   position: absolute;
-  top: ${(props) => props.y - DROP_INDICATOR.height - DROP_INDICATOR.padding}px;
+  top: ${(props) => props.y}px;
   left: ${(props) => props.x}px;
-  width: ${(props) =>
-    props.width - DROP_INDICATOR.width - DROP_INDICATOR.padding}px;
+  width: ${(props) => props.width}px;
   background: ${colors.white[500]};
   box-shadow: 0 2px 4px 0 rgba(29, 39, 41, 0.15);
   z-index: ${UI_LAYERS.element};
@@ -61,7 +60,7 @@ export const BadgeContainer = styled.div<{
     css`
       max-width: ${props.maxWidth -
       DROP_INDICATOR.width -
-      3 * DROP_INDICATOR.padding}px;
+      2 * DROP_INDICATOR.padding}px;
     `}
 `;
 
