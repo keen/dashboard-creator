@@ -5,19 +5,15 @@ const computeDashboardMetadata = (
 ): Pick<DashboardMetaData, 'queries' | 'widgets'> => {
   const { widgets } = dashboard;
 
-  const savedQueries = widgets.reduce((acc, widget) => {
-    if (
-      widget.type === 'visualization' &&
-      widget.query &&
-      typeof widget.query === 'string'
-    ) {
-      acc.add(widget.query);
+  const queries = widgets.reduce((total, widget) => {
+    if (widget.type === 'visualization') {
+      return total + 1;
     }
-    return acc;
-  }, new Set([]));
+    return total;
+  }, 0);
 
   return {
-    queries: savedQueries.size,
+    queries,
     widgets: widgets.length,
   };
 };
