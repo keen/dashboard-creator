@@ -1,4 +1,3 @@
-
 import React, { FC, useRef, useEffect, useState, useContext } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { Badge, DynamicPortal } from '@keen.io/ui-core';
@@ -37,7 +36,7 @@ const Tags: FC<Props> = ({ tags, extraTag = '' }) => {
   const [tagsOpen, setTagsOpen] = useState(false);
   const [tagsOverflow, setTagsOverflow] = useState(false);
   const [tagsWidth, setTagsWidth] = useState(TAGS_TOOLTIP_MIN_WIDTH);
-  
+
   const { modalContentRef } = useContext(QueryPickerContext);
   const { setPosition, contentPosition } = useDynamicContentPosition(tagsRef);
 
@@ -48,7 +47,7 @@ const Tags: FC<Props> = ({ tags, extraTag = '' }) => {
   }, [tagsRef, tags]);
 
   useOnParentScroll(modalContentRef, () => setTagsOpen(false));
-  
+
   return (
     <>
       <TagsWrapper ref={tagsRef} tagsOverflow={tagsOverflow}>
