@@ -3,6 +3,8 @@ import { transparentize } from 'polished';
 import { colors } from '@keen.io/colors';
 import { UI_LAYERS } from '@keen.io/ui-core';
 
+import { SAVED_QUERY_NAME_SIZE } from './constants';
+
 export const Container = styled.div`
   display: flex;
   align-items: center;
@@ -31,14 +33,14 @@ export const Name = styled.div<{
   ${(props) =>
     props.isOverflow &&
     css`
-      max-width: 260px;
+      max-width: ${SAVED_QUERY_NAME_SIZE}px;
       overflow: hidden;
       text-overflow: ellipsis;
     `}
 `;
 
 export const TagsContainer = styled.div`
-  width: calc(100% - 260px);
+  width: 135px;
   margin-left: auto;
   display: flex;
   align-items: center;
@@ -48,8 +50,12 @@ export const TagsContainer = styled.div`
   box-sizing: border-box;
 `;
 
-export const TooltipContainer = styled.div`
+export const TooltipContainer = styled.div<{
+  x: number;
+  y: number;
+}>`
   position: absolute;
-  top: -37px;
+  top: ${(props) => props.y - 60}px;
+  left: ${(props) => props.x}px;
   z-index: ${UI_LAYERS.tooltip};
 `;

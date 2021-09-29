@@ -33,12 +33,15 @@ export const Cover = styled(motion.div)`
 `;
 
 export const ButtonsContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  justify-items: center;
-  grid-row-gap: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 30px 20px;
+`;
 
-  div:first-child {
-    grid-column: 1 / -1;
-  }
+export const ButtonWrapper = styled.div`
+  flex: 100%;
+  display: flex;
+  justify-content: center;
 `;

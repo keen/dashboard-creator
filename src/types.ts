@@ -45,7 +45,7 @@ export type DashboardCreatorOptions = {
   disableTimezoneSelection?: boolean;
   defaultTimezoneForQuery?: string;
   widgetsConfiguration?: WidgetsConfiguration;
-  enableFixedEditorBar?: boolean;
+  features?: Features;
 };
 
 export type PublicDashboardOptions = {
@@ -97,3 +97,14 @@ type ComponentSettings =
   | ChoroplethChartSettings
   | Record<string, any>;
 export type ChartSettings = ComponentSettings & { theme?: Theme };
+
+export enum Variant {
+  green = 'green',
+  purple = 'purple',
+}
+
+export type Tag = { label: string; variant: Variant };
+export type Features = {
+  enableDashboardConnections?: boolean;
+  enableFixedEditorBar?: boolean;
+};

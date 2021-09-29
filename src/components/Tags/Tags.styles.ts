@@ -17,8 +17,7 @@ export const TagsWrapper = styled.div<{
   ${(props) =>
     props.tagsOverflow &&
     css`
-      padding: 0 5px;
-      margin-right: 25px;
+      margin-right: 30px;
     `}
 `;
 
@@ -58,9 +57,7 @@ export const BadgeContainer = styled.div<{
   ${(props) =>
     props.maxWidth &&
     css`
-      max-width: ${props.maxWidth -
-      DROP_INDICATOR.width -
-      2 * DROP_INDICATOR.padding}px;
+      max-width: ${props.maxWidth - 2 * DROP_INDICATOR.padding}px;
     `}
 `;
 

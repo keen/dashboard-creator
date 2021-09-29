@@ -46,6 +46,8 @@ type Props = {
   analysisResult?: Record<string, any>;
   /** Is saved query */
   isSavedQuery?: boolean;
+  /** Determines if chart is in edit mode */
+  inEditMode?: boolean;
 };
 
 const WidgetVisualization: FC<Props> = ({
@@ -54,9 +56,10 @@ const WidgetVisualization: FC<Props> = ({
   isQueryPerforming,
   querySettings,
   analysisResult,
+  isSavedQuery,
+  inEditMode,
   onRunQuery,
   onChangeVisualization,
-  isSavedQuery,
 }) => {
   const { t } = useTranslation();
   const widgets = useMemo(
@@ -135,6 +138,7 @@ const WidgetVisualization: FC<Props> = ({
                 analysisResults={analysisResult}
                 presentationTimezone={getTimezone(analysisResult)}
                 dashboardSettings={dashboardWidgetSettings}
+                inEditMode={inEditMode}
               />
               <AnimatePresence>
                 {outdatedAnalysisResults && (

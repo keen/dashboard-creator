@@ -5,8 +5,20 @@ import Tags from './Tags';
 
 const render = (overProps: any = {}) => {
   const props = {
-    tags: ['tag 1', 'tag 2', 'tag 3'],
-    extraTag: 'Cached(4h)',
+    tags: [
+      {
+        label: 'Cached(4h)',
+        variant: 'green',
+      },
+      {
+        label: 'tag 1',
+        variant: 'purple',
+      },
+      {
+        label: 'tag 2',
+        variant: 'purple',
+      },
+    ],
     ...overProps,
   };
 
@@ -31,5 +43,7 @@ test('renders dashboard labels', () => {
     props,
   } = render();
 
-  props.tags.forEach((tag) => expect(getByText(tag)).toBeInTheDocument());
+  props.tags.forEach(({ label }) =>
+    expect(getByText(label)).toBeInTheDocument()
+  );
 });
