@@ -8,7 +8,7 @@ import {
 
 import DropIndicator from './components/DropIndicator';
 
-import { TAGS_TOOLTIP_MIN_WIDTH, DROP_INDICATOR } from './constants';
+import { DROP_INDICATOR } from './constants';
 
 import {
   TagsWrapper,
@@ -17,13 +17,13 @@ import {
   DropIndicatorContainer,
 } from './Tags.styles';
 
+import { Tag } from '../../types';
+
 import { QueryPickerContext } from '../QueryPicker/QueryPicker';
 
 type Props = {
   /** Tags */
-  tags: string[];
-  /** isPublic tag */
-  extraTag?: string;
+  tags?: Tag[];
 };
 
 const variants = {
@@ -31,11 +31,11 @@ const variants = {
   closed: { height: '0px', opacity: 0 },
 };
 
-const Tags: FC<Props> = ({ tags, extraTag = '' }) => {
+const Tags: FC<Props> = ({ tags }) => {
   const tagsRef = useRef(null);
   const [tagsOpen, setTagsOpen] = useState(false);
   const [tagsOverflow, setTagsOverflow] = useState(false);
-  const [tagsWidth, setTagsWidth] = useState(TAGS_TOOLTIP_MIN_WIDTH);
+  const [tagsWidth, setTagsWidth] = useState(0);
 
   const { modalContentRef } = useContext(QueryPickerContext);
   const { setPosition, contentPosition } = useDynamicContentPosition(tagsRef);
@@ -43,7 +43,8 @@ const Tags: FC<Props> = ({ tags, extraTag = '' }) => {
   useEffect(() => {
     const { offsetHeight, scrollHeight, offsetWidth } = tagsRef.current;
     setTagsOverflow(scrollHeight > offsetHeight);
-    offsetWidth > TAGS_TOOLTIP_MIN_WIDTH && setTagsWidth(offsetWidth);
+    setTagsWidth(offsetWidth + 10);
+    console.log(offsetWidth, tags[1]?.label);
   }, [tagsRef, tags]);
 
   useOnParentScroll(modalContentRef, () => setTagsOpen(false));
@@ -52,11 +53,10 @@ const Tags: FC<Props> = ({ tags, extraTag = '' }) => {
     <>
       <TagsWrapper ref={tagsRef} tagsOverflow={tagsOverflow}>
         <BadgeContainer>
-          {!!extraTag && <Badge variant="green">{extraTag}</Badge>}
           {tags?.length > 0 &&
-            tags.map((tag) => (
-              <Badge key={tag} variant="purple">
-                {tag}
+            tags.map(({ label, variant }: Tag) => (
+              <Badge key={label} variant={variant}>
+                {label}
               </Badge>
             ))}
         </BadgeContainer>
@@ -69,11 +69,7 @@ const Tags: FC<Props> = ({ tags, extraTag = '' }) => {
               initial="closed"
               transition={{ ease: 'linear' }}
               animate={tagsOpen ? 'open' : 'closed'}
-              x={
-                contentPosition.x -
-                DROP_INDICATOR.width -
-                DROP_INDICATOR.padding
-              }
+              x={contentPosition.x - DROP_INDICATOR.padding}
               y={
                 contentPosition.y -
                 DROP_INDICATOR.height -
@@ -82,16 +78,15 @@ const Tags: FC<Props> = ({ tags, extraTag = '' }) => {
               width={tagsWidth}
             >
               <BadgeContainer maxWidth={tagsWidth} padding={true}>
-                {!!extraTag && <Badge variant="green">{extraTag}</Badge>}
                 {tags?.length > 0 &&
-                  tags.map((tag) => (
+                  tags.map(({ label, variant }: Tag) => (
                     <Badge
-                      key={tag}
-                      variant="purple"
+                      key={label}
+                      variant={variant}
                       truncate
                       truncateMethod="css"
                     >
-                      {tag}
+                      {label}
                     </Badge>
                   ))}
               </BadgeContainer>

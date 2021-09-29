@@ -14,6 +14,8 @@ import {
   TagsContainer,
 } from './Header.styles';
 
+import { Variant } from '../../../../types';
+
 type Props = {
   /** Dashboard title */
   title: string;
@@ -30,6 +32,23 @@ type Props = {
 const Header: FC<Props> = ({ title, excerpt, isPublic, tags, children }) => {
   const { t } = useTranslation();
 
+  const isPublicTag = isPublic
+    ? [
+        {
+          label: t('dashboard_tile.public'),
+          variant: Variant.green,
+        },
+      ]
+    : [];
+
+  const tagsLabels =
+    tags?.length > 0
+      ? tags.map((label) => ({
+          label,
+          variant: Variant.purple,
+        }))
+      : [];
+
   return (
     <Container>
       <TitleWrapper>
@@ -45,7 +64,7 @@ const Header: FC<Props> = ({ title, excerpt, isPublic, tags, children }) => {
       <Details>
         <Excerpt>{excerpt}</Excerpt>
         <TagsContainer>
-          <Tags tags={tags} extraTag={isPublic && t('dashboard_tile.public')} />
+          <Tags tags={[...isPublicTag, ...tagsLabels]} />
         </TagsContainer>
       </Details>
     </Container>

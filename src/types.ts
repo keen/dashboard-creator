@@ -97,3 +97,10 @@ type ComponentSettings =
   | ChoroplethChartSettings
   | Record<string, any>;
 export type ChartSettings = ComponentSettings & { theme?: Theme };
+
+export enum Variant {
+  green = 'green',
+  purple = 'purple',
+}
+
+export type Tag = { label: string; variant: Variant };
