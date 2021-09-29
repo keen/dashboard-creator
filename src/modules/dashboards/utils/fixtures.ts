@@ -10,7 +10,6 @@ export const dashboardsMeta: DashboardMetaData[] = [
     lastModificationDate: 1606895352390,
     isPublic: true,
     publicAccessKey: '@public/1',
-    savedQueries: [],
   },
   {
     id: '@dashboard/02',
@@ -21,7 +20,6 @@ export const dashboardsMeta: DashboardMetaData[] = [
     lastModificationDate: 1606895352390,
     isPublic: true,
     publicAccessKey: '@public/2',
-    savedQueries: [],
   },
   {
     id: '@dashboard/03',
@@ -32,6 +30,5 @@ export const dashboardsMeta: DashboardMetaData[] = [
     lastModificationDate: 1606895352390,
     isPublic: true,
     publicAccessKey: '@public/3',
-    savedQueries: [],
   },
 ];

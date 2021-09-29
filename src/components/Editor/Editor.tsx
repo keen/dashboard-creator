@@ -65,7 +65,10 @@ const Editor: FC<Props> = ({ dashboardId }) => {
 
   const [containerWidth, setContainerWidth] = useState(0);
   const [droppableWidget, setDroppableWidget] = useState(null);
-  const { modalContainer, enableFixedEditorBar } = useContext(AppContext);
+  const {
+    modalContainer,
+    features: { enableFixedEditorBar },
+  } = useContext(AppContext);
   const {
     isOpen: chartWidgetEditorOpen,
     changeQueryConfirmation,

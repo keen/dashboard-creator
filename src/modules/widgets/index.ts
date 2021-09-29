@@ -19,6 +19,7 @@ import {
   cloneWidget,
   setWidgetState,
   saveImage,
+  createNewChart,
 } from './actions';
 import {
   getWidgetsPosition,
@@ -89,4 +90,5 @@ export {
   saveImage,
   serializeWidget,
   widgetsSelectors,
+  createNewChart,
 };

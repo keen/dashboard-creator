@@ -45,7 +45,7 @@ export type DashboardCreatorOptions = {
   disableTimezoneSelection?: boolean;
   defaultTimezoneForQuery?: string;
   widgetsConfiguration?: WidgetsConfiguration;
-  enableFixedEditorBar?: boolean;
+  features?: Features;
 };
 
 export type PublicDashboardOptions = {
@@ -104,3 +104,7 @@ export enum Variant {
 }
 
 export type Tag = { label: string; variant: Variant };
+export type Features = {
+  enableDashboardConnections?: boolean;
+  enableFixedEditorBar?: boolean;
+};
