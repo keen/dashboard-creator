@@ -44,7 +44,6 @@ const Tags: FC<Props> = ({ tags }) => {
     const { offsetHeight, scrollHeight, offsetWidth } = tagsRef.current;
     setTagsOverflow(scrollHeight > offsetHeight);
     setTagsWidth(offsetWidth + 10);
-    console.log(offsetWidth, tags[1]?.label);
   }, [tagsRef, tags]);
 
   useOnParentScroll(modalContentRef, () => setTagsOpen(false));
