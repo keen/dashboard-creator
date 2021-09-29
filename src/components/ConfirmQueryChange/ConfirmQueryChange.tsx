@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { useInView } from 'react-intersection-observer';
@@ -28,6 +28,7 @@ import {
 
 import { chartEditorActions } from '../../modules/chartEditor';
 import { dashboardsSelectors } from '../../modules/dashboards';
+import { AppContext } from '../../contexts';
 
 type Props = {
   /** Chart editor open indicator */
@@ -56,6 +57,10 @@ const ConfirmQueryChange: FC<Props> = ({ isOpen }) => {
     dashboardsSelectors.getConnectedDashboardsLoading
   );
 
+  const {
+    features: { enableDashboardConnections },
+  } = useContext(AppContext);
+
   return (
     <Modal
       isOpen={isOpen}
@@ -67,49 +72,75 @@ const ConfirmQueryChange: FC<Props> = ({ isOpen }) => {
           <ModalHeader onClose={closeHandler}>
             {t('confirm_query_change.title')}
           </ModalHeader>
-          <Content isOverflow={!inView}>
-            {isConnectedDashboardsError && (
-              <Error>
-                <BodyText variant="body1" color={colors.red[500]}>
-                  {t('confirm_query_change.dashboard_connection_error')}
-                </BodyText>
-              </Error>
-            )}
-            {isConnectedDashboardsLoading && (
-              <Loader>
-                <FadeLoader color={colors.blue[500]} height={40} width={40} />
-              </Loader>
-            )}
-            {!isConnectedDashboardsError && !isConnectedDashboardsLoading && (
+          <Content isOverflow={enableDashboardConnections && !inView}>
+            {enableDashboardConnections ? (
+              <>
+                {isConnectedDashboardsError && (
+                  <Error>
+                    <BodyText variant="body1" color={colors.red[500]}>
+                      {t('confirm_query_change.dashboard_connection_error')}
+                    </BodyText>
+                  </Error>
+                )}
+                {isConnectedDashboardsLoading && (
+                  <Loader>
+                    <FadeLoader
+                      color={colors.blue[500]}
+                      height={40}
+                      width={40}
+                    />
+                  </Loader>
+                )}
+                {!isConnectedDashboardsError && !isConnectedDashboardsLoading && (
+                  <>
+                    <BodyText variant="body1" color={colors.black[300]}>
+                      {!!connectedDashboards.length
+                        ? t(
+                            'confirm_query_change.update_with_dashboards_connected'
+                          )
+                        : t(
+                            'confirm_query_change.update_no_dashboards_connected'
+                          )}
+                    </BodyText>
+                    {!connectedDashboards.length && (
+                      <NoDashboardConnection>
+                        <BodyText
+                          variant="body1"
+                          color={transparentize(0.5, colors.black[300])}
+                        >
+                          {t('confirm_query_change.not_connected_saved_query')}
+                        </BodyText>
+                      </NoDashboardConnection>
+                    )}
+                    {!!connectedDashboards.length && (
+                      <List>
+                        {connectedDashboards.map(({ id, title }) => (
+                          <ListItem key={id}>
+                            <BodyText variant="body1" color={colors.black[300]}>
+                              {title ||
+                                t('confirm_query_change.untitled_dashboard')}
+                            </BodyText>
+                          </ListItem>
+                        ))}
+                        <div ref={inViewRef}></div>
+                      </List>
+                    )}
+                  </>
+                )}
+              </>
+            ) : (
               <>
                 <BodyText variant="body1" color={colors.black[300]}>
-                  {!!connectedDashboards.length
-                    ? t('confirm_query_change.update_with_dashboards_connected')
-                    : t('confirm_query_change.update_no_dashboards_connected')}
+                  {t('confirm_query_change.update_no_dashboards_connected')}
                 </BodyText>
-                {!connectedDashboards.length && (
-                  <NoDashboardConnection>
-                    <BodyText
-                      variant="body1"
-                      color={transparentize(0.5, colors.black[300])}
-                    >
-                      {t('confirm_query_change.not_connected_saved_query')}
-                    </BodyText>
-                  </NoDashboardConnection>
-                )}
-                {!!connectedDashboards.length && (
-                  <List>
-                    {connectedDashboards.map(({ id, title }) => (
-                      <ListItem key={id}>
-                        <BodyText variant="body1" color={colors.black[300]}>
-                          {title ||
-                            t('confirm_query_change.untitled_dashboard')}
-                        </BodyText>
-                      </ListItem>
-                    ))}
-                    <div ref={inViewRef}></div>
-                  </List>
-                )}
+                <NoDashboardConnection>
+                  <BodyText
+                    variant="body1"
+                    color={transparentize(0.5, colors.black[300])}
+                  >
+                    {t('confirm_query_change.dashboard_connection_disabled')}
+                  </BodyText>
+                </NoDashboardConnection>
               </>
             )}
           </Content>

@@ -27,7 +27,7 @@ import { getWidget, getWidgetSettings } from '../selectors';
 
 import { widget as widgetFixture } from '../fixtures';
 
-import { TRANSLATIONS } from '../../../constants';
+import { FEATURES, TRANSLATIONS } from '../../../constants';
 
 import { WidgetItem, WidgetErrors } from '../types';
 import { chartEditorActions, chartEditorSelectors } from '../../chartEditor';
@@ -574,7 +574,7 @@ describe('editChartSavedQuery()', () => {
     });
   });
 
-  describe('Scenario 2: User edits query and widget settings ', () => {
+  describe('Scenario 2: User edits query and widget settings', () => {
     const test = sagaHelper(editChartSavedQuery(widgetId));
     const query = 'purchases';
 
@@ -604,8 +604,89 @@ describe('editChartSavedQuery()', () => {
       };
     });
 
+    test('checks context for features', (result) => {
+      expect(result).toEqual(getContext(FEATURES));
+      return { enableDashboardConnections: true };
+    });
+
     test('checks connected dashboards', (result) => {
       expect(result).toEqual(call(getConnectedDashboards, query));
+    });
+
+    test('waits for user action', (result) => {
+      expect(result).toEqual(
+        take([
+          chartEditorActions.hideQueryUpdateConfirmation.type,
+          chartEditorActions.confirmSaveQueryUpdate.type,
+          chartEditorActions.useQueryForWidget.type,
+        ])
+      );
+
+      return chartEditorActions.confirmSaveQueryUpdate();
+    });
+
+    test('get widget settings', (result) => {
+      expect(result).toEqual(select(getWidgetSettings, widgetId));
+
+      return {
+        query: 'purchases',
+      };
+    });
+
+    test('updates saved query visualization metadata', (result) => {
+      const metadata = {
+        visualization: {
+          chartSettings: {
+            stackMode: 'normal',
+          },
+          type: 'area',
+          widgetSettings: {
+            title: {
+              content: '@widget/title',
+            },
+          },
+        },
+      };
+
+      expect(result).toEqual(
+        call(updateSaveQuery, 'purchases', chartEditor.querySettings, metadata)
+      );
+    });
+  });
+
+  describe('Scenario 3: User edits query and widget settings, dashboards connections are disabled', () => {
+    const test = sagaHelper(editChartSavedQuery(widgetId));
+    const query = 'purchases';
+
+    test('get chart editor state', (result) => {
+      expect(result).toEqual(select(chartEditorSelectors.getChartEditor));
+      return {
+        ...chartEditor,
+        hasQueryChanged: true,
+      };
+    });
+
+    test('close chart editor', (result) => {
+      expect(result).toEqual(put(chartEditorActions.closeEditor()));
+    });
+
+    test('shows query update confirmation', (result) => {
+      expect(result).toEqual(
+        put(chartEditorActions.showQueryUpdateConfirmation())
+      );
+    });
+
+    test('selects query name', (result) => {
+      expect(result).toEqual(select(getWidgetSettings, widgetId));
+
+      return {
+        query,
+      };
+    });
+
+    test('checks context for features', (result) => {
+      expect(result).toEqual(getContext(FEATURES));
+      return { enableDashboardConnections: false };
     });
 
     test('waits for user action', (result) => {

@@ -21,7 +21,7 @@ import {
   checkIfChartWidgetHasInconsistentFilters,
 } from '../chartWidget';
 
-import { KEEN_ANALYSIS } from '../../../../constants';
+import { KEEN_ANALYSIS, TRANSLATIONS } from '../../../../constants';
 
 import {
   WidgetItem,
@@ -103,16 +103,19 @@ export function* initializeChartWidget({
   } catch (err) {
     const { body, error_code: code } = err;
     let errorCode = WidgetErrors.CANNOT_INITIALIZE;
+    let errorMessage = body;
 
     if (code === AnalysisError.RESOURCE_NOT_FOUND) {
+      const i18n = yield getContext(TRANSLATIONS);
       errorCode = WidgetErrors.SAVED_QUERY_NOT_EXIST;
+      errorMessage = i18n.t('widget_errors.resource_not_found');
     }
 
     yield put(
       setWidgetState(id, {
         isInitialized: true,
         error: {
-          message: body,
+          message: errorMessage,
           code: errorCode,
         },
       })

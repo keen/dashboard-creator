@@ -9,6 +9,7 @@ import {
   Cover,
   RemoveMotion,
   ButtonsContainer,
+  ButtonWrapper,
 } from './WidgetManagement.styles';
 
 import RemoveWidget from '../RemoveWidget';
@@ -26,6 +27,8 @@ type Props = {
   onEditWidget: () => void;
   /** Clone widget event handler */
   onCloneWidget: () => void;
+  /** Create widget event handler */
+  onCreateWidget?: () => void;
   /** Edit button label */
   editButtonLabel: string;
   /** Enables or disables edit possibility */
@@ -39,6 +42,7 @@ const WidgetManagement: FC<Props> = ({
   onEditWidget,
   onRemoveWidget,
   onCloneWidget,
+  onCreateWidget,
   editButtonLabel,
   editAllowed = true,
   cloneAllowed = true,
@@ -75,11 +79,20 @@ const WidgetManagement: FC<Props> = ({
             <ButtonsContainer>
               {editAllowed && (
                 <PreventDragPropagation>
-                  <div data-testid="edit-widget">
+                  <ButtonWrapper data-testid="edit-widget">
                     <Button variant="blank" onClick={onEditWidget}>
                       {editButtonLabel}
                     </Button>
-                  </div>
+                  </ButtonWrapper>
+                </PreventDragPropagation>
+              )}
+              {onCreateWidget && (
+                <PreventDragPropagation>
+                  <ButtonWrapper data-testid="create-widget">
+                    <Button variant="blank" onClick={onCreateWidget}>
+                      {t('widget.create_widget')}
+                    </Button>
+                  </ButtonWrapper>
                 </PreventDragPropagation>
               )}
               <PreventDragPropagation>
