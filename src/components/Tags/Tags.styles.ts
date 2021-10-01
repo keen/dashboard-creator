@@ -51,7 +51,7 @@ export const BadgeContainer = styled.div<{
   ${(props) =>
     props.padding &&
     css`
-      padding: 5px;
+      padding: ${DROP_INDICATOR.padding}px;
     `}
 
   ${(props) =>
