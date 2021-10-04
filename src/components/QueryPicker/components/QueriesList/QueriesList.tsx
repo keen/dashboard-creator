@@ -15,13 +15,15 @@ const QueriesList: FC<Props> = ({ queries, onSelectQuery }) => {
   return (
     <>
       {queries.map((query) => {
-        const { id, displayName, visualization } = query;
+        const { id, displayName, visualization, tags, cached } = query;
 
         return (
           <QueryItem
             key={id}
             name={displayName}
             visualization={visualization}
+            tags={tags}
+            cached={cached}
             onClick={() => onSelectQuery(query)}
           />
         );

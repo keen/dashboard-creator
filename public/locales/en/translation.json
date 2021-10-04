@@ -243,7 +243,17 @@
     "search_query_placeholder": "Search saved query",
     "saved_queries_error": "We could not load your saved queries at the moment. Please close this window and try adding a chart again or create a New Query.",
     "empty_search_results": "No queries found with this name.",
-    "empty_project": "There are no saved queries in this project. Create a New Query from scratch."
+    "empty_project": "There are no saved queries in this project. Create a New Query from scratch.",
+    "cached_label": "Cached",
+    "cached_units": "h",
+    "filters": {
+      "title": "Filters",
+      "show_only_cached_queries": "Only Cached Queries",
+      "search_label": "Tags",
+      "search_tags_input_placeholder": "Search tag",
+      "empty_search_message": "No tags found with this name",
+      "clear": "Clear Filters"
+    }
   },
   "image_picker": {
     "title": "Insert Image by URL",

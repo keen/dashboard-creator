@@ -9,11 +9,25 @@ type Props = {
   /** Active state indicator */
   isActive?: boolean;
   /** Click event handler */
-  onClick: (e: React.MouseEvent<HTMLSpanElement>) => void;
+  onClick?: (e: React.MouseEvent<HTMLSpanElement>) => void;
+  /** Click event handler */
+  onMouseOver?: (e: React.MouseEvent<HTMLSpanElement>) => void;
+  /** Click event handler */
+  onMouseLeave?: (e: React.MouseEvent<HTMLSpanElement>) => void;
 };
 
-const DropIndicator: FC<Props> = ({ onClick, isActive }) => (
-  <Container onClick={onClick} data-testid="drop-indicator">
+const DropIndicator: FC<Props> = ({
+  onClick,
+  onMouseOver,
+  onMouseLeave,
+  isActive,
+}) => (
+  <Container
+    onClick={onClick && onClick}
+    onMouseOver={onMouseOver && onMouseOver}
+    onMouseLeave={onMouseLeave && onMouseLeave}
+    data-testid="drop-indicator"
+  >
     <motion.span
       transition={{ duration: 0.3 }}
       animate={

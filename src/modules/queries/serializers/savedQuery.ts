@@ -1,6 +1,8 @@
 import { getAvailableWidgets } from '@keen.io/widget-picker';
 import camelCase from 'camelcase-keys';
 
+import { convertMilisecondsToMinutes } from '../../../utils';
+
 import {
   SavedQueryAPIResponse,
   SavedQuery,
@@ -11,11 +13,14 @@ export const serializeSavedQuery = ({
   query_name: queryName,
   query,
   metadata,
+  refresh_rate,
 }: SavedQueryAPIResponse): SavedQuery => {
   const baseProperties = {
     id: queryName,
     displayName: metadata?.display_name || queryName,
     settings: query,
+    tags: metadata?.tags,
+    cached: refresh_rate && convertMilisecondsToMinutes(refresh_rate),
   };
 
   let visualization = {} as QueryVisualization;
