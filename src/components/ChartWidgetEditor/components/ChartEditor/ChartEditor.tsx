@@ -262,7 +262,9 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
         <RunQuery>
           <Button
             variant="success"
-            isDisabled={!outdatedAnalysisResults || isQueryPerforming}
+            isDisabled={
+              (analysisResult && !outdatedAnalysisResults) || isQueryPerforming
+            }
             icon={isQueryPerforming && <FadeLoader />}
             onClick={onRunQuery}
           >
