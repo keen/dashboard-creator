@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.4.0](https://github.com/keen/explorer/compare/v4.2.0...v4.4.0) (2021-09-27)
+
+
+### Features
+
+* 🎸 dashboards connections ([f54583c](https://github.com/keen/explorer/commit/f54583ca9ef9d43bcbd122d5ee4505a6b92ba699))
+* 🎸 feature flag ([76e2554](https://github.com/keen/explorer/commit/76e2554897dfc6b85ffdbcf1318a0d658a436ae1))
+* 🎸 Metric chart icons ([be74f9a](https://github.com/keen/explorer/commit/be74f9a8f46413eefef833e31895eef51a7a7c89))
+* 🎸 not existing query used on dashboard ([c3bd9f2](https://github.com/keen/explorer/commit/c3bd9f2ae3cee6dced5865fe9ed0fd13e0498c24))
+* 🎸 table chart formatting ([ece0ad7](https://github.com/keen/explorer/commit/ece0ad7e49877d79e36ba2119ccda38ee05ee485))
+* 🎸 Trigger Dashboard Settings on "Finish Edition" click ([807c724](https://github.com/keen/explorer/commit/807c724899f6306cf0d53b75069533c7d2d51383))
+
 ## [4.2.0](https://github.com/keen/explorer/compare/v4.1.1...v4.2.0) (2021-09-02)
 
 
