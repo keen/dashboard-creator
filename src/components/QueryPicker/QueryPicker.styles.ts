@@ -42,3 +42,14 @@ export const Description = styled.div`
   line-height: 17px;
   color: ${transparentize(0.3, colors.black[100])};
 `;
+
+export const FiltersContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+export const SearchContainer = styled.div`
+  width: 100%;
+  margin-right: 10px;
+`;

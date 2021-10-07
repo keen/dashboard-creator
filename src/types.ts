@@ -98,6 +98,12 @@ type ComponentSettings =
   | Record<string, any>;
 export type ChartSettings = ComponentSettings & { theme?: Theme };
 
+export enum Variant {
+  green = 'green',
+  purple = 'purple',
+}
+
+export type Tag = { label: string; variant: Variant };
 export type Features = {
   enableDashboardConnections?: boolean;
   enableFixedEditorBar?: boolean;
