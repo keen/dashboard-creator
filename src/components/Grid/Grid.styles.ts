@@ -27,7 +27,6 @@ export const Container = styled.div`
     z-index: 1;
     will-change: width, height;
   }
-
   .react-grid-item.react-draggable-dragging {
     transition: none;
     z-index: 3;
@@ -50,6 +49,7 @@ export const Container = styled.div`
     -ms-user-select: none;
     -o-user-select: none;
     user-select: none;
+    cursor: grabbing;
   }
 
   .react-grid-item > .react-resizable-handle {
