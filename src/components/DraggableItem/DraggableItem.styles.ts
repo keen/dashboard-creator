@@ -1,5 +1,11 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-export const Container = styled.div`
+export const Container = styled.div<{ isDragged: boolean }>`
   cursor: grab;
+
+  ${(props) =>
+    props.isDragged &&
+    css`
+      cursor: grabbing;
+    `};
 `;

@@ -67,6 +67,7 @@ const TextManagement: FC<Props> = ({
   } = widget as TextWidget;
 
   const [removeConfirmation, setRemoveConfirmation] = useState(false);
+  const [isGrabbed, setElementGrab] = useState(false);
   const [editorState, setEditorState] = useState(
     EditorState.createWithContent(convertFromRaw(content))
   );
@@ -80,6 +81,7 @@ const TextManagement: FC<Props> = ({
 
   useEffect(() => {
     if (!isHoverActive) {
+      setElementGrab(false);
       setRemoveConfirmation(false);
     }
     if (isHoverActive && containerRef.current) {
@@ -131,6 +133,9 @@ const TextManagement: FC<Props> = ({
           <ManagementContainer
             className={DRAG_HANDLE_ELEMENT}
             isOverflow={settingsOverflow}
+            onMouseDown={() => setElementGrab(true)}
+            onMouseUp={() => setElementGrab(false)}
+            isGrabbed={isGrabbed}
             {...settingsMotion}
           >
             <DragHandle>

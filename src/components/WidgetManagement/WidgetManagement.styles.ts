@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { transparentize } from 'polished';
 import { motion } from 'framer-motion';
 import { colors } from '@keen.io/colors';
@@ -15,7 +15,7 @@ export const RemoveMotion = styled(motion.div)`
   z-index: ${UI_LAYERS.tooltip};
 `;
 
-export const Cover = styled(motion.div)`
+export const Cover = styled(motion.div)<{ isGrabbed: boolean }>`
   background-color: ${transparentize(0.8, colors.black[500])};
   display: flex;
   align-items: center;
@@ -30,6 +30,12 @@ export const Cover = styled(motion.div)`
   width: 100%;
   height: 100%;
   z-index: ${UI_LAYERS.tooltip};
+
+  ${(props) =>
+    props.isGrabbed &&
+    css`
+      cursor: grabbing;
+    `};
 `;
 
 export const ButtonsContainer = styled.div`

@@ -24,6 +24,7 @@ import { getDroppingItemSize, getGridItemStyles } from '../../utils';
 import {
   GRID_CONTAINER_ID,
   ROW_HEIGHT,
+  DRAGGED_WIDGET_Z_INDEX,
   GRID_MARGIN,
   GRID_BREAKPOINTS,
   GRID_COLS_EDIT_MODE,
@@ -65,6 +66,8 @@ const Grid: FC<Props> = ({
   const widgets = useSelector((state: RootState) =>
     getWidgetsPosition(state, widgetsId)
   );
+
+  const [draggedWidget, setDraggedWidget] = useState<string>(null);
   const containerRef = useRef(null);
 
   const { droppableWidget, setContainerWidth } = useContext(EditorContext);
@@ -130,10 +133,20 @@ const Grid: FC<Props> = ({
         isDraggable={isEditorMode}
         isResizable={isEditorMode}
         isDroppable={isEditorMode}
-        onDragStop={onWidgetDrag}
+        onDragStop={(elements) => {
+          onWidgetDrag && onWidgetDrag(elements);
+          setDraggedWidget(null);
+        }}
         onResizeStart={onResizeStart}
         onResizeStop={onResizeStop}
-        onDrop={onWidgetDrop}
+        onDrop={(widgetsPosition, droppedItem) => {
+          onWidgetDrop && onWidgetDrop(widgetsPosition, droppedItem);
+          setDraggedWidget(null);
+        }}
+        onDragStart={(_elements, gridItem) => {
+          const { i: id } = gridItem;
+          setDraggedWidget(id);
+        }}
         layouts={generateLayouts()}
         breakpoints={GRID_BREAKPOINTS}
         cols={isEditorMode ? GRID_COLS_EDIT_MODE : GRID_COLS_VIEW_MODE}
@@ -165,12 +178,18 @@ const Grid: FC<Props> = ({
             key={id}
             onMouseEnter={() => !isResize && setActiveWidget(id)}
             onMouseLeave={() => setActiveWidget(null)}
-            style={getGridItemStyles(position)}
+            style={getGridItemStyles(
+              position,
+              isEditorMode && id === draggedWidget,
+              DRAGGED_WIDGET_Z_INDEX
+            )}
           >
             <Widget
               id={id}
               onRemoveWidget={() => onRemoveWidget(id)}
-              isHoverActive={isEditorMode && id === activeWidget}
+              isHoverActive={
+                !draggedWidget && isEditorMode && id === activeWidget
+              }
               isEditorMode={isEditorMode}
             />
           </div>

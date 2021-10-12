@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { IconType } from '@keen.io/icons';
 
 import { Container } from './DraggableItem.styles';
@@ -29,15 +29,23 @@ const DraggableItem: FC<Props> = ({
   dragStartHandler,
   dragEndHandler,
 }) => {
+  const [isDragged, setElementDrag] = useState(false);
+
   return (
     <Container
+      isDragged={isDragged}
       onClick={onClick}
+      onMouseDown={() => setElementDrag(true)}
+      onMouseUp={() => setElementDrag(false)}
       draggable
       unselectable="on"
       data-icon-type={icon}
       data-widget-type={type}
       onDragStart={dragStartHandler}
-      onDragEnd={dragEndHandler}
+      onDragEnd={() => {
+        setElementDrag(false);
+        dragEndHandler();
+      }}
     >
       <WidgetItem icon={icon} text={text} />
     </Container>
