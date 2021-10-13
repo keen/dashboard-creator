@@ -7,7 +7,6 @@ export const Container = styled.div<LayoutProps & { backgroundColor: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: 'grabbing';
   ${layout};
 `;
 

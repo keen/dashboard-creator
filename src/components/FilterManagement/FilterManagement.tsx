@@ -100,6 +100,7 @@ const FilterManagement: FC<Props> = ({
             onMouseDown={() => setElementGrab(true)}
             onMouseUp={() => setElementGrab(false)}
             isGrabbed={isGrabbed}
+            data-testid="management-container"
             {...settingsMotion}
           >
             <DragHandle>

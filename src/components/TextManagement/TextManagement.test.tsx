@@ -3,6 +3,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { render as rtlRender, fireEvent } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
+import 'jest-styled-components';
 
 import TextManagement from './TextManagement';
 
@@ -137,4 +138,15 @@ test('allows user to clone text widget', async () => {
       },
     ]
   `);
+});
+
+test('renders "grabbing" indicator when user grabs element', async () => {
+  const {
+    wrapper: { getByTestId },
+  } = render({}, { isHoverActive: true });
+
+  const container = getByTestId('management-container');
+  fireEvent.mouseDown(container);
+
+  expect(container).toHaveStyleRule('cursor', 'grabbing');
 });
