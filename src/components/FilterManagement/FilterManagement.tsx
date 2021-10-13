@@ -28,6 +28,8 @@ type Props = {
   id: string;
   /** Hover state indicator */
   isHoverActive: boolean;
+  /** Drag indicator */
+  isDragged: boolean;
   /** Remove widget event handler */
   onRemoveWidget: () => void;
   /** Edit widget event handler */
@@ -36,12 +38,15 @@ type Props = {
 
 const FilterManagement: FC<Props> = ({
   isHoverActive,
+  isDragged,
   onRemoveWidget,
   onEditWidget,
 }) => {
   const { t } = useTranslation();
   const containerRef = useRef(null);
   const [removeConfirmation, setRemoveConfirmation] = useState(false);
+  const [isGrabbed, setElementGrab] = useState(false);
+
   const [overflowSettings, setOverflowSettings] = useState(
     INITIAL_OVERFLOW_SETTINGS
   );
@@ -62,6 +67,10 @@ const FilterManagement: FC<Props> = ({
       });
     }
   }, [isHoverActive]);
+
+  useEffect(() => {
+    if (!isDragged) setElementGrab(false);
+  }, [isDragged]);
 
   const showManagementSettings = isHoverActive && !removeConfirmation;
   const showRemoveConfirmation = isHoverActive && removeConfirmation;
@@ -88,6 +97,9 @@ const FilterManagement: FC<Props> = ({
           <ManagementContainer
             isOverflow={overflowSettings.management}
             className={DRAG_HANDLE_ELEMENT}
+            onMouseDown={() => setElementGrab(true)}
+            onMouseUp={() => setElementGrab(false)}
+            isGrabbed={isGrabbed}
             {...settingsMotion}
           >
             <DragHandle>

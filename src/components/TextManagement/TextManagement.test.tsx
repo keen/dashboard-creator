@@ -50,6 +50,7 @@ const render = (storeState: any = {}, overProps: any = {}) => {
   const props = {
     id: widgetId,
     isHoverActive: false,
+    isDragged: false,
     onRemoveWidget: jest.fn(),
     ...overProps,
   };

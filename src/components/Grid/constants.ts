@@ -1,3 +1,5 @@
+import { WidgetType } from '../../types';
+
 export const GRID_CONTAINER_ID = 'keen-grid-container';
 
 export const GRID_MARGIN = [20, 20];
@@ -11,5 +13,11 @@ export const GRID_BREAKPOINTS = { lg: 1152, md: 996, sm: 768, xs: 480, xxs: 0 };
 export const GRID_CONTAINER_PADDING = [0, 0];
 
 export const DRAGGED_WIDGET_Z_INDEX = 1000;
+
+export const WIDGETS_WITH_OVERLAY_DRAG: WidgetType[] = [
+  'date-picker',
+  'text',
+  'filter',
+];
 
 export const ROW_HEIGHT = 10;

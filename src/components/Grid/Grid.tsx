@@ -24,6 +24,7 @@ import { getDroppingItemSize, getGridItemStyles } from '../../utils';
 import {
   GRID_CONTAINER_ID,
   ROW_HEIGHT,
+  WIDGETS_WITH_OVERLAY_DRAG,
   DRAGGED_WIDGET_Z_INDEX,
   GRID_MARGIN,
   GRID_BREAKPOINTS,
@@ -173,27 +174,34 @@ const Grid: FC<Props> = ({
         }
         measureBeforeMount
       >
-        {widgets.map(({ id, position }) => (
-          <div
-            key={id}
-            onMouseEnter={() => !isResize && setActiveWidget(id)}
-            onMouseLeave={() => setActiveWidget(null)}
-            style={getGridItemStyles(
-              position,
-              isEditorMode && id === draggedWidget,
-              DRAGGED_WIDGET_Z_INDEX
-            )}
-          >
-            <Widget
-              id={id}
-              onRemoveWidget={() => onRemoveWidget(id)}
-              isHoverActive={
-                !draggedWidget && isEditorMode && id === activeWidget
-              }
-              isEditorMode={isEditorMode}
-            />
-          </div>
-        ))}
+        {widgets.map(({ id, position, type }) => {
+          const isActiveWidget = id === activeWidget && isEditorMode;
+
+          return (
+            <div
+              key={id}
+              onMouseEnter={() => !isResize && setActiveWidget(id)}
+              onMouseLeave={() => setActiveWidget(null)}
+              style={getGridItemStyles(
+                position,
+                isEditorMode && id === draggedWidget,
+                DRAGGED_WIDGET_Z_INDEX
+              )}
+            >
+              <Widget
+                id={id}
+                onRemoveWidget={() => onRemoveWidget(id)}
+                isDragged={id === draggedWidget}
+                isHoverActive={
+                  WIDGETS_WITH_OVERLAY_DRAG.includes(type)
+                    ? isActiveWidget
+                    : !draggedWidget && isActiveWidget
+                }
+                isEditorMode={isEditorMode}
+              />
+            </div>
+          );
+        })}
       </ResponsiveReactGridLayout>
     </Container>
   );

@@ -41,16 +41,18 @@ type Props = {
   id: string;
   /** Hover state indicator */
   isHoverActive: boolean;
+  /** Drag indicator */
+  isDragged: boolean;
   /** Remove widget event handler */
   onRemoveWidget: () => void;
   /** Update trigger time delay */
   updateDebounceTime?: number;
 };
 
-// TODO: Integrate widget clone functionality
 const TextManagement: FC<Props> = ({
   id,
   isHoverActive,
+  isDragged,
   onRemoveWidget,
   updateDebounceTime = 500,
 }) => {
@@ -80,8 +82,11 @@ const TextManagement: FC<Props> = ({
   }, [isInitialized]);
 
   useEffect(() => {
+    if (!isDragged) setElementGrab(false);
+  }, [isDragged]);
+
+  useEffect(() => {
     if (!isHoverActive) {
-      setElementGrab(false);
       setRemoveConfirmation(false);
     }
     if (isHoverActive && containerRef.current) {

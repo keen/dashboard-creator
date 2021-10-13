@@ -43,6 +43,8 @@ type Props = {
   id: string;
   /** Widget hover indicator */
   isHoverActive: boolean;
+  /** Drag indicator */
+  isDragged?: boolean;
   /** Editor mode indicator */
   isEditorMode?: boolean;
   /** Remove widget event handler */
@@ -60,6 +62,7 @@ const renderWidget = ({
   isDetached,
   isFadeOut,
   isInitialized,
+  isDragged,
   title,
   error,
   cardEnabled,
@@ -79,6 +82,7 @@ const renderWidget = ({
           {isEditorMode && (
             <FilterManagement
               id={widgetId}
+              isDragged={isDragged}
               isHoverActive={isHoverActive}
               onRemoveWidget={onRemoveWidget}
               onEditWidget={onEditWidget}
@@ -92,6 +96,7 @@ const renderWidget = ({
           <TextManagementContainer isFadeOut={isFadeOut}>
             <TextManagement
               id={widgetId}
+              isDragged={isDragged}
               isHoverActive={enableHover}
               onRemoveWidget={onRemoveWidget}
             />
@@ -170,6 +175,7 @@ const renderWidget = ({
           {isEditorMode && (
             <FilterManagement
               id={widgetId}
+              isDragged={isDragged}
               isHoverActive={isHoverActive}
               onRemoveWidget={onRemoveWidget}
               onEditWidget={onEditWidget}
@@ -185,6 +191,7 @@ const renderWidget = ({
 const Widget: FC<Props> = ({
   id,
   isHoverActive,
+  isDragged,
   onRemoveWidget,
   isEditorMode = false,
 }) => {
@@ -234,6 +241,7 @@ const Widget: FC<Props> = ({
     isHighlighted,
     isFadeOut,
     isInitialized,
+    isDragged,
     onRemoveWidget,
     onEditWidget,
     error,
