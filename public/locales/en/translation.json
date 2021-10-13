@@ -150,7 +150,8 @@
     "detached_query_message": "Please check if query structure has changed or select other visualization",
     "inconsistent_filter_title": "Unable to render the visualization",
     "inconsistent_filter_message": "Applied filter is not consistent with the query",
-    "resource_not_found": "The Saved Query does not exist"
+    "resource_not_found": "The Saved Query does not exist",
+    "stream_not_found": "The connected stream {{stream}} does not exist"
   },
   "dashboard_details": {
     "untitled_dashboard": "Untitled dashboard",
@@ -176,7 +177,8 @@
     "dashboard_meta_success": "Dashboard saved",
     "dashboard_meta_error": "We were not able to update this dashboard. Try again later.",
     "dashboard_cloned": "Dashboard cloned",
-    "dashboard_cloned_error": "We were not able to clone this dashboard. Try again later."
+    "dashboard_cloned_error": "We were not able to clone this dashboard. Try again later.",
+    "not_existing_stream": "You cannot edit this chart. Connected stream do not exist."
   },
   "actions_menu": {
     "delete_dashboard": "Delete",

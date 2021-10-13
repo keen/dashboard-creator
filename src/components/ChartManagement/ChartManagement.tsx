@@ -31,7 +31,9 @@ const ChartManagement: FC<Props> = ({
 }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const disableManagement = error?.code === WidgetErrors.SAVED_QUERY_NOT_EXIST;
+  const disableManagement =
+    error?.code === WidgetErrors.SAVED_QUERY_NOT_EXIST ||
+    error?.code === WidgetErrors.STREAM_NOT_EXIST;
 
   const handleCreateNewChart = () => dispatch(createNewChart(widgetId));
 

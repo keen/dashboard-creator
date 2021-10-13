@@ -1,11 +1,15 @@
 import React, { FC } from 'react';
-import { useDispatch } from 'react-redux';
-import { Modal } from '@keen.io/ui-core';
+import { useDispatch, useSelector } from 'react-redux';
+import { Loader, Modal } from '@keen.io/ui-core';
+import { colors } from '@keen.io/colors';
 
-import { Container } from './ChartWidgetEditor.styles';
+import { Container, LoaderContainer } from './ChartWidgetEditor.styles';
 
 import { ChartEditor } from './components';
-import { chartEditorActions } from '../../modules/chartEditor';
+import {
+  chartEditorActions,
+  chartEditorSelectors,
+} from '../../modules/chartEditor';
 
 type Props = {
   /** Chart editor open indicator */
@@ -14,6 +18,7 @@ type Props = {
 
 const ChartWidgetEditor: FC<Props> = ({ isOpen }) => {
   const dispatch = useDispatch();
+  const { isLoading } = useSelector(chartEditorSelectors.getChartEditor);
 
   return (
     <Modal
@@ -23,7 +28,13 @@ const ChartWidgetEditor: FC<Props> = ({ isOpen }) => {
     >
       {(_, closeHandler) => (
         <Container>
-          <ChartEditor onClose={closeHandler} />
+          {isLoading ? (
+            <LoaderContainer>
+              <Loader width={50} height={50} fill={colors.blue['500']} />
+            </LoaderContainer>
+          ) : (
+            <ChartEditor onClose={closeHandler} />
+          )}
         </Container>
       )}
     </Modal>

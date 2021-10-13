@@ -27,11 +27,19 @@ import { getWidget, getWidgetSettings } from '../selectors';
 
 import { widget as widgetFixture } from '../fixtures';
 
-import { FEATURES, TRANSLATIONS } from '../../../constants';
+import {
+  FEATURES,
+  NOTIFICATION_MANAGER,
+  TRANSLATIONS,
+} from '../../../constants';
 
 import { WidgetItem, WidgetErrors } from '../types';
 import { chartEditorActions, chartEditorSelectors } from '../../chartEditor';
 import { getConnectedDashboards } from '../../dashboards/saga';
+
+const translationsMock = {
+  t: jest.fn().mockImplementation((value) => value),
+};
 
 describe('handleInconsistentFilters()', () => {
   describe('Scenario 1: Handle filter settings inconsistency', () => {
@@ -41,9 +49,7 @@ describe('handleInconsistentFilters()', () => {
     test('gets translations from context', (result) => {
       expect(result).toEqual(getContext(TRANSLATIONS));
 
-      return {
-        t: jest.fn().mockImplementation((value) => value),
-      };
+      return translationsMock;
     });
 
     test('updates widget state', (result) => {
@@ -777,6 +783,8 @@ describe('editChartWidget()', () => {
       } as Query,
     };
 
+    fetchMock.mockResponseOnce(JSON.stringify({}));
+
     test('get widget from state', () => {
       return {
         widgets: {
@@ -793,6 +801,22 @@ describe('editChartWidget()', () => {
           },
         },
       };
+    });
+
+    test('opens editor', (result) => {
+      expect(result).toEqual(put(chartEditorActions.openEditor()));
+    });
+
+    test('sets loading state', (result) => {
+      expect(result).toEqual(put(chartEditorActions.setLoading(true)));
+    });
+
+    test('performs request to fetch event collections', () => {
+      return [query.event_collection];
+    });
+
+    test('sets loading state', (result) => {
+      expect(result).toEqual(put(chartEditorActions.setLoading(false)));
     });
 
     test('set chart editor query type', (result) => {
@@ -829,14 +853,6 @@ describe('editChartWidget()', () => {
       expect(result).toEqual(
         put(chartEditorActions.setQueryResult({ query, result: 10 }))
       );
-    });
-
-    test('opens chart editor', (result) => {
-      expect(result).toEqual(put(chartEditorActions.openEditor()));
-    });
-
-    test('waits until chart editor is mounted', (result) => {
-      expect(result).toEqual(take(chartEditorActions.editorMounted.type));
     });
 
     test('get pubsub from context', () => {
@@ -921,6 +937,8 @@ describe('editChartWidget()', () => {
     const test = sagaHelper(editChartWidget(action));
     const query = 'financial-report';
 
+    fetchMock.mockResponseOnce(JSON.stringify({}));
+
     test('get widget from state', () => {
       return {
         widgets: {
@@ -939,12 +957,115 @@ describe('editChartWidget()', () => {
       };
     });
 
+    test('opens editor', (result) => {
+      expect(result).toEqual(put(chartEditorActions.openEditor()));
+    });
+
+    test('sets loading state', (result) => {
+      expect(result).toEqual(put(chartEditorActions.setLoading(true)));
+    });
+
+    test('performs request to fetch event collections', () => {
+      return [query];
+    });
+
+    test('sets loading state', (result) => {
+      expect(result).toEqual(put(chartEditorActions.setLoading(false)));
+    });
+
     test('set chart editor query type', (result) => {
       expect(result).toEqual(put(chartEditorActions.setQueryType(true)));
     });
   });
 
-  describe('Scenario 3: User cancel chart widget edition', () => {
+  describe("Scenario 3: User edits widget with saved query and it's collection doesn't exist", () => {
+    const test = sagaHelper(editChartWidget(action));
+    const query = 'financial-report';
+
+    const notificationManagerMock = {
+      showNotification: jest.fn(),
+    };
+
+    fetchMock.mockResponseOnce(JSON.stringify({}));
+
+    test('get widget from state', () => {
+      return {
+        widgets: {
+          items: {
+            [widgetId]: {
+              ...widgetFixture,
+              data: { query, result: 10 },
+              widget: {
+                ...widgetFixture.widget,
+                settings: visualizationSettings,
+                query,
+              },
+            },
+          },
+        },
+      };
+    });
+
+    test('opens editor', (result) => {
+      expect(result).toEqual(put(chartEditorActions.openEditor()));
+    });
+
+    test('sets loading state', (result) => {
+      expect(result).toEqual(put(chartEditorActions.setLoading(true)));
+    });
+
+    test('performs request to fetch event collections', () => {
+      return [];
+    });
+
+    test('sets loading state', (result) => {
+      expect(result).toEqual(put(chartEditorActions.setLoading(false)));
+    });
+
+    test('gets NotificationManager from context', (result) => {
+      expect(result).toEqual(getContext(NOTIFICATION_MANAGER));
+
+      return notificationManagerMock;
+    });
+
+    test('closes editor', (result) => {
+      expect(result).toEqual(put(chartEditorActions.closeEditor()));
+    });
+
+    test('calls show notification method', () => {
+      expect(notificationManagerMock.showNotification).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'error',
+          translateMessage: true,
+          message: 'notifications.not_existing_stream',
+          autoDismiss: false,
+          showDismissButton: true,
+        })
+      );
+    });
+
+    test('gets translations from context', (result) => {
+      expect(result).toEqual(getContext(TRANSLATIONS));
+
+      return translationsMock;
+    });
+
+    test('updates widget state', (result) => {
+      expect(result).toEqual(
+        put(
+          setWidgetState(widgetId, {
+            isInitialized: true,
+            error: {
+              message: 'widget_errors.stream_not_found',
+              code: WidgetErrors.STREAM_NOT_EXIST,
+            },
+          })
+        )
+      );
+    });
+  });
+
+  describe('Scenario 4: User cancel chart widget edition', () => {
     const test = sagaHelper(editChartWidget(action));
     const query: Query = {
       analysis_type: 'count',
@@ -956,6 +1077,8 @@ describe('editChartWidget()', () => {
     const pubsub = {
       publish: jest.fn(),
     };
+
+    fetchMock.mockResponseOnce(JSON.stringify({}));
 
     test('get widget from state', () => {
       return {
@@ -973,6 +1096,22 @@ describe('editChartWidget()', () => {
           },
         },
       };
+    });
+
+    test('opens editor', (result) => {
+      expect(result).toEqual(put(chartEditorActions.openEditor()));
+    });
+
+    test('sets loading state', (result) => {
+      expect(result).toEqual(put(chartEditorActions.setLoading(true)));
+    });
+
+    test('performs request to fetch event collections', () => {
+      return [query.event_collection];
+    });
+
+    test('sets loading state', (result) => {
+      expect(result).toEqual(put(chartEditorActions.setLoading(false)));
     });
 
     test('set chart editor query type', (result) => {
@@ -1009,14 +1148,6 @@ describe('editChartWidget()', () => {
       expect(result).toEqual(
         put(chartEditorActions.setQueryResult({ query, result: 500 }))
       );
-    });
-
-    test('opens chart editor', (result) => {
-      expect(result).toEqual(put(chartEditorActions.openEditor()));
-    });
-
-    test('waits until chart editor is mounted', (result) => {
-      expect(result).toEqual(take(chartEditorActions.editorMounted.type));
     });
 
     test('get pubsub from context', () => {

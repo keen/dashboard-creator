@@ -21,6 +21,7 @@ import {
 
 import {
   FEATURES,
+  KEEN_ANALYSIS,
   NOTIFICATION_MANAGER,
   PUBSUB,
   TRANSLATIONS,
@@ -30,6 +31,7 @@ import { WidgetItem, ChartWidget, WidgetErrors } from '../types';
 import { appSelectors } from '../../app';
 import { chartEditorActions, chartEditorSelectors } from '../../chartEditor';
 import { getConnectedDashboards } from '../../dashboards/saga';
+import { getEventCollections } from '../utils';
 
 /**
  * Creates ad-hoc query with date picker and filters modifiers.
@@ -299,6 +301,23 @@ export function* editChartSavedQuery(widgetId: string) {
   }
 }
 
+function* fetchEventCollections() {
+  const client = yield getContext(KEEN_ANALYSIS);
+
+  try {
+    const url = client.url(`/3.0/projects/{projectId}/events`, {
+      api_key: client.config.masterKey,
+      include_schema: false,
+    });
+
+    const events = yield fetch(url).then((response) => response.json());
+    return events.map(({ name }) => name);
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
+}
+
 /**
  * Flow responsible for editing chart widget.
  *
@@ -319,83 +338,120 @@ export function* editChartWidget({
     data: { query },
   } = widgetItem;
 
-  const {
-    query: widgetQuery,
-    settings: { visualizationType, chartSettings, widgetSettings },
-  } = widget as ChartWidget;
-  const isSavedQuery = typeof widgetQuery === 'string';
-
-  yield put(chartEditorActions.setQueryType(isSavedQuery));
-
-  yield put(
-    chartEditorActions.setVisualizationSettings({
-      type: visualizationType,
-      chartSettings,
-      widgetSettings,
-    })
-  );
-  yield put(chartEditorActions.setEditMode(true));
-  yield put(chartEditorActions.setQuerySettings(query));
-  yield put(chartEditorActions.setQueryResult(widgetItem.data));
-
   yield put(chartEditorActions.openEditor());
+  yield put(chartEditorActions.setLoading(true));
 
-  yield take(chartEditorActions.editorMounted.type);
-  const pubsub = yield getContext(PUBSUB);
+  const collections = getEventCollections(query);
+  const fetchedCollections = yield fetchEventCollections();
 
-  yield pubsub.publish(SET_QUERY_EVENT, { query });
+  yield put(chartEditorActions.setLoading(false));
 
-  if (chartSettings?.stepLabels && chartSettings.stepLabels.length) {
-    const { stepLabels } = chartSettings;
-    yield pubsub.publish(SET_CHART_SETTINGS, {
-      chartSettings: { stepLabels },
+  const notExistingEvents = collections.filter(
+    (x) => !fetchedCollections.includes(x)
+  );
+
+  if (notExistingEvents.length) {
+    const notificationManager = yield getContext(NOTIFICATION_MANAGER);
+    yield put(chartEditorActions.closeEditor());
+    yield notificationManager.showNotification({
+      type: 'error',
+      translateMessage: true,
+      message: 'notifications.not_existing_stream',
+      autoDismiss: false,
+      showDismissButton: true,
     });
-  }
 
-  const action = yield take([
-    chartEditorActions.closeEditor.type,
-    chartEditorActions.applyConfiguration.type,
-  ]);
+    const i18n = yield getContext(TRANSLATIONS);
+    const errorCode = WidgetErrors.STREAM_NOT_EXIST;
+    const errorMessage = i18n.t('widget_errors.stream_not_found', {
+      stream: notExistingEvents.join(', '),
+    });
 
-  if (action.type === chartEditorActions.closeEditor.type) {
-    yield take(chartEditorActions.editorUnmounted.type);
-    yield put(chartEditorActions.resetEditor());
+    yield put(
+      setWidgetState(id, {
+        isInitialized: true,
+        error: {
+          message: errorMessage,
+          code: errorCode,
+        },
+      })
+    );
   } else {
     const {
-      isSavedQuery,
-      visualization: { type: widgetType, chartSettings, widgetSettings },
-      querySettings,
-    } = yield select(chartEditorSelectors.getChartEditor);
+      query: widgetQuery,
+      settings: { visualizationType, chartSettings, widgetSettings },
+    } = widget as ChartWidget;
+    const isSavedQuery = typeof widgetQuery === 'string';
 
-    if (isSavedQuery) {
-      yield* editChartSavedQuery(id);
-    } else {
-      const widgetState = {
-        isInitialized: false,
-        isConfigured: false,
-        error: null,
-        data: null,
-      };
+    yield put(chartEditorActions.setQueryType(isSavedQuery));
 
-      yield put(setWidgetState(id, widgetState));
-      yield put(
-        finishChartWidgetConfiguration(
-          id,
-          querySettings,
-          widgetType,
-          chartSettings,
-          widgetSettings
-        )
-      );
+    yield put(
+      chartEditorActions.setVisualizationSettings({
+        type: visualizationType,
+        chartSettings,
+        widgetSettings,
+      })
+    );
+    yield put(chartEditorActions.setEditMode(true));
+    yield put(chartEditorActions.setQuerySettings(query));
+    yield put(chartEditorActions.setQueryResult(widgetItem.data));
 
-      yield put(initializeChartWidgetAction(id));
+    const pubsub = yield getContext(PUBSUB);
 
-      yield put(chartEditorActions.closeEditor());
+    yield pubsub.publish(SET_QUERY_EVENT, { query });
+
+    if (chartSettings?.stepLabels && chartSettings.stepLabels.length) {
+      const { stepLabels } = chartSettings;
+      yield pubsub.publish(SET_CHART_SETTINGS, {
+        chartSettings: { stepLabels },
+      });
+    }
+
+    const action = yield take([
+      chartEditorActions.closeEditor.type,
+      chartEditorActions.applyConfiguration.type,
+    ]);
+
+    if (action.type === chartEditorActions.closeEditor.type) {
       yield take(chartEditorActions.editorUnmounted.type);
       yield put(chartEditorActions.resetEditor());
+    } else {
+      const {
+        isSavedQuery,
+        visualization: { type: widgetType, chartSettings, widgetSettings },
+        querySettings,
+      } = yield select(chartEditorSelectors.getChartEditor);
 
-      const dashboardId = yield select(appSelectors.getActiveDashboard);
-      yield put(saveDashboard(dashboardId));
+      if (isSavedQuery) {
+        yield* editChartSavedQuery(id);
+      } else {
+        const widgetState = {
+          isInitialized: false,
+          isConfigured: false,
+          error: null,
+          data: null,
+        };
+
+        yield put(setWidgetState(id, widgetState));
+        yield put(
+          finishChartWidgetConfiguration(
+            id,
+            querySettings,
+            widgetType,
+            chartSettings,
+            widgetSettings
+          )
+        );
+
+        yield put(initializeChartWidgetAction(id));
+
+        yield put(chartEditorActions.closeEditor());
+        yield take(chartEditorActions.editorUnmounted.type);
+        yield put(chartEditorActions.resetEditor());
+
+        const dashboardId = yield select(appSelectors.getActiveDashboard);
+        yield put(saveDashboard(dashboardId));
+      }
     }
   }
 }
