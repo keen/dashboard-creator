@@ -1,17 +1,6 @@
 import { Query } from '@keen.io/query';
 import { getEventCollections } from './getEventCollections';
 
-test('returns event collection from query as string', () => {
-  const query = 'eventStream1';
-  const result = getEventCollections(query);
-
-  expect(result).toMatchInlineSnapshot(`
-    Array [
-      "eventStream1",
-    ]
-  `);
-});
-
 test('returns event collection from query other than funnel', () => {
   const query = {
     analysis_type: 'count',

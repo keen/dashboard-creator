@@ -1,10 +1,8 @@
 import { put, select, call, take, getContext, all } from 'redux-saga/effects';
 import { Query } from '@keen.io/query';
-import { SET_QUERY_EVENT, SET_CHART_SETTINGS } from '@keen.io/query-creator';
 
 import {
   initializeChartWidget as initializeChartWidgetAction,
-  editChartWidget as editChartWidgetAction,
   setWidgetState,
   finishChartWidgetConfiguration,
   savedQueryUpdated,
@@ -21,9 +19,7 @@ import {
 
 import {
   FEATURES,
-  KEEN_ANALYSIS,
   NOTIFICATION_MANAGER,
-  PUBSUB,
   TRANSLATIONS,
 } from '../../../constants';
 
@@ -31,7 +27,6 @@ import { WidgetItem, ChartWidget, WidgetErrors } from '../types';
 import { appSelectors } from '../../app';
 import { chartEditorActions, chartEditorSelectors } from '../../chartEditor';
 import { getConnectedDashboards } from '../../dashboards/saga';
-import { getEventCollections } from '../utils';
 
 /**
  * Creates ad-hoc query with date picker and filters modifiers.
@@ -298,160 +293,5 @@ export function* editChartSavedQuery(widgetId: string) {
 
     const dashboardId = yield select(appSelectors.getActiveDashboard);
     yield put(saveDashboard(dashboardId));
-  }
-}
-
-function* fetchEventCollections() {
-  const client = yield getContext(KEEN_ANALYSIS);
-
-  try {
-    const url = client.url(`/3.0/projects/{projectId}/events`, {
-      api_key: client.config.masterKey,
-      include_schema: false,
-    });
-
-    const events = yield fetch(url).then((response) => response.json());
-    return events.map(({ name }) => name);
-  } catch (err) {
-    console.log(err);
-    return [];
-  }
-}
-
-/**
- * Flow responsible for editing chart widget.
- *
- * @param widgetId - Widget identifer
- * @return void
- *
- */
-export function* editChartWidget({
-  payload,
-}: ReturnType<typeof editChartWidgetAction>) {
-  const { id } = payload;
-
-  const state = yield select();
-  const widgetItem = getWidget(state, id);
-
-  const {
-    widget,
-    data: { query },
-  } = widgetItem;
-
-  yield put(chartEditorActions.openEditor());
-  yield put(chartEditorActions.setLoading(true));
-
-  const collections = getEventCollections(query);
-  const fetchedCollections = yield fetchEventCollections();
-
-  yield put(chartEditorActions.setLoading(false));
-
-  const notExistingEvents = collections.filter(
-    (x) => !fetchedCollections.includes(x)
-  );
-
-  if (notExistingEvents.length) {
-    const notificationManager = yield getContext(NOTIFICATION_MANAGER);
-    yield put(chartEditorActions.closeEditor());
-    yield notificationManager.showNotification({
-      type: 'error',
-      translateMessage: true,
-      message: 'notifications.not_existing_stream',
-      autoDismiss: false,
-      showDismissButton: true,
-    });
-
-    const i18n = yield getContext(TRANSLATIONS);
-    const errorCode = WidgetErrors.STREAM_NOT_EXIST;
-    const errorMessage = i18n.t('widget_errors.stream_not_found', {
-      stream: notExistingEvents.join(', '),
-    });
-
-    yield put(
-      setWidgetState(id, {
-        isInitialized: true,
-        error: {
-          message: errorMessage,
-          code: errorCode,
-        },
-      })
-    );
-  } else {
-    const {
-      query: widgetQuery,
-      settings: { visualizationType, chartSettings, widgetSettings },
-    } = widget as ChartWidget;
-    const isSavedQuery = typeof widgetQuery === 'string';
-
-    yield put(chartEditorActions.setQueryType(isSavedQuery));
-
-    yield put(
-      chartEditorActions.setVisualizationSettings({
-        type: visualizationType,
-        chartSettings,
-        widgetSettings,
-      })
-    );
-    yield put(chartEditorActions.setEditMode(true));
-    yield put(chartEditorActions.setQuerySettings(query));
-    yield put(chartEditorActions.setQueryResult(widgetItem.data));
-
-    const pubsub = yield getContext(PUBSUB);
-
-    yield pubsub.publish(SET_QUERY_EVENT, { query });
-
-    if (chartSettings?.stepLabels && chartSettings.stepLabels.length) {
-      const { stepLabels } = chartSettings;
-      yield pubsub.publish(SET_CHART_SETTINGS, {
-        chartSettings: { stepLabels },
-      });
-    }
-
-    const action = yield take([
-      chartEditorActions.closeEditor.type,
-      chartEditorActions.applyConfiguration.type,
-    ]);
-
-    if (action.type === chartEditorActions.closeEditor.type) {
-      yield take(chartEditorActions.editorUnmounted.type);
-      yield put(chartEditorActions.resetEditor());
-    } else {
-      const {
-        isSavedQuery,
-        visualization: { type: widgetType, chartSettings, widgetSettings },
-        querySettings,
-      } = yield select(chartEditorSelectors.getChartEditor);
-
-      if (isSavedQuery) {
-        yield* editChartSavedQuery(id);
-      } else {
-        const widgetState = {
-          isInitialized: false,
-          isConfigured: false,
-          error: null,
-          data: null,
-        };
-
-        yield put(setWidgetState(id, widgetState));
-        yield put(
-          finishChartWidgetConfiguration(
-            id,
-            querySettings,
-            widgetType,
-            chartSettings,
-            widgetSettings
-          )
-        );
-
-        yield put(initializeChartWidgetAction(id));
-
-        yield put(chartEditorActions.closeEditor());
-        yield take(chartEditorActions.editorUnmounted.type);
-        yield put(chartEditorActions.resetEditor());
-
-        const dashboardId = yield select(appSelectors.getActiveDashboard);
-        yield put(saveDashboard(dashboardId));
-      }
-    }
   }
 }

@@ -151,7 +151,7 @@
     "inconsistent_filter_title": "Unable to render the visualization",
     "inconsistent_filter_message": "Applied filter is not consistent with the query",
     "resource_not_found": "The Saved Query does not exist",
-    "stream_not_found": "The connected stream {{stream}} does not exist"
+    "stream_not_found": "The connected {{stream}} stream does not exist"
   },
   "dashboard_details": {
     "untitled_dashboard": "Untitled dashboard",
