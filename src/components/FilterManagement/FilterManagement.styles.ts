@@ -26,7 +26,10 @@ export const RemoveContainer = styled(motion.div)<{ isOverflow: boolean }>`
   z-index: ${UI_LAYERS.dropdown};
 `;
 
-export const ManagementContainer = styled(motion.div)<{ isOverflow: boolean }>`
+export const ManagementContainer = styled(motion.div)<{
+  isOverflow: boolean;
+  isGrabbed: boolean;
+}>`
   position: absolute;
   background: ${transparentize(0.4, colors.black[300])};
   left: 0;
@@ -51,6 +54,12 @@ export const ManagementContainer = styled(motion.div)<{ isOverflow: boolean }>`
 
   cursor: grab;
   box-sizing: border-box;
+
+  ${(props) =>
+    props.isGrabbed &&
+    css`
+      cursor: grabbing;
+    `};
 `;
 
 export const ButtonsContainer = styled.div`

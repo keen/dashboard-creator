@@ -41,16 +41,18 @@ type Props = {
   id: string;
   /** Hover state indicator */
   isHoverActive: boolean;
+  /** Drag indicator */
+  isDragged: boolean;
   /** Remove widget event handler */
   onRemoveWidget: () => void;
   /** Update trigger time delay */
   updateDebounceTime?: number;
 };
 
-// TODO: Integrate widget clone functionality
 const TextManagement: FC<Props> = ({
   id,
   isHoverActive,
+  isDragged,
   onRemoveWidget,
   updateDebounceTime = 500,
 }) => {
@@ -67,6 +69,7 @@ const TextManagement: FC<Props> = ({
   } = widget as TextWidget;
 
   const [removeConfirmation, setRemoveConfirmation] = useState(false);
+  const [isGrabbed, setElementGrab] = useState(false);
   const [editorState, setEditorState] = useState(
     EditorState.createWithContent(convertFromRaw(content))
   );
@@ -77,6 +80,10 @@ const TextManagement: FC<Props> = ({
       setEditorState(EditorState.createWithContent(convertFromRaw(content)));
     }
   }, [isInitialized]);
+
+  useEffect(() => {
+    if (!isDragged) setElementGrab(false);
+  }, [isDragged]);
 
   useEffect(() => {
     if (!isHoverActive) {
@@ -131,6 +138,10 @@ const TextManagement: FC<Props> = ({
           <ManagementContainer
             className={DRAG_HANDLE_ELEMENT}
             isOverflow={settingsOverflow}
+            onMouseDown={() => setElementGrab(true)}
+            onMouseUp={() => setElementGrab(false)}
+            isGrabbed={isGrabbed}
+            data-testid="management-container"
             {...settingsMotion}
           >
             <DragHandle>
