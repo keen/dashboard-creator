@@ -19,9 +19,11 @@ type Props = {
   onAddWidget: (widgetType: WidgetType) => void;
   /** Widget drag event handler */
   onWidgetDrag: (widgetType: WidgetType) => void;
+  /** Widget drag end event handler */
+  onWidgetDragEnd: () => void;
 };
 
-const Toolbar: FC<Props> = ({ onWidgetDrag, onAddWidget }) => {
+const Toolbar: FC<Props> = ({ onWidgetDrag, onWidgetDragEnd, onAddWidget }) => {
   const { t } = useTranslation();
   const dragGhostElement = useRef<HTMLDivElement>(null);
   const dragEndHandler = useCallback(() => {
@@ -29,6 +31,7 @@ const Toolbar: FC<Props> = ({ onWidgetDrag, onAddWidget }) => {
       dragGhostElement.current.remove();
       ReactDOM.unmountComponentAtNode(dragGhostElement.current);
       dragGhostElement.current = null;
+      onWidgetDragEnd();
     }
   }, []);
 
