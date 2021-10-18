@@ -23,6 +23,7 @@ export const initialState: ReducerState = {
   isSavedQuery: false,
   isDirtyQuery: false,
   isQueryPerforming: false,
+  isLoading: false,
   hasQueryChanged: false,
   initialQuerySettings: null,
   querySettings: {},
@@ -132,6 +133,9 @@ const chartEditorSlice = createSlice({
     },
     closeEditor: (state) => {
       state.isOpen = false;
+    },
+    setLoading: (state, { payload }: PayloadAction<boolean>) => {
+      state.isLoading = payload;
     },
   },
 });
