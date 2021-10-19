@@ -96,6 +96,11 @@ const Grid: FC<Props> = ({
     }
   }, [containerRef.current]);
 
+  // This useEffect handles use case when user decides to cancel widget drop
+  useEffect(() => {
+    if (!droppableWidget && draggedWidget) setDraggedWidget(null);
+  }, [droppableWidget]);
+
   // This function creates mapped grid for ReactResponsiveGrid component, which cannot detect all the changes between rerenders in some cases, with only data-grid attribute provided.
   // This allows new element to be positioned correctly inside the grid after drop.
   const generateLayouts = () => {
