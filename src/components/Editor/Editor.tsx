@@ -176,6 +176,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
             onAddWidget={(widgetType) => {
               dispatch(calculateYPositionAndAddWidget(dashboardId, widgetType));
             }}
+            onWidgetDragEnd={() => setDroppableWidget(null)}
             onWidgetDrag={(widgetType) => setDroppableWidget(widgetType)}
           />
         </EditorBar>

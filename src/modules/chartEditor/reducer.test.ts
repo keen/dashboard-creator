@@ -238,3 +238,10 @@ test('restore initial state', () => {
     isOpen: true,
   });
 });
+
+test('set loading state', () => {
+  const action = chartEditorActions.setLoading(true);
+  const { isLoading } = chartEditorReducer(initialState, action);
+
+  expect(isLoading).toEqual(true);
+});

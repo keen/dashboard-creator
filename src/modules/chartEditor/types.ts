@@ -20,6 +20,7 @@ export type ReducerState = {
   isSavedQuery: boolean;
   isDirtyQuery: boolean;
   isQueryPerforming: boolean;
+  isLoading: boolean;
   hasQueryChanged: boolean;
   changeQueryConfirmation: boolean;
   querySettings: Partial<Query>;

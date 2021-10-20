@@ -3,6 +3,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { render as rtlRender, fireEvent } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
+import 'jest-styled-components';
 
 import FilterManagement from './FilterManagement';
 
@@ -15,6 +16,7 @@ const render = (overProps: any = {}) => {
   const props = {
     id: '@widget/01',
     isHoverActive: true,
+    isDragged: false,
     onRemoveWidget: jest.fn(),
     onEditWidget: jest.fn(),
     ...overProps,
@@ -70,4 +72,15 @@ test('allows user to remove widget', async () => {
   fireEvent.click(removeConfirmation);
 
   expect(props.onRemoveWidget).toHaveBeenCalled();
+});
+
+test('renders "grabbing" indicator when user grabs element', () => {
+  const {
+    wrapper: { getByTestId },
+  } = render();
+
+  const container = getByTestId('management-container');
+  fireEvent.mouseDown(container);
+
+  expect(container).toHaveStyleRule('cursor', 'grabbing');
 });

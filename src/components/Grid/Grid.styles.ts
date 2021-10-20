@@ -50,6 +50,8 @@ export const Container = styled.div`
     -ms-user-select: none;
     -o-user-select: none;
     user-select: none;
+
+    pointer-events: none;
   }
 
   .react-grid-item > .react-resizable-handle {

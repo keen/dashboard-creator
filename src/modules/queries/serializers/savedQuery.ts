@@ -34,13 +34,17 @@ export const serializeSavedQuery = ({
 
     visualization = {
       type,
-      chartSettings: camelCase(chartSettings, {
-        deep: true,
-        stopPaths: ['columns_names_mapping', 'format_value'],
-      }),
-      widgetSettings: camelCase(widgetSettings, {
-        deep: true,
-      }),
+      chartSettings: chartSettings
+        ? camelCase(chartSettings, {
+            deep: true,
+            stopPaths: ['columns_names_mapping', 'format_value'],
+          })
+        : {},
+      widgetSettings: widgetSettings
+        ? camelCase(widgetSettings, {
+            deep: true,
+          })
+        : {},
     };
   } else {
     const [defaultWidget] = getAvailableWidgets(query);

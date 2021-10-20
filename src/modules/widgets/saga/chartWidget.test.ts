@@ -2,13 +2,11 @@
 import sagaHelper from 'redux-saga-testing';
 import { all, put, call, take, getContext, select } from 'redux-saga/effects';
 import { PickerWidgets, ChartSettings } from '@keen.io/widget-picker';
-import { SET_QUERY_EVENT } from '@keen.io/query-creator';
 import { Query } from '@keen.io/query';
 
 import {
   prepareChartWidgetQuery,
   handleInconsistentFilters,
-  editChartWidget,
   editChartSavedQuery,
   checkIfChartWidgetHasInconsistentFilters,
 } from './chartWidget';
@@ -19,7 +17,6 @@ import { saveDashboard } from '../../../modules/dashboards';
 
 import {
   initializeChartWidget as initializeChartWidgetAction,
-  editChartWidget as editChartWidgetAction,
   setWidgetState,
   finishChartWidgetConfiguration,
 } from '../actions';
@@ -33,6 +30,10 @@ import { WidgetItem, WidgetErrors } from '../types';
 import { chartEditorActions, chartEditorSelectors } from '../../chartEditor';
 import { getConnectedDashboards } from '../../dashboards/saga';
 
+const translationsMock = {
+  t: jest.fn().mockImplementation((value) => value),
+};
+
 describe('handleInconsistentFilters()', () => {
   describe('Scenario 1: Handle filter settings inconsistency', () => {
     const widgetId = '@widget/01';
@@ -41,9 +42,7 @@ describe('handleInconsistentFilters()', () => {
     test('gets translations from context', (result) => {
       expect(result).toEqual(getContext(TRANSLATIONS));
 
-      return {
-        t: jest.fn().mockImplementation((value) => value),
-      };
+      return translationsMock;
     });
 
     test('updates widget state', (result) => {
@@ -727,323 +726,6 @@ describe('editChartSavedQuery()', () => {
       expect(result).toEqual(
         call(updateSaveQuery, 'purchases', chartEditor.querySettings, metadata)
       );
-    });
-  });
-});
-
-describe('editChartWidget()', () => {
-  const widgetId = '@widget/01';
-  const dashboardId = '@dashboard/01';
-
-  const action = editChartWidgetAction(widgetId);
-  const visualizationSettings = {
-    chartSettings: {
-      stackMode: 'percent',
-    } as ChartSettings,
-    visualizationType: 'area' as PickerWidgets,
-    widgetSettings: {
-      title: {
-        content: '@widget/title',
-      },
-    },
-  };
-
-  describe('Scenario 1: User edits widget with ad-hoc query', () => {
-    const test = sagaHelper(editChartWidget(action));
-    const query: Query = {
-      analysis_type: 'count',
-      timeframe: 'this_14_days',
-      event_collection: 'logins',
-      order_by: null,
-    };
-
-    const pubsub = {
-      publish: jest.fn(),
-    };
-
-    const chartEditor = {
-      isSavedQuery: false,
-      visualization: {
-        chartSettings: {
-          stackMode: 'percent',
-        } as ChartSettings,
-        type: 'bar' as PickerWidgets,
-        widgetSettings: {},
-      },
-      querySettings: {
-        analysis_type: 'count',
-        event_collection: 'purchases',
-        order_by: null,
-      } as Query,
-    };
-
-    test('get widget from state', () => {
-      return {
-        widgets: {
-          items: {
-            [widgetId]: {
-              ...widgetFixture,
-              data: { query, result: 10 },
-              widget: {
-                ...widgetFixture.widget,
-                settings: visualizationSettings,
-                query,
-              },
-            },
-          },
-        },
-      };
-    });
-
-    test('set chart editor query type', (result) => {
-      expect(result).toEqual(put(chartEditorActions.setQueryType(false)));
-    });
-
-    test('set visualization settings in chart editor', (result) => {
-      const {
-        visualizationType,
-        chartSettings,
-        widgetSettings,
-      } = visualizationSettings;
-
-      expect(result).toEqual(
-        put(
-          chartEditorActions.setVisualizationSettings({
-            type: visualizationType,
-            chartSettings,
-            widgetSettings,
-          })
-        )
-      );
-    });
-
-    test('set edit mode in chart editor', (result) => {
-      expect(result).toEqual(put(chartEditorActions.setEditMode(true)));
-    });
-
-    test('set query settings in chart editor', (result) => {
-      expect(result).toEqual(put(chartEditorActions.setQuerySettings(query)));
-    });
-
-    test('set query results in chart editor', (result) => {
-      expect(result).toEqual(
-        put(chartEditorActions.setQueryResult({ query, result: 10 }))
-      );
-    });
-
-    test('opens chart editor', (result) => {
-      expect(result).toEqual(put(chartEditorActions.openEditor()));
-    });
-
-    test('waits until chart editor is mounted', (result) => {
-      expect(result).toEqual(take(chartEditorActions.editorMounted.type));
-    });
-
-    test('get pubsub from context', () => {
-      return pubsub;
-    });
-
-    test('updates query creator settings', () => {
-      expect(pubsub.publish).toHaveBeenCalledWith(SET_QUERY_EVENT, { query });
-    });
-
-    test('waits until user applies chart editor settigs', (result) => {
-      expect(result).toEqual(
-        take([
-          chartEditorActions.closeEditor.type,
-          chartEditorActions.applyConfiguration.type,
-        ])
-      );
-
-      return chartEditorActions.applyConfiguration();
-    });
-
-    test('gets chart editor settings', () => {
-      return chartEditor;
-    });
-
-    test('updates widget state', (result) => {
-      expect(result).toEqual(
-        put(
-          setWidgetState(widgetId, {
-            isInitialized: false,
-            isConfigured: false,
-            error: null,
-            data: null,
-          })
-        )
-      );
-    });
-
-    test('finishes chart widget configuration', (result) => {
-      const {
-        querySettings,
-        visualization: { type, chartSettings, widgetSettings },
-      } = chartEditor;
-
-      const action = finishChartWidgetConfiguration(
-        widgetId,
-        querySettings,
-        type,
-        chartSettings,
-        widgetSettings
-      );
-
-      expect(result).toEqual(put(action));
-    });
-
-    test('initializes chart widget', (result) => {
-      expect(result).toEqual(put(initializeChartWidgetAction(widgetId)));
-    });
-
-    test('close chart editor', (result) => {
-      expect(result).toEqual(put(chartEditorActions.closeEditor()));
-    });
-
-    test('waits until editor is closed', (result) => {
-      expect(result).toEqual(take(chartEditorActions.editorUnmounted.type));
-    });
-
-    test('reset chart editor', (result) => {
-      expect(result).toEqual(put(chartEditorActions.resetEditor()));
-    });
-
-    test('gets active dashboard identifier', () => {
-      return dashboardId;
-    });
-
-    test('triggers save dashboard action', (result) => {
-      expect(result).toEqual(put(saveDashboard(dashboardId)));
-    });
-  });
-
-  describe('Scenario 2: User edits widget with saved query', () => {
-    const test = sagaHelper(editChartWidget(action));
-    const query = 'financial-report';
-
-    test('get widget from state', () => {
-      return {
-        widgets: {
-          items: {
-            [widgetId]: {
-              ...widgetFixture,
-              data: { query, result: 10 },
-              widget: {
-                ...widgetFixture.widget,
-                settings: visualizationSettings,
-                query,
-              },
-            },
-          },
-        },
-      };
-    });
-
-    test('set chart editor query type', (result) => {
-      expect(result).toEqual(put(chartEditorActions.setQueryType(true)));
-    });
-  });
-
-  describe('Scenario 3: User cancel chart widget edition', () => {
-    const test = sagaHelper(editChartWidget(action));
-    const query: Query = {
-      analysis_type: 'count',
-      timeframe: 'this_14_days',
-      event_collection: 'logins',
-      order_by: null,
-    };
-
-    const pubsub = {
-      publish: jest.fn(),
-    };
-
-    test('get widget from state', () => {
-      return {
-        widgets: {
-          items: {
-            [widgetId]: {
-              ...widgetFixture,
-              data: { query, result: 500 },
-              widget: {
-                ...widgetFixture.widget,
-                settings: visualizationSettings,
-                query,
-              },
-            },
-          },
-        },
-      };
-    });
-
-    test('set chart editor query type', (result) => {
-      expect(result).toEqual(put(chartEditorActions.setQueryType(false)));
-    });
-
-    test('set visualization settings in chart editor', (result) => {
-      const {
-        visualizationType,
-        chartSettings,
-        widgetSettings,
-      } = visualizationSettings;
-
-      expect(result).toEqual(
-        put(
-          chartEditorActions.setVisualizationSettings({
-            type: visualizationType,
-            chartSettings,
-            widgetSettings,
-          })
-        )
-      );
-    });
-
-    test('set edit mode in chart editor', (result) => {
-      expect(result).toEqual(put(chartEditorActions.setEditMode(true)));
-    });
-
-    test('set query settings in chart editor', (result) => {
-      expect(result).toEqual(put(chartEditorActions.setQuerySettings(query)));
-    });
-
-    test('set query results in chart editor', (result) => {
-      expect(result).toEqual(
-        put(chartEditorActions.setQueryResult({ query, result: 500 }))
-      );
-    });
-
-    test('opens chart editor', (result) => {
-      expect(result).toEqual(put(chartEditorActions.openEditor()));
-    });
-
-    test('waits until chart editor is mounted', (result) => {
-      expect(result).toEqual(take(chartEditorActions.editorMounted.type));
-    });
-
-    test('get pubsub from context', () => {
-      return pubsub;
-    });
-
-    test('updates query creator settings', () => {
-      expect(pubsub.publish).toHaveBeenCalledWith(SET_QUERY_EVENT, { query });
-    });
-
-    test('waits until user applies chart editor settigs', (result) => {
-      expect(result).toEqual(
-        take([
-          chartEditorActions.closeEditor.type,
-          chartEditorActions.applyConfiguration.type,
-        ])
-      );
-
-      return chartEditorActions.closeEditor();
-    });
-
-    test('waits until chart editor is unmounted', (result) => {
-      expect(result).toEqual(take(chartEditorActions.editorUnmounted.type));
-    });
-
-    test('resets chart editor', (result) => {
-      expect(result).toEqual(put(chartEditorActions.resetEditor()));
     });
   });
 });

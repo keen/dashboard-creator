@@ -1,3 +1,4 @@
 import { initializeChartWidget } from './initializeChartWidget';
+import { editChartWidget } from './editChartWidget';
 
-export { initializeChartWidget };
+export { initializeChartWidget, editChartWidget };

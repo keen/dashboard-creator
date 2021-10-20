@@ -49,7 +49,7 @@ import {
   editInlineTextWidget,
 } from './saga/textWidget';
 
-import { editChartWidget } from './saga/chartWidget';
+import { editChartWidget } from './saga/chart';
 import {
   setFilterWidget,
   editFilterWidget,

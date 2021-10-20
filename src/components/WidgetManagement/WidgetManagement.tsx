@@ -48,14 +48,16 @@ const WidgetManagement: FC<Props> = ({
   cloneAllowed = true,
 }) => {
   const { t } = useTranslation();
+  const [isGrabbed, setElementGrab] = useState(false);
   const [removeConfirmation, setRemoveConfirmation] = useState(false);
 
   const showManagementSettings = isHoverActive && !removeConfirmation;
   const showRemoveConfirmation = isHoverActive && removeConfirmation;
 
   useEffect(() => {
-    if (!isHoverActive && removeConfirmation) {
-      setRemoveConfirmation(false);
+    if (!isHoverActive) {
+      setElementGrab(false);
+      if (removeConfirmation) setRemoveConfirmation(false);
     }
   }, [isHoverActive]);
 
@@ -75,7 +77,13 @@ const WidgetManagement: FC<Props> = ({
       </AnimatePresence>
       <AnimatePresence>
         {showManagementSettings && (
-          <Cover className={DRAG_HANDLE_ELEMENT} {...settingsMotion}>
+          <Cover
+            className={DRAG_HANDLE_ELEMENT}
+            onMouseDown={() => setElementGrab(true)}
+            onMouseUp={() => setElementGrab(false)}
+            isGrabbed={isGrabbed}
+            {...settingsMotion}
+          >
             <ButtonsContainer>
               {editAllowed && (
                 <PreventDragPropagation>

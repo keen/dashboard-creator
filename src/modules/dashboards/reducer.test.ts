@@ -27,11 +27,43 @@ import {
   setConnectedDashboards,
   setConnectedDashboardsError,
   setConnectedDashboardsLoading,
+  updateCachedDashboardIds,
+  createDashboard,
 } from './actions';
 
 import { dashboardsMeta } from './fixtures';
 
 import { DashboardError } from './types';
+
+test('creates dashboard', () => {
+  const action = createDashboard('@dashboard/01');
+  const {
+    metadata: { data },
+  } = dashboardsReducer(initialState, action);
+
+  expect(data).toMatchObject([
+    {
+      id: '@dashboard/01',
+      isPublic: false,
+      publicAccessKey: null,
+      queries: 0,
+      tags: [],
+      title: null,
+      widgets: 0,
+    },
+  ]);
+});
+
+test('updates cached dashboards identifiers', () => {
+  const action = updateCachedDashboardIds(['@dashboard/01']);
+  const { cachedDashboardIds } = dashboardsReducer(initialState, action);
+
+  expect(cachedDashboardIds).toMatchInlineSnapshot(`
+    Array [
+      "@dashboard/01",
+    ]
+  `);
+});
 
 test('set dashboard error', () => {
   const state = {
