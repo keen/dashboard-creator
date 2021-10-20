@@ -45,6 +45,8 @@ const QueryItem: FC<Props> = ({
 
   const nameRef = useRef(null);
 
+  console.log(name, visualization, '----@@@@@@@@@----');
+
   const visualizationIcon = useMemo(
     () => getVisualizationIcon(visualization),
     []
