@@ -84,6 +84,10 @@ afterEach(() => {
   cleanup();
 });
 
+afterAll(() => {
+  jest.restoreAllMocks();
+});
+
 beforeEach(() => {
   createBodyElementById(DROPDOWN_CONTAINER_ID);
 });
