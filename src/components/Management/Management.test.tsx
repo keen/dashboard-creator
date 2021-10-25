@@ -27,6 +27,12 @@ jest.mock('framer-motion', () => {
         <tr ref={ref}>{children}</tr>
       )
     ),
+    li: forwardRef(({ children }, ref: React.LegacyRef<HTMLLIElement>) => (
+      <li ref={ref}>{children}</li>
+    )),
+    ul: forwardRef(({ children }, ref: React.LegacyRef<HTMLUListElement>) => (
+      <ul ref={ref}>{children}</ul>
+    )),
   };
 
   return {
@@ -82,6 +88,10 @@ const render = (storeState: any = {}, overProps: any = {}) => {
 
 afterEach(() => {
   cleanup();
+});
+
+afterAll(() => {
+  jest.restoreAllMocks();
 });
 
 beforeEach(() => {
