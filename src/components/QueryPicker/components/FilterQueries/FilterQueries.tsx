@@ -160,7 +160,7 @@ const FilterQueries: FC<Props> = ({
             </EmptySearch>
           )}
         </DropdownContent>
-        <ClearFilters onClick={onClearFilters}>
+        <ClearFilters onClick={onClearFilters} enableBorder={inViewBottom}>
           <BodyText variant="body2" color={colors.blue[200]} fontWeight="bold">
             {t('query_picker.filters.clear')}
           </BodyText>

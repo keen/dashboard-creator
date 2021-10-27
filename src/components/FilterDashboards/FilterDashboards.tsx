@@ -190,6 +190,7 @@ const FilterDashboards = () => {
               )}
             </DropdownContent>
             <ClearFilters
+              enableBorder={inViewBottom}
               onClick={() => {
                 dispatch(setTagsFiltersPublic(false));
                 dispatch(setTagsFilters([]));
