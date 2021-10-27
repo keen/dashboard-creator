@@ -8,6 +8,7 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import { transparentize } from 'polished';
+import { useInView } from 'react-intersection-observer';
 import { Dropdown } from '@keen.io/ui-core';
 import { BodyText } from '@keen.io/typography';
 import { colors } from '@keen.io/colors';
@@ -50,6 +51,9 @@ const FilterQueries: FC<Props> = ({
   const [isOpen, setOpen] = useState(false);
   const [searchMode, setSearchMode] = useState(false);
   const [searchPhrase, setSearchPhrase] = useState('');
+
+  const [inViewRefTop, inViewTop] = useInView();
+  const [inViewRefBottom, inViewBottom] = useInView();
 
   const filteredTags = useMemo(() => {
     if (searchPhrase) {
@@ -125,7 +129,11 @@ const FilterQueries: FC<Props> = ({
             }}
             onActiveSearch={() => setSearchMode(true)}
           />
-          <TagsContainer>
+          <TagsContainer
+            overflowTop={!inViewTop}
+            overflowBottom={!inViewBottom}
+          >
+            <div ref={inViewRefTop}></div>
             {filteredTags.map((tag) => (
               <FilterItem
                 key={tag}
@@ -138,6 +146,7 @@ const FilterQueries: FC<Props> = ({
                 }}
               />
             ))}
+            <div ref={inViewRefBottom}></div>
           </TagsContainer>
           {isEmptySearch && (
             <EmptySearch>

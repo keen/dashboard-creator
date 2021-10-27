@@ -10,6 +10,7 @@ import { push } from 'connected-react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { v4 as uuid } from 'uuid';
+import { useInView } from 'react-intersection-observer';
 import { Icon } from '@keen.io/icons';
 import { Dropdown, Button, EmptySearch } from '@keen.io/ui-core';
 import { BodyText } from '@keen.io/typography';
@@ -60,6 +61,9 @@ const DashboardViewSwitch: FC<Props> = ({ title }) => {
   const [selected, setSelected] = useState(dashboardId);
   const [offsetTop, setOffsetTop] = useState(0);
   const [dropdownWidth, setDropdownWidth] = useState(0);
+
+  const [inViewRefTop, inViewTop] = useInView();
+  const [inViewRefBottom, inViewBottom] = useInView();
 
   const filteredDashboards = useMemo(() => {
     let dashboardsList = sortDashboards([...dashboards], 'az');
@@ -138,7 +142,11 @@ const DashboardViewSwitch: FC<Props> = ({ title }) => {
                 onClearSearch={() => setSearchPhrase('')}
               />
             </Search>
-            <OverflowContainer>
+            <OverflowContainer
+              overflowTop={!inViewTop}
+              overflowBottom={!inViewBottom}
+            >
+              <div ref={inViewRefTop}></div>
               <List ref={listRef}>
                 {filteredDashboards.length ? (
                   filteredDashboards.map(({ title, id }) => (
@@ -165,6 +173,7 @@ const DashboardViewSwitch: FC<Props> = ({ title }) => {
                   <EmptySearch message={t('dashboard_details.empty_search')} />
                 )}
               </List>
+              <div ref={inViewRefBottom}></div>
             </OverflowContainer>
             <DropdownFooter>
               <PermissionGate scopes={[Scopes.EDIT_DASHBOARD]}>

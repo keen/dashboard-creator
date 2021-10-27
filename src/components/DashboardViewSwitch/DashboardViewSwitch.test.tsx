@@ -6,6 +6,7 @@ import {
 } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
+import { mockAllIsIntersecting } from 'react-intersection-observer/test-utils';
 
 jest.mock('uuid', () => {
   return {
@@ -52,6 +53,8 @@ const render = (overProps: any = {}, storeState: any = {}) => {
     wrapper,
   };
 };
+
+mockAllIsIntersecting(true);
 
 test('renders dashboard switch without title', () => {
   const {

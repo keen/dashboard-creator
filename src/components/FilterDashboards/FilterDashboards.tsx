@@ -8,6 +8,7 @@ import React, {
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { transparentize } from 'polished';
+import { useInView } from 'react-intersection-observer';
 import { Dropdown, Portal } from '@keen.io/ui-core';
 import { BodyText } from '@keen.io/typography';
 import { colors } from '@keen.io/colors';
@@ -43,6 +44,9 @@ const FilterDashboards = () => {
   const [searchMode, setSearchMode] = useState(false);
   const [searchPhrase, setSearchPhrase] = useState('');
   const [dropdown, setDropdown] = useState({ x: 0, y: 0 });
+
+  const [inViewRefTop, inViewTop] = useInView();
+  const [inViewRefBottom, inViewBottom] = useInView();
 
   useEffect(() => {
     isOpen ? dispatch(prepareTagsPool()) : dispatch(clearTagsPool());
@@ -154,7 +158,11 @@ const FilterDashboards = () => {
                 }}
                 onActiveSearch={() => setSearchMode(true)}
               />
-              <TagsContainer>
+              <TagsContainer
+                overflowTop={!inViewTop}
+                overflowBottom={!inViewBottom}
+              >
+                <div ref={inViewRefTop}></div>
                 {filteredTags.map((tag) => (
                   <FilterItem
                     key={tag}
@@ -167,6 +175,7 @@ const FilterDashboards = () => {
                     }}
                   />
                 ))}
+                <div ref={inViewRefBottom}></div>
               </TagsContainer>
               {isEmptySearch && (
                 <EmptySearch>
