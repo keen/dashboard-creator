@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.6.2](https://github.com/keen/explorer/compare/v4.6.1...v4.6.2) (2021-10-28)
+
 ### [4.6.1](https://github.com/keen/explorer/compare/v4.5.1...v4.6.1) (2021-10-28)
 
 ### [4.5.1-rc.0](https://github.com/keen/explorer/compare/v4.4.0-rc.11...v4.5.1-rc.0) (2021-10-20)
