@@ -166,7 +166,6 @@ workflows:
           filters:
             branches:
               only:
-                - develop
                 - main
             tags:
               ignore: /.*/
