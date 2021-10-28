@@ -4,6 +4,7 @@ import {
   fireEvent,
   waitFor,
 } from '@testing-library/react';
+import { mockAllIsIntersecting } from 'react-intersection-observer/test-utils';
 
 import FilterQueries from './FilterQueries';
 
@@ -25,6 +26,8 @@ const render = (overProps: any = {}) => {
     wrapper,
   };
 };
+
+mockAllIsIntersecting(true);
 
 test('allows user to filter queries based on cache criteria', async () => {
   const {

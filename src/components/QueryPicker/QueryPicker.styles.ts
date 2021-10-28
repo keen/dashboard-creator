@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { transparentize } from 'polished';
 import { colors } from '@keen.io/colors';
 
@@ -21,10 +21,31 @@ export const SavedQueries = styled.div`
   padding: 20px;
 `;
 
-export const QueriesContainer = styled.div`
+export const QueriesContainer = styled.div<{
+  overflowTop: boolean;
+  overflowBottom: boolean;
+}>`
   margin-top: 15px;
   max-height: 370px;
   overflow-y: scroll;
+
+  ${({ overflowTop, overflowBottom }) => {
+    let boxShadow = ``;
+    if (overflowTop)
+      boxShadow += `inset 0px 6px 4px -4px ${transparentize(
+        0.85,
+        colors.black[500]
+      )}`;
+    if (overflowTop && overflowBottom) boxShadow += ',';
+    if (overflowBottom)
+      boxShadow += `inset 0 -6px 4px -4px ${transparentize(
+        0.85,
+        colors.black[500]
+      )}`;
+    return css`
+      box-shadow: ${boxShadow};
+    `;
+  }};
 `;
 
 export const Message = styled.div`

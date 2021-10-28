@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+import { transparentize } from 'polished';
 import { colors } from '@keen.io/colors';
 
 export const Content = styled.div`
@@ -8,8 +9,29 @@ export const Content = styled.div`
   overflow-y: scroll;
 `;
 
-export const Container = styled.div`
+export const Container = styled.div<{
+  overflowTop: boolean;
+  overflowBottom: boolean;
+}>`
   width: 900px;
+
+  ${({ overflowTop, overflowBottom }) => {
+    let boxShadow = ``;
+    if (overflowTop)
+      boxShadow += `inset 0 10px 6px -6px  ${transparentize(
+        0.85,
+        colors.black[500]
+      )}`;
+    if (overflowTop && overflowBottom) boxShadow += ',';
+    if (overflowBottom)
+      boxShadow += `inset 0 -10px 6px -6px ${transparentize(
+        0.85,
+        colors.black[500]
+      )}`;
+    return css`
+      box-shadow: ${boxShadow};
+    `;
+  }};
 `;
 
 export const Preview = styled.div`

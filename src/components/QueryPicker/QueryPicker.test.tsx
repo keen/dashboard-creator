@@ -6,6 +6,7 @@ import {
 } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
+import { mockAllIsIntersecting } from 'react-intersection-observer/test-utils';
 
 import QueryPicker from './QueryPicker';
 
@@ -48,6 +49,8 @@ const render = (overProps: any = {}, keenAnalysisInstance: any = {}) => {
     wrapper,
   };
 };
+
+mockAllIsIntersecting(true);
 
 test('renders list of saved queries', async () => {
   const keenAnalysis = {

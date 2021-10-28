@@ -6,6 +6,7 @@ import {
   waitFor,
   cleanup,
 } from '@testing-library/react';
+import { mockAllIsIntersecting } from 'react-intersection-observer/test-utils';
 import configureStore from 'redux-mock-store';
 
 import FilterDashboards from './FilterDashboards';
@@ -43,6 +44,8 @@ const render = (storeState: any = {}, overProps: any = {}) => {
     wrapper,
   };
 };
+
+mockAllIsIntersecting(true);
 
 afterEach(() => {
   cleanup();

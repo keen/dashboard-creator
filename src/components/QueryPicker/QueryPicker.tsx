@@ -9,6 +9,7 @@ import React, {
 } from 'react';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { useInView } from 'react-intersection-observer';
 import { Alert, Button, Loader } from '@keen.io/ui-core';
 
 import {
@@ -54,6 +55,9 @@ const QueryPicker: FC = () => {
   const [tagsPool, setTagsPool] = useState([]);
   const [tagsFilters, setTagsFilter] = useState([]);
   const [onlyCachedQueries, setOnlyCachedQueries] = useState(false);
+
+  const [inViewRefTop, inViewTop] = useInView();
+  const [inViewRefBottom, inViewBottom] = useInView();
 
   const { keenAnalysis } = useContext(APIContext);
 
@@ -161,13 +165,19 @@ const QueryPicker: FC = () => {
                   {isEmptyList ? (
                     <Message>{t('query_picker.empty_project')}</Message>
                   ) : (
-                    <QueriesContainer ref={modalContentRef}>
+                    <QueriesContainer
+                      ref={modalContentRef}
+                      overflowTop={!inViewTop}
+                      overflowBottom={!inViewBottom}
+                    >
+                      <div ref={inViewRefTop}></div>
                       <QueriesList
                         queries={filteredQueries}
                         onSelectQuery={(query) =>
                           dispatch(selectSavedQuery(query))
                         }
                       />
+                      <div ref={inViewRefBottom}></div>
                     </QueriesContainer>
                   )}
                 </>
