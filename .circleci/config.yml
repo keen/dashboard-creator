@@ -145,6 +145,9 @@ jobs:
           name: Lint
           command: yarn lint
       - run:
+          name: Circular dependencies
+          command: yarn circular
+      - run:
           name: Unit Tests
           command: yarn test:ci
       - run:
