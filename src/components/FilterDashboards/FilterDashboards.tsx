@@ -1,29 +1,8 @@
-import React, {
-  useState,
-  useEffect,
-  useMemo,
-  useCallback,
-  useRef,
-} from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { transparentize } from 'polished';
-import { useInView } from 'react-intersection-observer';
-import { Dropdown, Portal } from '@keen.io/ui-core';
+import { Filters } from '@keen.io/ui-core';
 import { BodyText } from '@keen.io/typography';
-import { colors } from '@keen.io/colors';
-
-import { getEventPath, getRelativeBoundingRect } from '../../utils';
-
-import { FilterItem, SearchTags } from './components';
-import {
-  Container,
-  Filter,
-  TagsContainer,
-  DropdownContent,
-  EmptySearch,
-  ClearFilters,
-} from './FilterDashboards.styles';
 
 import {
   getTagsPool,
@@ -33,180 +12,76 @@ import {
   setTagsFilters,
   setTagsFiltersPublic,
 } from '../../modules/dashboards';
-import { DROPDOWN_CONTAINER_ID } from '../../constants';
+
+import { Container, Filter } from './FilterDashboards.styles';
 
 const FilterDashboards = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  const containerRef = useRef(null);
-  const dropdownContainerRef = useRef(null);
   const [isOpen, setOpen] = useState(false);
-  const [searchMode, setSearchMode] = useState(false);
-  const [searchPhrase, setSearchPhrase] = useState('');
-  const [dropdown, setDropdown] = useState({ x: 0, y: 0 });
-
-  const [inViewRefTop, inViewTop] = useInView();
-  const [inViewRefBottom, inViewBottom] = useInView();
 
   useEffect(() => {
     isOpen ? dispatch(prepareTagsPool()) : dispatch(clearTagsPool());
   }, [isOpen]);
 
   const tagsPool = useSelector(getTagsPool);
+  const onlyPublicDashboardsTag = t('tags_filters.show_only_public_dashboards');
+  const specialTagsPool = [onlyPublicDashboardsTag];
   const { showOnlyPublicDashboards, tags } = useSelector(getTagsFilter);
 
-  const filteredTags = useMemo(() => {
-    if (searchPhrase) {
-      const phrase = searchPhrase.toLowerCase();
-      return tagsPool.filter((tag) => tag.toLowerCase().includes(phrase));
-    }
-    return tagsPool;
-  }, [searchPhrase, tagsPool]);
-
-  const outsideClick = useCallback(
-    (e) => {
-      const path = getEventPath(e);
-      if (
-        !path?.includes(containerRef.current) &&
-        !path?.includes(dropdownContainerRef.current)
-      ) {
-        setOpen(false);
-        setSearchPhrase('');
-        setSearchMode(false);
-      }
-    },
-    [isOpen, containerRef, dropdownContainerRef]
-  );
-
-  const updateTags = useCallback(
-    (isActive: boolean, tag: string) => {
-      const updatedTags = isActive
-        ? [...tags, tag]
-        : tags.filter((t) => t !== tag);
-      dispatch(setTagsFilters(updatedTags));
-    },
-    [tags, setTagsFilters]
-  );
-
-  useEffect(() => {
-    const { left, bottom } = getRelativeBoundingRect(
-      DROPDOWN_CONTAINER_ID,
-      containerRef.current
+  const onUpdateTags = (filters: string[]) => {
+    const selectedTags = filters.filter(
+      (filter) => !specialTagsPool.includes(filter)
     );
+    dispatch(setTagsFilters(selectedTags));
+    if (filters.includes(onlyPublicDashboardsTag)) {
+      return dispatch(setTagsFiltersPublic(true));
+    }
+    dispatch(setTagsFiltersPublic(false));
+  };
 
-    setDropdown((state) => ({
-      ...state,
-      x: left,
-      y: bottom,
-    }));
-  }, [isOpen]);
+  const onClearTags = () => {
+    dispatch(setTagsFilters([]));
+    dispatch(setTagsFiltersPublic(false));
+  };
 
-  useEffect(() => {
-    document.addEventListener('click', outsideClick);
-    return () => document.removeEventListener('click', outsideClick);
-  }, [isOpen, containerRef]);
+  const activeFilters = useMemo(() => {
+    return [
+      ...tags,
+      ...(showOnlyPublicDashboards ? [onlyPublicDashboardsTag] : []),
+    ];
+  }, [showOnlyPublicDashboards, tags]);
 
-  const isEmptySearch = searchPhrase && !filteredTags.length;
-  const filtersCount = tags.length + (showOnlyPublicDashboards ? 1 : 0);
+  const labels = {
+    searchLabel: t('tags_filters.search_label'),
+    searchInputPlaceholder: t('tags_filters.search_tags_input_placeholder'),
+    clearFilters: t('tags_filters.clear'),
+    noFiltersFound: t('tags_filters.empty_search_message'),
+  };
+
   return (
     <>
-      <Container
-        ref={containerRef}
-        onClick={() => setOpen(!isOpen)}
+      <Filters
+        filters={tagsPool}
+        specialFilters={specialTagsPool}
+        activeFilters={activeFilters}
+        onUpdateFilters={(filters) => onUpdateTags(filters)}
+        onClearFilters={onClearTags}
         isOpen={isOpen}
+        setOpen={(isOpen) => setOpen(isOpen)}
+        labels={labels}
       >
-        <Filter>
-          <BodyText variant="body2" fontWeight="bold">
-            {t('tags_filters.title')}
-            {filtersCount ? ` (${filtersCount})` : null}
-          </BodyText>
-        </Filter>
-      </Container>
-      <Portal modalContainer={`#${DROPDOWN_CONTAINER_ID}`}>
-        <div ref={dropdownContainerRef}>
-          <Dropdown
-            isOpen={isOpen}
-            fullWidth={false}
-            positionRelativeToDocument={true}
-            motion={{
-              initial: { opacity: 0, top: dropdown.y, left: dropdown.x, y: 20 },
-              animate: { opacity: 1, y: 2 },
-              exit: { opacity: 0, y: 30 },
-            }}
-          >
-            <DropdownContent>
-              <FilterItem
-                id="public"
-                label={t('tags_filters.show_only_public_dashboards')}
-                isActive={showOnlyPublicDashboards}
-                onChange={(e, isActive) => {
-                  e.preventDefault();
-                  dispatch(setTagsFiltersPublic(isActive));
-                }}
-              />
-              <SearchTags
-                isActive={searchMode}
-                searchPhrase={searchPhrase}
-                inputPlaceholder={t(
-                  'tags_filters.search_tags_input_placeholder'
-                )}
-                searchLabel={t('tags_filters.search_label')}
-                onChangePhrase={(phrase) => setSearchPhrase(phrase)}
-                onClearPhrase={() => {
-                  setSearchPhrase('');
-                  setSearchMode(false);
-                }}
-                onActiveSearch={() => setSearchMode(true)}
-              />
-              <TagsContainer
-                overflowTop={!inViewTop}
-                overflowBottom={!inViewBottom}
-              >
-                <div ref={inViewRefTop}></div>
-                {filteredTags.map((tag) => (
-                  <FilterItem
-                    key={tag}
-                    id={tag}
-                    isActive={tags.includes(tag)}
-                    label={tag}
-                    onChange={(e, isActive) => {
-                      e.preventDefault();
-                      updateTags(isActive, tag);
-                    }}
-                  />
-                ))}
-                <div ref={inViewRefBottom}></div>
-              </TagsContainer>
-              {isEmptySearch && (
-                <EmptySearch>
-                  <BodyText
-                    variant="body3"
-                    fontWeight="normal"
-                    color={transparentize(0.2, colors.black[100])}
-                  >
-                    {t('tags_filters.empty_search_message')}
-                  </BodyText>
-                </EmptySearch>
-              )}
-            </DropdownContent>
-            <ClearFilters
-              enableBorder={inViewBottom}
-              onClick={() => {
-                dispatch(setTagsFiltersPublic(false));
-                dispatch(setTagsFilters([]));
-              }}
-            >
-              <BodyText
-                variant="body2"
-                fontWeight="bold"
-                color={colors.blue[200]}
-              >
-                {t('tags_filters.clear')}
-              </BodyText>
-            </ClearFilters>
-          </Dropdown>
-        </div>
-      </Portal>
+        <Container onClick={() => setOpen(!isOpen)} isOpen={isOpen}>
+          <Filter>
+            <BodyText variant="body2" fontWeight="bold">
+              {t('tags_filters.title')}
+              {activeFilters && activeFilters.length
+                ? ` (${activeFilters.length})`
+                : null}
+            </BodyText>
+          </Filter>
+        </Container>
+      </Filters>
     </>
   );
 };
