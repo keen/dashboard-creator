@@ -155,6 +155,10 @@ describe('editChartWidget()', () => {
       return { isEditable: false, missingCollections: ['@event-stream'] };
     });
 
+    test('sets loading state', (result) => {
+      expect(result).toEqual(put(chartEditorActions.setLoading(false)));
+    });
+
     test('gets NotificationManager from context', (result) => {
       expect(result).toEqual(getContext(NOTIFICATION_MANAGER));
 

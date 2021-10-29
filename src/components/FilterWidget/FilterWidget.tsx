@@ -32,9 +32,9 @@ import {
   setFilterWidget,
   unapplyFilterWidget,
 } from '../../modules/widgets/actions';
-import { FilterItem, SearchTags } from '../FilterDashboards/components';
 import { FilterWidget as FilterWidgetType } from '../../modules/widgets/types';
 import { DROPDOWN_CONTAINER_ID } from '../../constants';
+import { FilterItem, SearchTags } from './components';
 
 type Props = {
   /** Widget identifier */

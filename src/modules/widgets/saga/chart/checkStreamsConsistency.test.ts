@@ -38,10 +38,6 @@ describe('checkStreamsConsistency()', () => {
     test('performs request to fetch event stream schema', () => {
       return [];
     });
-
-    test('sets loading state', (result) => {
-      expect(result).toEqual(put(chartEditorActions.setLoading(false)));
-    });
   });
 
   describe('Scenario 2: Returns existing event streams from api', () => {
@@ -66,10 +62,6 @@ describe('checkStreamsConsistency()', () => {
 
     test('performs request to fetch event stream schema', () => {
       return [query.event_collection];
-    });
-
-    test('sets loading state', (result) => {
-      expect(result).toEqual(put(chartEditorActions.setLoading(false)));
     });
   });
 });

@@ -39,6 +39,7 @@ export function* editChartWidget({
   );
 
   if (!isEditable) {
+    yield put(chartEditorActions.setLoading(false));
     const notificationManager = yield getContext(NOTIFICATION_MANAGER);
     yield put(chartEditorActions.closeEditor());
     yield notificationManager.showNotification({
