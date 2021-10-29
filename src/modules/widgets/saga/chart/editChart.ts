@@ -47,6 +47,8 @@ export function* editChart(id: string, widgetItem: any) {
   yield put(chartEditorActions.setQuerySettings(query));
   yield put(chartEditorActions.setQueryResult(widgetItem.data));
 
+  yield put(chartEditorActions.setLoading(false));
+
   const pubsub = yield getContext(PUBSUB);
 
   yield pubsub.publish(SET_QUERY_EVENT, { query });
