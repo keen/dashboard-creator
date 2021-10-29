@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.7.0](https://github.com/keen/explorer/compare/v4.6.2...v4.7.0) (2021-10-29)
+
+
+### Features
+
+* 🎸 scrolling shadows added ([23e45f9](https://github.com/keen/explorer/commit/23e45f94af7636bb848c5df148c95218ac7167c1))
+
+
+### Bug Fixes
+
+* 🐛 edit chart widget flow ([12903a7](https://github.com/keen/explorer/commit/12903a799d1b1503162133556e14e3b5272a3420))
+* 🐛 Marker size slider ([1698108](https://github.com/keen/explorer/commit/1698108267e9f02f23c53b4b4fd50e6c6c65686d))
+* 🐛 merge fix - package updated ([9fb3008](https://github.com/keen/explorer/commit/9fb300864950800c20ba52f1a5aea8a432c2ef5b))
+
 ### [4.6.2](https://github.com/keen/explorer/compare/v4.6.1...v4.6.2) (2021-10-28)
 
 ### [4.6.1](https://github.com/keen/explorer/compare/v4.5.1...v4.6.1) (2021-10-28)
