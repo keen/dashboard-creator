@@ -6,7 +6,6 @@ import { getEventPath } from './getEventPath';
 import { getRelativeBoundingRect } from './getRelativeBoundingRect';
 import { getNestedObjectKeysAndValues } from './getNestedObjectKeys';
 import { transformDotNotationToNested } from './transformDotNotationToNested';
-import { convertMilisecondsToMinutes } from './convertMilisecondsToMinutes';
 import createSavedQueryTagsPool from './createSavedQueryTagsPool';
 
 export {
@@ -18,6 +17,5 @@ export {
   getEventPath,
   getNestedObjectKeysAndValues,
   transformDotNotationToNested,
-  convertMilisecondsToMinutes,
   createSavedQueryTagsPool,
 };

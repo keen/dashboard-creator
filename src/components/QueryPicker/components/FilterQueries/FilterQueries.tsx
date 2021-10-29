@@ -1,27 +1,8 @@
-import React, {
-  FC,
-  useState,
-  useEffect,
-  useMemo,
-  useCallback,
-  useRef,
-} from 'react';
+import React, { FC, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { transparentize } from 'polished';
-import { useInView } from 'react-intersection-observer';
-import { Dropdown } from '@keen.io/ui-core';
+import { Filters } from '@keen.io/ui-core';
 import { BodyText } from '@keen.io/typography';
-import { colors } from '@keen.io/colors';
-
-import { FilterItem, SearchTags } from './components';
-import {
-  Container,
-  TagsContainer,
-  DropdownContent,
-  EmptySearch,
-  ClearFilters,
-  Filter,
-} from './FilterQueries.styles';
+import { Container, Filter } from './FilterQueries.styles';
 
 type Props = {
   /** Tags available */
@@ -49,123 +30,66 @@ const FilterQueries: FC<Props> = ({
   const { t } = useTranslation();
   const containerRef = useRef(null);
   const [isOpen, setOpen] = useState(false);
-  const [searchMode, setSearchMode] = useState(false);
-  const [searchPhrase, setSearchPhrase] = useState('');
 
-  const [inViewRefTop, inViewTop] = useInView();
-  const [inViewRefBottom, inViewBottom] = useInView();
+  const onlyCachedQueriesTag = t(
+    'query_picker.filters.show_only_cached_queries'
+  );
+  const specialTagsPool = [onlyCachedQueriesTag];
 
-  const filteredTags = useMemo(() => {
-    if (searchPhrase) {
-      const phrase = searchPhrase.toLowerCase();
-      return tagsPool.filter((tag) => tag.toLowerCase().includes(phrase));
+  const onUpdateTags = (filters: string[]) => {
+    const selectedTags = filters.filter(
+      (filter) => !specialTagsPool.includes(filter)
+    );
+    onUpdateTagsFilters(selectedTags);
+    if (filters.includes(onlyCachedQueriesTag)) {
+      return onUpdateCacheFilter(true);
     }
-    return tagsPool;
-  }, [searchPhrase, tagsPool]);
+    onUpdateCacheFilter(false);
+  };
 
-  const outsideClick = useCallback(
-    (e) => {
-      if (
-        isOpen &&
-        containerRef.current &&
-        !containerRef.current.contains(e.target)
-      ) {
-        setOpen(false);
-        setSearchPhrase('');
-        setSearchMode(false);
-      }
-    },
-    [isOpen, containerRef]
-  );
+  const onClearTags = () => {
+    onUpdateTagsFilters([]);
+    onUpdateCacheFilter(false);
+    onClearFilters();
+  };
 
-  const updateTags = useCallback(
-    (isActive: boolean, tag: string) => {
-      const updatedTags = isActive
-        ? [...tagsFilters, tag]
-        : tagsFilters.filter((t) => t !== tag);
-      onUpdateTagsFilters(updatedTags);
-    },
-    [tagsFilters, onUpdateTagsFilters]
-  );
+  const activeFilters = useMemo(() => {
+    return [
+      ...tagsFilters,
+      ...(showOnlyCachedQueries ? [onlyCachedQueriesTag] : []),
+    ];
+  }, [onlyCachedQueriesTag, tagsFilters]);
 
-  useEffect(() => {
-    document.addEventListener('click', outsideClick);
-    return () => document.removeEventListener('click', outsideClick);
-  }, [isOpen, containerRef]);
-
-  const isEmptySearch = searchPhrase && !filteredTags.length;
-  const filtersCount = tagsFilters.length + (showOnlyCachedQueries ? 1 : 0);
+  const labels = {
+    searchLabel: t('query_picker.filters.search_label'),
+    searchInputPlaceholder: t(
+      'query_picker.filters.search_tags_input_placeholder'
+    ),
+    clearFilters: t('query_picker.filters.clear'),
+    noFiltersFound: t('query_picker.filters.empty_search_message'),
+  };
 
   return (
     <Container ref={containerRef} data-testid="filter-queries">
-      <Filter onClick={() => setOpen(!isOpen)}>
-        <BodyText variant="body2" fontWeight="bold">
-          {t('query_picker.filters.title')}
-          {filtersCount ? ` (${filtersCount})` : null}
-        </BodyText>
-      </Filter>
-      <Dropdown isOpen={isOpen} fullWidth={false}>
-        <DropdownContent>
-          <FilterItem
-            id="cached"
-            label={t('query_picker.filters.show_only_cached_queries')}
-            isActive={showOnlyCachedQueries}
-            onChange={(e, isActive) => {
-              e.preventDefault();
-              onUpdateCacheFilter(isActive);
-            }}
-          />
-          <SearchTags
-            isActive={searchMode}
-            searchPhrase={searchPhrase}
-            inputPlaceholder={t(
-              'query_picker.filters.search_tags_input_placeholder'
-            )}
-            searchLabel={t('query_picker.filters.search_label')}
-            onChangePhrase={(phrase) => setSearchPhrase(phrase)}
-            onClearPhrase={() => {
-              setSearchPhrase('');
-              setSearchMode(false);
-            }}
-            onActiveSearch={() => setSearchMode(true)}
-          />
-          <TagsContainer
-            overflowTop={!inViewTop}
-            overflowBottom={!inViewBottom}
-          >
-            <div ref={inViewRefTop}></div>
-            {filteredTags.map((tag) => (
-              <FilterItem
-                key={tag}
-                id={tag}
-                isActive={tagsFilters.includes(tag)}
-                label={tag}
-                onChange={(e, isActive) => {
-                  e.preventDefault();
-                  updateTags(isActive, tag);
-                }}
-              />
-            ))}
-            <div ref={inViewRefBottom}></div>
-          </TagsContainer>
-          {isEmptySearch && (
-            <EmptySearch>
-              <BodyText
-                variant="body3"
-                color={transparentize(0.2, colors.black[100])}
-                fontWeight={400}
-              >
-                {t('query_picker.filters.empty_search_message')}
-              </BodyText>
-            </EmptySearch>
-          )}
-        </DropdownContent>
-        <ClearFilters onClick={onClearFilters} enableBorder={inViewBottom}>
-          <BodyText variant="body2" color={colors.blue[200]} fontWeight="bold">
-            {t('query_picker.filters.clear')}
+      <Filters
+        filters={tagsPool}
+        activeFilters={activeFilters}
+        specialFilters={specialTagsPool}
+        onUpdateFilters={(filters) => onUpdateTags(filters)}
+        onClearFilters={onClearTags}
+        isOpen={isOpen}
+        setOpen={setOpen}
+        labels={labels}
+      >
+        <Filter onClick={() => setOpen(!isOpen)}>
+          <BodyText variant="body2" fontWeight="bold">
+            {t('query_picker.filters.title')}
+            {activeFilters && activeFilters.length
+              ? ` (${activeFilters.length})`
+              : null}
           </BodyText>
-        </ClearFilters>
-      </Dropdown>
+        </Filter>
+      </Filters>
     </Container>
   );
 };
