@@ -1,4 +1,4 @@
-import React, { FC, createContext, useRef } from 'react';
+import React, { FC, createContext, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Button, Modal, ModalHeader } from '@keen.io/ui-core';
@@ -28,6 +28,25 @@ const ThemeEditorModal: FC = () => {
 
   const modalContentRef = useRef(null);
   const { isOpen, inPreviewMode } = useSelector(themeSelectors.getThemeModal);
+  const [containerOverflow, setContainerOverflow] = useState({
+    top: false,
+    bottom: false,
+  });
+
+  const { top: overflowTop, bottom: overflowBottom } = containerOverflow;
+
+  const onScroll = () => {
+    if (!modalContentRef.current) return;
+
+    const scrollTop = modalContentRef.current.scrollTop;
+    const offsetHeight = modalContentRef.current.offsetHeight;
+    const scrollHeight = modalContentRef.current.scrollHeight;
+
+    const top = scrollTop > 0;
+    const bottom = scrollHeight > offsetHeight + scrollTop;
+
+    setContainerOverflow({ top, bottom });
+  };
 
   return (
     <ThemeModalContext.Provider value={{ modalContentRef }}>
@@ -50,9 +69,12 @@ const ThemeEditorModal: FC = () => {
             <ModalHeader onClose={closeHandler}>
               {t('theme_editor.title')}
             </ModalHeader>
-            <Container>
+            <Container
+              overflowTop={overflowTop}
+              overflowBottom={overflowBottom}
+            >
               {!inPreviewMode && (
-                <Content ref={modalContentRef}>
+                <Content ref={modalContentRef} onScroll={onScroll}>
                   <ThemeEditor />
                 </Content>
               )}

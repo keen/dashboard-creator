@@ -6,6 +6,7 @@ import {
   waitFor,
   cleanup,
 } from '@testing-library/react';
+import { mockAllIsIntersecting } from 'react-intersection-observer/test-utils';
 import configureStore from 'redux-mock-store';
 
 import FilterDashboards from './FilterDashboards';
@@ -44,6 +45,8 @@ const render = (storeState: any = {}, overProps: any = {}) => {
   };
 };
 
+mockAllIsIntersecting(true);
+
 afterEach(() => {
   cleanup();
 });
@@ -68,6 +71,12 @@ test('allows user to filter dashboards based on public criteria', async () => {
 
     expect(store.getActions()).toMatchInlineSnapshot(`
       Array [
+        Object {
+          "payload": Object {
+            "tags": Array [],
+          },
+          "type": "@dashboard/SET_TAGS_FILTERS",
+        },
         Object {
           "payload": Object {
             "filterPublic": true,
@@ -111,6 +120,12 @@ test('allows user to filter dashboards based on selected tags', async () => {
           },
           "type": "@dashboard/SET_TAGS_FILTERS",
         },
+        Object {
+          "payload": Object {
+            "filterPublic": false,
+          },
+          "type": "@dashboard/SET_TAGS_FILTERS_PUBLIC",
+        },
       ]
     `);
   });
@@ -134,15 +149,15 @@ test('allows user to clear filters', async () => {
       Array [
         Object {
           "payload": Object {
-            "filterPublic": false,
-          },
-          "type": "@dashboard/SET_TAGS_FILTERS_PUBLIC",
-        },
-        Object {
-          "payload": Object {
             "tags": Array [],
           },
           "type": "@dashboard/SET_TAGS_FILTERS",
+        },
+        Object {
+          "payload": Object {
+            "filterPublic": false,
+          },
+          "type": "@dashboard/SET_TAGS_FILTERS_PUBLIC",
         },
       ]
     `);

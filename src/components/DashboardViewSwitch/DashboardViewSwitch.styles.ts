@@ -56,11 +56,32 @@ export const Search = styled.div`
   padding: 10px 20px;
 `;
 
-export const OverflowContainer = styled.div`
+export const OverflowContainer = styled.div<{
+  overflowTop: boolean;
+  overflowBottom: boolean;
+}>`
   max-height: 300px;
   overflow-y: auto;
   border-top: 1px solid ${colors.gray[300]};
   border-bottom: 1px solid ${colors.gray[300]};
+
+  ${({ overflowTop, overflowBottom }) => {
+    let boxShadow = ``;
+    if (overflowTop)
+      boxShadow += `inset 0px 6px 4px -4px ${transparentize(
+        0.85,
+        colors.black[500]
+      )}`;
+    if (overflowTop && overflowBottom) boxShadow += ',';
+    if (overflowBottom)
+      boxShadow += `inset 0 -6px 4px -4px ${transparentize(
+        0.85,
+        colors.black[500]
+      )}`;
+    return css`
+      box-shadow: ${boxShadow};
+    `;
+  }};
 `;
 
 export const List = styled.ul`
