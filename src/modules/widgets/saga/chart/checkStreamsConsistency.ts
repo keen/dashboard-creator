@@ -45,7 +45,5 @@ export function* checkStreamsConsistency(query: Query) {
       isEditable,
       missingCollections,
     };
-  } finally {
-    yield put(chartEditorActions.setLoading(false));
   }
 }

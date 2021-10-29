@@ -109,6 +109,10 @@ describe('editChart()', () => {
       );
     });
 
+    test('sets loading state', (result) => {
+      expect(result).toEqual(put(chartEditorActions.setLoading(false)));
+    });
+
     test('get pubsub from context', () => {
       return pubsub;
     });
@@ -263,6 +267,10 @@ describe('editChart()', () => {
       expect(result).toEqual(
         put(chartEditorActions.setQueryResult({ query, result: 500 }))
       );
+    });
+
+    test('sets loading state', (result) => {
+      expect(result).toEqual(put(chartEditorActions.setLoading(false)));
     });
 
     test('get pubsub from context', () => {
