@@ -28,6 +28,8 @@ export const InputContainer = styled.div<{
 
 export const Container = styled.div`
   padding: 5px 14px;
+  box-sizing: border-box;
+  height: 50px;
 `;
 
 export const Label = styled.span`
