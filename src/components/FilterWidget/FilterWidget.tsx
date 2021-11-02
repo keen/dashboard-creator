@@ -299,6 +299,14 @@ const FilterWidget: FC<Props> = ({
                     itemSize={30}
                     ref={listRef}
                     onScroll={onScroll}
+                    onItemsRendered={(e) => {
+                      const { overscanStopIndex, visibleStopIndex } = e;
+
+                      setContainerOverflow((state) => ({
+                        ...state,
+                        bottom: overscanStopIndex > visibleStopIndex,
+                      }));
+                    }}
                   >
                     {Row}
                   </ReactWindowList>
