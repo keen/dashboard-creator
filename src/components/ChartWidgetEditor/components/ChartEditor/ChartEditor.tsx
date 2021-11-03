@@ -226,6 +226,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
             if (section !== EditorSection.QUERY) {
               setLocalQuery(null);
             }
+            setActiveMenuItem(null);
             dispatch(chartEditorActions.setEditorSection(section));
           }}
           activeSection={editorSection}
