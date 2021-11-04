@@ -6,10 +6,7 @@ export const Container = styled.label`
   cursor: pointer;
 `;
 
-export const Label = styled.span`
+export const Label = styled.div`
   margin-left: 4px;
-  width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  min-width: 0;
 `;
