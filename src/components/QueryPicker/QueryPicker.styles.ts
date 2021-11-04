@@ -26,7 +26,7 @@ export const QueriesContainer = styled.div<{
   overflowTop: boolean;
   overflowBottom: boolean;
 }>`
-  padding: 0 20px 20px 20px;
+  padding: 0 0 20px 0;
   max-height: 370px;
   overflow-y: scroll;
 
