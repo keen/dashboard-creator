@@ -24,13 +24,13 @@ type Props = {
 
 const Visualizations: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
   const {
-    theme: { donut, pie, funnel, metric, table, line },
+    theme: { donut, pie, funnel, metric, table, line, colors },
     settings: dashboardSettings,
   } = currentSettings;
 
-  const { colors: defaultColors } = useSelector(themeSelectors.getBaseTheme);
+  const currentEditTheme = useSelector(themeSelectors.getCurrentEditTheme);
 
-  const colorSuggestions = getColorSuggestions(defaultColors, currentSettings);
+  const colorSuggestions = getColorSuggestions(colors, currentEditTheme);
 
   return (
     <div>

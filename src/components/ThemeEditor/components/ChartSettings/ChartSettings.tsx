@@ -29,9 +29,9 @@ const ChartSettings: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
   const { t } = useTranslation();
 
   const { theme, settings: chartSettings } = currentSettings;
-  const { colors: defaultColors } = useSelector(themeSelectors.getBaseTheme);
+  const currentEditTheme = useSelector(themeSelectors.getCurrentEditTheme);
 
-  const colorSuggestions = getColorSuggestions(defaultColors, currentSettings);
+  const colorSuggestions = getColorSuggestions(theme.colors, currentEditTheme);
 
   return (
     <Container>
