@@ -54,7 +54,12 @@ const Tags: FC<Props> = ({ tags }) => {
         <BadgeContainer>
           {tags?.length > 0 &&
             tags.map(({ label, variant }: Tag) => (
-              <Badge key={label} variant={variant}>
+              <Badge
+                key={label}
+                variant={variant}
+                truncate
+                truncateMethod="css"
+              >
                 {label}
               </Badge>
             ))}

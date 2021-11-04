@@ -17,7 +17,7 @@ import {
   QueriesContainer,
   CreateNewQuery,
   NewQueryButton,
-  SavedQueries,
+  AlertContainer,
   Message,
   Description,
   FiltersContainer,
@@ -122,14 +122,18 @@ const QueryPicker: FC = () => {
           </NewQueryButton>
           <Description>{t('query_picker.new_query_description')}</Description>
         </CreateNewQuery>
-        <SavedQueries>
+        <div>
           {isLoadingQueries && (
             <LoaderContainer>
               <Loader width={50} height={50} />
             </LoaderContainer>
           )}
           {error && (
-            <Alert type="error">{t('query_picker.saved_queries_error')}</Alert>
+            <AlertContainer>
+              <Alert type="error">
+                {t('query_picker.saved_queries_error')}
+              </Alert>
+            </AlertContainer>
           )}
           {isLoaded && !error && (
             <>
@@ -184,7 +188,7 @@ const QueryPicker: FC = () => {
               )}
             </>
           )}
-        </SavedQueries>
+        </div>
       </div>
     </QueryPickerContext.Provider>
   );

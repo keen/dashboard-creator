@@ -9,7 +9,7 @@ export const Container = styled.div`
   display: flex;
   align-items: center;
   height: 37px;
-  padding: 0 10px;
+  padding: 0 20px;
   position: relative;
 
   font-family: 'Lato Regular', sans-serif;
