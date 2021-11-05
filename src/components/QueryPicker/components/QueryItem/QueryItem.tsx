@@ -44,6 +44,7 @@ const QueryItem: FC<Props> = ({
   const { t } = useTranslation();
 
   const nameRef = useRef(null);
+  const requestFrameRef = useRef(null);
 
   const visualizationIcon = useMemo(
     () => getVisualizationIcon(visualization),
@@ -100,6 +101,13 @@ const QueryItem: FC<Props> = ({
           }, TOOLTIP_DELAY);
         }}
         onMouseLeave={() => setTooltipVisible(false)}
+        onWheel={() => {
+          if (requestFrameRef.current)
+            cancelAnimationFrame(requestFrameRef.current);
+          requestFrameRef.current = requestAnimationFrame(() => {
+            setTooltipVisible(false);
+          });
+        }}
       >
         {name}
       </Name>
