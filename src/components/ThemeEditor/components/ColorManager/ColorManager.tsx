@@ -1,6 +1,5 @@
 import React, { FC, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
 import { ColorPalette, DropableContainer, Dropdown } from '@keen.io/ui-core';
 import { BodyText } from '@keen.io/typography';
 import { colors as keenColors } from '@keen.io/colors';
@@ -20,34 +19,36 @@ import {
 
 import { createColorPalettes } from './utils';
 import { COLORS_IN_LIST } from './constants';
-import { themeSelectors, getColorSuggestions } from '../../../../modules/theme';
+import { getColorSuggestions, ThemeSettings } from '../../../../modules/theme';
 import { ThemeModalContext } from '../../../ThemeEditorModal/ThemeEditorModal';
 
 type Props = {
   /** Current color palette name */
   colorPaletteName: string;
-  /** Current set of colors in palette */
-  colors: string[];
   /** Colors from default palette */
   defaultColors: string[];
   /** Update colors in palette handler */
   onUpdateColors: (colors: string[]) => void;
   /** Update color palette by select pre-defined colors */
   onSelectPalette: (name: string, colors: string[]) => void;
+  /** Current theme settings */
+  currentSettings: ThemeSettings;
 };
 
 const ColorManager: FC<Props> = ({
   colorPaletteName,
-  colors,
   defaultColors,
   onSelectPalette,
   onUpdateColors,
+  currentSettings,
 }) => {
   const { t } = useTranslation();
   const [isOpen, setOpen] = useState(false);
 
-  const currentEditTheme = useSelector(themeSelectors.getCurrentEditTheme);
-  const colorSuggestions = getColorSuggestions(colors, currentEditTheme);
+  const colorSuggestions = getColorSuggestions(
+    currentSettings.theme.colors,
+    currentSettings
+  );
   const { modalContentRef } = useContext(ThemeModalContext);
   return (
     <Section>
@@ -96,7 +97,7 @@ const ColorManager: FC<Props> = ({
         </Dropdown>
         <ColorPaletteWrapper>
           <ColorPalette
-            colors={colors}
+            colors={currentSettings.theme.colors}
             colorSuggestions={colorSuggestions}
             onColorsChange={(colors) => onUpdateColors(colors)}
             scrollableParentRef={modalContentRef}

@@ -1,15 +1,10 @@
 import React, { FC } from 'react';
-import { useSelector } from 'react-redux';
 import { Theme } from '@keen.io/charts';
 
 import { CircularChart, Funnel, Metric, Table, Line } from './components';
 import SettingsDivider from '../SettingsDivider';
 
-import {
-  ThemeSettings,
-  themeSelectors,
-  getColorSuggestions,
-} from '../../../../modules/theme';
+import { ThemeSettings, getColorSuggestions } from '../../../../modules/theme';
 import { DashboardSettings } from '../../../../modules/dashboards';
 
 type Props = {
@@ -28,9 +23,7 @@ const Visualizations: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
     settings: dashboardSettings,
   } = currentSettings;
 
-  const currentEditTheme = useSelector(themeSelectors.getCurrentEditTheme);
-
-  const colorSuggestions = getColorSuggestions(colors, currentEditTheme);
+  const colorSuggestions = getColorSuggestions(colors, currentSettings);
 
   return (
     <div>
