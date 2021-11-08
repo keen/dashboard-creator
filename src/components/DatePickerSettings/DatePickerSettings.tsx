@@ -2,21 +2,23 @@ import React, { FC, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { transparentize } from 'polished';
 import { Icon } from '@keen.io/icons';
 import { Button, Tooltip, ModalFooter, Input } from '@keen.io/ui-core';
 import { colors } from '@keen.io/colors';
+import { BodyText } from '@keen.io/typography';
 
 import {
   CancelButton,
   Content,
   Connections,
   Description,
-  EmptyConnections,
   FooterContent,
   Hint,
   TooltipContent,
   TooltipMotion,
   DisplayNameContainer,
+  ToggleAll,
 } from './DatePickerSettings.styles';
 import WidgetConnections from '../WidgetConnections';
 
@@ -40,15 +42,34 @@ const DatePickerSettings: FC<Props> = ({ onCancel }) => {
 
   const [showHint, setHintVisibility] = useState(false);
   const isEmptyConnectionsList = widgetConnections.length === 0;
+  const allConnectionsSelected =
+    !isEmptyConnectionsList &&
+    widgetConnections.every((item) => item.isConnected);
 
   const [filterName, setFilterName] = useState(name);
+
+  const toggleSelectAll = () => {
+    const updatedStatus = allConnectionsSelected ? false : true;
+
+    for (const connection of widgetConnections) {
+      dispatch(
+        datePickerActions.updateConnection(connection.widgetId, updatedStatus)
+      );
+    }
+  };
 
   return (
     <div>
       <Content>
         <DisplayNameContainer>
           <Description marginBottom={1}>
-            {t('date_picker_settings.filter_display_name')}
+            <BodyText
+              variant="body2"
+              fontWeight="bold"
+              color={colors.black[100]}
+            >
+              {t('date_picker_settings.filter_display_name')}
+            </BodyText>
           </Description>
           <Field width={300} marginRight={15}>
             <Input
@@ -63,7 +84,9 @@ const DatePickerSettings: FC<Props> = ({ onCancel }) => {
           </Field>
         </DisplayNameContainer>
         <Description>
-          {t('date_picker_settings.description')}
+          <BodyText variant="body2" fontWeight="bold" color={colors.black[100]}>
+            {t('date_picker_settings.description')}
+          </BodyText>
           <Hint
             role="dialog"
             onMouseEnter={() => setHintVisibility(true)}
@@ -80,18 +103,36 @@ const DatePickerSettings: FC<Props> = ({ onCancel }) => {
                 <TooltipMotion {...TOOLTIP_MOTION}>
                   <Tooltip mode="light" hasArrow={false}>
                     <TooltipContent>
-                      {t('date_picker_settings.tooltip_hint')}
+                      <BodyText variant="body2" color={colors.black[100]}>
+                        {t('date_picker_settings.tooltip_hint')}
+                      </BodyText>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipMotion>
               )}
             </AnimatePresence>
           </Hint>
+          {!isEmptyConnectionsList && (
+            <ToggleAll onClick={toggleSelectAll}>
+              <BodyText
+                variant="body2"
+                color={colors.blue[500]}
+                fontWeight="bold"
+              >
+                {allConnectionsSelected
+                  ? t('date_picker_settings.unselect_all')
+                  : t('date_picker_settings.select_all')}
+              </BodyText>
+            </ToggleAll>
+          )}
         </Description>
         {isEmptyConnectionsList ? (
-          <EmptyConnections>
+          <BodyText
+            variant="body2"
+            color={transparentize(0.5, colors.black[100])}
+          >
             {t('date_picker_settings.empty_connections')}
-          </EmptyConnections>
+          </BodyText>
         ) : (
           <Connections>
             <WidgetConnections

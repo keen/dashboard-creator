@@ -112,3 +112,101 @@ test('renders message about empty connections list', () => {
     getByText('date_picker_settings.empty_connections')
   ).toBeInTheDocument();
 });
+
+test('do not renders Select/Unselect All link for empty connections list', () => {
+  const {
+    wrapper: { queryByText },
+  } = render({
+    datePicker: {
+      isEditorOpen: true,
+      widgetConnections: [],
+    },
+  });
+
+  expect(queryByText('date_picker_settings.unselect_all')).toBeNull();
+  expect(queryByText('date_picker_settings.select_all')).toBeNull();
+});
+
+test('renders "Unselect All" link', () => {
+  const {
+    wrapper: { getByText },
+  } = render();
+
+  expect(getByText('date_picker_settings.unselect_all')).toBeInTheDocument();
+});
+
+test('allows user to unselect all connected widgets', () => {
+  const {
+    wrapper: { getByText },
+    store,
+  } = render();
+
+  const toggleAll = getByText('date_picker_settings.unselect_all');
+  fireEvent.click(toggleAll);
+
+  expect(store.getActions()).toMatchInlineSnapshot(`
+    Array [
+      Object {
+        "payload": Object {
+          "isConnected": false,
+          "widgetId": "@widget/01",
+        },
+        "type": "@date-picker/UPDATE_CONNECTION",
+      },
+      Object {
+        "payload": Object {
+          "isConnected": false,
+          "widgetId": "@widget/02",
+        },
+        "type": "@date-picker/UPDATE_CONNECTION",
+      },
+    ]
+  `);
+});
+
+test('allows user to select all connected widgets', () => {
+  const {
+    wrapper: { getByText },
+    store,
+  } = render({
+    datePicker: {
+      isEditorOpen: true,
+      widgetConnections: [
+        {
+          widgetId: '@widget/01',
+          isConnected: false,
+          title: null,
+          positionIndex: 1,
+        },
+        {
+          widgetId: '@widget/02',
+          isConnected: false,
+          title: null,
+          positionIndex: 2,
+        },
+      ],
+    },
+  });
+
+  const toggleAll = getByText('date_picker_settings.select_all');
+  fireEvent.click(toggleAll);
+
+  expect(store.getActions()).toMatchInlineSnapshot(`
+    Array [
+      Object {
+        "payload": Object {
+          "isConnected": true,
+          "widgetId": "@widget/01",
+        },
+        "type": "@date-picker/UPDATE_CONNECTION",
+      },
+      Object {
+        "payload": Object {
+          "isConnected": true,
+          "widgetId": "@widget/02",
+        },
+        "type": "@date-picker/UPDATE_CONNECTION",
+      },
+    ]
+  `);
+});

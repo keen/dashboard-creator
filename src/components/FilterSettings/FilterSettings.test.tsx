@@ -324,3 +324,106 @@ test('not allows user to apply filter widget settings when name is not provided'
 
   expect(store.getActions()).toStrictEqual([]);
 });
+
+test('do not renders Select/Unselect All link for empty connections list', () => {
+  const {
+    wrapper: { queryByText },
+  } = render({
+    filter: {
+      ...filterInitialState,
+    },
+  });
+
+  expect(queryByText('filter_settings.unselect_all')).toBeNull();
+  expect(queryByText('filter_settings.select_all')).toBeNull();
+});
+
+test('renders "Select All" link', () => {
+  const {
+    wrapper: { getByText },
+  } = render();
+
+  expect(getByText('filter_settings.select_all')).toBeInTheDocument();
+});
+
+test('allows user to unselect all connected widgets', () => {
+  const {
+    wrapper: { getByText },
+    store,
+  } = render({
+    filter: {
+      ...filterInitialState,
+      widgetConnections: [
+        {
+          widgetId: '@widget/01',
+          isConnected: true,
+          title: null,
+          positionIndex: 0,
+        },
+        {
+          widgetId: '@widget/02',
+          isConnected: true,
+          title: null,
+          positionIndex: 1,
+        },
+        {
+          widgetId: '@widget/03',
+          isConnected: true,
+          title: null,
+          positionIndex: 2,
+        },
+      ],
+    },
+  });
+
+  const toggleAll = getByText('filter_settings.unselect_all');
+  fireEvent.click(toggleAll);
+
+  expect(store.getActions()).toMatchInlineSnapshot(`
+    Array [
+      Object {
+        "payload": Object {
+          "isConnected": false,
+          "widgetId": "@widget/01",
+        },
+        "type": "@filter/UPDATE_CONNECTION",
+      },
+      Object {
+        "payload": Object {
+          "isConnected": false,
+          "widgetId": "@widget/02",
+        },
+        "type": "@filter/UPDATE_CONNECTION",
+      },
+      Object {
+        "payload": Object {
+          "isConnected": false,
+          "widgetId": "@widget/03",
+        },
+        "type": "@filter/UPDATE_CONNECTION",
+      },
+    ]
+  `);
+});
+
+test('allows user to select all connected widgets', () => {
+  const {
+    wrapper: { getByText },
+    store,
+  } = render();
+
+  const toggleAll = getByText('filter_settings.select_all');
+  fireEvent.click(toggleAll);
+
+  expect(store.getActions()).toMatchInlineSnapshot(`
+    Array [
+      Object {
+        "payload": Object {
+          "isConnected": true,
+          "widgetId": "@widget/01",
+        },
+        "type": "@filter/UPDATE_CONNECTION",
+      },
+    ]
+  `);
+});

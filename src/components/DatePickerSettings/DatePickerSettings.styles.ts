@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { transparentize } from 'polished';
 import { motion } from 'framer-motion';
 import { colors } from '@keen.io/colors';
 import { space, SpaceProps } from 'styled-system';
@@ -14,9 +13,6 @@ export const Description = styled.div<SpaceProps>`
   display: flex;
   align-items: center;
   margin-bottom: 20px;
-  font-family: 'Lato Bold', sans-serif;
-  font-size: 14px;
-  color: ${colors.black[100]};
   ${space};
 `;
 
@@ -28,9 +24,6 @@ export const TooltipMotion = styled(motion.div)`
 
 export const TooltipContent = styled.div`
   width: 160px;
-  font-size: 14px;
-  font-family: 'Lato Regular', sans-serif;
-  color: ${colors.black[100]};
 `;
 
 export const FooterContent = styled.div`
@@ -44,6 +37,7 @@ export const CancelButton = styled.div`
 export const Hint = styled.div`
   position: relative;
   margin-left: 5px;
+  cursor: pointer;
 `;
 
 export const Connections = styled.div`
@@ -51,14 +45,13 @@ export const Connections = styled.div`
   overflow-y: scroll;
 `;
 
-export const EmptyConnections = styled.div`
-  font-family: 'Lato Regular', sans-serif;
-  font-size: 14px;
-  color: ${transparentize(0.5, colors.black[100])};
-`;
-
 export const DisplayNameContainer = styled.div`
   border-bottom: solid 1px ${colors.white[300]};
   padding-bottom: 20px;
   margin-bottom: 20px;
+`;
+
+export const ToggleAll = styled.div`
+  margin-left: auto;
+  cursor: pointer;
 `;
