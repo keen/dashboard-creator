@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
 import { Theme } from '@keen.io/charts';
 
 import { Container } from './ChartSettings.styles';
@@ -8,11 +7,7 @@ import { Grid, Legend, Titles, Tooltip, Axis } from './components';
 
 import SettingsDivider from '../SettingsDivider';
 
-import {
-  getColorSuggestions,
-  themeSelectors,
-  ThemeSettings,
-} from '../../../../modules/theme';
+import { getColorSuggestions, ThemeSettings } from '../../../../modules/theme';
 import { DashboardSettings } from '../../../../modules/dashboards';
 
 type Props = {
@@ -29,9 +24,8 @@ const ChartSettings: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
   const { t } = useTranslation();
 
   const { theme, settings: chartSettings } = currentSettings;
-  const { colors: defaultColors } = useSelector(themeSelectors.getBaseTheme);
 
-  const colorSuggestions = getColorSuggestions(defaultColors, currentSettings);
+  const colorSuggestions = getColorSuggestions(theme.colors, currentSettings);
 
   return (
     <Container>

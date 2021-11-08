@@ -34,8 +34,8 @@ const MainSettings: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
     <Container>
       <ColorManager
         defaultColors={defaultColors}
+        currentSettings={currentSettings}
         colorPaletteName={settings.colorPalette}
-        colors={theme.colors}
         onUpdateColors={(colors: string[]) =>
           onUpdateSettings({ colors }, { colorPalette: CUSTOM_COLOR_PALETTE })
         }
@@ -61,7 +61,7 @@ const MainSettings: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
           onUpdateSettings(mergedTheme, { ...pageSettings });
         }}
         settings={settings}
-        colors={theme.colors}
+        currentSettings={currentSettings}
       />
       <SettingsDivider />
       <WidgetTiles
@@ -69,7 +69,7 @@ const MainSettings: FC<Props> = ({ currentSettings, onUpdateSettings }) => {
           onUpdateSettings(theme, { ...pageSettings })
         }
         settings={settings}
-        colors={theme.colors}
+        currentSettings={currentSettings}
       />
     </Container>
   );

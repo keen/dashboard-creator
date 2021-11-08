@@ -164,3 +164,12 @@ export const FONTS: Font[] = [
     variant: 'sans-serif',
   },
 ];
+
+export const THEME_COLOR_PATHS = [
+  'theme.table.mainColor',
+  'theme.funnel.step.backgroundColor',
+  'theme.gridX.color',
+  'settings.page.background',
+  'settings.tiles.background',
+  'settings.tiles.borderColor',
+];

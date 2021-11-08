@@ -15,6 +15,7 @@ import {
   themeSelectors,
   getColorSuggestions,
   getFontFallback,
+  ThemeSettings,
 } from '../../../../modules/theme';
 
 import { getNestedObjectKeysAndValues } from '../../../../utils';
@@ -30,10 +31,15 @@ type Props = {
     settings: Partial<DashboardSettings>,
     theme?: Partial<Theme>
   ) => void;
-  colors: string[];
+  /** Current theme settings */
+  currentSettings: ThemeSettings;
 };
 
-const DashboardPage: FC<Props> = ({ settings, onUpdateSettings, colors }) => {
+const DashboardPage: FC<Props> = ({
+  settings,
+  onUpdateSettings,
+  currentSettings,
+}) => {
   const { t } = useTranslation();
   const { theme } = useSelector(themeSelectors.getCurrentEditTheme);
   const { modalContentRef } = useContext(ThemeModalContext);
@@ -46,8 +52,10 @@ const DashboardPage: FC<Props> = ({ settings, onUpdateSettings, colors }) => {
     keychain.endsWith('fontFamily')
   );
 
-  const currentEditTheme = useSelector(themeSelectors.getCurrentEditTheme);
-  const colorSuggestions = getColorSuggestions(colors, currentEditTheme);
+  const colorSuggestions = getColorSuggestions(
+    currentSettings.theme.colors,
+    currentSettings
+  );
 
   return (
     <Section>

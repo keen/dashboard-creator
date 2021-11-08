@@ -1,6 +1,6 @@
 import React, { FC, useContext, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
+
 import {
   Color,
   DropableContainer,
@@ -20,7 +20,7 @@ import Section, { SectionRow, TextWrapper } from '../Section';
 import ThemeSlider, { generateRulerSettings } from '../ThemeSlider';
 
 import { DashboardSettings } from '../../../../modules/dashboards';
-import { themeSelectors, getColorSuggestions } from '../../../../modules/theme';
+import { getColorSuggestions, ThemeSettings } from '../../../../modules/theme';
 
 import {
   BorderOption,
@@ -40,10 +40,15 @@ type Props = {
   settings: Pick<DashboardSettings, 'tiles' | 'colorPalette'>;
   /** Update dashboard settings event handler */
   onUpdateSettings: (settings: Partial<DashboardSettings>) => void;
-  colors: string[];
+  /** Current theme settings */
+  currentSettings: ThemeSettings;
 };
 
-const WidgetTiles: FC<Props> = ({ settings, onUpdateSettings, colors }) => {
+const WidgetTiles: FC<Props> = ({
+  settings,
+  onUpdateSettings,
+  currentSettings,
+}) => {
   const { t } = useTranslation();
   const { modalContentRef } = useContext(ThemeModalContext);
 
@@ -60,8 +65,10 @@ const WidgetTiles: FC<Props> = ({ settings, onUpdateSettings, colors }) => {
     },
   } = settings;
 
-  const currentEditTheme = useSelector(themeSelectors.getCurrentEditTheme);
-  const colorSuggestions = getColorSuggestions(colors, currentEditTheme);
+  const colorSuggestions = getColorSuggestions(
+    currentSettings.theme.colors,
+    currentSettings
+  );
   const [borderWidthDropdownIsOpen, setBorderWidthDropdownIsOpen] = useState(
     false
   );
