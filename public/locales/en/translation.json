@@ -231,7 +231,7 @@
     "actions_tooltip": "Actions",
     "generic_error_title": "This dashboard can’t be reached",
     "view_dashboard_error_message": "There is something wrong with loading data or dashboard do not exist. Please try again later.",
-    "clear_filters": "Clear all filters"
+    "clear_filters": "Clear All Filters"
   },
   "dashboard_editor": {
     "save": "Save",
