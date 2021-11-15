@@ -5,6 +5,7 @@ import { space, SpaceProps } from 'styled-system';
 export const Container = styled.div<SpaceProps>`
   display: inline-block;
   position: relative;
+  cursor: pointer;
   ${space};
 `;
 

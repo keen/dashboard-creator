@@ -1,6 +1,7 @@
 import React, { FC, useState, useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { transparentize } from 'polished';
 import {
   Alert,
   Button,
@@ -8,22 +9,21 @@ import {
   Input,
   MousePositionedTooltip,
 } from '@keen.io/ui-core';
+import { BodyText } from '@keen.io/typography';
+import { colors } from '@keen.io/colors';
 
 import {
-  BoldMessage,
   Content,
   Container,
   ConnectionsContainer,
   CancelButton,
   Description,
   DetachedConnections,
-  DetachedConnectionItem,
-  EmptyConnections,
   ErrorContainer,
   FieldGroup,
   Field,
   FooterContent,
-  NormalMessage,
+  ToggleAll,
 } from './FilterSettings.styles';
 
 import { EventStream, TargetProperty, TooltipHint } from './components';
@@ -42,8 +42,6 @@ import { getCurrentDashboardChartsCount } from '../../modules/dashboards';
 import { ERRORS } from './constants';
 
 import { FilterSettingsError } from './types';
-import { BodyText } from '@keen.io/typography';
-import { colors } from '@keen.io/colors';
 import { AppContext } from '../../contexts';
 
 type Props = {
@@ -84,6 +82,8 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
   }, [schemaError]);
 
   const availableConnections = widgetConnections.length > 0;
+  const allConnectionsSelected =
+    availableConnections && widgetConnections.every((item) => item.isConnected);
   const detachedConnections = detachedWidgetConnections.length > 0;
 
   const isDashboardWithoutCharts = chartWidgetsCount === 0;
@@ -91,6 +91,14 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
   const emptyConnections =
     eventStreamsPool.length === 0 ||
     (widgetConnections.length === 0 && eventStream && targetProperty);
+
+  const toggleSelectAll = () => {
+    const updatedStatus = allConnectionsSelected ? false : true;
+
+    for (const connection of widgetConnections) {
+      dispatch(updateConnection(connection.widgetId, updatedStatus));
+    }
+  };
 
   return (
     <>
@@ -109,12 +117,24 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
             </ErrorContainer>
           )}
           <Description marginBottom={15}>
-            {t('filter_settings.description')}
+            <BodyText
+              variant="body2"
+              color={colors.black[100]}
+              fontWeight="bold"
+            >
+              {t('filter_settings.description')}
+            </BodyText>
             {isDashboardWithoutCharts && (
               <>
-                <NormalMessage marginLeft="3px">
-                  {t('filter_settings.description_property_types')}
-                </NormalMessage>
+                <div style={{ marginLeft: '3px' }}>
+                  <BodyText
+                    variant="body2"
+                    color={colors.black[100]}
+                    fontWeight={400}
+                  >
+                    {t('filter_settings.description_property_types')}
+                  </BodyText>
+                </div>
               </>
             )}
           </Description>
@@ -147,7 +167,13 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
             </Field>
           </FieldGroup>
           <Description marginTop={20} marginBottom={1}>
-            {t('filter_settings.filter_display_name')}
+            <BodyText
+              variant="body2"
+              color={colors.black[100]}
+              fontWeight="bold"
+            >
+              {t('filter_settings.filter_display_name')}
+            </BodyText>
           </Description>
           <Field width={300} marginRight={15}>
             <Input
@@ -160,7 +186,13 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
           </Field>
           <ConnectionsContainer>
             <Description marginBottom={15}>
-              {t('filter_settings.connections_description')}
+              <BodyText
+                variant="body2"
+                color={colors.black[100]}
+                fontWeight="bold"
+              >
+                {t('filter_settings.connections_description')}
+              </BodyText>
               <TooltipHint
                 marginLeft="5px"
                 renderMessage={() => (
@@ -172,11 +204,27 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
                   </>
                 )}
               />
+              {availableConnections && (
+                <ToggleAll onClick={toggleSelectAll}>
+                  <BodyText
+                    variant="body2"
+                    color={colors.blue[500]}
+                    fontWeight="bold"
+                  >
+                    {allConnectionsSelected
+                      ? t('filter_settings.unselect_all')
+                      : t('filter_settings.select_all')}
+                  </BodyText>
+                </ToggleAll>
+              )}
             </Description>
             {(isDashboardWithoutCharts || !!emptyConnections) && (
-              <EmptyConnections>
+              <BodyText
+                variant="body2"
+                color={transparentize(0.5, colors.black[100])}
+              >
                 {t('filter_settings.empty_connections')}
-              </EmptyConnections>
+              </BodyText>
             )}
             {availableConnections && (
               <WidgetConnections
@@ -200,18 +248,34 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
           {detachedConnections && (
             <>
               <Description marginTop={15} marginBottom={15}>
-                {t('filter_settings.detached_widgets_description')}
+                <BodyText
+                  variant="body2"
+                  color={colors.black[100]}
+                  fontWeight="bold"
+                >
+                  {t('filter_settings.detached_widgets_description')}
+                </BodyText>
                 <TooltipHint
                   marginLeft="5px"
-                  tooltipMode="dark"
+                  tooltipMode="light"
                   renderMessage={() => (
                     <>
                       <div style={{ marginBottom: 10 }}>
-                        {t('filter_settings.detached_widgets_first_hint')}
+                        <BodyText
+                          variant="body2"
+                          color={colors.black[100]}
+                          fontWeight={400}
+                        >
+                          {t('filter_settings.detached_widgets_first_hint')}
+                        </BodyText>
                       </div>
-                      <BoldMessage>
+                      <BodyText
+                        variant="body2"
+                        color={colors.black[100]}
+                        fontWeight="bold"
+                      >
                         {t('filter_settings.detached_widgets_second_hint')}
-                      </BoldMessage>
+                      </BodyText>
                     </>
                   )}
                 />
@@ -219,13 +283,17 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
               <DetachedConnections>
                 {detachedWidgetConnections.map(
                   ({ widgetId, positionIndex, title }) => (
-                    <DetachedConnectionItem key={widgetId}>
+                    <BodyText
+                      key={widgetId}
+                      variant="body2"
+                      color={transparentize(0.5, colors.black[100])}
+                    >
                       {title
                         ? title
                         : `${t(
                             'filter_settings.untitled_chart'
                           )} ${positionIndex}`}
-                    </DetachedConnectionItem>
+                    </BodyText>
                   )
                 )}
               </DetachedConnections>
@@ -241,13 +309,13 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
               <BodyText
                 variant="body2"
                 fontWeight="normal"
-                color={colors.white[500]}
+                color={colors.black[100]}
               >
                 {t('filter_settings.enter_filter_name_first')}
               </BodyText>
             )}
             tooltipPortal={modalContainer}
-            tooltipTheme="dark"
+            tooltipTheme="light"
           >
             <Button
               variant="secondary"
