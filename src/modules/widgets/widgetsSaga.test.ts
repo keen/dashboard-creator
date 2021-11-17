@@ -46,6 +46,8 @@ import { widget as widgetItem } from './fixtures';
 import { findBiggestYPositionOfWidgets } from '../dashboards/utils/findBiggestYPositionOfWidgets';
 import { appActions, appSelectors } from '../app';
 import { chartEditorActions } from '../chartEditor';
+import { UPDATE_DASHBOARD_METADATA } from '../dashboards/constants';
+import { scrollItemIntoView } from '../../utils';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
@@ -509,6 +511,14 @@ describe('cloneWidget()', () => {
 
     test('trigger saveDashboard action', (result) => {
       expect(result).toEqual(put(saveDashboard(dashboardId)));
+    });
+
+    test('waits for dashboard metadata update', (result) => {
+      expect(result).toEqual(take(UPDATE_DASHBOARD_METADATA));
+    });
+
+    test('calls scroll item into view', (result) => {
+      expect(result).toEqual(call(scrollItemIntoView, `widget/${widgetId}`));
     });
   });
 });

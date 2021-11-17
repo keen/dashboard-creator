@@ -185,6 +185,7 @@ const Grid: FC<Props> = ({
           return (
             <div
               key={id}
+              id={id}
               onMouseEnter={() => !isResize && setActiveWidget(id)}
               onMouseLeave={() => setActiveWidget(null)}
               style={getGridItemStyles(
