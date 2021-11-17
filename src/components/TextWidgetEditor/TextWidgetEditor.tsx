@@ -3,9 +3,9 @@ import React, { FC } from 'react';
 import { useDispatch } from 'react-redux';
 import Loadable from 'react-loadable';
 import { RawDraftContentState } from 'draft-js';
-import { Modal } from '@keen.io/ui-core';
+import { Loader, Modal } from '@keen.io/ui-core';
 
-import { Container } from './TextWidgetEditor.styles';
+import { Container, LoaderContainer } from './TextWidgetEditor.styles';
 import {
   textEditorActions,
   TextAlignment,
@@ -15,7 +15,11 @@ import {
 const Editor = Loadable({
   loader: () =>
     import(/* webpackChunkName: "text-widget-editor" */ './components/Editor'),
-  loading: () => <div>loading</div>,
+  loading: () => (
+    <LoaderContainer>
+      <Loader width={50} height={50} />
+    </LoaderContainer>
+  ),
 });
 
 type Props = {
