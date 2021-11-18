@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import Loadable from 'react-loadable';
 import { Route, Switch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import 'react-dates/initialize'; // todo remove this when rc-time-picker no longer used in monorepository time-picker component
 
 import { Container, Content, DropdownContainer } from './App.styles';
 
