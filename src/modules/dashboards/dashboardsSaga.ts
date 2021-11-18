@@ -109,6 +109,7 @@ import {
   SAVE_DASHBOARD_METADATA_SUCCESS,
   RESET_DASHBOARD_FILTERS,
   FINISH_DASHBOARD_EDITION,
+  UPDATE_DASHBOARD_METADATA,
 } from './constants';
 
 import { RootState } from '../../rootReducer';
@@ -118,7 +119,7 @@ import {
   removeConnectionFromFilter,
   removeFilterConnections,
 } from '../widgets/saga/filterWidget';
-import { getDroppingItemSize } from '../../utils';
+import { getDroppingItemSize, scrollItemIntoView } from '../../utils';
 import { findBiggestYPositionOfWidgets } from './utils/findBiggestYPositionOfWidgets';
 import { appActions, appSelectors } from '../app';
 
@@ -469,6 +470,9 @@ export function* calculateYPositionAndAddWidget({
     })
   );
   yield put(addWidgetToDashboard(dashboardId, widgetId));
+
+  yield take(UPDATE_DASHBOARD_METADATA);
+  yield call(scrollItemIntoView, widgetId);
 }
 
 export function* dashboardsSaga() {

@@ -44,7 +44,10 @@ import {
 
 import { createCodeSnippet } from './utils';
 
-import { SAVE_DASHBOARD_METADATA_SUCCESS } from './constants';
+import {
+  SAVE_DASHBOARD_METADATA_SUCCESS,
+  UPDATE_DASHBOARD_METADATA,
+} from './constants';
 
 import { NOTIFICATION_MANAGER, KEEN_ANALYSIS } from '../../constants';
 import {
@@ -56,6 +59,7 @@ import { removeConnectionFromFilter } from '../widgets/saga/filterWidget';
 
 import { unregisterWidget } from '../widgets/actions';
 import { appSelectors } from '../app';
+import { scrollItemIntoView } from '../../utils';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
@@ -501,6 +505,14 @@ describe('calculateYPositionAndAddWidget()', () => {
 
     test('should add widget to the dashboard', (result) => {
       expect(result).toEqual(put(addWidgetToDashboard(dashboardId, widgetId)));
+    });
+
+    test('waits for dashboard metadata update', (result) => {
+      expect(result).toEqual(take(UPDATE_DASHBOARD_METADATA));
+    });
+
+    test('calls scroll item into view', (result) => {
+      expect(result).toEqual(call(scrollItemIntoView, widgetId));
     });
   });
 });
