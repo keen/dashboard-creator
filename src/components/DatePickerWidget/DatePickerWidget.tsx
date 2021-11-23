@@ -10,7 +10,6 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { transparentize } from 'polished';
 import { Icon } from '@keen.io/icons';
-import { setTimezoneOffset } from '@keen.io/time-utils';
 import { colors } from '@keen.io/colors';
 import {
   Button,
@@ -22,11 +21,11 @@ import {
   AbsoluteTime,
   Timezone,
   convertRelativeTime,
-  getDefaultAbsoluteTime,
   TIME_PICKER_CLASS,
   MousePositionedTooltip,
   TimezoneError,
 } from '@keen.io/ui-core';
+import { getDefaultAbsoluteTime } from '@keen.io/time-utils';
 import { BodyText } from '@keen.io/typography';
 
 import TimeframeLabel from '../TimeframeLabel';
@@ -246,7 +245,7 @@ const DatePickerWidget: FC<Props> = ({
                     timeframe: customTimeframe,
                   }));
                 } else {
-                  const customTimeframe = getDefaultAbsoluteTime(timezone);
+                  const customTimeframe = getDefaultAbsoluteTime();
                   setLocalData((state) => ({
                     ...state,
                     timeframe: customTimeframe,
@@ -335,23 +334,8 @@ const DatePickerWidget: FC<Props> = ({
                           'date_picker_widget_timezone.empty_search'
                         )}
                         onChange={(timezone) => {
-                          let timeframe = localData.timeframe;
-                          if (typeof timeframe !== 'string') {
-                            const timeWithZone = {
-                              start: setTimezoneOffset(
-                                timeframe['start'],
-                                timezone
-                              ),
-                              end: setTimezoneOffset(
-                                timeframe['end'],
-                                timezone
-                              ),
-                            };
-                            timeframe = timeWithZone;
-                          }
                           setLocalData((state) => ({
                             ...state,
-                            timeframe,
                             timezone,
                           }));
                         }}

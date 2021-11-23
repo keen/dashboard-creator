@@ -5,20 +5,6 @@ describe('getPresentationTimezone()', () => {
     const queryResults = {
       query: {
         timeframe: {
-          end: '2020-01-10T12:00:00+01:00',
-          start: '2020-01-01T12:00:00+01:00',
-        },
-        timezone: 'Europe/Warsaw',
-      },
-    } as any;
-    const presentationTimezone = getPresentationTimezone(queryResults);
-    expect(presentationTimezone).toBe(60);
-  });
-
-  test('get presentation timezone offset when timeframe is an object', () => {
-    const queryResults = {
-      query: {
-        timeframe: {
           start: '2021-04-06T00:00:00-04:00',
           end: '2021-04-07T00:00:00-04:00',
         },
@@ -26,7 +12,7 @@ describe('getPresentationTimezone()', () => {
       },
     } as any;
     const presentationTimezone = getPresentationTimezone(queryResults);
-    expect(presentationTimezone).toBe(-240);
+    expect(presentationTimezone).toBe('America/Barbados');
   });
 
   test('get presentation timezone when timeframe is a string', () => {
