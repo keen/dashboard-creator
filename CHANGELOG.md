@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.9.1](https://github.com/keen/explorer/compare/v4.9.0...v4.9.1) (2021-11-24)
+
+
+### Bug Fixes
+
+* 🐛 freeze widget picker ([3df384c](https://github.com/keen/explorer/commit/3df384cae417cd732f45d3e21a988695558908d4))
+
 ## [4.9.0](https://github.com/keen/explorer/compare/v4.8.0...v4.9.0) (2021-11-24)
 
 
