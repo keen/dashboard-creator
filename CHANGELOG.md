@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.9.0](https://github.com/keen/explorer/compare/v4.8.0...v4.9.0) (2021-11-24)
+
+
+### Features
+
+* 🎸 update deps ([2105d52](https://github.com/keen/explorer/commit/2105d5236ff9d3f227b090ee18c3d2f3019fed1e))
+
 ## [4.8.0](https://github.com/keen/explorer/compare/v4.7.0...v4.8.0) (2021-11-24)
 
 
