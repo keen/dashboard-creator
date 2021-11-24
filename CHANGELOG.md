@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.8.0](https://github.com/keen/explorer/compare/v4.7.0...v4.8.0) (2021-11-24)
+
+
+### Features
+
+* 🎸 datepicker calendar ([fe14c06](https://github.com/keen/explorer/commit/fe14c0633c8b6e53a53d91fa135d99d15864d81f))
+* 🎸 heatmap enhancements ([101d580](https://github.com/keen/explorer/commit/101d5808180ccde0062578d697bf5403241453ce))
+* 🎸 scroll to cloned/added widget ([482a9bb](https://github.com/keen/explorer/commit/482a9bbe9fd6a225a195df29ab8235dd37c8609a))
+* 🎸 Table row selection ([59bd7e3](https://github.com/keen/explorer/commit/59bd7e34b5e3d39b30db913084270e4335ee5739))
+
+
+### Bug Fixes
+
+* 🐛 add box shadow to ReactWindowList ([49dd025](https://github.com/keen/explorer/commit/49dd02562c387f5a4275eec2601102d24b04c9a3))
+* 🐛 add scrolling shadow to FilterWidget ([c804eda](https://github.com/keen/explorer/commit/c804edaccf83aafcb5a2bde24313c83ea7d3d334))
+* 🐛 charts color palette ([41305ca](https://github.com/keen/explorer/commit/41305cacd5e2add3c563b1d82d032441e1cfca31))
+* 🐛 Color suggestions fix in theming ([4e70b4b](https://github.com/keen/explorer/commit/4e70b4b3f456506afc28915d4092302aa31bae57))
+* 🐛 Missing colors added to palette, colors order fix ([f3deb13](https://github.com/keen/explorer/commit/f3deb139c49f7cc5a6050fdf28fec774c88ff63c))
+* 🐛 QueryPicker tags ([3fb35bb](https://github.com/keen/explorer/commit/3fb35bb07c6828e8e130bad9036e55af3b2e056e))
+* 🐛 Rollup missing initialize fix ([c278130](https://github.com/keen/explorer/commit/c2781306f742de839c37a48235fe06660b09b3e7))
+* 🐛 table chart edit mode ([96c02ed](https://github.com/keen/explorer/commit/96c02edce79077567c1115d7532b91ea21e9f035))
+
 ## [4.7.0](https://github.com/keen/explorer/compare/v4.6.2...v4.7.0) (2021-10-29)
 
 
