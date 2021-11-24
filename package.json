@@ -58,7 +58,7 @@
     "@keen.io/typography": "^1.1.1",
     "@keen.io/ui-core": "^2.43.7",
     "@keen.io/widget-customization": "^0.0.43",
-    "@keen.io/widget-picker": "^1.4.23",
+    "@keen.io/widget-picker": "1.4.23",
     "@reduxjs/toolkit": "^1.4.0",
     "camelcase-keys": "^6.2.2",
     "connected-react-router": "^6.8.0",
