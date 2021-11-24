@@ -43,7 +43,7 @@ test('allows user to set "fontSize" for primary value', () => {
   const element = within(section).getByText(settings.total.typography.fontSize);
 
   fireEvent.click(element);
-  const fontSizeElement = getByText('27');
+  const fontSizeElement = getByText('45');
 
   fireEvent.click(fontSizeElement);
 
@@ -55,7 +55,7 @@ test('allows user to set "fontSize" for primary value', () => {
         fontColor: '#31627A',
         fontStyle: 'normal',
         fontWeight: 'normal',
-        fontSize: 27,
+        fontSize: 45,
       },
     },
   };
