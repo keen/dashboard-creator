@@ -14,6 +14,7 @@ export const Aside = styled.div`
   display: flex;
   align-items: center;
   margin-left: auto;
+  flex-shrink: 0;
 `;
 
 export const TooltipMotion = styled(motion.div)`
@@ -26,4 +27,5 @@ export const TooltipMotion = styled(motion.div)`
 export const ClearFilters = styled.span`
   padding: 0 10px;
   cursor: pointer;
+  flex-shrink: 0;
 `;

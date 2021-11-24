@@ -68,9 +68,10 @@ export const DropdownContent = styled.div`
   box-sizing: border-box;
 `;
 
-export const DropdownFooter = styled.div`
+export const DropdownFooter = styled.div<{ enableBorder: boolean }>`
   display: flex;
-  border-top: 1px solid ${colors.gray[300]};
+  border-top: 1px solid
+    ${({ enableBorder }) => (enableBorder ? colors.gray[300] : 'transparent')};
   padding: 10px 14px;
   justify-content: space-between;
   align-items: center;
@@ -106,4 +107,27 @@ export const IconWrapper = styled.div`
   flex-shrink: 0;
   display: inline-flex;
   margin-right: 5px;
+`;
+
+export const ListOverflow = styled.div<{
+  overflowTop: boolean;
+  overflowBottom: boolean;
+}>`
+  ${({ overflowTop, overflowBottom }) => {
+    let boxShadow = ``;
+    if (overflowTop)
+      boxShadow += `inset 0 10px 6px -6px  ${transparentize(
+        0.85,
+        colors.black[500]
+      )}`;
+    if (overflowTop && overflowBottom) boxShadow += ',';
+    if (overflowBottom)
+      boxShadow += `inset 0 -10px 6px -6px ${transparentize(
+        0.85,
+        colors.black[500]
+      )}`;
+    return css`
+      box-shadow: ${boxShadow};
+    `;
+  }};
 `;

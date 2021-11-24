@@ -7,6 +7,7 @@ import { getRelativeBoundingRect } from './getRelativeBoundingRect';
 import { getNestedObjectKeysAndValues } from './getNestedObjectKeys';
 import { transformDotNotationToNested } from './transformDotNotationToNested';
 import createSavedQueryTagsPool from './createSavedQueryTagsPool';
+import { scrollItemIntoView } from './scrollItemIntoView';
 
 export {
   getDroppingItemSize,
@@ -18,4 +19,5 @@ export {
   getNestedObjectKeysAndValues,
   transformDotNotationToNested,
   createSavedQueryTagsPool,
+  scrollItemIntoView,
 };

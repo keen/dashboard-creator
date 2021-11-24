@@ -52,7 +52,7 @@ export const EmptySearch = styled.div`
 
 export const Filter = styled.div`
   border-radius: 4px;
-  background: ${transparentize(0.85, colors.blue['100'])}};
+  background: ${transparentize(0.85, colors.blue['100'])};
   padding: 11px 14px;
   cursor: pointer;
   white-space: nowrap;

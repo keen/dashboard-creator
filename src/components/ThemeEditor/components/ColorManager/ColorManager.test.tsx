@@ -12,6 +12,11 @@ const render = (overProps: any = {}, overStore: any = {}) => {
     defaultColors: [],
     onUpdateColors: jest.fn(),
     onSelectPalette: jest.fn(),
+    currentSettings: {
+      theme: {
+        colors: [],
+      },
+    },
     ...overProps,
   };
 

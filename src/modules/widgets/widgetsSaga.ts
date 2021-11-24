@@ -62,6 +62,7 @@ import { initializeChartWidget } from './saga/chart';
 
 import { SELECT_SAVED_QUERY, CREATE_QUERY, SavedQuery } from '../queries';
 import { createWidgetId } from './utils';
+import { scrollItemIntoView } from '../../utils';
 
 import {
   CREATE_WIDGET,
@@ -89,6 +90,7 @@ import {
 
 import { ChartWidget, WidgetErrors, WidgetItem } from './types';
 import { findBiggestYPositionOfWidgets } from '../dashboards/utils/findBiggestYPositionOfWidgets';
+import { UPDATE_DASHBOARD_METADATA } from '../dashboards/constants';
 import { appActions, appSelectors } from '../app';
 import { chartEditorActions, chartEditorSelectors } from '../chartEditor';
 
@@ -345,6 +347,9 @@ export function* cloneWidget({
   );
   yield put(addWidgetToDashboard(dashboardId, clonedWidgetId));
   yield put(saveDashboard(dashboardId));
+
+  yield take(UPDATE_DASHBOARD_METADATA);
+  yield call(scrollItemIntoView, clonedWidgetId);
 }
 
 export function* createNewChart({

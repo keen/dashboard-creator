@@ -5,6 +5,7 @@ import { colors } from '@keen.io/colors';
 export const LoaderContainer = styled.div`
   display: flex;
   justify-content: center;
+  padding: 20px;
 `;
 
 export const CreateNewQuery = styled.div`
@@ -17,7 +18,7 @@ export const NewQueryButton = styled.div`
   flex-shrink: 0;
 `;
 
-export const SavedQueries = styled.div`
+export const AlertContainer = styled.div`
   padding: 20px;
 `;
 
@@ -25,7 +26,7 @@ export const QueriesContainer = styled.div<{
   overflowTop: boolean;
   overflowBottom: boolean;
 }>`
-  margin-top: 15px;
+  padding: 0 0 20px 0;
   max-height: 370px;
   overflow-y: scroll;
 
@@ -49,7 +50,7 @@ export const QueriesContainer = styled.div<{
 `;
 
 export const Message = styled.div`
-  margin-top: 15px;
+  padding: 0 20px 20px 20px;
   font-size: 14px;
   font-family: 'Lato Regular', sans-serif;
   color: ${colors.blue[500]};
@@ -68,6 +69,7 @@ export const FiltersContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  margin: 20px 20px 15px 20px;
 `;
 
 export const SearchContainer = styled.div`

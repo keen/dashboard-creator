@@ -20,6 +20,7 @@ import {
   SelectedPropertiesNumber,
   DropdownHeader,
   IconWrapper,
+  ListOverflow,
 } from './FilterWidget.styles';
 
 import { getWidget } from '../../modules/widgets';
@@ -78,9 +79,16 @@ const FilterWidget: FC<Props> = ({
   const [searchMode, setSearchMode] = useState(false);
   const [searchPhrase, setSearchPhrase] = useState('');
   const [activeProperties, setActiveProperties] = useState([]);
+  const [containerOverflow, setContainerOverflow] = useState({
+    top: false,
+    bottom: false,
+  });
 
   const containerRef = useRef(null);
   const dropdownContainerRef = useRef(null);
+  const listRef = useRef(null);
+
+  const { top: overflowTop, bottom: overflowBottom } = containerOverflow;
 
   const getDropdownXPositionThatFitsViewport = (left, right, dropdownWidth) => {
     if (window && window.innerWidth < left + dropdownWidth) {
@@ -179,6 +187,20 @@ const FilterWidget: FC<Props> = ({
     updateActiveProperties,
   };
 
+  const onScroll = () => {
+    if (!listRef.current) return;
+
+    const {
+      props: { height, itemCount, itemSize },
+      state: { scrollOffset },
+    } = listRef.current;
+
+    const top = scrollOffset > 0;
+    const bottom = itemSize * itemCount - height > scrollOffset;
+
+    setContainerOverflow({ top, bottom });
+  };
+
   return (
     <>
       <Container
@@ -265,15 +287,30 @@ const FilterWidget: FC<Props> = ({
                   <Loader width={50} height={50} fill={colors.blue['500']} />
                 </LoaderContainer>
               ) : availableProperties().length ? (
-                <ReactWindowList
-                  height={150}
-                  data-testid="scroll-wrapper2"
-                  itemData={filterItemData}
-                  itemCount={filterItemData.items.length}
-                  itemSize={30}
+                <ListOverflow
+                  overflowTop={overflowTop}
+                  overflowBottom={overflowBottom}
                 >
-                  {Row}
-                </ReactWindowList>
+                  <ReactWindowList
+                    height={150}
+                    data-testid="scroll-wrapper2"
+                    itemData={filterItemData}
+                    itemCount={filterItemData.items.length}
+                    itemSize={30}
+                    ref={listRef}
+                    onScroll={onScroll}
+                    onItemsRendered={(e) => {
+                      const { overscanStopIndex, visibleStopIndex } = e;
+
+                      setContainerOverflow((state) => ({
+                        ...state,
+                        bottom: overscanStopIndex > visibleStopIndex,
+                      }));
+                    }}
+                  >
+                    {Row}
+                  </ReactWindowList>
+                </ListOverflow>
               ) : null}
               {!widget.isLoading && availableProperties().length === 0 && (
                 <EmptySearch>
@@ -283,7 +320,7 @@ const FilterWidget: FC<Props> = ({
             </DropdownContent>
             {(widget.isLoading ||
               (widget.data && widget.data.propertyList)) && (
-              <DropdownFooter>
+              <DropdownFooter enableBorder={!overflowBottom}>
                 <Button size="small" onClick={applyFilter} variant="secondary">
                   {t('filter_widget.apply')}
                 </Button>

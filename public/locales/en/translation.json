@@ -102,14 +102,15 @@
     "detached_widgets_description": "Detached charts (They will be automatically disconnected)",
     "detached_widgets_first_hint": "These charts no longer work with this filter. The query connected to the chart uses a different event stream.",
     "detached_widgets_second_hint": "  They will be automatically disconnected.",
-    "connections_description": "Which charts should be associated with this filter?",
+    "connections_description": "Which charts should be associated?",
     "settings_error": "Please, finish filter widget configuration",
     "schema_processing_error": "We cannot display properties list at the moment. Please try again later.",
     "empty_schema_error": "No strings properties in schema",
     "filter_display_name": "Filter display name",
     "filter_display_name_placeholder": "Enter name",
-    "enter_filter_name_first": "Enter filter name first"
-
+    "enter_filter_name_first": "Enter filter name first",
+    "select_all": "Select All",
+    "unselect_all": "Unselect All"
   },
   "filter_widget": {
     "search_value": "Search value",
@@ -129,10 +130,12 @@
     "confirm_button": "Create",
     "cancel_button": "Cancel",
     "empty_connections": "Add charts to the dashboard and then configure Date Range widget",
-    "description": "Which charts should be associated with the Date Range widget?",
+    "description": "Which charts should be associated?",
     "tooltip_hint": "Date Range will affect only timeframes of associated charts.",
     "filter_display_name": "Data Range Display Name",
-    "filter_display_name_placeholder": "Date Range"
+    "filter_display_name_placeholder": "Date Range",
+    "select_all": "Select All",
+    "unselect_all": "Unselect All"
   },
   "date_picker_widget": {
     "name": "Date Range",
@@ -231,7 +234,7 @@
     "actions_tooltip": "Actions",
     "generic_error_title": "This dashboard can’t be reached",
     "view_dashboard_error_message": "There is something wrong with loading data or dashboard do not exist. Please try again later.",
-    "clear_filters": "Clear all filters"
+    "clear_filters": "Clear All Filters"
   },
   "dashboard_editor": {
     "save": "Save",
@@ -596,7 +599,8 @@
     "you_will_map_property": "You will map property to the different type. Some values may not be interpreted.",
     "select_data_type": "Select data type",
     "select_the_single_column_to_change_the_name": "Select the single column to change the name",
-    "select_the_date_format_first": "Select the Date format first"
+    "select_the_date_format_first": "Select the Date format first",
+    "use_dot_instead_of_comma": "Use dot instead of comma if you want to separate decimal value"
   },
   "widget_customization_data_types": {
     "datetime": "datetime",
@@ -662,7 +666,8 @@
     "percentages": "Percentages"
   },
   "widget_customization_table_settings": {
-    "title": "Table Chart Components"
+    "title": "Table Chart Components",
+    "multiple_rows_selection": "Multiple Row Selection"
   },
   "widget_customization_circular_settings": {
     "title": "Donut & Pie Chart Components",

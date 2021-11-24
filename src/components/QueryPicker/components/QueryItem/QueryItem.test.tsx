@@ -51,3 +51,29 @@ test('calls "onClick" handler', () => {
 
   expect(props.onClick).toHaveBeenCalled();
 });
+
+test('renders "tags" items', () => {
+  const tags = ['@tag1', '@tag2', '@tag3'];
+
+  const {
+    wrapper: { getByText },
+  } = render({ tags });
+
+  tags.forEach((tag) => {
+    expect(getByText(tag)).toBeInTheDocument();
+  });
+});
+
+test('renders "cached" tag', () => {
+  const cached = 4;
+
+  const {
+    wrapper: { getByText },
+  } = render({ cached });
+
+  const element = getByText(
+    `query_picker.cached_label(${cached}query_picker.cached_units)`
+  );
+
+  expect(element).toBeInTheDocument();
+});
