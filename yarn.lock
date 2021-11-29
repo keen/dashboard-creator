@@ -1834,14 +1834,7 @@
     d3-array "^2.7.1"
     fuse.js "^6.4.1"
 
-"@keen.io/time-utils@^1.2.0":
-  version "1.2.5"
-  resolved "https://registry.yarnpkg.com/@keen.io/time-utils/-/time-utils-1.2.5.tgz#142d18f631157641f100f7fb76b21c9a0e9ae3ee"
-  integrity sha512-msZYIwi1bgo2yoSbByRrD0+VTl3oBIf3mVOeUlzm5F/pieiD3rPV78wjaPEOqc6FzveOi3Hldtrv6S3gG4bUjA==
-  dependencies:
-    dayjs "^1.10.4"
-
-"@keen.io/time-utils@^1.3.0":
+"@keen.io/time-utils@^1.2.0", "@keen.io/time-utils@^1.3.0":
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/@keen.io/time-utils/-/time-utils-1.3.0.tgz#e3dce2930d66f9313123600ce73976244ef56eca"
   integrity sha512-vziKmjzSEcUIQZ3NZ9Yyph2KLOkF7Jso1O/Bs8qfH+LoH/H+GqzZEIok0VKJyMOaa4ODcASRTXwdJW5s0MEpSQ==
@@ -1860,10 +1853,18 @@
     react-toast-notifications "^2.4.0"
     styled-system "^5.1.5"
 
-"@keen.io/typography@^1.1.1", "@keen.io/typography@^1.2.1", "@keen.io/typography@^1.3.3":
+"@keen.io/typography@^1.1.1", "@keen.io/typography@^1.3.3":
   version "1.3.3"
   resolved "https://registry.yarnpkg.com/@keen.io/typography/-/typography-1.3.3.tgz#407d099f514ba0b2dcf505b1c1c9fd467c03298b"
   integrity sha512-QKlhCyLJW5QENB+M+LFskeyrzHQsCkOP7pNHdv3+i54HIe7X5QKMasCWR8yqe9jC91Dwgb0/gVr8AyBs/tyJgg==
+  dependencies:
+    "@keen.io/colors" "^1.0.0"
+    styled-system "^5.1.5"
+
+"@keen.io/typography@^1.2.1":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@keen.io/typography/-/typography-1.3.0.tgz#362d59624b53a8c696c036f8377d9f418e1b38ef"
+  integrity sha512-o6TbRiFHbRo3q4FINne0wGLXgYkP/Fw/XzSA55dXNJqV8ZjFvF+9hPcAv0u/vEMin57cBvh/WGoPRn2qCDpD/w==
   dependencies:
     "@keen.io/colors" "^1.0.0"
     styled-system "^5.1.5"
@@ -2475,9 +2476,9 @@
     "@types/react" "*"
 
 "@types/react@*":
-  version "17.0.34"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.34.tgz#797b66d359b692e3f19991b6b07e4b0c706c0102"
-  integrity sha512-46FEGrMjc2+8XhHXILr+3+/sTe3OfzSPU9YGKILLrUYbQ1CLQC9Daqo1KzENGXAWwrFwiY0l4ZbF20gRvgpWTg==
+  version "17.0.36"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.36.tgz#0d81e0e2419e6a8e9ba6af5e3a0608e70835d7d1"
+  integrity sha512-CUFUp01OdfbpN/76v4koqgcpcRGT3sYOq3U3N6q0ZVGcyeP40NUdVU+EWe3hs34RNaTefiYyBzOpxBBidCc5zw==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
@@ -4641,14 +4642,14 @@ cssstyle@^2.3.0:
     cssom "~0.3.6"
 
 csstype@^2.5.7:
-  version "2.6.18"
-  resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.6.18.tgz#980a8b53085f34af313410af064f2bd241784218"
-  integrity sha512-RSU6Hyeg14am3Ah4VZEmeX8H7kLwEEirXe6aU2IPfKNvhXwTflK5HQRDNI0ypQXoqmm+QPyG2IaPuQE5zMwSIQ==
+  version "2.6.19"
+  resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.6.19.tgz#feeb5aae89020bb389e1f63669a5ed490e391caa"
+  integrity sha512-ZVxXaNy28/k3kJg0Fou5MiYpp88j7H9hLZp8PDC3jV0WFjfH5E9xHb56L0W59cPbKbcHXeP4qyT8PrHp8t6LcQ==
 
 csstype@^3.0.2, csstype@^3.0.9:
-  version "3.0.9"
-  resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.0.9.tgz#6410af31b26bd0520933d02cbc64fce9ce3fbf0b"
-  integrity sha512-rpw6JPxK6Rfg1zLOYCSwle2GFOOsnjmDYDaBwEcwoOg4qlsIVCN789VkBZDJAGi4T07gI4YSutR43t9Zz4Lzuw==
+  version "3.0.10"
+  resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.0.10.tgz#2ad3a7bed70f35b965707c092e5f30b327c290e5"
+  integrity sha512-2u44ZG2OcNUO9HDp/Jl8C07x6pU/eTR3ncV91SiK3dhG9TWvRVsCoJw14Ckx5DgWkzGA3waZWO3d7pgqpUI/XA==
 
 csstype@^3.0.6:
   version "3.0.7"
@@ -8424,9 +8425,9 @@ levn@~0.3.0:
     type-check "~0.3.2"
 
 lines-and-columns@^1.1.6:
-  version "1.1.6"
-  resolved "https://registry.yarnpkg.com/lines-and-columns/-/lines-and-columns-1.1.6.tgz#1c00c743b433cd0a4e80758f7b64a57440d9ff00"
-  integrity sha1-HADHQ7QzzQpOgHWPe2SldEDZ/wA=
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/lines-and-columns/-/lines-and-columns-1.2.4.tgz#eca284f75d2965079309dc0ad9255abb2ebc1632"
+  integrity sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==
 
 lint-staged@^10.2.11:
   version "10.5.4"
@@ -10295,9 +10296,9 @@ react-intersection-observer@^8.31.1:
   integrity sha512-Q4OH2aUXcEi6tPBBgOBjfodoRM68wikXqqbPf8FaY4VBMcSACbxulfkW/OqcfLYfSAOEPGvxN+NCn9PqBgAOfQ==
 
 react-intersection-observer@^8.32.1, react-intersection-observer@^8.32.2:
-  version "8.32.2"
-  resolved "https://registry.yarnpkg.com/react-intersection-observer/-/react-intersection-observer-8.32.2.tgz#527eeecf569309d64ed96330636d90aac336c957"
-  integrity sha512-QTcea+n28AvOHbTku+jErfQqknbc4Nuh7EUNik8p/JMN56W2Jhjs+qcYZzQhAoyLX8pZD0QXpYX0lW87faackQ==
+  version "8.32.4"
+  resolved "https://registry.yarnpkg.com/react-intersection-observer/-/react-intersection-observer-8.32.4.tgz#42767671c8045a2eda564eb1fa60ca7f9b0874f3"
+  integrity sha512-iZK+u2z2Jpw9ez+cEFR4Hts3eNtW9XiEhwy2wGgKVe+pRUboWko827kvmyb7BtQUeX+/kRcTeHpw6uWSLyI57w==
 
 react-is@^16.12.0, react-is@^16.13.1, react-is@^16.6.0, react-is@^16.7.0, react-is@^16.8.1:
   version "16.13.1"
@@ -10929,9 +10930,9 @@ requires-port@^1.0.0:
   integrity sha1-kl0mAdOaxIXgkc8NpcbmlNw9yv8=
 
 reselect@^4.0.0:
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/reselect/-/reselect-4.1.2.tgz#7bf642992d143d4f3b0f2dca8aa52018808a1d51"
-  integrity sha512-wg60ebcPOtxcptIUfrr7Jt3h4BR86cCW3R7y4qt65lnNb4yz4QgrXcbSioVsIOYguyz42+XTHIyJ5TEruzkFgQ==
+  version "4.1.4"
+  resolved "https://registry.yarnpkg.com/reselect/-/reselect-4.1.4.tgz#66df0aff41b6ee0f51e2cc17cfaf2c1995916f32"
+  integrity sha512-i1LgXw8DKSU5qz1EV0ZIKz4yIUHJ7L3bODh+Da6HmVSm9vdL/hG7IpbgzQ3k2XSirzf8/eI7OMEs81gb1VV2fQ==
 
 resize-observer-polyfill@^1.5.0, resize-observer-polyfill@^1.5.1:
   version "1.5.1"
