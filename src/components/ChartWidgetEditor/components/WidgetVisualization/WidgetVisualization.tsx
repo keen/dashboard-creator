@@ -11,6 +11,11 @@ import {
 } from '@keen.io/widget-picker';
 import { Button, FadeLoader } from '@keen.io/ui-core';
 
+import { getPresentationTimezone } from '../../../../modules/timezone';
+import { themeSelectors } from '../../../../modules/theme';
+import { getDefaultSettings } from '../../utils';
+import Dataviz from '../DataViz';
+
 import {
   Placeholder,
   DatavizContainer,
@@ -18,16 +23,10 @@ import {
   Container,
   RunQuery,
 } from './WidgetVisualization.styles';
-
-import Dataviz from '../DataViz';
-import { getDefaultSettings } from '../../utils';
-
 import { fadeMaskMotion } from './motion';
 import { DISABLE_WIDGETS } from './constants';
-
+import { GaugeChartMessage } from './components';
 import { VisualizationSettings } from './types';
-import { getPresentationTimezone } from '../../../../modules/timezone';
-import { themeSelectors } from '../../../../modules/theme';
 
 type Props = {
   /** Query run indicator */
@@ -129,34 +128,39 @@ const WidgetVisualization: FC<Props> = ({
             />
           </div>
           {widgets.includes(type) && type !== 'json' && (
-            <DatavizContainer>
-              <Dataviz
-                visualization={type}
-                chartSettings={chartSettings}
-                tags={tags}
-                widgetSettings={widgetSettings}
-                analysisResults={analysisResult}
-                presentationTimezone={getTimezone(analysisResult)}
-                dashboardSettings={dashboardWidgetSettings}
-                inEditMode={inEditMode}
-              />
-              <AnimatePresence>
-                {outdatedAnalysisResults && (
-                  <FadeMask {...fadeMaskMotion} data-testid="chart-fade-mask">
-                    <Button
-                      variant="success"
-                      isDisabled={isQueryPerforming}
-                      icon={isQueryPerforming && <FadeLoader />}
-                      onClick={onRunQuery}
-                    >
-                      {isQueryPerforming
-                        ? t('chart_widget_editor.run_query_loading')
-                        : t('chart_widget_editor.run_query')}
-                    </Button>
-                  </FadeMask>
-                )}
-              </AnimatePresence>
-            </DatavizContainer>
+            <>
+              {type === 'gauge' && !chartSettings['maxValue'] && (
+                <GaugeChartMessage />
+              )}
+              <DatavizContainer>
+                <Dataviz
+                  visualization={type}
+                  chartSettings={chartSettings}
+                  tags={tags}
+                  widgetSettings={widgetSettings}
+                  analysisResults={analysisResult}
+                  presentationTimezone={getTimezone(analysisResult)}
+                  dashboardSettings={dashboardWidgetSettings}
+                  inEditMode={inEditMode}
+                />
+                <AnimatePresence>
+                  {outdatedAnalysisResults && (
+                    <FadeMask {...fadeMaskMotion} data-testid="chart-fade-mask">
+                      <Button
+                        variant="success"
+                        isDisabled={isQueryPerforming}
+                        icon={isQueryPerforming && <FadeLoader />}
+                        onClick={onRunQuery}
+                      >
+                        {isQueryPerforming
+                          ? t('chart_widget_editor.run_query_loading')
+                          : t('chart_widget_editor.run_query')}
+                      </Button>
+                    </FadeMask>
+                  )}
+                </AnimatePresence>
+              </DatavizContainer>
+            </>
           )}
         </>
       ) : (
