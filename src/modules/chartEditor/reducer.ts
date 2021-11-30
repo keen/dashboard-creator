@@ -1,14 +1,10 @@
 /*eslint-disable @typescript-eslint/no-unused-vars*/
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import {
-  ChartSettings,
-  PickerWidgets,
-  WidgetSettings,
-} from '@keen.io/widget-picker';
+import { PickerWidgets } from '@keen.io/widget-picker';
+import { MENU_ITEMS_ENUM } from '@keen.io/widget-customization';
 import { Query } from '@keen.io/query';
 
 import { createWidgetSettings } from './utils';
-
 import {
   ReducerState,
   EditorSection,
@@ -35,6 +31,7 @@ export const initialState: ReducerState = {
   },
   analysisResult: null,
   changeQueryConfirmation: false,
+  chartSettingsSection: MENU_ITEMS_ENUM.TITLES,
 };
 
 const chartEditorSlice = createSlice({
@@ -43,6 +40,12 @@ const chartEditorSlice = createSlice({
   reducers: {
     setEditorSection: (state, { payload }: PayloadAction<EditorSection>) => {
       state.editorSection = payload;
+    },
+    setChartSettingsSection: (
+      state,
+      { payload }: PayloadAction<MENU_ITEMS_ENUM>
+    ) => {
+      state.chartSettingsSection = payload;
     },
     showQueryUpdateConfirmation: (state) => {
       state.changeQueryConfirmation = true;
