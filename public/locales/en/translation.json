@@ -53,7 +53,11 @@
     "table_body_values": "Values",
     "line_title": "Line & Area",
     "line_thickness": "Line Thickness",
-    "line_markers": "Marker Size"
+    "line_markers": "Marker Size",
+    "gauge_title": "Gauge",
+    "gauge_primary_value": "Primary Value",
+    "gauge_range_values": "Range Values",
+    "gauge_border_color": "Border Color"
   },
   "confirm_query_change": {
     "title": "Saved Query Edited",
