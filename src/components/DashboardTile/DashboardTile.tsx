@@ -112,7 +112,7 @@ const DashboardTile: FC<Props> = ({
                 />
                 <div
                   ref={actionsMenuContainer}
-                  style={{ zIndex: UI_LAYERS.dropdown }}
+                  style={{ zIndex: UI_LAYERS.dropdown - 1 }}
                 >
                   <CircleButton
                     variant="success"
