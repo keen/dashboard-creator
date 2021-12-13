@@ -88,6 +88,16 @@ const dashboardCreator = new KeenDashboardCreator({
 });
 ```
 
+##### Disable query filter suggestions
+
+Disables suggestions in query creator filters
+
+```typescript
+const dashboardCreator = new KeenDashboardCreator({
+  disableQueryFilterSuggestions: true,
+});
+```
+
 ##### Disable timezone selection
 
 Disables possibility to change `timezone` for queries from user interface.
