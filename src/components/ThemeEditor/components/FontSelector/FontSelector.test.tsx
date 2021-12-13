@@ -1,4 +1,6 @@
 import React from 'react';
+import { mockAllIsIntersecting } from 'react-intersection-observer/test-utils';
+
 import {
   fireEvent,
   waitFor,
@@ -25,6 +27,8 @@ const render = (overProps: any = {}) => {
 beforeEach(() => {
   Element.prototype.scrollIntoView = jest.fn();
 });
+
+mockAllIsIntersecting(true);
 
 test('should render initial font in selector', () => {
   const {

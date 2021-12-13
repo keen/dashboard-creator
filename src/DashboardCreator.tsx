@@ -98,6 +98,9 @@ export class DashboardCreator {
   /** Default timezone for query **/
   private defaultTimezoneForQuery = DEFAULT_TIMEZONE;
 
+  /** Filter suggestions disabled in query creator **/
+  private disableQueryFilterSuggestions = false;
+
   /** Widgets configuration **/
   private widgetsConfiguration = {};
 
@@ -123,6 +126,7 @@ export class DashboardCreator {
       widgetsConfiguration,
       features,
       onViewChange,
+      disableQueryFilterSuggestions,
     } = config;
 
     const { id, masterKey, accessKey } = project;
@@ -147,6 +151,7 @@ export class DashboardCreator {
     }
     this.defaultTimezoneForQuery = defaultTimezoneForQuery;
     this.disableTimezoneSelection = disableTimezoneSelection;
+    this.disableQueryFilterSuggestions = disableQueryFilterSuggestions;
     this.widgetsConfiguration = widgetsConfiguration;
     if (features) {
       this.features = features;
@@ -290,6 +295,8 @@ export class DashboardCreator {
                   createSharedDashboardUrl: this.createSharedDashboardUrl,
                   widgetsConfiguration: this.widgetsConfiguration,
                   features: this.features,
+                  disableQueryFilterSuggestions: this
+                    .disableQueryFilterSuggestions,
                 }}
               >
                 <APIContext.Provider value={{ dashboardApi, keenAnalysis }}>
