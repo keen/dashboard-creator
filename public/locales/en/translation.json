@@ -293,7 +293,8 @@
     "theming": "Theming",
     "finish_edition": "Finish Edition",
     "saved": "Saved",
-    "is_saving": "Is saving..."
+    "is_saving": "Is saving...",
+    "initiate_auto_save": "Add a widget to initiate auto-saving"
   },
   "chart_widget_editor": {
     "add_to_dashboard": "Add to Dashboard",

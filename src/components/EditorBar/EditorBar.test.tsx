@@ -48,6 +48,14 @@ test('renders information about last save time', () => {
   expect(getByText(`editor_bar.saved ${timeAgo}`)).toBeInTheDocument();
 });
 
+test('renders information about auto-save activation', () => {
+  const {
+    wrapper: { getByText },
+  } = render({ lastSaveTime: null });
+
+  expect(getByText('editor_bar.initiate_auto_save')).toBeInTheDocument();
+});
+
 test('renders children nodes', () => {
   const {
     wrapper: { getByText },

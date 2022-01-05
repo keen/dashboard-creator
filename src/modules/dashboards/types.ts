@@ -8,7 +8,7 @@ export type DashboardMetaData = {
   widgets: number;
   queries: number;
   tags: string[];
-  lastModificationDate: number;
+  lastModificationDate: number | null;
   isPublic: boolean;
   publicAccessKey: null | string;
 };
