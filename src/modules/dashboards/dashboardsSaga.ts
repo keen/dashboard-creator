@@ -24,7 +24,6 @@ import {
   initializeDashboardWidgets as initializeDashboardWidgetsAction,
   createDashboard as createDashboardAction,
   editDashboard as editDashboardAction,
-  saveDashboard as saveDashboardAction,
   saveDashboardMeta as saveDashboardMetaAction,
   viewDashboard as viewDashboardAction,
   setDashboardPublicAccess as setDashboardPublicAccessAction,
@@ -259,8 +258,6 @@ export function* createDashboard({
 
   yield put(appActions.setActiveDashboard(dashboardId));
   yield put(push(ROUTES.EDITOR));
-
-  yield put(saveDashboardAction(dashboardId));
 }
 
 export function* removeWidgetFromDashboard({

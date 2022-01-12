@@ -43,8 +43,9 @@ const EditorBar: FC<Props> = ({
   const { t } = useTranslation();
   const timeAgo = useMemo(
     () =>
-      lastSaveTime &&
-      `${t('editor_bar.saved')} ${moment(lastSaveTime).fromNow()}`,
+      lastSaveTime
+        ? `${t('editor_bar.saved')} ${moment(lastSaveTime).fromNow()}`
+        : t('editor_bar.initiate_auto_save'),
     [lastSaveTime]
   );
 
