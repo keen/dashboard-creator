@@ -1,10 +1,13 @@
 import React from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
+import relativeTimePlugin from 'dayjs/plugin/relativeTime';
 import { render as rtlRender, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 
 import EditorBar from './EditorBar';
+
+dayjs.extend(relativeTimePlugin);
 
 const render = (overProps: any = {}, overStore: any = {}) => {
   const props = {
@@ -40,7 +43,7 @@ const render = (overProps: any = {}, overStore: any = {}) => {
 
 test('renders information about last save time', () => {
   const timestamp = 1607525787826;
-  const timeAgo = moment(timestamp).fromNow();
+  const timeAgo = dayjs(timestamp).fromNow();
   const {
     wrapper: { getByText },
   } = render({ lastSaveTime: timestamp });

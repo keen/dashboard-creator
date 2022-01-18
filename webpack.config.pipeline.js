@@ -33,7 +33,7 @@ module.exports = (env) => {
     },
     optimization: buildOptimization,
     plugins: [
-      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+      new webpack.IgnorePlugin(/^\.\/locale$/),
       /* Create HTML template file */
       new HtmlWebpackPlugin({
         inject: true,
