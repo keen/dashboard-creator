@@ -53,7 +53,11 @@
     "table_body_values": "Values",
     "line_title": "Line & Area",
     "line_thickness": "Line Thickness",
-    "line_markers": "Marker Size"
+    "line_markers": "Marker Size",
+    "gauge_title": "Gauge",
+    "gauge_primary_value": "Primary Value",
+    "gauge_range_values": "Range Values",
+    "gauge_border_color": "Border Color"
   },
   "confirm_query_change": {
     "title": "Saved Query Edited",
@@ -289,7 +293,8 @@
     "theming": "Theming",
     "finish_edition": "Finish Edition",
     "saved": "Saved",
-    "is_saving": "Is saving..."
+    "is_saving": "Is saving...",
+    "initiate_auto_save": "Add a widget to initiate auto-saving"
   },
   "chart_widget_editor": {
     "add_to_dashboard": "Add to Dashboard",
@@ -303,6 +308,9 @@
     "navigation_settings": "SETTINGS",
     "run_query_first": "Run your query first",
     "configuration_error": "Please, finish the chart widget configuration."
+  },
+  "query_visualization": {
+    "go_to_chart_elements_to_define_target_value": "Go to the <0>SETTINGS / Chart Elements</0> tab to define the <strong>Target Value</strong>"
   },
   "query_creator_analysis": {
     "placeholder": "Select analysis type",
@@ -336,7 +344,8 @@
     "filters": "Filters",
     "select": "Select",
     "event_stream": "Event Stream",
-    "tooltip": "so we know what properties are available"
+    "tooltip": "so we know what properties are available",
+    "matching_values": "Matching values"
   },
   "query_creator_filter_boolean": {
     "placeholder": "value"
@@ -523,7 +532,8 @@
     "preview_extraction": "Preview Events",
     "email_extraction": "Extract to Email",
     "limit_label": "Limit Number of Events",
-    "limit_placeholder": "Events limit",
+    "limit_placeholder": "Limit",
+    "range_validation_tooltip": "The number of events for preview has to be within the range 1 - 100,000",
     "maximum_events_limit": "The maximum number of events for preview is 100,000.",
     "maximum_email_events_limit": "Maximum number of events for email extraction is 10,000,000.",
     "email_events_limit_first": "Need more? Consider",
@@ -667,7 +677,10 @@
   },
   "widget_customization_table_settings": {
     "title": "Table Chart Components",
-    "multiple_rows_selection": "Multiple Row Selection"
+    "multiple_rows_selection": "Multiple Row Selection",
+    "disabled_pagination_info": "Loading a large amount of data can be slow without pagination.",
+    "default_number_of_rows_per_page": "Default Number <br /> of Rows per Page",
+    "pagination": "Pagination"
   },
   "widget_customization_circular_settings": {
     "title": "Donut & Pie Chart Components",
@@ -675,6 +688,18 @@
   },
   "widget_customization_heatmap_settings": {
     "title": "Heatmap Chart Components"
+  },
+  "widget_customization_gauge_settings": {
+    "title": "Gauge Chart Settings",
+    "minimal_value": "Minimal Value",
+    "minimal_value_placeholder": "What is the min?",
+    "target_value": "Target Value",
+    "target_value_placeholder": "What is your goal?",
+    "current_value": "The current value is",
+    "validation": "The Target Value must be greater than the Minimal Value",
+    "validation_target_value": "Please provide correct Target Value",
+    "validation_minimal_value": "Please provide correct Minimal Value",
+    "validation_comma": "Use dot instead of comma if you want to separate decimal value"
   },
   "widget_customization_slider_settings": {
     "label": "Slider",

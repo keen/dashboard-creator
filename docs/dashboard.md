@@ -45,7 +45,7 @@ type MetaData = {
   /* Tags used for filtering on dashboards list */
   tags: string[];
   /* Timestamp representing last modification date */
-  lastModificationDate: number;
+  lastModificationDate: number | null;
   /* Public indicator */
   isPublic: boolean;
   /* Public access key name connected with dashboard  */

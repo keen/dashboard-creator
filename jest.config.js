@@ -17,6 +17,7 @@ module.exports = {
       isolatedModules: true,
       tsconfig: '<rootDir>/tsconfig.json',
     },
+    '__APP_VERSION__': '__APP_VERSION__'
   },
 
   collectCoverage: true,

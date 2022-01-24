@@ -46,6 +46,7 @@ export type DashboardCreatorOptions = {
   defaultTimezoneForQuery?: string;
   widgetsConfiguration?: WidgetsConfiguration;
   features?: Features;
+  disableQueryFilterSuggestions?: boolean;
 };
 
 export type PublicDashboardOptions = {

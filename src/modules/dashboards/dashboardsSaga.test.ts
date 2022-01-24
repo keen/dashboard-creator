@@ -1,13 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention, @typescript-eslint/no-unused-vars */
 import sagaHelper from 'redux-saga-testing';
 import { put, take, select, getContext, call, all } from 'redux-saga/effects';
-
-jest.mock('uuid', () => {
-  return {
-    v4: () => '@dashboard/01',
-  };
-});
-
+import { push } from 'connected-react-router';
+import { Theme } from '@keen.io/charts';
 import {
   removeWidgetFromDashboard as removeWidgetFromDashboardAction,
   regenerateAccessKey as regenerateAccessKeyAction,
@@ -17,10 +12,13 @@ import {
   calculateYPositionAndAddWidget as calculateYPositionAndAddWidgetAction,
   updateCachedDashboardIds,
   unregisterDashboard,
+  registerDashboard,
   addWidgetToDashboard,
   setDashboardPublicAccess,
   regenerateAccessKeySuccess,
   regenerateAccessKeyError,
+  createDashboard as createDashboardAction,
+  updateDashboard,
 } from './actions';
 
 import { deleteAccessKey } from './saga';
@@ -33,6 +31,7 @@ import {
   updateCachedDashboardsList,
   calculateYPositionAndAddWidget,
   setAccessKey,
+  createDashboard,
 } from './dashboardsSaga';
 
 import {
@@ -41,28 +40,34 @@ import {
   getWidget,
   createWidget,
 } from '../widgets';
-
-import { createCodeSnippet } from './utils';
-
-import {
-  SAVE_DASHBOARD_METADATA_SUCCESS,
-  UPDATE_DASHBOARD_METADATA,
-} from './constants';
-
-import { NOTIFICATION_MANAGER, KEEN_ANALYSIS } from '../../constants';
 import {
   getCachedDashboardIds,
   getDashboard,
   getDashboardMeta,
 } from './selectors';
+import { themeSelectors } from '../theme/selectors';
 import { removeConnectionFromFilter } from '../widgets/saga/filterWidget';
-
 import { unregisterWidget } from '../widgets/actions';
-import { appSelectors } from '../app';
+import { appActions, appSelectors } from '../app';
+import { themeActions } from '../theme';
+
 import { scrollItemIntoView } from '../../utils';
+import { createCodeSnippet, createDashboardSettings } from './utils';
+
+import {
+  SAVE_DASHBOARD_METADATA_SUCCESS,
+  UPDATE_DASHBOARD_METADATA,
+} from './constants';
+import { NOTIFICATION_MANAGER, KEEN_ANALYSIS, ROUTES } from '../../constants';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
+
+jest.mock('uuid', () => {
+  return {
+    v4: () => dashboardId,
+  };
+});
 
 describe('removeWidgetFromDashboard()', () => {
   const action = removeWidgetFromDashboardAction(dashboardId, widgetId);
@@ -117,7 +122,6 @@ describe('removeWidgetFromDashboard()', () => {
 });
 
 describe('regenerateAccessKey()', () => {
-  const dashboardId = '@dashboard/01';
   const publicAccessKey = 'public-access-key';
   const newAccessKey = 'new-access-key';
 
@@ -255,7 +259,6 @@ describe('exportDashboardToHtml()', () => {
 });
 
 describe('updateCachedDashboardsList()', () => {
-  const dashboardId = '@dashboard/01';
   const action = viewDashboardAction(dashboardId);
 
   describe('Scenario 1: Should add dashboard id to cached dashboards if total cached dashboards number is less than maximal cached dashboards number', () => {
@@ -352,7 +355,6 @@ describe('updateCachedDashboardsList()', () => {
 });
 
 describe('setAccessKey()', () => {
-  const dashboardId = '@dashboard/01';
   const publicAccessKey = 'public-access-key';
 
   describe('Scenario 1: User successfully sets access key for public dashboard', () => {
@@ -434,7 +436,6 @@ describe('setAccessKey()', () => {
 });
 
 describe('calculateYPositionAndAddWidget()', () => {
-  const dashboardId = '@dashboard/01';
   const widgetType = 'text';
   describe('should add widget at the end of the grid', () => {
     const action = calculateYPositionAndAddWidgetAction(
@@ -514,5 +515,52 @@ describe('calculateYPositionAndAddWidget()', () => {
     test('calls scroll item into view', (result) => {
       expect(result).toEqual(call(scrollItemIntoView, widgetId));
     });
+  });
+});
+
+describe('createDashboard()', () => {
+  const action = createDashboardAction(dashboardId);
+  const test = sagaHelper(createDashboard(action));
+  const theme = {} as Theme;
+
+  test('get theme settings', (result) => {
+    expect(result).toEqual(select(themeSelectors.getBaseTheme));
+
+    return theme;
+  });
+
+  test('registers dashboard', (result) => {
+    expect(result).toEqual(put(registerDashboard(dashboardId)));
+  });
+
+  test('updates dashboard', (result) => {
+    expect(result).toEqual(
+      put(
+        updateDashboard(dashboardId, {
+          version: '__APP_VERSION__',
+          widgets: [],
+        })
+      )
+    );
+  });
+
+  test('sets dashboard theme', (result) => {
+    expect(result).toEqual(
+      put(
+        themeActions.setDashboardTheme({
+          dashboardId,
+          theme,
+          settings: createDashboardSettings(),
+        })
+      )
+    );
+  });
+
+  test('sets active dashboard', (result) => {
+    expect(result).toEqual(put(appActions.setActiveDashboard(dashboardId)));
+  });
+
+  test('changes app route', (result) => {
+    expect(result).toEqual(put(push(ROUTES.EDITOR)));
   });
 });

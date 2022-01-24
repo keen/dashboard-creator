@@ -253,18 +253,15 @@ const FilterWidget: FC<Props> = ({
           width={dropdown.width}
         >
           <Dropdown isOpen={isOpen}>
-            {(widget.isLoading ||
-              (widget.data && widget.data.propertyList)) && (
-              <DropdownHeader>
+            <DropdownHeader>
+              {widget?.data?.propertyList && (
                 <FilterButtonSecondary onClick={toggleSelectAll}>
-                  {widget.data &&
-                  widget.data.propertyList &&
-                  widget.data.propertyList.length === activeProperties.length
+                  {widget.data.propertyList.length === activeProperties.length
                     ? t('filter_widget.unselect_all')
                     : t('filter_widget.select_all')}
                 </FilterButtonSecondary>
-              </DropdownHeader>
-            )}
+              )}
+            </DropdownHeader>
 
             <DropdownContent>
               {(widget.isLoading ||

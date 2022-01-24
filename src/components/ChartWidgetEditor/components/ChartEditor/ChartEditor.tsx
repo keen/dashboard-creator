@@ -67,7 +67,6 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
 
   const [localQuery, setLocalQuery] = useState(null);
   const [error, setError] = useState<ChartEditorError>(null);
-  const [activeMenuItem, setActiveMenuItem] = useState(null);
 
   const {
     analysisResult,
@@ -75,6 +74,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
     querySettings,
     visualization,
     editorSection,
+    chartSettingsSection,
     isEditMode,
     isSavedQuery,
     isDirtyQuery,
@@ -186,6 +186,15 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
     );
   };
 
+  useEffect(() => {
+    return () => {
+      dispatch(chartEditorActions.setEditorSection(EditorSection.QUERY));
+      dispatch(
+        chartEditorActions.setChartSettingsSection(MENU_ITEMS_ENUM.TITLES)
+      );
+    };
+  }, []);
+
   return (
     <Container id="chart-editor">
       <AnimatePresence>
@@ -209,7 +218,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
           querySettings={querySettings}
           onRunQuery={onRunQuery}
           onChangeVisualization={onChangeVisualization}
-          inEditMode={activeMenuItem === MENU_ITEMS_ENUM.FORMATTING}
+          inEditMode={chartSettingsSection === MENU_ITEMS_ENUM.FORMATTING}
         />
         <IconContainer onClick={onClose} data-testid="close-handler">
           <Icon
@@ -226,7 +235,9 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
             if (section !== EditorSection.QUERY) {
               setLocalQuery(null);
             }
-            setActiveMenuItem(null);
+            dispatch(
+              chartEditorActions.setChartSettingsSection(MENU_ITEMS_ENUM.TITLES)
+            );
             dispatch(chartEditorActions.setEditorSection(section));
           }}
           activeSection={editorSection}
@@ -247,6 +258,7 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
             chartSettings={widgetCustomization.chart}
             widgetSettings={widgetCustomization.widget}
             savedQueryName={analysisResult?.metadata?.display_name}
+            analysisResult={analysisResult?.result}
             onUpdateWidgetSettings={(widgetSettings) =>
               updateWidgetSettings(widgetSettings)
             }
@@ -254,7 +266,10 @@ const ChartEditor: FC<Props> = ({ onClose }) => {
               updateChartSettings(chartSettings)
             }
             modalContainer={modalContainer}
-            onMenuItemChange={(menuItem) => setActiveMenuItem(menuItem)}
+            activeMenuItem={chartSettingsSection}
+            onMenuItemChange={(menuItem) =>
+              dispatch(chartEditorActions.setChartSettingsSection(menuItem))
+            }
             pubSub={chartEventsPubSub}
           />
         </SectionContainer>

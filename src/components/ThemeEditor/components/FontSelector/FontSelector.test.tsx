@@ -1,5 +1,11 @@
 import React from 'react';
-import { fireEvent, render as rtlRender } from '@testing-library/react';
+import { mockAllIsIntersecting } from 'react-intersection-observer/test-utils';
+
+import {
+  fireEvent,
+  waitFor,
+  render as rtlRender,
+} from '@testing-library/react';
 import FontSelector from './FontSelector';
 import { KEYBOARD_KEYS } from '../../constants';
 
@@ -17,6 +23,12 @@ const render = (overProps: any = {}) => {
     wrapper,
   };
 };
+
+beforeEach(() => {
+  Element.prototype.scrollIntoView = jest.fn();
+});
+
+mockAllIsIntersecting(true);
 
 test('should render initial font in selector', () => {
   const {
@@ -59,5 +71,7 @@ test('should select font by using a keyboard', async () => {
   fireEvent.keyDown(document.activeElement, { keyCode: KEYBOARD_KEYS.DOWN });
   fireEvent.keyDown(document.activeElement, { keyCode: KEYBOARD_KEYS.ENTER });
 
-  expect(props.onChange).toHaveBeenCalledWith('Lora');
+  await waitFor(() => {
+    expect(props.onChange).toHaveBeenCalledWith('Lora');
+  });
 });

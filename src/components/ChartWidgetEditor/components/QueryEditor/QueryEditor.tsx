@@ -19,7 +19,7 @@ type Props = {
 
 const QueryEditor: FC<Props> = ({ isEditMode, initialQueryInitialized }) => {
   const dispatch = useDispatch();
-
+  const { disableQueryFilterSuggestions } = useContext(AppContext);
   const {
     modalContainer,
     analyticsApiUrl,
@@ -50,6 +50,7 @@ const QueryEditor: FC<Props> = ({ isEditMode, initialQueryInitialized }) => {
       onUpdateChartSettings={setChartSettings}
       defaultTimezoneForQuery={defaultTimezoneForQuery}
       disableTimezoneSelection={timezoneSelectionDisabled}
+      disableFilterSuggestions={disableQueryFilterSuggestions}
       onUpdateQuery={(query: Query, isQueryReady: boolean) => {
         if (isEditMode) {
           if (isQueryReady) {

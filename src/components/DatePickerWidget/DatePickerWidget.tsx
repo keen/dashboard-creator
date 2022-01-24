@@ -21,7 +21,6 @@ import {
   AbsoluteTime,
   Timezone,
   convertRelativeTime,
-  TIME_PICKER_CLASS,
   MousePositionedTooltip,
   TimezoneError,
 } from '@keen.io/ui-core';
@@ -109,8 +108,7 @@ const DatePickerWidget: FC<Props> = ({
       const path = getEventPath(e);
       if (
         !path?.includes(containerRef.current) &&
-        !path?.includes(dropdownContainerRef.current) &&
-        !path?.includes(document.querySelector(`.${TIME_PICKER_CLASS}`))
+        !path?.includes(dropdownContainerRef.current)
       ) {
         setOpen(false);
       }

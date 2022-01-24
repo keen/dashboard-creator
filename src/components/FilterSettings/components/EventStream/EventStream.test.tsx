@@ -1,5 +1,6 @@
 import React from 'react';
 import { render as rtlRender, fireEvent } from '@testing-library/react';
+import { mockAllIsIntersecting } from 'react-intersection-observer/test-utils';
 
 import EventStream from './EventStream';
 
@@ -19,6 +20,8 @@ const render = (overProps: any = {}) => {
     wrapper,
   };
 };
+
+mockAllIsIntersecting(true);
 
 test('allows user to select event stream', () => {
   const {

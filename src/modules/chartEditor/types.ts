@@ -1,6 +1,7 @@
 import { Query } from '@keen.io/query';
 import { PickerWidgets, WidgetSettings } from '@keen.io/widget-picker';
 import { TextSettings } from '@keen.io/widgets';
+import { MENU_ITEMS_ENUM } from '@keen.io/widget-customization';
 import { ChartSettings } from '../../types';
 
 export enum EditorSection {
@@ -32,6 +33,7 @@ export type ReducerState = {
     chartSettings: ChartSettings;
     widgetSettings: EditorWidgetSettings;
   };
+  chartSettingsSection: MENU_ITEMS_ENUM;
 };
 
 export type VisualisationSettingsPayload = {

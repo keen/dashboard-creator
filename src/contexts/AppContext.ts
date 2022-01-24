@@ -15,6 +15,7 @@ export const AppContext = React.createContext<{
   createSharedDashboardUrl?: (accessKey: string, dashboardId: string) => string;
   widgetsConfiguration?: WidgetsConfiguration;
   features?: Features;
+  disableQueryFilterSuggestions?: boolean;
 }>({
   notificationPubSub: null,
   modalContainer: null,
@@ -27,4 +28,5 @@ export const AppContext = React.createContext<{
   createSharedDashboardUrl: () => '',
   widgetsConfiguration: {},
   features: {},
+  disableQueryFilterSuggestions: false,
 });
