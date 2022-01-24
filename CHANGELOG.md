@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.10.0](https://github.com/keen/explorer/compare/v4.9.1...v4.10.0) (2022-01-24)
+
+
+### Features
+
+* 🎸 Gauge widget - go to settings message ([3db1e51](https://github.com/keen/explorer/commit/3db1e5114edd53bfbfaf48245062932754582e1c))
+* 🎸 Query creator - filter suggestions ([cf2e569](https://github.com/keen/explorer/commit/cf2e56924ecb3306765ffa7a2413d3cb0c668ed7))
+* 🎸 Table chart pagination ([9069ec3](https://github.com/keen/explorer/commit/9069ec30e7133d91b36877eb5e21e56b22fab948))
+* 🎸 theme section for Gauge ([94e2e67](https://github.com/keen/explorer/commit/94e2e670eb5cb2dfecd368d0fbc21e5caa64d672))
+
+
+### Bug Fixes
+
+* 🐛 cropped actions menu ([2a02809](https://github.com/keen/explorer/commit/2a02809c599f23df70a008ae25f371ed9da0e5cd))
+* 🐛 empty target value for Gauge ([07fa2ab](https://github.com/keen/explorer/commit/07fa2abc918cc5105df6a15f6359633cd42c2194))
+* 🐛 Extraction input - remove value behaviour fix ([9951c4f](https://github.com/keen/explorer/commit/9951c4fff2e1630292f1463476fcc24d2e725448))
+* 🐛 filter property list ([32a88bc](https://github.com/keen/explorer/commit/32a88bc09bb9bca1ae7252351378a82a9f2d4b22))
+* 🐛 remove obsolete class ([4605ff9](https://github.com/keen/explorer/commit/4605ff9541317ec0f11dbdf154d4ce379fd2d171))
+
 ### [4.9.1](https://github.com/keen/explorer/compare/v4.9.0...v4.9.1) (2021-11-24)
 
 
