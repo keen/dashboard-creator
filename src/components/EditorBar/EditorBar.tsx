@@ -1,5 +1,6 @@
 import React, { FC, ReactNode, useMemo } from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
+import relativeTimePlugin from 'dayjs/plugin/relativeTime';
 import { useTranslation } from 'react-i18next';
 import { Loader } from '@keen.io/ui-core';
 import { BodyText } from '@keen.io/typography';
@@ -16,6 +17,8 @@ import {
 import SubmitButton from '../SubmitButton';
 import PermissionGate from '../PermissionGate';
 import { Scopes } from '../../modules/app';
+
+dayjs.extend(relativeTimePlugin);
 
 type Props = {
   /** Finish edit event handler */
@@ -44,7 +47,7 @@ const EditorBar: FC<Props> = ({
   const timeAgo = useMemo(
     () =>
       lastSaveTime
-        ? `${t('editor_bar.saved')} ${moment(lastSaveTime).fromNow()}`
+        ? `${t('editor_bar.saved')} ${dayjs(lastSaveTime).fromNow()}`
         : t('editor_bar.initiate_auto_save'),
     [lastSaveTime]
   );
