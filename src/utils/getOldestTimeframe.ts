@@ -1,4 +1,4 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 type TimeframeUnit =
   | 'minutes'
@@ -17,7 +17,7 @@ export const getOldestTimeframe = (
     if (typeof timeframe === 'object') {
       return absoluteTimeframes.push({
         timeframe: timeframe,
-        absolute: moment(timeframe.start),
+        absolute: dayjs(timeframe.start),
       });
     }
 
@@ -26,7 +26,7 @@ export const getOldestTimeframe = (
     const n = parseInt(timeframeArray[1], 10);
     const unit = timeframeArray[2] as TimeframeUnit;
 
-    const date = moment().subtract(n, unit);
+    const date = dayjs().subtract(n, unit);
     if (relation === 'this') {
       date.add(1, unit);
     }

@@ -102,7 +102,7 @@ export function* setFilterWidget({
   const connectedWidgetsTimeframes = connectedWidgets
     .filter(
       (connectedWidget: Record<string, any>) =>
-        connectedWidget.data && connectedWidget.data.query
+        connectedWidget?.data && connectedWidget.data.query
     )
     .map(
       (connectedWidget: Record<string, any>) =>
