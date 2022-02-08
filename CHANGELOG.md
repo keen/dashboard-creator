@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.10.1](https://github.com/keen/explorer/compare/v4.10.0...v4.10.1) (2022-02-08)
+
+
+### Bug Fixes
+
+* 🐛 handle undefined with connected widgets ([25f9382](https://github.com/keen/explorer/commit/25f93828d1e2d24479bf4a1be136713fe3cadba1))
+
 ## [4.10.0](https://github.com/keen/explorer/compare/v4.9.1...v4.10.0) (2022-01-24)
 
 
