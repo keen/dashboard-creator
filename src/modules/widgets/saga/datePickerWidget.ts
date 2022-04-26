@@ -14,14 +14,9 @@ import {
 import { getWidget, getWidgetSettings } from '../selectors';
 
 import {
-  openEditor,
-  closeEditor,
-  getDatePickerSettings,
-  setEditorConnections,
-  APPLY_EDITOR_SETTINGS,
-  CLOSE_EDITOR,
   DatePickerConnection,
   datePickerActions,
+  datePickerSelectors,
 } from '../../datePicker';
 
 import {
@@ -169,7 +164,7 @@ export function* removeConnectionFromDatePicker(
   const {
     settings: { widgets },
   } = yield select(getWidgetSettings, datePickerId);
-  const { name } = yield select(getDatePickerSettings);
+  const { name } = yield select(datePickerSelectors.getDatePickerSettings);
   const updatedConnections = widgets.filter((id: string) => id !== widgetId);
   yield put(setDatePickerWidget(datePickerId, updatedConnections, name));
 }
@@ -186,7 +181,7 @@ export function* applyDatePickerUpdates(datePickerWidgetId: string) {
     widgetConnections: updatedConnections,
     name,
   }: { widgetConnections: DatePickerConnection[]; name: string } = yield select(
-    getDatePickerSettings
+    datePickerSelectors.getDatePickerSettings
   );
 
   const widgetPickerConnections = updatedConnections
@@ -229,7 +224,7 @@ export function* editDatePickerWidget({
     settings: { name },
   }: DatePickerWidget = yield select(getWidgetSettings, datePickerWidgetId);
 
-  yield put(setEditorConnections(widgetConnections));
+  yield put(datePickerActions.setEditorConnections({ widgetConnections }));
 
   const {
     settings: { widgets: dashboardWidgetsIds },
@@ -258,10 +253,13 @@ export function* editDatePickerWidget({
     );
 
   yield all([...fadeOutWidgets, ...titleCoverWidgets, ...highlightWidgets]);
-  yield put(datePickerActions.setName(name));
-  yield put(openEditor());
+  yield put(datePickerActions.setName({ name }));
+  yield put(datePickerActions.openEditor());
 
-  const action = yield take([APPLY_EDITOR_SETTINGS, CLOSE_EDITOR]);
+  const action = yield take([
+    datePickerActions.applySettings.type,
+    datePickerActions.closeEditor.type,
+  ]);
 
   yield all(
     dashboardWidgetsIds.map((widgetId: string) =>
@@ -275,10 +273,10 @@ export function* editDatePickerWidget({
     )
   );
 
-  if (action.type === APPLY_EDITOR_SETTINGS) {
+  if (action.type === datePickerActions.applySettings.type) {
     yield call(applyDatePickerUpdates, datePickerWidgetId);
 
-    yield put(closeEditor());
+    yield put(datePickerActions.closeEditor());
     yield put(saveDashboard(dashboardId));
   }
 }
@@ -311,8 +309,8 @@ export function* setupDatePicker(widgetId: string) {
     ({ widgetId }) => widgetId
   );
 
-  yield put(setEditorConnections(widgetConnections));
-  yield put(openEditor());
+  yield put(datePickerActions.setEditorConnections({ widgetConnections }));
+  yield put(datePickerActions.openEditor());
 
   const fadeOutWidgets = dashboardWidgetsIds
     .filter(
@@ -335,7 +333,10 @@ export function* setupDatePicker(widgetId: string) {
 
   yield all([...fadeOutWidgets, ...titleCoverWidgets, ...highlightWidgets]);
 
-  const action = yield take([APPLY_EDITOR_SETTINGS, CLOSE_EDITOR]);
+  const action = yield take([
+    datePickerActions.applySettings.type,
+    datePickerActions.closeEditor.type,
+  ]);
 
   yield all(
     dashboardWidgetsIds.map((widgetId: string) =>
@@ -349,10 +350,10 @@ export function* setupDatePicker(widgetId: string) {
     )
   );
 
-  if (action.type === APPLY_EDITOR_SETTINGS) {
+  if (action.type === datePickerActions.applySettings.type) {
     yield call(applyDatePickerUpdates, datePickerWidgetId);
 
-    yield put(closeEditor());
+    yield put(datePickerActions.closeEditor());
     yield put(saveDashboard(dashboardId));
   } else {
     yield put(removeWidgetFromDashboard(dashboardId, widgetId));

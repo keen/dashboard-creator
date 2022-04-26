@@ -1,10 +1,7 @@
 import { takeEvery, put } from 'redux-saga/effects';
 
-import { updateConnection } from './actions';
-
 import { setWidgetState } from '../widgets';
-
-import { UPDATE_CONNECTION } from './constants';
+import { datePickerActions } from './index';
 
 /**
  * Set highlight state for widget during date picker configuration
@@ -16,7 +13,7 @@ import { UPDATE_CONNECTION } from './constants';
  */
 export function* setWidgetHighlight({
   payload,
-}: ReturnType<typeof updateConnection>) {
+}: ReturnType<typeof datePickerActions.updateConnection>) {
   const { widgetId, isConnected } = payload;
   yield put(
     setWidgetState(widgetId, {
@@ -26,5 +23,5 @@ export function* setWidgetHighlight({
 }
 
 export function* datePickerSaga() {
-  yield takeEvery(UPDATE_CONNECTION, setWidgetHighlight);
+  yield takeEvery(datePickerActions.updateConnection, setWidgetHighlight);
 }

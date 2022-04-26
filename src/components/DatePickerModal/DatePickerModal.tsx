@@ -5,16 +5,24 @@ import { Modal, ModalHeader } from '@keen.io/ui-core';
 
 import DatePickerSettings from '../DatePickerSettings';
 
-import { getDatePickerSettings, closeEditor } from '../../modules/datePicker';
+import {
+  datePickerSelectors,
+  datePickerActions,
+} from '../../modules/datePicker';
 
 const DatePickerModal: FC = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  const { isEditorOpen } = useSelector(getDatePickerSettings);
+  const { isEditorOpen } = useSelector(
+    datePickerSelectors.getDatePickerSettings
+  );
 
   return (
-    <Modal isOpen={isEditorOpen} onClose={() => dispatch(closeEditor())}>
+    <Modal
+      isOpen={isEditorOpen}
+      onClose={() => dispatch(datePickerActions.closeEditor())}
+    >
       {(_, closeHandler) => (
         <>
           <ModalHeader onClose={closeHandler}>

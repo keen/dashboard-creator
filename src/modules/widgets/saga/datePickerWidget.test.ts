@@ -34,15 +34,7 @@ import {
   saveDashboard,
   ADD_WIDGET_TO_DASHBOARD,
 } from '../../dashboards';
-import {
-  openEditor,
-  closeEditor,
-  getDatePickerSettings,
-  setEditorConnections,
-  APPLY_EDITOR_SETTINGS,
-  CLOSE_EDITOR,
-  datePickerActions,
-} from '../../datePicker';
+import { datePickerActions, datePickerSelectors } from '../../datePicker';
 import { appSelectors } from '../../app';
 
 describe('clearDatePickerModifiers()', () => {
@@ -220,11 +212,17 @@ describe('setupDatePicker()', () => {
     });
 
     test('set date picker editor connections', (result) => {
-      expect(result).toEqual(put(setEditorConnections(connections)));
+      expect(result).toEqual(
+        put(
+          datePickerActions.setEditorConnections({
+            widgetConnections: connections,
+          })
+        )
+      );
     });
 
     test('opens date picker editor', (result) => {
-      expect(result).toEqual(put(openEditor()));
+      expect(result).toEqual(put(datePickerActions.openEditor()));
     });
 
     test('updates widgets visibility states', (result) => {
@@ -240,9 +238,14 @@ describe('setupDatePicker()', () => {
     });
 
     test('waits for user action', (result) => {
-      expect(result).toEqual(take([APPLY_EDITOR_SETTINGS, CLOSE_EDITOR]));
+      expect(result).toEqual(
+        take([
+          datePickerActions.applySettings.type,
+          datePickerActions.closeEditor.type,
+        ])
+      );
 
-      return { type: APPLY_EDITOR_SETTINGS };
+      return { type: datePickerActions.applySettings.type };
     });
 
     test('restores all widgets visiblity to initial state ', (result) => {
@@ -278,7 +281,7 @@ describe('setupDatePicker()', () => {
     });
 
     test('closes date picker editor', (result) => {
-      expect(result).toEqual(put(closeEditor()));
+      expect(result).toEqual(put(datePickerActions.closeEditor()));
     });
 
     test('saves dashboards', (result) => {
@@ -332,7 +335,13 @@ describe('editDatePickerWidget()', () => {
     });
 
     test('set date picker editor connections', (result) => {
-      expect(result).toEqual(put(setEditorConnections(connections)));
+      expect(result).toEqual(
+        put(
+          datePickerActions.setEditorConnections({
+            widgetConnections: connections,
+          })
+        )
+      );
     });
 
     test('gets dashboard settings', (result) => {
@@ -355,17 +364,24 @@ describe('editDatePickerWidget()', () => {
     });
 
     test('set date picker widget name', (result) => {
-      expect(result).toEqual(put(datePickerActions.setName('datePickerName')));
+      expect(result).toEqual(
+        put(datePickerActions.setName({ name: 'datePickerName' }))
+      );
     });
 
     test('opens date picker editor', (result) => {
-      expect(result).toEqual(put(openEditor()));
+      expect(result).toEqual(put(datePickerActions.openEditor()));
     });
 
     test('waits for user action', (result) => {
-      expect(result).toEqual(take([APPLY_EDITOR_SETTINGS, CLOSE_EDITOR]));
+      expect(result).toEqual(
+        take([
+          datePickerActions.applySettings.type,
+          datePickerActions.closeEditor.type,
+        ])
+      );
 
-      return { type: APPLY_EDITOR_SETTINGS };
+      return { type: datePickerActions.applySettings.type };
     });
 
     test('restores all widgets visiblity to initial state ', (result) => {
@@ -401,7 +417,7 @@ describe('editDatePickerWidget()', () => {
     });
 
     test('closes date picker editor', (result) => {
-      expect(result).toEqual(put(closeEditor()));
+      expect(result).toEqual(put(datePickerActions.closeEditor()));
     });
 
     test('saves dashboards', (result) => {
@@ -417,7 +433,7 @@ describe('applyDatePickerUpdates()', () => {
     const test = sagaHelper(applyDatePickerUpdates(datePickerId));
 
     test('gets date picker configuration state', (result) => {
-      expect(result).toEqual(select(getDatePickerSettings));
+      expect(result).toEqual(select(datePickerSelectors.getDatePickerSettings));
 
       return {
         name: 'datePickerName',
@@ -475,7 +491,7 @@ describe('removeConnectionFromDatePicker()', () => {
     });
 
     test('get date picker settings', (result) => {
-      expect(result).toEqual(select(getDatePickerSettings));
+      expect(result).toEqual(select(datePickerSelectors.getDatePickerSettings));
       return {
         name: 'datePickerName',
       };

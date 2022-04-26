@@ -65,7 +65,7 @@ test('allows user to apply date picker widget settings', () => {
         "payload": Object {
           "name": "datePickerName",
         },
-        "type": "@date-picker/SET_NAME",
+        "type": "datePicker/setName",
       },
       Object {
         "payload": undefined,
@@ -151,14 +151,14 @@ test('allows user to unselect all connected widgets', () => {
           "isConnected": false,
           "widgetId": "@widget/01",
         },
-        "type": "@date-picker/UPDATE_CONNECTION",
+        "type": "datePicker/updateConnection",
       },
       Object {
         "payload": Object {
           "isConnected": false,
           "widgetId": "@widget/02",
         },
-        "type": "@date-picker/UPDATE_CONNECTION",
+        "type": "datePicker/updateConnection",
       },
     ]
   `);
@@ -198,14 +198,14 @@ test('allows user to select all connected widgets', () => {
           "isConnected": true,
           "widgetId": "@widget/01",
         },
-        "type": "@date-picker/UPDATE_CONNECTION",
+        "type": "datePicker/updateConnection",
       },
       Object {
         "payload": Object {
           "isConnected": true,
           "widgetId": "@widget/02",
         },
-        "type": "@date-picker/UPDATE_CONNECTION",
+        "type": "datePicker/updateConnection",
       },
     ]
   `);
