@@ -9,7 +9,7 @@ import { colors } from '@keen.io/colors';
 import DashboardViewSwitch from '../DashboardViewSwitch';
 
 import {
-  Tag,
+  Meta,
   Title,
   Header,
   BackButton,
@@ -49,16 +49,18 @@ const DashboardDetails: FC<Props> = ({
         ) : (
           <Title data-testid="public-title">{title}</Title>
         )}
-        {isPublic && (
-          <Tag>
-            <Badge variant="green">{t('dashboard_details.public')}</Badge>
-          </Tag>
-        )}
-        {tags.map((tag) => (
-          <Tag key={tag}>
-            <Badge variant="purple">{tag}</Badge>
-          </Tag>
-        ))}
+        <Meta>
+          {isPublic && (
+            <Badge variant="green" truncate>
+              {t('dashboard_details.public')}
+            </Badge>
+          )}
+          {tags.map((tag) => (
+            <Badge key={tag} variant="purple" truncate>
+              {tag}
+            </Badge>
+          ))}
+        </Meta>
       </Header>
       {onBack && (
         <BackButton

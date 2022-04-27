@@ -119,7 +119,7 @@ const DashboardViewSwitch: FC<Props> = ({ title }) => {
   return (
     <div ref={containerRef}>
       <Container>
-        <TitleWrapper isActive={isOpen} onClick={() => setOpen(true)}>
+        <TitleWrapper isActive={isOpen} onClick={() => setOpen(!isOpen)}>
           <Title isActive={!!title}>
             {title ? title : t('dashboard_details.untitled_dashboard')}
           </Title>
