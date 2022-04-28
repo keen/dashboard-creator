@@ -99,7 +99,7 @@ test('allows user to manage filter widget connections', () => {
           "isConnected": true,
           "widgetId": "@widget/01",
         },
-        "type": "@filter/UPDATE_CONNECTION",
+        "type": "filter/updateConnection",
       },
     ]
   `);
@@ -152,10 +152,8 @@ test('allows user to select target property', () => {
   expect(store.getActions()).toMatchInlineSnapshot(`
     Array [
       Object {
-        "payload": Object {
-          "targetProperty": "id",
-        },
-        "type": "@filter/SET_TARGET_PROPERTY",
+        "payload": "id",
+        "type": "filter/setTargetProperty",
       },
     ]
   `);
@@ -278,10 +276,8 @@ test('allows user to apply filter widget settings', () => {
   expect(store.getActions()).toMatchInlineSnapshot(`
     Array [
       Object {
-        "payload": Object {
-          "name": "filterName",
-        },
-        "type": "@filter/SET_NAME",
+        "payload": "filterName",
+        "type": "filter/setName",
       },
       Object {
         "payload": undefined,
@@ -386,21 +382,21 @@ test('allows user to unselect all connected widgets', () => {
           "isConnected": false,
           "widgetId": "@widget/01",
         },
-        "type": "@filter/UPDATE_CONNECTION",
+        "type": "filter/updateConnection",
       },
       Object {
         "payload": Object {
           "isConnected": false,
           "widgetId": "@widget/02",
         },
-        "type": "@filter/UPDATE_CONNECTION",
+        "type": "filter/updateConnection",
       },
       Object {
         "payload": Object {
           "isConnected": false,
           "widgetId": "@widget/03",
         },
-        "type": "@filter/UPDATE_CONNECTION",
+        "type": "filter/updateConnection",
       },
     ]
   `);
@@ -422,7 +418,7 @@ test('allows user to select all connected widgets', () => {
           "isConnected": true,
           "widgetId": "@widget/01",
         },
-        "type": "@filter/UPDATE_CONNECTION",
+        "type": "filter/updateConnection",
       },
     ]
   `);

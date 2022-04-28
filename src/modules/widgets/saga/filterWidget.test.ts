@@ -38,22 +38,7 @@ import {
   resetFilterWidgets as resetFilterWidgetsAction,
 } from '../actions';
 
-import {
-  resetEditor,
-  getFilterWidgetConnections,
-  getDetachedFilterWidgetConnections,
-  setEventStream,
-  setTargetProperty,
-  setupDashboardEventStreams,
-  openEditor,
-  closeEditor,
-  setEditorDetachedConnections,
-  setEditorConnections,
-  APPLY_EDITOR_SETTINGS,
-  CLOSE_EDITOR,
-  SET_EVENT_STREAM,
-  filterActions,
-} from '../../filter';
+import { filterActions } from '../../filter';
 import { getWidgetSettings, getWidget } from '../../widgets';
 import {
   saveDashboard,
@@ -64,6 +49,10 @@ import {
 
 import { KEEN_ANALYSIS } from '../../../constants';
 import { appSelectors } from '../../app';
+import {
+  getDetachedFilterWidgetConnections,
+  getFilterWidgetConnections,
+} from '../../filter/saga';
 
 describe('applyFilterModifiers()', () => {
   describe('Scenario 1: Apply filter widget modifiers on connected charts', () => {
@@ -504,16 +493,17 @@ describe('synchronizeFilterConnections()', () => {
     );
 
     test('wait for event stream change', (result) => {
-      expect(result).toEqual(take(SET_EVENT_STREAM));
+      expect(result).toEqual(take(filterActions.setEventStream.type));
 
-      return setEventStream('logins');
+      return filterActions.setEventStream('logins');
     });
 
     test('resets target property', (result) => {
-      expect(result).toEqual(put(setTargetProperty(null)));
+      expect(result).toEqual(put(filterActions.setTargetProperty(null)));
     });
 
     test('creates filter widget connections', (result) => {
+      console.log('result', result);
       expect(result).toEqual(
         call(getFilterWidgetConnections, dashboardId, widgetId, 'logins', false)
       );
@@ -536,12 +526,16 @@ describe('synchronizeFilterConnections()', () => {
 
     test('set detached widget connections', (result) => {
       expect(result).toEqual(
-        put(setEditorDetachedConnections(detachedWidgetConnections))
+        put(
+          filterActions.setEditorDetachedConnections(detachedWidgetConnections)
+        )
       );
     });
 
     test('set widget connections', (result) => {
-      expect(result).toEqual(put(setEditorConnections(widgetConnections)));
+      expect(result).toEqual(
+        put(filterActions.setEditorConnections(widgetConnections))
+      );
     });
 
     test('updates widget distinction', (result) => {
@@ -585,7 +579,9 @@ describe('editFilterWidget()', () => {
     });
 
     test('creates event streams pool', (result) => {
-      expect(result).toEqual(put(setupDashboardEventStreams(dashboardId)));
+      expect(result).toEqual(
+        put(filterActions.setupDashboardEventStreams(dashboardId))
+      );
     });
 
     test('get filter widget settings', (result) => {
@@ -623,20 +619,24 @@ describe('editFilterWidget()', () => {
 
     test('set detached widget connections', (result) => {
       expect(result).toEqual(
-        put(setEditorDetachedConnections(detachedWidgetConnections))
+        put(
+          filterActions.setEditorDetachedConnections(detachedWidgetConnections)
+        )
       );
     });
 
     test('set event stream', (result) => {
-      expect(result).toEqual(put(setEventStream('logins')));
+      expect(result).toEqual(put(filterActions.setEventStream('logins')));
     });
 
     test('set target property', (result) => {
-      expect(result).toEqual(put(setTargetProperty('user.id')));
+      expect(result).toEqual(put(filterActions.setTargetProperty('user.id')));
     });
 
     test('set widget connections', (result) => {
-      expect(result).toEqual(put(setEditorConnections(widgetConnections)));
+      expect(result).toEqual(
+        put(filterActions.setEditorConnections(widgetConnections))
+      );
     });
 
     test('set filter widget name', (result) => {
@@ -650,7 +650,7 @@ describe('editFilterWidget()', () => {
     });
 
     test('opens filter widget editor', (result) => {
-      expect(result).toEqual(put(openEditor()));
+      expect(result).toEqual(put(filterActions.openEditor()));
     });
 
     test('creates filter widget connections watcher', (result) => {
@@ -660,9 +660,11 @@ describe('editFilterWidget()', () => {
     });
 
     test('waits for user action', (result) => {
-      expect(result).toEqual(take([APPLY_EDITOR_SETTINGS, CLOSE_EDITOR]));
+      expect(result).toEqual(
+        take([filterActions.applySettings.type, filterActions.closeEditor.type])
+      );
 
-      return { type: APPLY_EDITOR_SETTINGS };
+      return { type: filterActions.applySettings.type };
     });
 
     test('cancel widget connections watcher', (result) => {
@@ -709,7 +711,7 @@ describe('editFilterWidget()', () => {
     });
 
     test('closes filter widget editor', (result) => {
-      expect(result).toEqual(put(closeEditor()));
+      expect(result).toEqual(put(filterActions.closeEditor()));
     });
 
     test('saves dashboard', (result) => {
@@ -748,7 +750,7 @@ describe('editFilterWidget()', () => {
     });
 
     test('reset filter editor state', (result) => {
-      expect(result).toEqual(put(resetEditor()));
+      expect(result).toEqual(put(filterActions.resetEditor()));
     });
   });
 });
@@ -766,7 +768,9 @@ describe('setupFilterWidget()', () => {
     });
 
     test('creates event streams pool', (result) => {
-      expect(result).toEqual(put(setupDashboardEventStreams(dashboardId)));
+      expect(result).toEqual(
+        put(filterActions.setupDashboardEventStreams(dashboardId))
+      );
     });
 
     test('waits until widget is added to dashboard', (result) => {
@@ -776,7 +780,7 @@ describe('setupFilterWidget()', () => {
     });
 
     test('opens filter widget editor', (result) => {
-      expect(result).toEqual(put(openEditor()));
+      expect(result).toEqual(put(filterActions.openEditor()));
     });
 
     test('creates filter widget connections watcher', (result) => {
@@ -786,9 +790,11 @@ describe('setupFilterWidget()', () => {
     });
 
     test('waits for user action', (result) => {
-      expect(result).toEqual(take([APPLY_EDITOR_SETTINGS, CLOSE_EDITOR]));
+      expect(result).toEqual(
+        take([filterActions.applySettings.type, filterActions.closeEditor.type])
+      );
 
-      return { type: APPLY_EDITOR_SETTINGS };
+      return { type: filterActions.applySettings.type };
     });
 
     test('cancel widget connections watcher', (result) => {
@@ -800,7 +806,7 @@ describe('setupFilterWidget()', () => {
     });
 
     test('closes filter widget editor', (result) => {
-      expect(result).toEqual(put(closeEditor()));
+      expect(result).toEqual(put(filterActions.closeEditor()));
     });
 
     test('saves dashboard', (result) => {
@@ -839,7 +845,7 @@ describe('setupFilterWidget()', () => {
     });
 
     test('reset filter editor state', (result) => {
-      expect(result).toEqual(put(resetEditor()));
+      expect(result).toEqual(put(filterActions.resetEditor()));
     });
   });
 
@@ -855,7 +861,9 @@ describe('setupFilterWidget()', () => {
     });
 
     test('creates event streams pool', (result) => {
-      expect(result).toEqual(put(setupDashboardEventStreams(dashboardId)));
+      expect(result).toEqual(
+        put(filterActions.setupDashboardEventStreams(dashboardId))
+      );
     });
 
     test('waits until widget is added to dashboard', (result) => {
@@ -865,7 +873,7 @@ describe('setupFilterWidget()', () => {
     });
 
     test('opens filter widget editor', (result) => {
-      expect(result).toEqual(put(openEditor()));
+      expect(result).toEqual(put(filterActions.openEditor()));
     });
 
     test('creates filter widget connections watcher', (result) => {
@@ -875,9 +883,11 @@ describe('setupFilterWidget()', () => {
     });
 
     test('waits for user action', (result) => {
-      expect(result).toEqual(take([APPLY_EDITOR_SETTINGS, CLOSE_EDITOR]));
+      expect(result).toEqual(
+        take([filterActions.applySettings.type, filterActions.closeEditor.type])
+      );
 
-      return { type: CLOSE_EDITOR };
+      return { type: filterActions.closeEditor.type };
     });
 
     test('cancel widget connections watcher', (result) => {

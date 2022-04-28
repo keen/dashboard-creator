@@ -29,20 +29,13 @@ import {
 import { EventStream, TargetProperty, TooltipHint } from './components';
 import WidgetConnections from '../WidgetConnections';
 
-import {
-  applySettings,
-  setEventStream,
-  setTargetProperty,
-  getFilterSettings,
-  updateConnection,
-  setName,
-} from '../../modules/filter';
 import { getCurrentDashboardChartsCount } from '../../modules/dashboards';
 
 import { ERRORS } from './constants';
 
 import { FilterSettingsError } from './types';
 import { AppContext } from '../../contexts';
+import { filterActions, filterSelectors } from '../../modules/filter';
 
 type Props = {
   /* Cancel filter settings */
@@ -65,7 +58,7 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
     eventStreamSchema,
     schemaProcessing,
     name,
-  } = useSelector(getFilterSettings);
+  } = useSelector(filterSelectors.getFilterSettings);
 
   const chartWidgetsCount = useSelector(getCurrentDashboardChartsCount);
 
@@ -96,7 +89,12 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
     const updatedStatus = allConnectionsSelected ? false : true;
 
     for (const connection of widgetConnections) {
-      dispatch(updateConnection(connection.widgetId, updatedStatus));
+      dispatch(
+        filterActions.updateConnection({
+          widgetId: connection.widgetId,
+          isConnected: updatedStatus,
+        })
+      );
     }
   };
 
@@ -144,7 +142,9 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
                 currentEventStream={eventStream}
                 eventStreams={eventStreamsPool}
                 isDisabled={isDashboardWithoutCharts}
-                onChange={(stream) => dispatch(setEventStream(stream))}
+                onChange={(stream) =>
+                  dispatch(filterActions.setEventStream(stream))
+                }
               />
             </Field>
             <Field width={235}>
@@ -161,7 +161,7 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
                   if (!filterName) {
                     setFilterName(property);
                   }
-                  dispatch(setTargetProperty(property));
+                  dispatch(filterActions.setTargetProperty(property));
                 }}
               />
             </Field>
@@ -240,7 +240,9 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
                   })
                 )}
                 onUpdateConnection={(widgetId, isConnected) =>
-                  dispatch(updateConnection(widgetId, isConnected))
+                  dispatch(
+                    filterActions.updateConnection({ widgetId, isConnected })
+                  )
                 }
               />
             )}
@@ -323,8 +325,8 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
               onClick={() => {
                 if (eventStream && targetProperty) {
                   setError(null);
-                  dispatch(setName(filterName));
-                  dispatch(applySettings());
+                  dispatch(filterActions.setName(filterName));
+                  dispatch(filterActions.applySettings());
                 } else {
                   setError(FilterSettingsError.IncompleteSettings);
                 }
