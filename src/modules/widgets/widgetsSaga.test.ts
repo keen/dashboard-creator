@@ -34,13 +34,7 @@ import {
   getDashboard,
 } from '../dashboards';
 
-import {
-  selectSavedQuery,
-  createQuery,
-  SELECT_SAVED_QUERY,
-  CREATE_QUERY,
-  SavedQuery,
-} from '../queries';
+import { queriesActions, SavedQuery } from '../queries';
 
 import { widget as widgetItem } from './fixtures';
 import { findBiggestYPositionOfWidgets } from '../dashboards/utils/findBiggestYPositionOfWidgets';
@@ -353,13 +347,13 @@ describe('selectQueryForWidget()', () => {
     test('waits until user select saved query', (result) => {
       expect(result).toEqual(
         take([
-          SELECT_SAVED_QUERY,
-          CREATE_QUERY,
+          queriesActions.selectSavedQuery.type,
+          queriesActions.createQuery.type,
           appActions.hideQueryPicker.type,
         ])
       );
 
-      return selectSavedQuery(savedQuery);
+      return queriesActions.selectSavedQuery(savedQuery);
     });
 
     test('hides query picker', (result) => {
@@ -383,8 +377,8 @@ describe('selectQueryForWidget()', () => {
     test('waits until user close query picker', (result) => {
       expect(result).toEqual(
         take([
-          SELECT_SAVED_QUERY,
-          CREATE_QUERY,
+          queriesActions.selectSavedQuery.type,
+          queriesActions.createQuery.type,
           appActions.hideQueryPicker.type,
         ])
       );
@@ -413,13 +407,13 @@ describe('selectQueryForWidget()', () => {
     test('waits for specific user action', (result) => {
       expect(result).toEqual(
         take([
-          SELECT_SAVED_QUERY,
-          CREATE_QUERY,
+          queriesActions.selectSavedQuery.type,
+          queriesActions.createQuery.type,
           appActions.hideQueryPicker.type,
         ])
       );
 
-      return createQuery();
+      return queriesActions.createQuery();
     });
 
     test('hides query picker', (result) => {
@@ -536,8 +530,8 @@ describe('createNewChart()', () => {
     test('user closes modal', (result) => {
       expect(result).toEqual(
         take([
-          SELECT_SAVED_QUERY,
-          CREATE_QUERY,
+          queriesActions.selectSavedQuery.type,
+          queriesActions.createQuery.type,
           appActions.hideQueryPicker.type,
         ])
       );
@@ -560,13 +554,13 @@ describe('createNewChart()', () => {
     test('user selects new query', (result) => {
       expect(result).toEqual(
         take([
-          SELECT_SAVED_QUERY,
-          CREATE_QUERY,
+          queriesActions.selectSavedQuery.type,
+          queriesActions.createQuery.type,
           appActions.hideQueryPicker.type,
         ])
       );
 
-      return createQuery();
+      return queriesActions.createQuery();
     });
 
     test('triggers query picker hide', (result) => {
@@ -588,13 +582,13 @@ describe('createNewChart()', () => {
     test('user selects new query', (result) => {
       expect(result).toEqual(
         take([
-          SELECT_SAVED_QUERY,
-          CREATE_QUERY,
+          queriesActions.selectSavedQuery.type,
+          queriesActions.createQuery.type,
           appActions.hideQueryPicker.type,
         ])
       );
 
-      return selectSavedQuery(savedQuery);
+      return queriesActions.selectSavedQuery(savedQuery);
     });
 
     test('triggers query picker hide', (result) => {

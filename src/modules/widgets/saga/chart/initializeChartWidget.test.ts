@@ -18,11 +18,10 @@ import {
 import { widgetsSelectors } from '../../selectors';
 import { serializeWidget } from '../../serializers';
 
-import { addInterimQuery, getInterimQuery } from '../../../queries';
-
 import { KEEN_ANALYSIS } from '../../../../constants';
 
 import { WidgetErrors } from '../../types';
+import { queriesActions, queriesSelectors } from '../../../queries';
 
 describe('initializeChartWidget()', () => {
   const widgetId = '@widget/01';
@@ -101,7 +100,9 @@ describe('initializeChartWidget()', () => {
     });
 
     test('gets interim query connected with widget', (result) => {
-      expect(result).toEqual(select(getInterimQuery, widgetId));
+      expect(result).toEqual(
+        select(queriesSelectors.getInterimQuery, widgetId)
+      );
 
       return undefined;
     });
@@ -199,7 +200,9 @@ describe('initializeChartWidget()', () => {
     });
 
     test('add interim query for chart widget', (result) => {
-      expect(result).toEqual(put(addInterimQuery(widgetId, analysisResult)));
+      expect(result).toEqual(
+        put(queriesActions.addInterimQuery({ widgetId, data: analysisResult }))
+      );
     });
 
     test('updates widget state', (result) => {

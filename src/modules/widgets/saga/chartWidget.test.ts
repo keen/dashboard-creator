@@ -11,8 +11,6 @@ import {
   checkIfChartWidgetHasInconsistentFilters,
 } from './chartWidget';
 
-import { updateSaveQuery } from '../../../modules/queries';
-
 import { saveDashboard } from '../../../modules/dashboards';
 
 import {
@@ -29,6 +27,7 @@ import { FEATURES, TRANSLATIONS } from '../../../constants';
 import { WidgetItem, WidgetErrors } from '../types';
 import { chartEditorActions, chartEditorSelectors } from '../../chartEditor';
 import { getConnectedDashboards } from '../../dashboards/saga';
+import { queriesSagas } from '../../queries';
 
 const translationsMock = {
   t: jest.fn().mockImplementation((value) => value),
@@ -648,7 +647,12 @@ describe('editChartSavedQuery()', () => {
       };
 
       expect(result).toEqual(
-        call(updateSaveQuery, 'purchases', chartEditor.querySettings, metadata)
+        call(
+          queriesSagas.updateSaveQuery,
+          'purchases',
+          chartEditor.querySettings,
+          metadata
+        )
       );
     });
   });
@@ -724,7 +728,12 @@ describe('editChartSavedQuery()', () => {
       };
 
       expect(result).toEqual(
-        call(updateSaveQuery, 'purchases', chartEditor.querySettings, metadata)
+        call(
+          queriesSagas.updateSaveQuery,
+          'purchases',
+          chartEditor.querySettings,
+          metadata
+        )
       );
     });
   });

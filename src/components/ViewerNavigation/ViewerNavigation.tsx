@@ -14,7 +14,6 @@ import {
   resetDashboardFilters,
 } from '../../modules/dashboards';
 import { Scopes, appSelectors } from '../../modules/app';
-import { getInterimQueriesLength } from '../../modules/queries';
 
 import TooltipContent from '../TooltipContent';
 import PermissionGate from '../PermissionGate';
@@ -30,6 +29,7 @@ import {
 } from './ViewerNavigation.styles';
 
 import { TOOLTIP_MOTION } from '../../constants';
+import { queriesSelectors } from '../../modules/queries';
 
 type Props = {
   /** Dashboard Id */
@@ -68,7 +68,9 @@ const ViewerNavigation: FC<Props> = ({
   const { t } = useTranslation();
   const activeDashboard = useSelector(appSelectors.getActiveDashboard);
   const hasInterimQueries = useSelector((state: RootState) => {
-    const interimQueriesLength = getInterimQueriesLength(state);
+    const interimQueriesLength = queriesSelectors.getInterimQueriesLength(
+      state
+    );
     return !!interimQueriesLength;
   });
   const dispatch = useDispatch();

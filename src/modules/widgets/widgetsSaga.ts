@@ -60,7 +60,7 @@ import {
 } from './saga/filterWidget';
 import { initializeChartWidget } from './saga/chart';
 
-import { SELECT_SAVED_QUERY, CREATE_QUERY, SavedQuery } from '../queries';
+import { queriesActions, SavedQuery } from '../queries';
 import { createWidgetId } from './utils';
 import { scrollItemIntoView } from '../../utils';
 
@@ -274,17 +274,17 @@ export function* selectSavedQueryForWidget(
 export function* selectQueryForWidget(widgetId: string) {
   yield put(appActions.showQueryPicker());
   const action = yield take([
-    SELECT_SAVED_QUERY,
-    CREATE_QUERY,
+    queriesActions.selectSavedQuery.type,
+    queriesActions.createQuery.type,
     appActions.hideQueryPicker.type,
   ]);
 
   if (action.type === appActions.hideQueryPicker.type) {
     yield* cancelWidgetConfiguration(widgetId);
-  } else if (action.type === CREATE_QUERY) {
+  } else if (action.type === queriesActions.createQuery.type) {
     yield put(appActions.hideQueryPicker());
     yield call(createQueryForWidget, widgetId);
-  } else if (action.type === SELECT_SAVED_QUERY) {
+  } else if (action.type === queriesActions.selectSavedQuery.type) {
     yield put(appActions.hideQueryPicker());
     yield call(selectSavedQueryForWidget, action.payload.query, widgetId);
   }
@@ -359,17 +359,17 @@ export function* createNewChart({
 
   yield put(appActions.showQueryPicker());
   const action = yield take([
-    SELECT_SAVED_QUERY,
-    CREATE_QUERY,
+    queriesActions.selectSavedQuery.type,
+    queriesActions.createQuery.type,
     appActions.hideQueryPicker.type,
   ]);
 
   if (action.type === appActions.hideQueryPicker.type) {
     yield put(appActions.hideQueryPicker());
-  } else if (action.type === CREATE_QUERY) {
+  } else if (action.type === queriesActions.createQuery.type) {
     yield put(appActions.hideQueryPicker());
     yield call(createQueryForWidget, widgetId, true);
-  } else if (action.type === SELECT_SAVED_QUERY) {
+  } else if (action.type === queriesActions.selectSavedQuery.type) {
     yield put(appActions.hideQueryPicker());
     yield call(selectSavedQueryForWidget, action.payload.query, widgetId, true);
   }

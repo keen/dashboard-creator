@@ -10,8 +10,6 @@ import {
 
 import { getWidget, getWidgetSettings } from '../selectors';
 
-import { updateSaveQuery } from '../../../modules/queries';
-
 import {
   saveDashboard,
   updateAccessKeyOptions,
@@ -27,6 +25,7 @@ import { WidgetItem, ChartWidget, WidgetErrors } from '../types';
 import { appSelectors } from '../../app';
 import { chartEditorActions, chartEditorSelectors } from '../../chartEditor';
 import { getConnectedDashboards } from '../../dashboards/saga';
+import { queriesSagas } from '../../queries';
 
 /**
  * Creates ad-hoc query with date picker and filters modifiers.
@@ -240,7 +239,12 @@ export function* editChartSavedQuery(widgetId: string) {
             widgetSettings,
           },
         };
-        yield call(updateSaveQuery, queryName, querySettings, metadata);
+        yield call(
+          queriesSagas.updateSaveQuery,
+          queryName,
+          querySettings,
+          metadata
+        );
 
         yield put(setWidgetState(widgetId, widgetState));
 

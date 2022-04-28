@@ -27,9 +27,7 @@ import {
 import SearchInput from '../SearchInput';
 import { QueriesList, FilterQueries } from './components';
 import {
-  createQuery,
-  selectSavedQuery,
-  serializeSavedQuery,
+  queriesActions,
   SavedQuery,
   SavedQueryAPIResponse,
 } from '../../modules/queries';
@@ -37,6 +35,7 @@ import {
 import { createSavedQueryTagsPool } from '../../utils';
 
 import { APIContext } from '../../contexts';
+import { serializeSavedQuery } from '../../modules/queries/serializers';
 
 export const QueryPickerContext = createContext({ modalContentRef: null });
 
@@ -116,7 +115,10 @@ const QueryPicker: FC = () => {
       <div>
         <CreateNewQuery>
           <NewQueryButton>
-            <Button variant="success" onClick={() => dispatch(createQuery())}>
+            <Button
+              variant="success"
+              onClick={() => dispatch(queriesActions.createQuery())}
+            >
               {t('query_picker.new_query_button')}
             </Button>
           </NewQueryButton>
@@ -178,7 +180,7 @@ const QueryPicker: FC = () => {
                       <QueriesList
                         queries={filteredQueries}
                         onSelectQuery={(query) =>
-                          dispatch(selectSavedQuery(query))
+                          dispatch(queriesActions.selectSavedQuery(query))
                         }
                       />
                       <div ref={inViewRefBottom}></div>

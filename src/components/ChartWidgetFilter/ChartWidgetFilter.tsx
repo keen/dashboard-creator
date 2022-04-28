@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { DatePickerContent, FiltersContent, WidgetFilter } from './components';
 
-import { getInterimQuery } from '../../modules/queries';
 import {
   DatePickerWidget,
   FilterWidget,
@@ -15,6 +14,7 @@ import { WidgetItem } from '../../modules/widgets/types';
 import { Container } from './ChartWidgetFilter.styles';
 
 import { FilterMeta } from './types';
+import { queriesSelectors } from '../../modules/queries';
 
 type Props = {
   /** Widget id */
@@ -68,7 +68,7 @@ const ChartWidgetFilter: FC<Props> = ({ widgetId }) => {
   });
 
   const hasInterimQuery = useSelector((state: RootState) => {
-    const interimQuery = getInterimQuery(state, widgetId);
+    const interimQuery = queriesSelectors.getInterimQuery(state, widgetId);
     return !!interimQuery;
   });
 

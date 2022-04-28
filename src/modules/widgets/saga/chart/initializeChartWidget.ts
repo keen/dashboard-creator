@@ -10,13 +10,6 @@ import {
 import { widgetsSelectors } from '../../selectors';
 
 import {
-  serializeSavedQuery,
-  addInterimQuery,
-  removeInterimQuery,
-  getInterimQuery,
-} from '../../../../modules/queries';
-
-import {
   prepareChartWidgetQuery,
   checkIfChartWidgetHasInconsistentFilters,
 } from '../chartWidget';
@@ -29,6 +22,8 @@ import {
   WidgetErrors,
   AnalysisError,
 } from '../../types';
+import { queriesActions, queriesSelectors } from '../../../queries';
+import { serializeSavedQuery } from '../../../queries/serializers';
 
 /**
  * Flow responsible for initializing chart widget.
@@ -76,12 +71,14 @@ export function* initializeChartWidget({
     }
 
     if (hasQueryModifiers) {
-      yield put(addInterimQuery(id, analysisResult));
+      yield put(
+        queriesActions.addInterimQuery({ widgetId: id, data: analysisResult })
+      );
       yield put(setWidgetState(id, { isInitialized: true }));
     } else {
-      const interimQuery = yield select(getInterimQuery, id);
+      const interimQuery = yield select(queriesSelectors.getInterimQuery, id);
       if (interimQuery) {
-        yield put(removeInterimQuery(id));
+        yield put(queriesActions.removeInterimQuery(id));
       }
 
       if (isSavedQueryWidget) {

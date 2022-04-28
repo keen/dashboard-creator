@@ -1,9 +1,9 @@
 import { getContext } from 'redux-saga/effects';
 import { Query } from '@keen.io/query';
 
-import { KEEN_ANALYSIS } from '../../constants';
+import { KEEN_ANALYSIS } from '../../../constants';
 
-import { SavedQueryAPIResponse } from './types';
+import { SavedQueryAPIResponse } from '../types';
 
 export function* updateSaveQuery(
   queryId: string,

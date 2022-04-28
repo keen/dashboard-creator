@@ -22,7 +22,6 @@ import {
   resetDashboardFilters,
 } from '../../modules/dashboards';
 import { themeSelectors } from '../../modules/theme';
-import { getInterimQueriesLength } from '../../modules/queries';
 import { modalMotion } from './motion';
 
 import Grid from '../Grid';
@@ -32,6 +31,7 @@ import DashboardDetails from '../DashboardDetails';
 import { RootState } from '../../rootReducer';
 
 import { DASHBOARD_ERROR } from './constants';
+import { queriesSelectors } from '../../modules/queries';
 
 type Props = {
   /** Dashboard identifer */
@@ -84,7 +84,9 @@ const PublicDashboardViewer: FC<Props> = ({ dashboardId }) => {
     getDashboardMeta(state, dashboardId)
   );
   const hasInterimQueries = useSelector((state: RootState) => {
-    const interimQueriesLength = getInterimQueriesLength(state);
+    const interimQueriesLength = queriesSelectors.getInterimQueriesLength(
+      state
+    );
     return !!interimQueriesLength;
   });
 
