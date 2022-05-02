@@ -1,4 +1,4 @@
-import { WidgetItem, WidgetsPosition } from './types';
+import { WidgetItem, WidgetsPosition } from '../types';
 
 export const reduceWidgetsPosition = (
   items: Record<string, WidgetItem>,

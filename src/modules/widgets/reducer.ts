@@ -4,12 +4,15 @@ import { RawDraftContentState } from 'draft-js';
 import { Query } from '@keen.io/query';
 import { WidgetType } from '../../types';
 import { serializeWidget } from './serializers';
-import { reduceWidgetsPosition } from './reduceWidgetsPosition';
-import { createWidget } from './utils';
+import { createWidget, reduceWidgetsPosition } from './utils';
 import {
+  ChartWidget,
+  DatePickerWidget,
   FilterWidget,
   GridPosition,
+  ImageWidget,
   ReducerState,
+  TextWidget,
   Widget,
   WidgetItem,
   WidgetsPosition,
@@ -42,9 +45,9 @@ const widgetsSlice = createSlice({
           widget: {
             ...state.items[payload.id].widget,
             datePickerId: payload.datePickerId,
-          },
+          } as ChartWidget,
         },
-      } as any;
+      };
     },
     updateChartWidgetFiltersConnections: (
       state,
@@ -57,9 +60,9 @@ const widgetsSlice = createSlice({
           widget: {
             ...state.items[payload.id].widget,
             filterIds: payload.filterIds,
-          },
+          } as ChartWidget,
         },
-      } as any;
+      };
     },
     setChartWidgetVisualization: (
       state,
@@ -83,9 +86,9 @@ const widgetsSlice = createSlice({
               chartSettings: payload.chartSettings,
               widgetSettings: payload.widgetSettings,
             },
-          },
+          } as ChartWidget,
         },
-      } as any;
+      };
     },
     finishChartWidgetConfiguration: (
       state,
@@ -112,9 +115,9 @@ const widgetsSlice = createSlice({
               chartSettings: payload.chartSettings,
               widgetSettings: payload.widgetSettings,
             },
-          },
+          } as ChartWidget,
         },
-      } as any;
+      };
     },
     setWidgetLoading: (
       state,
@@ -206,9 +209,9 @@ const widgetsSlice = createSlice({
               ...state.items[payload.id].widget.settings,
               ...payload.settings,
             },
-          },
+          } as TextWidget,
         },
-      } as any;
+      };
     },
     setDatePickerWidget: (
       state,
@@ -230,9 +233,9 @@ const widgetsSlice = createSlice({
               widgets: payload.widgetConnections,
               name: payload.name,
             },
-          },
+          } as DatePickerWidget,
         },
-      } as any;
+      };
     },
     setImageWidget: (
       state,
@@ -248,9 +251,9 @@ const widgetsSlice = createSlice({
             settings: {
               link: payload.link,
             },
-          },
+          } as ImageWidget,
         },
-      } as any;
+      };
     },
     configureFilterWidget: (
       state,
@@ -276,9 +279,9 @@ const widgetsSlice = createSlice({
               targetProperty: payload.targetProperty,
               name: payload.name,
             },
-          },
+          } as FilterWidget,
         },
-      } as any;
+      };
     },
     setFilterPropertyList: (
       state,
