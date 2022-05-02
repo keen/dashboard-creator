@@ -21,11 +21,9 @@ import TextEditor from '../TextEditor';
 import RemoveWidget from '../RemoveWidget';
 import PreventDragPropagation from '../PreventDragPropagation';
 import {
-  editInlineTextWidget,
-  editTextWidget,
-  getWidget,
-  cloneWidget,
   TextWidget,
+  widgetsActions,
+  widgetsSelectors,
 } from '../../modules/widgets';
 
 import { DRAG_HANDLE_ELEMENT } from '../Widget';
@@ -62,7 +60,7 @@ const TextManagement: FC<Props> = ({
   const containerRef = useRef(null);
 
   const { widget, isInitialized } = useSelector((state: RootState) =>
-    getWidget(state, id)
+    widgetsSelectors.getWidget(state, id)
   );
   const {
     settings: { content, textAlignment },
@@ -113,7 +111,7 @@ const TextManagement: FC<Props> = ({
               updateWidget.current = setTimeout(() => {
                 const draftObject = convertToRaw(state.getCurrentContent());
 
-                dispatch(editInlineTextWidget(id, draftObject));
+                dispatch(widgetsActions.editInlineTextWidget(id, draftObject));
               }, updateDebounceTime);
             }
 
@@ -157,7 +155,7 @@ const TextManagement: FC<Props> = ({
                 <ButtonWrapper>
                   <Button
                     variant="blank"
-                    onClick={() => dispatch(editTextWidget(id))}
+                    onClick={() => dispatch(widgetsActions.editTextWidget(id))}
                   >
                     {t('widget.edit_text')}
                   </Button>
@@ -176,7 +174,7 @@ const TextManagement: FC<Props> = ({
                 <div data-testid="clone-text-widget">
                   <CircleButton
                     variant="blank"
-                    onClick={() => dispatch(cloneWidget(id))}
+                    onClick={() => dispatch(widgetsActions.cloneWidget(id))}
                     icon={<Icon type="clone" fill={colors.black[500]} />}
                   />
                 </div>

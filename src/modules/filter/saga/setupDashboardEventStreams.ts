@@ -1,8 +1,8 @@
 import { setupDashboardEventStreams as setupDashboardEventStreamsAction } from '../actions';
 import { put, select } from 'redux-saga/effects';
 import { getDashboard } from '../../dashboards';
-import { getWidget } from '../../widgets';
 import { filterActions } from '../index';
+import { widgetsSelectors } from '../../widgets';
 
 /**
  * Set event streams used on dashboard
@@ -24,7 +24,7 @@ export function* setupDashboardEventStreams({
   const eventStreams = new Set<string>();
 
   widgetsIds
-    .map((widgetId) => getWidget(state, widgetId))
+    .map((widgetId) => widgetsSelectors.getWidget(state, widgetId))
     .filter(({ widget: { type } }) => type === 'visualization')
     .map(({ data }) => data?.query?.event_collection)
     .forEach((eventStream) => {

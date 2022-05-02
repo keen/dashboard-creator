@@ -2,9 +2,8 @@ import sagaHelper from 'redux-saga-testing';
 import { put } from 'redux-saga/effects';
 
 import { setWidgetHighlight } from './saga';
-
-import { setWidgetState } from '../widgets';
 import { datePickerActions } from './index';
+import { widgetsActions } from '../widgets';
 
 describe('setWidgetHighlight()', () => {
   describe('Scenario 1: Highlights widget connected with date picker', () => {
@@ -16,7 +15,12 @@ describe('setWidgetHighlight()', () => {
 
     test('updates chart widget state', (result) => {
       expect(result).toEqual(
-        put(setWidgetState('@widget/01', { isHighlighted: true }))
+        put(
+          widgetsActions.setWidgetState({
+            id: '@widget/01',
+            widgetState: { isHighlighted: true },
+          })
+        )
       );
     });
   });
@@ -30,7 +34,12 @@ describe('setWidgetHighlight()', () => {
 
     test('updates chart widget state', (result) => {
       expect(result).toEqual(
-        put(setWidgetState('@widget/01', { isHighlighted: false }))
+        put(
+          widgetsActions.setWidgetState({
+            id: '@widget/01',
+            widgetState: { isHighlighted: false },
+          })
+        )
       );
     });
   });

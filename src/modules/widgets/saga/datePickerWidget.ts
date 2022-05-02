@@ -1,16 +1,4 @@
 import { put, all, call, select, take } from 'redux-saga/effects';
-
-import {
-  editDatePickerWidget as editDatePickerWidgetAction,
-  setDatePickerModifiers as setDatePickerModifiersAction,
-  applyDatePickerModifiers as applyDatePickerModifiersAction,
-  resetDatePickerWidgets as resetDatePickerWidgetsAction,
-  clearDatePickerModifiers as clearDatePickerModifiersAction,
-  setDatePickerWidget,
-  updateChartWidgetDatePickerConnection,
-  setWidgetState,
-  initializeChartWidget,
-} from '../actions';
 import { getWidget, getWidgetSettings } from '../selectors';
 
 import {
@@ -28,6 +16,7 @@ import {
 
 import { ChartWidget, DatePickerWidget } from '../types';
 import { appSelectors } from '../../app';
+import { widgetsActions } from '../index';
 
 /**
  * Apply date picker connections updates to connected widgets
@@ -38,21 +27,30 @@ import { appSelectors } from '../../app';
  */
 export function* applyDatePickerModifiers({
   payload,
-}: ReturnType<typeof applyDatePickerModifiersAction>) {
+}: ReturnType<typeof widgetsActions.applyDatePickerModifiers>) {
   const { id } = payload;
 
-  yield put(setWidgetState(id, { isActive: true }));
+  yield put(
+    widgetsActions.setWidgetState({ id: id, widgetState: { isActive: true } })
+  );
   const {
     settings: { widgets },
   } = yield select(getWidgetSettings, id);
 
   yield all(
     widgets.map((widgetId: string) =>
-      put(setWidgetState(widgetId, { isInitialized: false, error: null }))
+      put(
+        widgetsActions.setWidgetState({
+          id: widgetId,
+          widgetState: { isInitialized: false, error: null },
+        })
+      )
     )
   );
   yield all(
-    widgets.map((widgetId: string) => put(initializeChartWidget(widgetId)))
+    widgets.map((widgetId: string) =>
+      put(widgetsActions.initializeChartWidget(widgetId))
+    )
   );
 }
 
@@ -67,7 +65,7 @@ export function* applyDatePickerModifiers({
  */
 export function* setDatePickerModifiers({
   payload,
-}: ReturnType<typeof setDatePickerModifiersAction>) {
+}: ReturnType<typeof widgetsActions.setDatePickerModifiers>) {
   const { widgetId, timezone, timeframe } = payload;
   const widgetState = {
     data: {
@@ -75,7 +73,7 @@ export function* setDatePickerModifiers({
       timeframe,
     },
   };
-  yield put(setWidgetState(widgetId, widgetState));
+  yield put(widgetsActions.setWidgetState({ id: widgetId, widgetState }));
 }
 
 /**
@@ -143,7 +141,12 @@ export function* removeDatePickerConnections(
     .map(({ id }) => id);
 
   const chartWidgetsUpdates = connections.map((chartWidgetId) =>
-    put(updateChartWidgetDatePickerConnection(chartWidgetId, null))
+    put(
+      widgetsActions.updateChartWidgetDatePickerConnections({
+        id: chartWidgetId,
+        datePickerId: null,
+      })
+    )
   );
 
   yield all(chartWidgetsUpdates);
@@ -166,7 +169,13 @@ export function* removeConnectionFromDatePicker(
   } = yield select(getWidgetSettings, datePickerId);
   const { name } = yield select(datePickerSelectors.getDatePickerSettings);
   const updatedConnections = widgets.filter((id: string) => id !== widgetId);
-  yield put(setDatePickerWidget(datePickerId, updatedConnections, name));
+  yield put(
+    widgetsActions.setDatePickerWidget({
+      id: datePickerId,
+      widgetConnections: updatedConnections,
+      name,
+    })
+  );
 }
 
 /**
@@ -191,13 +200,22 @@ export function* applyDatePickerUpdates(datePickerWidgetId: string) {
   const chartWidgetsUpdates = updatedConnections.map(
     ({ widgetId, isConnected }) => {
       const datePickerId = isConnected ? datePickerWidgetId : null;
-      return put(updateChartWidgetDatePickerConnection(widgetId, datePickerId));
+      return put(
+        widgetsActions.updateChartWidgetDatePickerConnections({
+          id: widgetId,
+          datePickerId,
+        })
+      );
     }
   );
 
   yield all(chartWidgetsUpdates);
   yield put(
-    setDatePickerWidget(datePickerWidgetId, widgetPickerConnections, name)
+    widgetsActions.setDatePickerWidget({
+      id: datePickerWidgetId,
+      widgetConnections: widgetPickerConnections,
+      name,
+    })
   );
 }
 
@@ -210,7 +228,7 @@ export function* applyDatePickerUpdates(datePickerWidgetId: string) {
  */
 export function* editDatePickerWidget({
   payload,
-}: ReturnType<typeof editDatePickerWidgetAction>) {
+}: ReturnType<typeof widgetsActions.editDatePickerWidget>) {
   const { id: datePickerWidgetId } = payload;
 
   const dashboardId = yield select(appSelectors.getActiveDashboard);
@@ -238,18 +256,32 @@ export function* editDatePickerWidget({
       (id: string) =>
         !widgetsConnectionsPool.includes(id) && id !== datePickerWidgetId
     )
-    .map((id: string) => put(setWidgetState(id, { isFadeOut: true })));
+    .map((id: string) =>
+      put(
+        widgetsActions.setWidgetState({ id, widgetState: { isFadeOut: true } })
+      )
+    );
 
   const titleCoverWidgets = widgetConnections
     .filter(({ title }) => !title)
     .map(({ widgetId }) =>
-      put(setWidgetState(widgetId, { isTitleCover: true }))
+      put(
+        widgetsActions.setWidgetState({
+          id: widgetId,
+          widgetState: { isTitleCover: true },
+        })
+      )
     );
 
   const highlightWidgets = widgetConnections
     .filter(({ isConnected }) => isConnected)
     .map(({ widgetId }) =>
-      put(setWidgetState(widgetId, { isHighlighted: true }))
+      put(
+        widgetsActions.setWidgetState({
+          id: widgetId,
+          widgetState: { isHighlighted: true },
+        })
+      )
     );
 
   yield all([...fadeOutWidgets, ...titleCoverWidgets, ...highlightWidgets]);
@@ -264,10 +296,13 @@ export function* editDatePickerWidget({
   yield all(
     dashboardWidgetsIds.map((widgetId: string) =>
       put(
-        setWidgetState(widgetId, {
-          isHighlighted: false,
-          isFadeOut: false,
-          isTitleCover: false,
+        widgetsActions.setWidgetState({
+          id: widgetId,
+          widgetState: {
+            isHighlighted: false,
+            isFadeOut: false,
+            isTitleCover: false,
+          },
         })
       )
     )
@@ -317,18 +352,32 @@ export function* setupDatePicker(widgetId: string) {
       (id: string) =>
         !widgetsConnectionsPool.includes(id) && id !== datePickerWidgetId
     )
-    .map((id: string) => put(setWidgetState(id, { isFadeOut: true })));
+    .map((id: string) =>
+      put(
+        widgetsActions.setWidgetState({ id, widgetState: { isFadeOut: true } })
+      )
+    );
 
   const titleCoverWidgets = widgetConnections
     .filter(({ title }) => !title)
     .map(({ widgetId }) =>
-      put(setWidgetState(widgetId, { isTitleCover: true }))
+      put(
+        widgetsActions.setWidgetState({
+          id: widgetId,
+          widgetState: { isTitleCover: true },
+        })
+      )
     );
 
   const highlightWidgets = widgetConnections
     .filter(({ isConnected }) => isConnected)
     .map(({ widgetId }) =>
-      put(setWidgetState(widgetId, { isHighlighted: true }))
+      put(
+        widgetsActions.setWidgetState({
+          id: widgetId,
+          widgetState: { isHighlighted: true },
+        })
+      )
     );
 
   yield all([...fadeOutWidgets, ...titleCoverWidgets, ...highlightWidgets]);
@@ -341,10 +390,13 @@ export function* setupDatePicker(widgetId: string) {
   yield all(
     dashboardWidgetsIds.map((widgetId: string) =>
       put(
-        setWidgetState(widgetId, {
-          isHighlighted: false,
-          isFadeOut: false,
-          isTitleCover: false,
+        widgetsActions.setWidgetState({
+          id: widgetId,
+          widgetState: {
+            isHighlighted: false,
+            isFadeOut: false,
+            isTitleCover: false,
+          },
         })
       )
     )
@@ -369,7 +421,7 @@ export function* setupDatePicker(widgetId: string) {
  */
 export function* resetDatePickerWidgets({
   payload,
-}: ReturnType<typeof resetDatePickerWidgetsAction>) {
+}: ReturnType<typeof widgetsActions.resetDatePickerWidgets>) {
   const { dashboardId } = payload;
   const state = yield select();
   const dashboard = getDashboard(state, dashboardId);
@@ -383,7 +435,12 @@ export function* resetDatePickerWidgets({
       .map((widgetId) => getWidgetSettings(state, widgetId))
       .filter(({ type }) => type === 'date-picker')
       .map(({ id }) =>
-        put(setWidgetState(id, { isActive: false, data: null }))
+        put(
+          widgetsActions.setWidgetState({
+            id,
+            widgetState: { isActive: false, data: null },
+          })
+        )
       );
 
     yield all(datePickersUpdate);
@@ -399,20 +456,32 @@ export function* resetDatePickerWidgets({
  */
 export function* clearDatePickerModifiers({
   payload,
-}: ReturnType<typeof clearDatePickerModifiersAction>) {
+}: ReturnType<typeof widgetsActions.clearDatePickerModifiers>) {
   const { id } = payload;
 
-  yield put(setWidgetState(id, { isActive: false, data: null }));
+  yield put(
+    widgetsActions.setWidgetState({
+      id,
+      widgetState: { isActive: false, data: null },
+    })
+  );
   const {
     settings: { widgets },
   } = yield select(getWidgetSettings, id);
 
   yield all(
     widgets.map((widgetId: string) =>
-      put(setWidgetState(widgetId, { isInitialized: false, error: null }))
+      put(
+        widgetsActions.setWidgetState({
+          id: widgetId,
+          widgetState: { isInitialized: false, error: null },
+        })
+      )
     )
   );
   yield all(
-    widgets.map((widgetId: string) => put(initializeChartWidget(widgetId)))
+    widgets.map((widgetId: string) =>
+      put(widgetsActions.initializeChartWidget(widgetId))
+    )
   );
 }

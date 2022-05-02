@@ -23,18 +23,6 @@ import { ChartWidget, FilterWidget } from '../types';
 
 import { filterActions, filterSelectors } from '../../filter';
 
-import {
-  editFilterWidget as editFilterWidgetAction,
-  configureFilerWidget,
-  setWidgetState,
-  updateChartWidgetFiltersConnections,
-  setFilterWidget as setFilterWidgetAction,
-  setFilterPropertyList,
-  initializeChartWidget,
-  applyFilterModifiers as applyFilterModifiersAction,
-  unapplyFilterWidget as unapplyFilterWidgetAction,
-  resetFilterWidgets as resetFilterWidgetsAction,
-} from '../actions';
 import { KEEN_ANALYSIS } from '../../../constants';
 
 import { getOldestTimeframe } from '../../../utils/getOldestTimeframe';
@@ -43,6 +31,7 @@ import {
   getDetachedFilterWidgetConnections,
   getFilterWidgetConnections,
 } from '../../filter/saga';
+import { widgetsActions } from '../index';
 
 /**
  * Apply filter connections updates to connected widgets
@@ -53,21 +42,30 @@ import {
  */
 export function* applyFilterModifiers({
   payload,
-}: ReturnType<typeof applyFilterModifiersAction>) {
+}: ReturnType<typeof widgetsActions.applyFilterModifiers>) {
   const { id } = payload;
 
-  yield put(setWidgetState(id, { isActive: true }));
+  yield put(
+    widgetsActions.setWidgetState({ id, widgetState: { isActive: true } })
+  );
   const {
     settings: { widgets },
   } = yield select(getWidgetSettings, id);
 
   yield all(
     widgets.map((widgetId: string) =>
-      put(setWidgetState(widgetId, { isInitialized: false, error: null }))
+      put(
+        widgetsActions.setWidgetState({
+          id: widgetId,
+          widgetState: { isInitialized: false, error: null },
+        })
+      )
     )
   );
   yield all(
-    widgets.map((widgetId: string) => put(initializeChartWidget(widgetId)))
+    widgets.map((widgetId: string) =>
+      put(widgetsActions.initializeChartWidget(widgetId))
+    )
   );
 }
 
@@ -80,7 +78,7 @@ export function* applyFilterModifiers({
  */
 export function* setFilterWidget({
   payload,
-}: ReturnType<typeof setFilterWidgetAction>) {
+}: ReturnType<typeof widgetsActions.setFilterWidget>) {
   const filter = yield select(getWidget, payload.widgetId);
   const { widgets, eventStream, targetProperty } = filter.widget.settings;
   const connectedWidgets = yield all(
@@ -100,8 +98,11 @@ export function* setFilterWidget({
   const client = yield getContext(KEEN_ANALYSIS);
 
   yield put(
-    setWidgetState(payload.widgetId, {
-      isLoading: true,
+    widgetsActions.setWidgetState({
+      id: payload.widgetId,
+      widgetState: {
+        isLoading: true,
+      },
     })
   );
 
@@ -128,18 +129,27 @@ export function* setFilterWidget({
       a.localeCompare(b)
     );
     yield put(
-      setFilterPropertyList(filter.widget.id, filterItemsSortedAlphabetically)
+      widgetsActions.setFilterPropertyList({
+        filterId: filter.widget.id,
+        propertyList: filterItemsSortedAlphabetically,
+      })
     );
   } catch (err) {
     yield put(
-      setWidgetState(payload.widgetId, {
-        error: err,
+      widgetsActions.setWidgetState({
+        id: payload.widgetId,
+        widgetState: {
+          error: err,
+        },
       })
     );
   } finally {
     yield put(
-      setWidgetState(payload.widgetId, {
-        isLoading: false,
+      widgetsActions.setWidgetState({
+        id: payload.widgetId,
+        widgetState: {
+          isLoading: false,
+        },
       })
     );
   }
@@ -163,12 +173,12 @@ export function* removeConnectionFromFilter(
 
   const updatedConnections = widgets.filter((id: string) => id !== widgetId);
   yield put(
-    configureFilerWidget(
-      filterId,
-      updatedConnections,
+    widgetsActions.configureFilterWidget({
+      id: filterId,
+      widgetConnections: updatedConnections,
       eventStream,
-      targetProperty
-    )
+      targetProperty,
+    })
   );
 }
 
@@ -196,10 +206,10 @@ export function* removeFilterConnections(
     );
   const chartWidgetsUpdates = connections.map((chart: ChartWidget) =>
     put(
-      updateChartWidgetFiltersConnections(
-        chart.id,
-        chart.filterIds.filter((id) => id !== deletedFilterId)
-      )
+      widgetsActions.updateChartWidgetFiltersConnections({
+        id: chart.id,
+        filterIds: chart.filterIds.filter((id) => id !== deletedFilterId),
+      })
     )
   );
 
@@ -239,18 +249,23 @@ export function* applyFilterUpdates(filterWidgetId: string) {
     } else {
       chartFilterIds.delete(filterWidgetId);
     }
-    return put(updateChartWidgetFiltersConnections(id, [...chartFilterIds]));
+    return put(
+      widgetsActions.updateChartWidgetFiltersConnections({
+        id,
+        filterIds: [...chartFilterIds],
+      })
+    );
   });
 
   yield all(chartsWidgetUpdates);
   yield put(
-    configureFilerWidget(
-      filterWidgetId,
-      connectedCharts,
+    widgetsActions.configureFilterWidget({
+      id: filterWidgetId,
+      widgetConnections: connectedCharts,
       eventStream,
       targetProperty,
-      name
-    )
+      name,
+    })
   );
 }
 
@@ -292,7 +307,11 @@ export function* updateWidgetsDistinction(
       if (filterWidgetId === id) return false;
       return type !== 'visualization';
     })
-    .map(({ widget: { id } }) => put(setWidgetState(id, { isFadeOut: true })));
+    .map(({ widget: { id } }) =>
+      put(
+        widgetsActions.setWidgetState({ id, widgetState: { isFadeOut: true } })
+      )
+    );
 
   const updateChartsWidgets = dashboardWidgets
     .filter(
@@ -317,11 +336,14 @@ export function* updateWidgetsDistinction(
       }
 
       return put(
-        setWidgetState(id, {
-          isHighlighted,
-          isFadeOut,
-          isDetached,
-          isTitleCover,
+        widgetsActions.setWidgetState({
+          id,
+          widgetState: {
+            isHighlighted,
+            isFadeOut,
+            isDetached,
+            isTitleCover,
+          },
         })
       );
     });
@@ -343,11 +365,14 @@ export function* updateWidgetsDistinction(
       const isFadeOut = false;
 
       return put(
-        setWidgetState(id, {
-          isHighlighted,
-          isFadeOut,
-          isDetached,
-          isTitleCover,
+        widgetsActions.setWidgetState({
+          id,
+          widgetState: {
+            isHighlighted,
+            isFadeOut,
+            isDetached,
+            isTitleCover,
+          },
         })
       );
     });
@@ -413,7 +438,7 @@ export function* synchronizeFilterConnections(
 
 export function* editFilterWidget({
   payload,
-}: ReturnType<typeof editFilterWidgetAction>) {
+}: ReturnType<typeof widgetsActions.editFilterWidget>) {
   const { id: filterWidgetId } = payload;
   const dashboardId = yield select(appSelectors.getActiveDashboard);
 
@@ -481,7 +506,12 @@ export function* editFilterWidget({
       const chartFilterIds = new Set<string>(filterIds);
       chartFilterIds.delete(filterWidgetId);
 
-      return put(updateChartWidgetFiltersConnections(id, [...chartFilterIds]));
+      return put(
+        widgetsActions.updateChartWidgetFiltersConnections({
+          id,
+          filterIds: [...chartFilterIds],
+        })
+      );
     });
 
     yield all(resetChartWidgetConnections);
@@ -499,11 +529,14 @@ export function* editFilterWidget({
   yield all(
     dashboardWidgetsIds.map((widgetId: string) =>
       put(
-        setWidgetState(widgetId, {
-          isHighlighted: false,
-          isFadeOut: false,
-          isDetached: false,
-          isTitleCover: false,
+        widgetsActions.setWidgetState({
+          id: widgetId,
+          widgetState: {
+            isHighlighted: false,
+            isFadeOut: false,
+            isDetached: false,
+            isTitleCover: false,
+          },
         })
       )
     )
@@ -557,11 +590,14 @@ export function* setupFilterWidget(widgetId: string) {
   yield all(
     dashboardWidgetsIds.map((widgetId: string) =>
       put(
-        setWidgetState(widgetId, {
-          isHighlighted: false,
-          isFadeOut: false,
-          isDetached: false,
-          isTitleCover: false,
+        widgetsActions.setWidgetState({
+          id: widgetId,
+          widgetState: {
+            isHighlighted: false,
+            isFadeOut: false,
+            isDetached: false,
+            isTitleCover: false,
+          },
         })
       )
     )
@@ -579,7 +615,7 @@ export function* setupFilterWidget(widgetId: string) {
  */
 export function* unapplyFilterWidget({
   payload,
-}: ReturnType<typeof unapplyFilterWidgetAction>) {
+}: ReturnType<typeof widgetsActions.unapplyFilterWidget>) {
   const { filterId } = payload;
   const {
     data,
@@ -591,15 +627,25 @@ export function* unapplyFilterWidget({
   delete dataWithoutFilter.filter;
 
   yield put(
-    setWidgetState(filterId, { isActive: false, data: dataWithoutFilter })
+    widgetsActions.setWidgetState({
+      id: filterId,
+      widgetState: { isActive: false, data: dataWithoutFilter },
+    })
   );
   yield all(
     widgets.map((widgetId: string) =>
-      put(setWidgetState(widgetId, { isInitialized: false, error: null }))
+      put(
+        widgetsActions.setWidgetState({
+          id: widgetId,
+          widgetState: { isInitialized: false, error: null },
+        })
+      )
     )
   );
   yield all(
-    widgets.map((widgetId: string) => put(initializeChartWidget(widgetId)))
+    widgets.map((widgetId: string) =>
+      put(widgetsActions.initializeChartWidget(widgetId))
+    )
   );
 }
 
@@ -612,7 +658,7 @@ export function* unapplyFilterWidget({
  */
 export function* resetFilterWidgets({
   payload,
-}: ReturnType<typeof resetFilterWidgetsAction>) {
+}: ReturnType<typeof widgetsActions.resetFilterWidgets>) {
   const { dashboardId } = payload;
   const state = yield select();
   const dashboard = getDashboard(state, dashboardId);
@@ -626,7 +672,12 @@ export function* resetFilterWidgets({
       .map((widgetId) => getWidgetSettings(state, widgetId))
       .filter(({ type }) => type === 'filter')
       .map(({ id }) =>
-        put(setWidgetState(id, { isActive: false, data: null }))
+        put(
+          widgetsActions.setWidgetState({
+            id,
+            widgetState: { isActive: false, data: null },
+          })
+        )
       );
 
     yield all(datePickersUpdate);

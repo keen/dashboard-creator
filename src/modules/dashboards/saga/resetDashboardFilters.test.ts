@@ -2,13 +2,13 @@ import sagaHelper from 'redux-saga-testing';
 import { put } from 'redux-saga/effects';
 
 import { resetDashboardFilters } from './resetDashboardFilters';
-import { resetDatePickerWidgets } from '../../widgets';
 import { resetDashboardFilters as resetDashboardFiltersAction } from '../actions';
 import {
   resetFilterWidgets,
   clearInconsistentFiltersError,
 } from '../../widgets/actions';
 import { queriesActions } from '../../queries';
+import { widgetsActions } from '../../widgets';
 
 describe('Scenario: User reset filters applied to the dashboard', () => {
   const dashboardId = '@dashboard/01';
@@ -16,7 +16,9 @@ describe('Scenario: User reset filters applied to the dashboard', () => {
   const test = sagaHelper(resetDashboardFilters(action));
 
   test('should reset Date Picker widgets', (result) => {
-    expect(result).toEqual(put(resetDatePickerWidgets(dashboardId)));
+    expect(result).toEqual(
+      put(widgetsActions.resetDatePickerWidgets(dashboardId))
+    );
   });
 
   test('should reset Filter widgets', (result) => {

@@ -1,13 +1,6 @@
 import { put, select, call, take, getContext, all } from 'redux-saga/effects';
 import { Query } from '@keen.io/query';
 
-import {
-  initializeChartWidget as initializeChartWidgetAction,
-  setWidgetState,
-  finishChartWidgetConfiguration,
-  savedQueryUpdated,
-} from '../actions';
-
 import { getWidget, getWidgetSettings } from '../selectors';
 
 import {
@@ -26,6 +19,7 @@ import { appSelectors } from '../../app';
 import { chartEditorActions, chartEditorSelectors } from '../../chartEditor';
 import { getConnectedDashboards } from '../../dashboards/saga';
 import { queriesSagas } from '../../queries';
+import { widgetsActions } from '../index';
 
 /**
  * Creates ad-hoc query with date picker and filters modifiers.
@@ -125,7 +119,7 @@ export function* handleInconsistentFilters(widgetId: string) {
     error,
   };
 
-  yield put(setWidgetState(widgetId, widgetState));
+  yield put(widgetsActions.setWidgetState({ id: widgetId, widgetState }));
 }
 
 /**
@@ -160,9 +154,12 @@ export function* checkIfChartWidgetHasInconsistentFilters(chartWidget: any) {
     !widgetHasInconsistentFilters
   ) {
     yield put(
-      setWidgetState(chartWidget.widget.id, {
-        isInitialized: true,
-        error: null,
+      widgetsActions.setWidgetState({
+        id: chartWidget.widget.id,
+        widgetState: {
+          isInitialized: true,
+          error: null,
+        },
       })
     );
   } else if (widgetHasInconsistentFilters) {
@@ -211,18 +208,18 @@ export function* editChartSavedQuery(widgetId: string) {
     ]);
 
     if (action.type === chartEditorActions.useQueryForWidget.type) {
-      yield put(setWidgetState(widgetId, widgetState));
+      yield put(widgetsActions.setWidgetState({ id: widgetId, widgetState }));
       yield put(
-        finishChartWidgetConfiguration(
-          widgetId,
-          querySettings,
-          widgetType,
+        widgetsActions.finishChartWidgetConfiguration({
+          id: widgetId,
+          query: querySettings,
+          visualizationType: widgetType,
           chartSettings,
-          widgetSettings
-        )
+          widgetSettings,
+        })
       );
 
-      yield put(initializeChartWidgetAction(widgetId));
+      yield put(widgetsActions.initializeChartWidget(widgetId));
       yield put(updateAccessKeyOptions());
 
       const dashboardId = yield select(appSelectors.getActiveDashboard);
@@ -246,23 +243,23 @@ export function* editChartSavedQuery(widgetId: string) {
           metadata
         );
 
-        yield put(setWidgetState(widgetId, widgetState));
+        yield put(widgetsActions.setWidgetState({ id: widgetId, widgetState }));
 
         yield put(
-          finishChartWidgetConfiguration(
-            widgetId,
-            queryName,
-            widgetType,
+          widgetsActions.finishChartWidgetConfiguration({
+            id: widgetId,
+            query: queryName,
+            visualizationType: widgetType,
             chartSettings,
-            widgetSettings
-          )
+            widgetSettings,
+          })
         );
 
-        yield put(initializeChartWidgetAction(widgetId));
+        yield put(widgetsActions.initializeChartWidget(widgetId));
 
         const dashboardId = yield select(appSelectors.getActiveDashboard);
         yield put(saveDashboard(dashboardId));
-        yield put(savedQueryUpdated(widgetId, queryName));
+        yield put(widgetsActions.savedQueryUpdated(widgetId, queryName));
       } catch (err) {
         const notificationManager = yield getContext(NOTIFICATION_MANAGER);
         yield notificationManager.showNotification({
@@ -280,20 +277,20 @@ export function* editChartSavedQuery(widgetId: string) {
     yield take(chartEditorActions.editorUnmounted.type);
     yield put(chartEditorActions.resetEditor());
 
-    yield put(setWidgetState(widgetId, widgetState));
+    yield put(widgetsActions.setWidgetState({ id: widgetId, widgetState }));
     const { query: queryName } = yield select(getWidgetSettings, widgetId);
 
     yield put(
-      finishChartWidgetConfiguration(
-        widgetId,
-        queryName,
-        widgetType,
+      widgetsActions.finishChartWidgetConfiguration({
+        id: widgetId,
+        query: queryName,
+        visualizationType: widgetType,
         chartSettings,
-        widgetSettings
-      )
+        widgetSettings,
+      })
     );
 
-    yield put(initializeChartWidgetAction(widgetId));
+    yield put(widgetsActions.initializeChartWidget(widgetId));
 
     const dashboardId = yield select(appSelectors.getActiveDashboard);
     yield put(saveDashboard(dashboardId));

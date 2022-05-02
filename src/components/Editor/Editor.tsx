@@ -15,9 +15,8 @@ import {
   getDashboardMeta,
 } from '../../modules/dashboards';
 import {
-  createWidget,
   createWidgetId,
-  updateWidgetsPosition,
+  widgetsActions,
   WidgetsPosition,
 } from '../../modules/widgets';
 import { themeSagaActions, themeSelectors } from '../../modules/theme';
@@ -126,10 +125,14 @@ const Editor: FC<Props> = ({ dashboardId }) => {
       const { x, y, w, h, minW, minH } = droppedItem;
 
       dispatch(
-        createWidget(widgetId, droppableWidget, { x, y, w, h, minW, minH })
+        widgetsActions.createWidget({
+          id: widgetId,
+          widgetType: droppableWidget,
+          gridPosition: { x, y, w, h, minW, minH },
+        })
       );
       dispatch(addWidgetToDashboard(dashboardId, widgetId));
-      dispatch(updateWidgetsPosition(gridPositions));
+      dispatch(widgetsActions.updateWidgetsPosition({ gridPositions }));
     },
     [droppableWidget]
   );
@@ -189,11 +192,11 @@ const Editor: FC<Props> = ({ dashboardId }) => {
             gridGap={gridGap}
             onWidgetDrop={addWidgetHandler}
             onWidgetDrag={(gridPositions) => {
-              dispatch(updateWidgetsPosition(gridPositions));
+              dispatch(widgetsActions.updateWidgetsPosition({ gridPositions }));
               dispatch(saveDashboard(dashboardId));
             }}
             onWidgetResize={(gridPositions, widgetId) => {
-              dispatch(updateWidgetsPosition(gridPositions));
+              dispatch(widgetsActions.updateWidgetsPosition({ gridPositions }));
               dispatch(saveDashboard(dashboardId));
               editorPubSub.current.publish(RESIZE_WIDGET_EVENT, {
                 id: widgetId,

@@ -25,21 +25,7 @@ import {
   resetFilterWidgets,
 } from './filterWidget';
 
-import {
-  updateChartWidgetFiltersConnections,
-  setWidgetState,
-  editFilterWidget as editFilterWidgetAction,
-  unapplyFilterWidget as unapplyFilterWidgetAction,
-  setFilterWidget as setFilterWidgetAction,
-  applyFilterModifiers as applyFilterModifiersAction,
-  configureFilerWidget,
-  initializeChartWidget,
-  setFilterPropertyList,
-  resetFilterWidgets as resetFilterWidgetsAction,
-} from '../actions';
-
 import { filterActions } from '../../filter';
-import { getWidgetSettings, getWidget } from '../../widgets';
 import {
   saveDashboard,
   getDashboard,
@@ -53,26 +39,32 @@ import {
   getDetachedFilterWidgetConnections,
   getFilterWidgetConnections,
 } from '../../filter/saga';
+import { widgetsActions, widgetsSelectors } from '../index';
 
 describe('applyFilterModifiers()', () => {
   describe('Scenario 1: Apply filter widget modifiers on connected charts', () => {
     const widgetId = '@filter/01';
-    const action = applyFilterModifiersAction(widgetId);
+    const action = widgetsActions.applyFilterModifiers(widgetId);
 
     const test = sagaHelper(applyFilterModifiers(action));
 
     test('set filter widget active state', (result) => {
       expect(result).toEqual(
         put(
-          setWidgetState(widgetId, {
-            isActive: true,
+          widgetsActions.setWidgetState({
+            id: widgetId,
+            widgetState: {
+              isActive: true,
+            },
           })
         )
       );
     });
 
     test('get filter widget settings', (result) => {
-      expect(result).toEqual(select(getWidgetSettings, widgetId));
+      expect(result).toEqual(
+        select(widgetsSelectors.getWidgetSettings, widgetId)
+      );
 
       return {
         settings: {
@@ -85,15 +77,21 @@ describe('applyFilterModifiers()', () => {
       expect(result).toEqual(
         all([
           put(
-            setWidgetState('@widget/01', {
-              isInitialized: false,
-              error: null,
+            widgetsActions.setWidgetState({
+              id: '@widget/01',
+              widgetState: {
+                isInitialized: false,
+                error: null,
+              },
             })
           ),
           put(
-            setWidgetState('@widget/02', {
-              isInitialized: false,
-              error: null,
+            widgetsActions.setWidgetState({
+              id: '@widget/02',
+              widgetState: {
+                isInitialized: false,
+                error: null,
+              },
             })
           ),
         ])
@@ -103,8 +101,8 @@ describe('applyFilterModifiers()', () => {
     test('reinitializes chart widgets', (result) => {
       expect(result).toEqual(
         all([
-          put(initializeChartWidget('@widget/01')),
-          put(initializeChartWidget('@widget/02')),
+          put(widgetsActions.initializeChartWidget('@widget/01')),
+          put(widgetsActions.initializeChartWidget('@widget/02')),
         ])
       );
     });
@@ -114,7 +112,7 @@ describe('applyFilterModifiers()', () => {
 describe('setFilterWidget()', () => {
   describe('Scenario 1: Succesfully set filter widget settings', () => {
     const widgetId = '@filter/01';
-    const action = setFilterWidgetAction(widgetId);
+    const action = widgetsActions.setFilterWidget(widgetId);
 
     const test = sagaHelper(setFilterWidget(action));
 
@@ -123,7 +121,7 @@ describe('setFilterWidget()', () => {
     };
 
     test('get filter widget settings', (result) => {
-      expect(result).toEqual(select(getWidget, widgetId));
+      expect(result).toEqual(select(widgetsSelectors.getWidget, widgetId));
 
       return {
         widget: {
@@ -139,7 +137,10 @@ describe('setFilterWidget()', () => {
 
     test('get connected chart widgets settings', (result) => {
       expect(result).toEqual(
-        all([select(getWidget, '@widget/01'), select(getWidget, '@widget/02')])
+        all([
+          select(widgetsSelectors.getWidget, '@widget/01'),
+          select(widgetsSelectors.getWidget, '@widget/02'),
+        ])
       );
 
       return [
@@ -169,8 +170,11 @@ describe('setFilterWidget()', () => {
     test('set filter widget loading state', (result) => {
       expect(result).toEqual(
         put(
-          setWidgetState(widgetId, {
-            isLoading: true,
+          widgetsActions.setWidgetState({
+            id: widgetId,
+            widgetState: {
+              isLoading: true,
+            },
           })
         )
       );
@@ -201,14 +205,17 @@ describe('setFilterWidget()', () => {
     test('sorts filter values alphabetically and sets them for filter widget ', (result) => {
       expect(result).toEqual(
         put(
-          setFilterPropertyList(widgetId, [
-            '12Australia',
-            '33venezuela',
-            'algeria',
-            'Angola',
-            'argentina',
-            'Armenia',
-          ])
+          widgetsActions.setFilterPropertyList({
+            filterId: widgetId,
+            propertyList: [
+              '12Australia',
+              '33venezuela',
+              'algeria',
+              'Angola',
+              'argentina',
+              'Armenia',
+            ],
+          })
         )
       );
     });
@@ -216,8 +223,11 @@ describe('setFilterWidget()', () => {
     test('set filter widget loading state', (result) => {
       expect(result).toEqual(
         put(
-          setWidgetState(widgetId, {
-            isLoading: false,
+          widgetsActions.setWidgetState({
+            id: widgetId,
+            widgetState: {
+              isLoading: false,
+            },
           })
         )
       );
@@ -228,12 +238,12 @@ describe('setFilterWidget()', () => {
 describe('unapplyFilterWidget()', () => {
   describe('Scenario 1: User unapply filter widget settings', () => {
     const widgetId = '@filter/01';
-    const action = unapplyFilterWidgetAction(widgetId);
+    const action = widgetsActions.unapplyFilterWidget(widgetId);
 
     const test = sagaHelper(unapplyFilterWidget(action));
 
     test('get filter widget settings', (result) => {
-      expect(result).toEqual(select(getWidget, widgetId));
+      expect(result).toEqual(select(widgetsSelectors.getWidget, widgetId));
 
       return {
         data: {
@@ -247,7 +257,12 @@ describe('unapplyFilterWidget()', () => {
 
     test('removes filter data from widget', (result) => {
       expect(result).toEqual(
-        put(setWidgetState(widgetId, { isActive: false, data: {} }))
+        put(
+          widgetsActions.setWidgetState({
+            id: widgetId,
+            widgetState: { isActive: false, data: {} },
+          })
+        )
       );
     });
 
@@ -255,15 +270,21 @@ describe('unapplyFilterWidget()', () => {
       expect(result).toEqual(
         all([
           put(
-            setWidgetState('@widget/01', {
-              isInitialized: false,
-              error: null,
+            widgetsActions.setWidgetState({
+              id: '@widget/01',
+              widgetState: {
+                isInitialized: false,
+                error: null,
+              },
             })
           ),
           put(
-            setWidgetState('@widget/02', {
-              isInitialized: false,
-              error: null,
+            widgetsActions.setWidgetState({
+              id: '@widget/02',
+              widgetState: {
+                isInitialized: false,
+                error: null,
+              },
             })
           ),
         ])
@@ -273,8 +294,8 @@ describe('unapplyFilterWidget()', () => {
     test('reinitializes chart widgets', (result) => {
       expect(result).toEqual(
         all([
-          put(initializeChartWidget('@widget/01')),
-          put(initializeChartWidget('@widget/02')),
+          put(widgetsActions.initializeChartWidget('@widget/01')),
+          put(widgetsActions.initializeChartWidget('@widget/02')),
         ])
       );
     });
@@ -334,10 +355,16 @@ describe('removeFilterConnections()', () => {
       expect(result).toEqual(
         all([
           put(
-            updateChartWidgetFiltersConnections('@widget/01', ['@filter/02'])
+            widgetsActions.updateChartWidgetFiltersConnections({
+              id: '@widget/01',
+              filterIds: ['@filter/02'],
+            })
           ),
           put(
-            updateChartWidgetFiltersConnections('@widget/02', ['@filter/02'])
+            widgetsActions.updateChartWidgetFiltersConnections({
+              id: '@widget/02',
+              filterIds: ['@filter/02'],
+            })
           ),
         ])
       );
@@ -353,7 +380,9 @@ describe('removeConnectionFromFilter()', () => {
     const test = sagaHelper(removeConnectionFromFilter(filterId, widgetId));
 
     test('get filter widget settings', (result) => {
-      expect(result).toEqual(select(getWidgetSettings, filterId));
+      expect(result).toEqual(
+        select(widgetsSelectors.getWidgetSettings, filterId)
+      );
 
       return {
         settings: {
@@ -366,7 +395,14 @@ describe('removeConnectionFromFilter()', () => {
 
     test('updates filter widget connections', (result) => {
       expect(result).toEqual(
-        put(configureFilerWidget(filterId, ['@widget/02'], 'logins', 'user.id'))
+        put(
+          widgetsActions.configureFilterWidget({
+            id: filterId,
+            widgetConnections: ['@widget/02'],
+            eventStream: 'logins',
+            targetProperty: 'user.id',
+          })
+        )
       );
     });
   });
@@ -442,21 +478,32 @@ describe('updateWidgetsDistinction()', () => {
     test('updates widgets distinction', (result) => {
       expect(result).toEqual(
         all([
-          put(setWidgetState('@widget/03', { isFadeOut: true })),
           put(
-            setWidgetState('@widget/01', {
-              isFadeOut: false,
-              isHighlighted: true,
-              isTitleCover: true,
-              isDetached: false,
+            widgetsActions.setWidgetState({
+              id: '@widget/03',
+              widgetState: { isFadeOut: true },
             })
           ),
           put(
-            setWidgetState('@widget/02', {
-              isFadeOut: false,
-              isHighlighted: false,
-              isTitleCover: true,
-              isDetached: true,
+            widgetsActions.setWidgetState({
+              id: '@widget/01',
+              widgetState: {
+                isFadeOut: false,
+                isHighlighted: true,
+                isTitleCover: true,
+                isDetached: false,
+              },
+            })
+          ),
+          put(
+            widgetsActions.setWidgetState({
+              id: '@widget/02',
+              widgetState: {
+                isFadeOut: false,
+                isHighlighted: false,
+                isTitleCover: true,
+                isDetached: true,
+              },
             })
           ),
         ])
@@ -503,7 +550,6 @@ describe('synchronizeFilterConnections()', () => {
     });
 
     test('creates filter widget connections', (result) => {
-      console.log('result', result);
       expect(result).toEqual(
         call(getFilterWidgetConnections, dashboardId, widgetId, 'logins', false)
       );
@@ -551,7 +597,7 @@ describe('editFilterWidget()', () => {
     const dashboardId = '@dashboard/01';
     const widgetId = '@filter/01';
 
-    const action = editFilterWidgetAction(widgetId);
+    const action = widgetsActions.editFilterWidget(widgetId);
     const test = sagaHelper(editFilterWidget(action));
 
     const widgetConnections = [
@@ -585,7 +631,9 @@ describe('editFilterWidget()', () => {
     });
 
     test('get filter widget settings', (result) => {
-      expect(result).toEqual(select(getWidgetSettings, widgetId));
+      expect(result).toEqual(
+        select(widgetsSelectors.getWidgetSettings, widgetId)
+      );
 
       return {
         settings: {
@@ -700,7 +748,10 @@ describe('editFilterWidget()', () => {
       expect(result).toEqual(
         all([
           put(
-            updateChartWidgetFiltersConnections('@widget/02', ['@filter/02'])
+            widgetsActions.updateChartWidgetFiltersConnections({
+              id: '@widget/02',
+              filterIds: ['@filter/02'],
+            })
           ),
         ])
       );
@@ -730,19 +781,25 @@ describe('editFilterWidget()', () => {
       expect(result).toEqual(
         all([
           put(
-            setWidgetState('@widget/01', {
-              isHighlighted: false,
-              isFadeOut: false,
-              isDetached: false,
-              isTitleCover: false,
+            widgetsActions.setWidgetState({
+              id: '@widget/01',
+              widgetState: {
+                isHighlighted: false,
+                isFadeOut: false,
+                isDetached: false,
+                isTitleCover: false,
+              },
             })
           ),
           put(
-            setWidgetState('@widget/02', {
-              isHighlighted: false,
-              isFadeOut: false,
-              isDetached: false,
-              isTitleCover: false,
+            widgetsActions.setWidgetState({
+              id: '@widget/02',
+              widgetState: {
+                isHighlighted: false,
+                isFadeOut: false,
+                isDetached: false,
+                isTitleCover: false,
+              },
             })
           ),
         ])
@@ -825,19 +882,25 @@ describe('setupFilterWidget()', () => {
       expect(result).toEqual(
         all([
           put(
-            setWidgetState('@widget/01', {
-              isHighlighted: false,
-              isFadeOut: false,
-              isDetached: false,
-              isTitleCover: false,
+            widgetsActions.setWidgetState({
+              id: '@widget/01',
+              widgetState: {
+                isHighlighted: false,
+                isFadeOut: false,
+                isDetached: false,
+                isTitleCover: false,
+              },
             })
           ),
           put(
-            setWidgetState('@widget/02', {
-              isHighlighted: false,
-              isFadeOut: false,
-              isDetached: false,
-              isTitleCover: false,
+            widgetsActions.setWidgetState({
+              id: '@widget/02',
+              widgetState: {
+                isHighlighted: false,
+                isFadeOut: false,
+                isDetached: false,
+                isTitleCover: false,
+              },
             })
           ),
         ])
@@ -905,7 +968,7 @@ describe('setupFilterWidget()', () => {
 describe('resetFilterWidgets()', () => {
   describe('Scenario 1: Resets all filter widgets state', () => {
     const dashboardId = '@dashboard/01';
-    const action = resetFilterWidgetsAction('@dashboard/01');
+    const action = widgetsActions.resetFilterWidgets('@dashboard/01');
     const test = sagaHelper(resetFilterWidgets(action));
 
     test('gets application state', (result) => {
@@ -961,8 +1024,18 @@ describe('resetFilterWidgets()', () => {
     test('reset filter widgets states', (result) => {
       expect(result).toEqual(
         all([
-          put(setWidgetState('@filter/01', { isActive: false, data: null })),
-          put(setWidgetState('@filter/03', { isActive: false, data: null })),
+          put(
+            widgetsActions.setWidgetState({
+              id: '@filter/01',
+              widgetState: { isActive: false, data: null },
+            })
+          ),
+          put(
+            widgetsActions.setWidgetState({
+              id: '@filter/03',
+              widgetState: { isActive: false, data: null },
+            })
+          ),
         ])
       );
     });

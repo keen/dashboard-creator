@@ -18,7 +18,6 @@ import {
 } from '../actions';
 
 import { appActions, appSelectors } from '../../app';
-import { registerWidgets } from '../../widgets';
 import { themeActions } from '../../theme';
 
 import {
@@ -27,6 +26,7 @@ import {
   ROUTES,
 } from '../../../constants';
 import { DashboardSettings } from '../types';
+import { widgetsActions } from '../../widgets';
 
 const dashboardId = '@dashboard/01';
 const action = cloneDashboardAction(dashboardId);
@@ -182,7 +182,9 @@ describe('Scenario 1: User clone dashboard from dashboard view', () => {
   });
 
   test('register widgets', (result) => {
-    expect(result).toEqual(put(registerWidgets(model.widgets)));
+    expect(result).toEqual(
+      put(widgetsActions.registerWidgets({ widgets: model.widgets }))
+    );
   });
 
   test('update cloned dashboard', (result) => {

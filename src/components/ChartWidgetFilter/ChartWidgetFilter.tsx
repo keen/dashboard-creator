@@ -6,10 +6,10 @@ import { DatePickerContent, FiltersContent, WidgetFilter } from './components';
 import {
   DatePickerWidget,
   FilterWidget,
-  getWidget,
+  widgetsSelectors,
 } from '../../modules/widgets';
 import { RootState } from '../../rootReducer';
-import { WidgetItem } from '../../modules/widgets/types';
+import { WidgetItem } from '../../modules/widgets';
 
 import { Container } from './ChartWidgetFilter.styles';
 
@@ -23,12 +23,16 @@ type Props = {
 
 const ChartWidgetFilter: FC<Props> = ({ widgetId }) => {
   const { widget } = useSelector((rootState: RootState) =>
-    getWidget(rootState, widgetId)
+    widgetsSelectors.getWidget(rootState, widgetId)
   );
 
   const datePickerData = useSelector((state: RootState) => {
     if ('datePickerId' in widget && widget.datePickerId) {
-      const { data, isActive, widget: datePickerWidget } = getWidget(
+      const {
+        data,
+        isActive,
+        widget: datePickerWidget,
+      } = widgetsSelectors.getWidget(
         state,
         widget.datePickerId
       ) as WidgetItem<DatePickerWidget>;
@@ -44,7 +48,7 @@ const ChartWidgetFilter: FC<Props> = ({ widgetId }) => {
     if ('filterIds' in widget && widget.filterIds.length > 0) {
       return widget.filterIds.reduce(
         (activeFilters: FilterMeta[], id: string) => {
-          const { data, isActive, widget } = getWidget(
+          const { data, isActive, widget } = widgetsSelectors.getWidget(
             state,
             id
           ) as WidgetItem<FilterWidget>;

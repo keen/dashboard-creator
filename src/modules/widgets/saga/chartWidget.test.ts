@@ -13,11 +13,6 @@ import {
 
 import { saveDashboard } from '../../../modules/dashboards';
 
-import {
-  initializeChartWidget as initializeChartWidgetAction,
-  setWidgetState,
-  finishChartWidgetConfiguration,
-} from '../actions';
 import { getWidget, getWidgetSettings } from '../selectors';
 
 import { widget as widgetFixture } from '../fixtures';
@@ -28,6 +23,7 @@ import { WidgetItem, WidgetErrors } from '../types';
 import { chartEditorActions, chartEditorSelectors } from '../../chartEditor';
 import { getConnectedDashboards } from '../../dashboards/saga';
 import { queriesSagas } from '../../queries';
+import { widgetsActions } from '../index';
 
 const translationsMock = {
   t: jest.fn().mockImplementation((value) => value),
@@ -47,12 +43,15 @@ describe('handleInconsistentFilters()', () => {
     test('updates widget state', (result) => {
       expect(result).toEqual(
         put(
-          setWidgetState(widgetId, {
-            isInitialized: true,
-            error: {
-              title: 'widget_errors.inconsistent_filter_title',
-              message: 'widget_errors.inconsistent_filter_message',
-              code: WidgetErrors.INCONSISTENT_FILTER,
+          widgetsActions.setWidgetState({
+            id: widgetId,
+            widgetState: {
+              isInitialized: true,
+              error: {
+                title: 'widget_errors.inconsistent_filter_title',
+                message: 'widget_errors.inconsistent_filter_message',
+                code: WidgetErrors.INCONSISTENT_FILTER,
+              },
             },
           })
         )
@@ -184,9 +183,12 @@ describe('checkIfChartWidgetHasInconsistentFilters()', () => {
     test('Calls set widget state to clear the error', (result) => {
       expect(result).toEqual(
         put(
-          setWidgetState(chartWidget.widget.id, {
-            isInitialized: true,
-            error: null,
+          widgetsActions.setWidgetState({
+            id: chartWidget.widget.id,
+            widgetState: {
+              isInitialized: true,
+              error: null,
+            },
           })
         )
       );
@@ -525,11 +527,14 @@ describe('editChartSavedQuery()', () => {
     test('updates widget state', (result) => {
       expect(result).toEqual(
         put(
-          setWidgetState(widgetId, {
-            isInitialized: false,
-            isConfigured: false,
-            error: null,
-            data: null,
+          widgetsActions.setWidgetState({
+            id: widgetId,
+            widgetState: {
+              isInitialized: false,
+              isConfigured: false,
+              error: null,
+              data: null,
+            },
           })
         )
       );
@@ -548,19 +553,21 @@ describe('editChartSavedQuery()', () => {
         visualization: { type, chartSettings, widgetSettings },
       } = chartEditor;
 
-      const action = finishChartWidgetConfiguration(
-        widgetId,
-        'purchases',
-        type,
+      const action = widgetsActions.finishChartWidgetConfiguration({
+        id: widgetId,
+        query: 'purchases',
+        visualizationType: type,
         chartSettings,
-        widgetSettings
-      );
+        widgetSettings,
+      });
 
       expect(result).toEqual(put(action));
     });
 
     test('initializes chart widget', (result) => {
-      expect(result).toEqual(put(initializeChartWidgetAction(widgetId)));
+      expect(result).toEqual(
+        put(widgetsActions.initializeChartWidget(widgetId))
+      );
     });
 
     test('gets active dashboard identifier', () => {

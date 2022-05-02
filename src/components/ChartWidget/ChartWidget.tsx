@@ -20,8 +20,9 @@ import { Container, LoaderWrapper } from './ChartWidget.styles';
 
 import { EditorContext } from '../../contexts';
 import {
-  getWidget,
   ChartWidget as ChartWidgetType,
+  WidgetItem,
+  widgetsSelectors,
 } from '../../modules/widgets';
 import { themeSelectors, themeHooks } from '../../modules/theme';
 import { getPresentationTimezone } from '../../modules/timezone';
@@ -32,7 +33,6 @@ import { RESIZE_WIDGET_EVENT } from '../../constants';
 
 import getChartInput from '../../utils/getChartInput';
 import { createDataviz } from './utils';
-import { WidgetItem } from '../../modules/widgets/types';
 import { queriesSelectors } from '../../modules/queries';
 
 type Props = {
@@ -65,7 +65,7 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
     data,
     widget,
   } = useSelector((state: RootState) =>
-    getWidget(state, id)
+    widgetsSelectors.getWidget(state, id)
   ) as WidgetItem<ChartWidgetType>;
 
   const { query: widgetQuery } = widget;

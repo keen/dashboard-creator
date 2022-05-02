@@ -1,6 +1,6 @@
 import { put } from 'redux-saga/effects';
-import { setWidgetState } from '../../widgets';
 import { filterActions } from '../index';
+import { widgetsActions } from '../../widgets';
 
 /**
  * Set highlight state for widget during date picker configuration
@@ -15,8 +15,11 @@ export function* setWidgetHighlight({
 }: ReturnType<typeof filterActions.updateConnection>) {
   const { widgetId, isConnected } = payload;
   yield put(
-    setWidgetState(widgetId, {
-      isHighlighted: isConnected,
+    widgetsActions.setWidgetState({
+      id: widgetId,
+      widgetState: {
+        isHighlighted: isConnected,
+      },
     })
   );
 }

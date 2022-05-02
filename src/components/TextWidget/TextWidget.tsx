@@ -6,7 +6,10 @@ import { useSelector } from 'react-redux';
 import { Container, Html } from './TextWidget.styles';
 import { exporter } from '../TextEditor';
 
-import { getWidget, TextWidget as TextWidgetType } from '../../modules/widgets';
+import {
+  TextWidget as TextWidgetType,
+  widgetsSelectors,
+} from '../../modules/widgets';
 
 import { RootState } from '../../rootReducer';
 
@@ -16,7 +19,9 @@ type Props = {
 };
 
 const TextWidget: FC<Props> = ({ id }) => {
-  const { widget } = useSelector((state: RootState) => getWidget(state, id));
+  const { widget } = useSelector((state: RootState) =>
+    widgetsSelectors.getWidget(state, id)
+  );
 
   const {
     settings: { content, textAlignment },

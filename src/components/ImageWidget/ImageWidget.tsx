@@ -5,8 +5,8 @@ import { Image, ImageWrapper, PlaceholderWrapper } from './ImageWidget.styles';
 import WidgetPlaceholder from '../WidgetPlaceholder';
 
 import {
-  getWidget,
   ImageWidget as ImageWidgetType,
+  widgetsSelectors,
 } from '../../modules/widgets';
 
 import { RootState } from '../../rootReducer';
@@ -21,7 +21,7 @@ type Props = {
 const ImageWidget: FC<Props> = ({ id, placeholderBackgroundColor }) => {
   const widgetRef = useRef(null);
   const { isConfigured, widget } = useSelector((state: RootState) =>
-    getWidget(state, id)
+    widgetsSelectors.getWidget(state, id)
   );
   const [placeholder, setPlaceholder] = useState({ width: 0, height: 0 });
 

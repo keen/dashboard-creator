@@ -15,18 +15,6 @@ import {
   clearDatePickerModifiers,
 } from './datePickerWidget';
 
-import {
-  setWidgetState,
-  setDatePickerWidget,
-  initializeChartWidget,
-  updateChartWidgetDatePickerConnection,
-  clearDatePickerModifiers as clearDatePickerModifiersAction,
-  resetDatePickerWidgets as resetDatePickerWidgetsAction,
-  editDatePickerWidget as editDatePickerWidgetAction,
-  setDatePickerModifiers as setDatePickerModifiersAction,
-  applyDatePickerModifiers as applyDatePickerModifiersAction,
-} from '../actions';
-
 import { getWidgetSettings } from '../selectors';
 
 import {
@@ -36,18 +24,24 @@ import {
 } from '../../dashboards';
 import { datePickerActions, datePickerSelectors } from '../../datePicker';
 import { appSelectors } from '../../app';
+import { widgetsActions } from '../index';
 
 describe('clearDatePickerModifiers()', () => {
   describe('Scenario 1: Resets date picker state and re-initialize connected chart widgets', () => {
     const datePickerId = '@date-picker/01';
     const connectedWidgets = ['@widget/01', '@widget/02'];
-    const action = clearDatePickerModifiersAction(datePickerId);
+    const action = widgetsActions.clearDatePickerModifiers(datePickerId);
 
     const test = sagaHelper(clearDatePickerModifiers(action));
 
     test('updates date picker statee', (result) => {
       expect(result).toEqual(
-        put(setWidgetState('@date-picker/01', { isActive: false, data: null }))
+        put(
+          widgetsActions.setWidgetState({
+            id: '@date-picker/01',
+            widgetState: { isActive: false, data: null },
+          })
+        )
       );
     });
 
@@ -63,10 +57,16 @@ describe('clearDatePickerModifiers()', () => {
       expect(result).toEqual(
         all([
           put(
-            setWidgetState('@widget/01', { isInitialized: false, error: null })
+            widgetsActions.setWidgetState({
+              id: '@widget/01',
+              widgetState: { isInitialized: false, error: null },
+            })
           ),
           put(
-            setWidgetState('@widget/02', { isInitialized: false, error: null })
+            widgetsActions.setWidgetState({
+              id: '@widget/02',
+              widgetState: { isInitialized: false, error: null },
+            })
           ),
         ])
       );
@@ -75,8 +75,8 @@ describe('clearDatePickerModifiers()', () => {
     test('re-initializes connected chart widgets', (result) => {
       expect(result).toEqual(
         all([
-          put(initializeChartWidget('@widget/01')),
-          put(initializeChartWidget('@widget/02')),
+          put(widgetsActions.initializeChartWidget('@widget/01')),
+          put(widgetsActions.initializeChartWidget('@widget/02')),
         ])
       );
     });
@@ -86,7 +86,7 @@ describe('clearDatePickerModifiers()', () => {
 describe('resetDatePickerWidgets()', () => {
   describe('Scenario 1: Resets all date picker widgets state', () => {
     const dashboardId = '@dashboard/01';
-    const action = resetDatePickerWidgetsAction('@dashboard/01');
+    const action = widgetsActions.resetDatePickerWidgets('@dashboard/01');
 
     const test = sagaHelper(resetDatePickerWidgets(action));
 
@@ -147,10 +147,16 @@ describe('resetDatePickerWidgets()', () => {
       expect(result).toEqual(
         all([
           put(
-            setWidgetState('@date-picker/01', { isActive: false, data: null })
+            widgetsActions.setWidgetState({
+              id: '@date-picker/01',
+              widgetState: { isActive: false, data: null },
+            })
           ),
           put(
-            setWidgetState('@date-picker/02', { isActive: false, data: null })
+            widgetsActions.setWidgetState({
+              id: '@date-picker/02',
+              widgetState: { isActive: false, data: null },
+            })
           ),
         ])
       );
@@ -228,11 +234,36 @@ describe('setupDatePicker()', () => {
     test('updates widgets visibility states', (result) => {
       expect(result).toEqual(
         all([
-          put(setWidgetState('@widget/03', { isFadeOut: true })),
-          put(setWidgetState('@widget/01', { isTitleCover: true })),
-          put(setWidgetState('@widget/02', { isTitleCover: true })),
-          put(setWidgetState('@widget/01', { isHighlighted: true })),
-          put(setWidgetState('@widget/02', { isHighlighted: true })),
+          put(
+            widgetsActions.setWidgetState({
+              id: '@widget/03',
+              widgetState: { isFadeOut: true },
+            })
+          ),
+          put(
+            widgetsActions.setWidgetState({
+              id: '@widget/01',
+              widgetState: { isTitleCover: true },
+            })
+          ),
+          put(
+            widgetsActions.setWidgetState({
+              id: '@widget/02',
+              widgetState: { isTitleCover: true },
+            })
+          ),
+          put(
+            widgetsActions.setWidgetState({
+              id: '@widget/01',
+              widgetState: { isHighlighted: true },
+            })
+          ),
+          put(
+            widgetsActions.setWidgetState({
+              id: '@widget/02',
+              widgetState: { isHighlighted: true },
+            })
+          ),
         ])
       );
     });
@@ -252,24 +283,33 @@ describe('setupDatePicker()', () => {
       expect(result).toEqual(
         all([
           put(
-            setWidgetState('@widget/01', {
-              isHighlighted: false,
-              isFadeOut: false,
-              isTitleCover: false,
+            widgetsActions.setWidgetState({
+              id: '@widget/01',
+              widgetState: {
+                isHighlighted: false,
+                isFadeOut: false,
+                isTitleCover: false,
+              },
             })
           ),
           put(
-            setWidgetState('@widget/02', {
-              isHighlighted: false,
-              isFadeOut: false,
-              isTitleCover: false,
+            widgetsActions.setWidgetState({
+              id: '@widget/02',
+              widgetState: {
+                isHighlighted: false,
+                isFadeOut: false,
+                isTitleCover: false,
+              },
             })
           ),
           put(
-            setWidgetState('@widget/03', {
-              isHighlighted: false,
-              isFadeOut: false,
-              isTitleCover: false,
+            widgetsActions.setWidgetState({
+              id: '@widget/03',
+              widgetState: {
+                isHighlighted: false,
+                isFadeOut: false,
+                isTitleCover: false,
+              },
             })
           ),
         ])
@@ -293,7 +333,7 @@ describe('setupDatePicker()', () => {
 describe('editDatePickerWidget()', () => {
   describe('Scenario 1: User edits date picker connections settings', () => {
     const datePickerId = '@date-picker/01';
-    const action = editDatePickerWidgetAction(datePickerId);
+    const action = widgetsActions.editDatePickerWidget(datePickerId);
     const connections = [
       {
         widgetId: '@widget/01',
@@ -355,10 +395,30 @@ describe('editDatePickerWidget()', () => {
     test('updates widgets visibility states', (result) => {
       expect(result).toEqual(
         all([
-          put(setWidgetState('@widget/03', { isFadeOut: true })),
-          put(setWidgetState('@widget/01', { isTitleCover: true })),
-          put(setWidgetState('@widget/02', { isTitleCover: true })),
-          put(setWidgetState('@widget/01', { isHighlighted: true })),
+          put(
+            widgetsActions.setWidgetState({
+              id: '@widget/03',
+              widgetState: { isFadeOut: true },
+            })
+          ),
+          put(
+            widgetsActions.setWidgetState({
+              id: '@widget/01',
+              widgetState: { isTitleCover: true },
+            })
+          ),
+          put(
+            widgetsActions.setWidgetState({
+              id: '@widget/02',
+              widgetState: { isTitleCover: true },
+            })
+          ),
+          put(
+            widgetsActions.setWidgetState({
+              id: '@widget/01',
+              widgetState: { isHighlighted: true },
+            })
+          ),
         ])
       );
     });
@@ -388,24 +448,33 @@ describe('editDatePickerWidget()', () => {
       expect(result).toEqual(
         all([
           put(
-            setWidgetState('@widget/01', {
-              isHighlighted: false,
-              isFadeOut: false,
-              isTitleCover: false,
+            widgetsActions.setWidgetState({
+              id: '@widget/01',
+              widgetState: {
+                isHighlighted: false,
+                isFadeOut: false,
+                isTitleCover: false,
+              },
             })
           ),
           put(
-            setWidgetState('@widget/02', {
-              isHighlighted: false,
-              isFadeOut: false,
-              isTitleCover: false,
+            widgetsActions.setWidgetState({
+              id: '@widget/02',
+              widgetState: {
+                isHighlighted: false,
+                isFadeOut: false,
+                isTitleCover: false,
+              },
             })
           ),
           put(
-            setWidgetState('@widget/03', {
-              isHighlighted: false,
-              isFadeOut: false,
-              isTitleCover: false,
+            widgetsActions.setWidgetState({
+              id: '@widget/03',
+              widgetState: {
+                isHighlighted: false,
+                isFadeOut: false,
+                isTitleCover: false,
+              },
             })
           ),
         ])
@@ -458,16 +527,30 @@ describe('applyDatePickerUpdates()', () => {
       expect(result).toEqual(
         all([
           put(
-            updateChartWidgetDatePickerConnection('@widget/01', datePickerId)
+            widgetsActions.updateChartWidgetDatePickerConnections({
+              id: '@widget/01',
+              datePickerId,
+            })
           ),
-          put(updateChartWidgetDatePickerConnection('@widget/02', null)),
+          put(
+            widgetsActions.updateChartWidgetDatePickerConnections({
+              id: '@widget/02',
+              datePickerId: null,
+            })
+          ),
         ])
       );
     });
 
     test('updates date picker connection settings', (result) => {
       expect(result).toEqual(
-        put(setDatePickerWidget(datePickerId, ['@widget/01'], 'datePickerName'))
+        put(
+          widgetsActions.setDatePickerWidget({
+            id: datePickerId,
+            widgetConnections: ['@widget/01'],
+            name: 'datePickerName',
+          })
+        )
       );
     });
   });
@@ -500,11 +583,11 @@ describe('removeConnectionFromDatePicker()', () => {
     test('updates date picker connection settings', (result) => {
       expect(result).toEqual(
         put(
-          setDatePickerWidget(
-            datePickerId,
-            ['@widget/02', '@widget/03'],
-            'datePickerName'
-          )
+          widgetsActions.setDatePickerWidget({
+            id: datePickerId,
+            widgetConnections: ['@widget/02', '@widget/03'],
+            name: 'datePickerName',
+          })
         )
       );
     });
@@ -556,7 +639,14 @@ describe('removeDatePickerConnections()', () => {
 
     test('updates date picker connections in chart widgets', (result) => {
       expect(result).toEqual(
-        all([put(updateChartWidgetDatePickerConnection('@widget/01', null))])
+        all([
+          put(
+            widgetsActions.updateChartWidgetDatePickerConnections({
+              id: '@widget/01',
+              datePickerId: null,
+            })
+          ),
+        ])
       );
     });
   });
@@ -776,7 +866,7 @@ describe('getDatePickerWidgetConnections()', () => {
 describe('setDatePickerModifiers()', () => {
   describe('Scenario 1: Set date picker widget modifiers', () => {
     const datePickerId = '@date-picker/01';
-    const action = setDatePickerModifiersAction(
+    const action = widgetsActions.setDatePickerModifiers(
       datePickerId,
       'this_14_days',
       'UTC'
@@ -787,8 +877,11 @@ describe('setDatePickerModifiers()', () => {
     test('updates date picker widgets state', (result) => {
       expect(result).toEqual(
         put(
-          setWidgetState(datePickerId, {
-            data: { timeframe: 'this_14_days', timezone: 'UTC' },
+          widgetsActions.setWidgetState({
+            id: datePickerId,
+            widgetState: {
+              data: { timeframe: 'this_14_days', timezone: 'UTC' },
+            },
           })
         )
       );
@@ -801,13 +894,18 @@ describe('applyDatePickerModifiers()', () => {
     const datePickerId = '@date-picker/01';
     const connectedWidgets = ['@widget/01'];
 
-    const action = applyDatePickerModifiersAction(datePickerId);
+    const action = widgetsActions.applyDatePickerModifiers(datePickerId);
 
     const test = sagaHelper(applyDatePickerModifiers(action));
 
     test('set date picker to active state', (result) => {
       expect(result).toEqual(
-        put(setWidgetState(datePickerId, { isActive: true }))
+        put(
+          widgetsActions.setWidgetState({
+            id: datePickerId,
+            widgetState: { isActive: true },
+          })
+        )
       );
     });
 
@@ -823,14 +921,19 @@ describe('applyDatePickerModifiers()', () => {
       expect(result).toEqual(
         all([
           put(
-            setWidgetState('@widget/01', { isInitialized: false, error: null })
+            widgetsActions.setWidgetState({
+              id: '@widget/01',
+              widgetState: { isInitialized: false, error: null },
+            })
           ),
         ])
       );
     });
 
     test('re-initializes connected chart widgets', (result) => {
-      expect(result).toEqual(all([put(initializeChartWidget('@widget/01'))]));
+      expect(result).toEqual(
+        all([put(widgetsActions.initializeChartWidget('@widget/01'))])
+      );
     });
   });
 });

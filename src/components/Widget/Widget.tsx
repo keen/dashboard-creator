@@ -26,9 +26,9 @@ import WidgetCover from './components/WidgetCover';
 import { cardSettings } from './utils';
 
 import {
-  editDatePickerWidget,
-  getWidget,
   VisualizationSettings,
+  widgetsActions,
+  widgetsSelectors,
 } from '../../modules/widgets';
 import { getDashboardSettings } from '../../modules/dashboards';
 import { editFilterWidget } from '../../modules/widgets/actions';
@@ -205,7 +205,9 @@ const Widget: FC<Props> = ({
     isDetached,
     isTitleCover,
     isInitialized,
-  } = useSelector((rootState: RootState) => getWidget(rootState, id));
+  } = useSelector((rootState: RootState) =>
+    widgetsSelectors.getWidget(rootState, id)
+  );
 
   const visualizationSettings = settings as VisualizationSettings;
 
@@ -225,7 +227,7 @@ const Widget: FC<Props> = ({
     onEditWidget = () => dispatch(editFilterWidget(id));
   }
   if (widgetType === 'date-picker') {
-    onEditWidget = () => dispatch(editDatePickerWidget(id));
+    onEditWidget = () => dispatch(widgetsActions.editDatePickerWidget(id));
   }
 
   const { settings: dashboardWidgetSettings } = useSelector(

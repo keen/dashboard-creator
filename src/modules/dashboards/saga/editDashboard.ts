@@ -13,12 +13,16 @@ import { prepareDashboard } from './prepareDashboard';
 import { getDashboard } from '../selectors';
 
 import { appActions } from '../../app';
-import { getWidget, WidgetItem, FilterWidget } from '../../widgets';
+import {
+  WidgetItem,
+  FilterWidget,
+  widgetsSelectors,
+  widgetsActions,
+} from '../../widgets';
 
 import { DASHBOARD_API, ROUTES } from '../../../constants';
 
 import { DashboardModel, DashboardItem } from '../types';
-import { clearFilterData } from '../../widgets/actions';
 
 /**
  * Flow responsible for rendering dashboard in edit mode
@@ -60,13 +64,15 @@ export function* editDashboard({
     const widgets = dashboard.settings.widgets;
     if (widgets && widgets.length > 0) {
       const connectedWidgets = yield all(
-        widgets.map((id: string) => select(getWidget, id))
+        widgets.map((id: string) => select(widgetsSelectors.getWidget, id))
       );
       const filtersToReset: WidgetItem<FilterWidget>[] = connectedWidgets.filter(
         (widget: WidgetItem<FilterWidget>) => widget.widget.type === 'filter'
       );
       yield all(
-        filtersToReset.map((filter) => put(clearFilterData(filter.widget.id)))
+        filtersToReset.map((filter) =>
+          put(widgetsActions.clearFilterData({ filterId: filter.widget.id }))
+        )
       );
     }
     yield put(appActions.setActiveDashboard(dashboardId));

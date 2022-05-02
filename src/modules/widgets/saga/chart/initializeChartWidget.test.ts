@@ -9,12 +9,6 @@ import {
 
 import { initializeChartWidget } from './initializeChartWidget';
 
-import {
-  initializeChartWidget as initializeChartWidgetAction,
-  setChartWidgetVisualization,
-  setWidgetState,
-  setWidgetLoading,
-} from '../../actions';
 import { widgetsSelectors } from '../../selectors';
 import { serializeWidget } from '../../serializers';
 
@@ -22,12 +16,13 @@ import { KEEN_ANALYSIS } from '../../../../constants';
 
 import { WidgetErrors } from '../../types';
 import { queriesActions, queriesSelectors } from '../../../queries';
+import { widgetsActions } from '../../index';
 
 describe('initializeChartWidget()', () => {
   const widgetId = '@widget/01';
 
   describe('Scenario 1: Initializes chart widget build with saved query', () => {
-    const action = initializeChartWidgetAction(widgetId);
+    const action = widgetsActions.initializeChartWidget(widgetId);
     const test = sagaHelper(initializeChartWidget(action));
 
     const keenAnalysis = {
@@ -75,7 +70,9 @@ describe('initializeChartWidget()', () => {
     });
 
     test('set widgets loading state', (result) => {
-      expect(result).toEqual(put(setWidgetLoading(widgetId, true)));
+      expect(result).toEqual(
+        put(widgetsActions.setWidgetLoading({ id: widgetId, isLoading: true }))
+      );
     });
 
     test('check if chart widget has inconsistent filters', (result) => {
@@ -110,15 +107,15 @@ describe('initializeChartWidget()', () => {
     test('set chart widget visualization', (result) => {
       expect(result).toEqual(
         put(
-          setChartWidgetVisualization(
-            widgetId,
-            'bar',
-            {
+          widgetsActions.setChartWidgetVisualization({
+            id: widgetId,
+            visualizationType: 'bar',
+            chartSettings: {
               groupMode: 'stacked',
               stackMode: 'percent',
             },
-            {}
-          )
+            widgetSettings: {},
+          })
         )
       );
     });
@@ -126,9 +123,12 @@ describe('initializeChartWidget()', () => {
     test('updates widget state', (result) => {
       expect(result).toEqual(
         put(
-          setWidgetState(widgetId, {
-            isInitialized: true,
-            data: analysisResult,
+          widgetsActions.setWidgetState({
+            id: widgetId,
+            widgetState: {
+              isInitialized: true,
+              data: analysisResult,
+            },
           })
         )
       );
@@ -136,7 +136,7 @@ describe('initializeChartWidget()', () => {
   });
 
   describe('Scenario 2: Initializes chart widget with saved query and active date picker', () => {
-    const action = initializeChartWidgetAction(widgetId);
+    const action = widgetsActions.initializeChartWidget(widgetId);
     const test = sagaHelper(initializeChartWidget(action));
 
     const keenAnalysis = {
@@ -177,7 +177,9 @@ describe('initializeChartWidget()', () => {
     });
 
     test('set widgets loading state', (result) => {
-      expect(result).toEqual(put(setWidgetLoading(widgetId, true)));
+      expect(result).toEqual(
+        put(widgetsActions.setWidgetLoading({ id: widgetId, isLoading: true }))
+      );
     });
 
     test('check if chart widget has inconsistent filters', (result) => {
@@ -208,20 +210,25 @@ describe('initializeChartWidget()', () => {
     test('updates widget state', (result) => {
       expect(result).toEqual(
         put(
-          setWidgetState(widgetId, {
-            isInitialized: true,
+          widgetsActions.setWidgetState({
+            id: widgetId,
+            widgetState: {
+              isInitialized: true,
+            },
           })
         )
       );
     });
 
     test('set widgets loading state', (result) => {
-      expect(result).toEqual(put(setWidgetLoading(widgetId, false)));
+      expect(result).toEqual(
+        put(widgetsActions.setWidgetLoading({ id: widgetId, isLoading: false }))
+      );
     });
   });
 
   describe('Scenario 3: Failed to initialize chart widget', () => {
-    const action = initializeChartWidgetAction(widgetId);
+    const action = widgetsActions.initializeChartWidget(widgetId);
     const test = sagaHelper(initializeChartWidget(action));
 
     const keenAnalysis = {
@@ -252,7 +259,9 @@ describe('initializeChartWidget()', () => {
     });
 
     test('set widgets loading state', (result) => {
-      expect(result).toEqual(put(setWidgetLoading(widgetId, true)));
+      expect(result).toEqual(
+        put(widgetsActions.setWidgetLoading({ id: widgetId, isLoading: true }))
+      );
     });
 
     test('check if chart widget has inconsistent filters', (result) => {
@@ -282,11 +291,14 @@ describe('initializeChartWidget()', () => {
     test('updates widget state', (result) => {
       expect(result).toEqual(
         put(
-          setWidgetState(widgetId, {
-            isInitialized: true,
-            error: {
-              message: errorBody,
-              code: WidgetErrors.CANNOT_INITIALIZE,
+          widgetsActions.setWidgetState({
+            id: widgetId,
+            widgetState: {
+              isInitialized: true,
+              error: {
+                message: errorBody,
+                code: WidgetErrors.CANNOT_INITIALIZE,
+              },
             },
           })
         )
@@ -295,7 +307,7 @@ describe('initializeChartWidget()', () => {
   });
 
   describe('Scenario 4: Active filters are inconsistent with query', () => {
-    const action = initializeChartWidgetAction(widgetId);
+    const action = widgetsActions.initializeChartWidget(widgetId);
     const test = sagaHelper(initializeChartWidget(action));
 
     const query = {
@@ -329,7 +341,9 @@ describe('initializeChartWidget()', () => {
     });
 
     test('set widgets loading state', (result) => {
-      expect(result).toEqual(put(setWidgetLoading(widgetId, true)));
+      expect(result).toEqual(
+        put(widgetsActions.setWidgetLoading({ id: widgetId, isLoading: true }))
+      );
     });
 
     test('check if chart widget has inconsistent filters', (result) => {
@@ -340,7 +354,9 @@ describe('initializeChartWidget()', () => {
     });
 
     test('set widgets loading state', (result) => {
-      expect(result).toEqual(put(setWidgetLoading(widgetId, false)));
+      expect(result).toEqual(
+        put(widgetsActions.setWidgetLoading({ id: widgetId, isLoading: false }))
+      );
     });
   });
 });

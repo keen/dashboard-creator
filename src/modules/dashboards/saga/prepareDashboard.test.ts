@@ -4,12 +4,8 @@ import { select, put } from 'redux-saga/effects';
 import { prepareDashboard } from './prepareDashboard';
 import { updateDashboard } from '../actions';
 
-import {
-  themeSelectors,
-  themeSagaActions,
-  themeActions,
-} from '../../../modules/theme';
-import { registerWidgets, ChartWidget } from '../../../modules/widgets';
+import { themeSelectors, themeSagaActions, themeActions } from '../../theme';
+import { ChartWidget, widgetsActions } from '../../widgets';
 
 import { createDashboardSettings } from '../utils';
 
@@ -49,7 +45,9 @@ describe('Scenario 1: Prepares dashboard model', () => {
   });
 
   test('register widgets', (result) => {
-    expect(result).toEqual(put(registerWidgets([chartWidget])));
+    expect(result).toEqual(
+      put(widgetsActions.registerWidgets({ widgets: [chartWidget] }))
+    );
   });
 
   test('updates dashboard model', (result) => {

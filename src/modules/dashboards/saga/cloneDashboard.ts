@@ -11,7 +11,6 @@ import {
 } from '../actions';
 
 import { appActions, appSelectors } from '../../app';
-import { registerWidgets } from '../../widgets';
 import { themeActions, themeSelectors } from '../../theme';
 
 import { serializeDashboard } from '../serializers';
@@ -24,6 +23,7 @@ import {
 } from '../../../constants';
 
 import { DashboardModel } from '../types';
+import { widgetsActions } from '../../widgets';
 
 /**
  * Flow responsible for cloning dashboard model instance
@@ -92,7 +92,7 @@ export function* cloneDashboard({
 
     if (activeDashboard) {
       const serializedDashboard = serializeDashboard(newModel);
-      yield put(registerWidgets(uniqueIdWidgets));
+      yield put(widgetsActions.registerWidgets({ widgets: uniqueIdWidgets }));
       yield put(updateDashboard(newDashboardId, serializedDashboard));
       yield put(
         initializeDashboardWidgets(newDashboardId, serializedDashboard.widgets)

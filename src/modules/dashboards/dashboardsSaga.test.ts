@@ -35,19 +35,12 @@ import {
 } from './dashboardsSaga';
 
 import {
-  removeWidget,
-  getWidgetSettings,
-  getWidget,
-  createWidget,
-} from '../widgets';
-import {
   getCachedDashboardIds,
   getDashboard,
   getDashboardMeta,
 } from './selectors';
 import { themeSelectors } from '../theme/selectors';
 import { removeConnectionFromFilter } from '../widgets/saga/filterWidget';
-import { unregisterWidget } from '../widgets/actions';
 import { appActions, appSelectors } from '../app';
 import { themeActions } from '../theme';
 
@@ -59,6 +52,7 @@ import {
   UPDATE_DASHBOARD_METADATA,
 } from './constants';
 import { NOTIFICATION_MANAGER, KEEN_ANALYSIS, ROUTES } from '../../constants';
+import { widgetsActions, widgetsSelectors } from '../widgets';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
@@ -77,7 +71,9 @@ describe('removeWidgetFromDashboard()', () => {
     const test = sagaHelper(removeWidgetFromDashboard(action));
 
     test('get widget settings', (result) => {
-      expect(result).toEqual(select(getWidgetSettings, widgetId));
+      expect(result).toEqual(
+        select(widgetsSelectors.getWidgetSettings, widgetId)
+      );
 
       return {
         query: 'purchases',
@@ -100,7 +96,7 @@ describe('removeWidgetFromDashboard()', () => {
     });
 
     test('triggers remove widget', (result) => {
-      expect(result).toEqual(put(removeWidget(widgetId)));
+      expect(result).toEqual(put(widgetsActions.removeWidget(widgetId)));
     });
   });
 
@@ -108,7 +104,9 @@ describe('removeWidgetFromDashboard()', () => {
     const test = sagaHelper(removeWidgetFromDashboard(action));
 
     test('get widget settings', (result) => {
-      expect(result).toEqual(select(getWidgetSettings, widgetId));
+      expect(result).toEqual(
+        select(widgetsSelectors.getWidgetSettings, widgetId)
+      );
 
       return {
         type: 'image',
@@ -116,7 +114,7 @@ describe('removeWidgetFromDashboard()', () => {
     });
 
     test('triggers remove widget', (result) => {
-      expect(result).toEqual(put(removeWidget(widgetId)));
+      expect(result).toEqual(put(widgetsActions.removeWidget(widgetId)));
     });
   });
 });
@@ -331,9 +329,9 @@ describe('updateCachedDashboardsList()', () => {
     test('should remove dashboard widgets from cache', (result) => {
       expect(result).toEqual(
         all([
-          put(unregisterWidget('@widget/01')),
-          put(unregisterWidget('@widget/02')),
-          put(unregisterWidget('@widget/03')),
+          put(widgetsActions.unregisterWidget({ widgetId: '@widget/01' })),
+          put(widgetsActions.unregisterWidget({ widgetId: '@widget/02' })),
+          put(widgetsActions.unregisterWidget({ widgetId: '@widget/03' })),
         ])
       );
     });
@@ -481,9 +479,9 @@ describe('calculateYPositionAndAddWidget()', () => {
     test('should get widgets data', (result) => {
       expect(result).toEqual(
         all([
-          select(getWidget, '@widget/01'),
-          select(getWidget, '@widget/02'),
-          select(getWidget, '@widget/03'),
+          select(widgetsSelectors.getWidget, '@widget/01'),
+          select(widgetsSelectors.getWidget, '@widget/02'),
+          select(widgetsSelectors.getWidget, '@widget/03'),
         ])
       );
       return dashboardWidgets;
@@ -492,13 +490,17 @@ describe('calculateYPositionAndAddWidget()', () => {
     test('should create widget with appropriate parameters', (result) => {
       expect(result).toEqual(
         put(
-          createWidget(widgetId, widgetType, {
-            x: 0,
-            y: 15,
-            w: 2,
-            h: 2,
-            minW: 2,
-            minH: 1,
+          widgetsActions.createWidget({
+            id: widgetId,
+            widgetType,
+            gridPosition: {
+              x: 0,
+              y: 15,
+              w: 2,
+              h: 2,
+              minW: 2,
+              minH: 1,
+            },
           })
         )
       );

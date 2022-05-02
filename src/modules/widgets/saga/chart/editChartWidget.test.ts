@@ -5,11 +5,6 @@ import { Query } from '@keen.io/query';
 
 import { editChartWidget } from './editChartWidget';
 
-import {
-  editChartWidget as editChartWidgetAction,
-  setWidgetState,
-} from '../../actions';
-
 import { widget as widgetFixture } from '../../fixtures';
 
 import { NOTIFICATION_MANAGER, TRANSLATIONS } from '../../../../constants';
@@ -18,6 +13,7 @@ import { WidgetErrors } from '../../types';
 import { chartEditorActions } from '../../../chartEditor';
 import { checkStreamsConsistency } from './checkStreamsConsistency';
 import { editChart } from './editChart';
+import { widgetsActions } from '../../index';
 
 const translationsMock = {
   t: jest.fn().mockImplementation((value) => value),
@@ -26,7 +22,7 @@ const translationsMock = {
 describe('editChartWidget()', () => {
   const widgetId = '@widget/01';
 
-  const action = editChartWidgetAction(widgetId);
+  const action = widgetsActions.editChartWidget(widgetId);
   const visualizationSettings = {
     chartSettings: {
       stackMode: 'percent',
@@ -190,11 +186,14 @@ describe('editChartWidget()', () => {
     test('updates widget state', (result) => {
       expect(result).toEqual(
         put(
-          setWidgetState(widgetId, {
-            isInitialized: true,
-            error: {
-              message: 'widget_errors.stream_not_found',
-              code: WidgetErrors.STREAM_NOT_EXIST,
+          widgetsActions.setWidgetState({
+            id: widgetId,
+            widgetState: {
+              isInitialized: true,
+              error: {
+                message: 'widget_errors.stream_not_found',
+                code: WidgetErrors.STREAM_NOT_EXIST,
+              },
             },
           })
         )

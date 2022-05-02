@@ -58,14 +58,7 @@ import {
 } from './selectors';
 import { themeSelectors } from '../theme/selectors';
 
-import {
-  initializeWidget,
-  removeWidget,
-  getWidget,
-  getWidgetSettings,
-  createWidget,
-  createWidgetId,
-} from '../widgets';
+import { createWidgetId, widgetsActions, widgetsSelectors } from '../widgets';
 
 import {
   removeDatePickerConnections,
@@ -113,7 +106,6 @@ import {
 
 import { RootState } from '../../rootReducer';
 import { DashboardModel, Dashboard, DashboardMetaData } from './types';
-import { unregisterWidget } from '../widgets/actions';
 import {
   removeConnectionFromFilter,
   removeFilterConnections,
@@ -164,7 +156,7 @@ function* generateAccessKeyOptions(dashboardId: string) {
       settings: { widgets },
     } = dashboard;
     const dashboardWidgets = widgets.map((widgetId: string) =>
-      getWidget(state, widgetId)
+      widgetsSelectors.getWidget(state, widgetId)
     );
     dashboardWidgets.forEach((item) => {
       const {
@@ -266,7 +258,7 @@ export function* removeWidgetFromDashboard({
   const { dashboardId, widgetId } = payload;
 
   const { type, query, datePickerId, filterIds } = yield select(
-    getWidgetSettings,
+    widgetsSelectors.getWidgetSettings,
     widgetId
   );
 
@@ -293,14 +285,16 @@ export function* removeWidgetFromDashboard({
     yield call(removeFilterConnections, dashboardId, widgetId);
   }
 
-  yield put(removeWidget(widgetId));
+  yield put(widgetsActions.removeWidget(widgetId));
 }
 
 export function* initializeDashboardWidgets({
   payload,
 }: ReturnType<typeof initializeDashboardWidgetsAction>) {
   const { widgetsId } = payload;
-  yield all(widgetsId.map((widgetId) => put(initializeWidget(widgetId))));
+  yield all(
+    widgetsId.map((widgetId) => put(widgetsActions.initializeWidget(widgetId)))
+  );
 }
 
 export function* rehydrateDashboardsOrder() {
@@ -434,7 +428,11 @@ export function* updateCachedDashboardsList({
     );
     if (dashboardToUnregister.settings) {
       const widgets = dashboardToUnregister.settings.widgets;
-      yield all(widgets.map((widgetId) => put(unregisterWidget(widgetId))));
+      yield all(
+        widgets.map((widgetId) =>
+          put(widgetsActions.unregisterWidget({ widgetId }))
+        )
+      );
       yield put(unregisterDashboard(cachedDashboardIds[0]));
       cachedDashboardIds.push(dashboardId);
       cachedDashboardIds = cachedDashboardIds.splice(1, 3);
@@ -450,20 +448,26 @@ export function* calculateYPositionAndAddWidget({
   const dashboard = yield select(getDashboard, dashboardId);
 
   const widgets = yield all(
-    dashboard.settings.widgets.map((id: string) => select(getWidget, id))
+    dashboard.settings.widgets.map((id: string) =>
+      select(widgetsSelectors.getWidget, id)
+    )
   );
 
   const widgetId = createWidgetId();
   const { w, h, minH, minW } = getDroppingItemSize(widgetType);
 
   yield put(
-    createWidget(widgetId, widgetType, {
-      x: 0,
-      y: findBiggestYPositionOfWidgets(widgets) + 1,
-      w,
-      h,
-      minW,
-      minH,
+    widgetsActions.createWidget({
+      id: widgetId,
+      widgetType,
+      gridPosition: {
+        x: 0,
+        y: findBiggestYPositionOfWidgets(widgets) + 1,
+        w,
+        h,
+        minW,
+        minH,
+      },
     })
   );
   yield put(addWidgetToDashboard(dashboardId, widgetId));

@@ -3,8 +3,6 @@ import { put, select, take } from 'redux-saga/effects';
 import {
   editInlineTextWidget as editInlineTextWidgetAction,
   editTextWidget as editTextWidgetAction,
-  setWidgetState,
-  setTextWidget,
 } from '../actions';
 
 import { getWidgetSettings } from '../selectors';
@@ -13,6 +11,7 @@ import { saveDashboard } from '../../dashboards';
 
 import { textEditorActions, textEditorSagaActions } from '../../textEditor';
 import { appSelectors } from '../../app';
+import { widgetsActions } from '../index';
 
 /**
  * Flow responsible for creating text widget.
@@ -23,14 +22,20 @@ import { appSelectors } from '../../app';
  */
 export function* createTextWidget(widgetId: string) {
   yield put(
-    setTextWidget(widgetId, {
-      content: { blocks: [], entityMap: {} },
+    widgetsActions.setTextWidget({
+      id: widgetId,
+      settings: {
+        content: { blocks: [], entityMap: {} },
+      },
     })
   );
   yield put(
-    setWidgetState(widgetId, {
-      isConfigured: true,
-      isInitialized: true,
+    widgetsActions.setWidgetState({
+      id: widgetId,
+      widgetState: {
+        isConfigured: true,
+        isInitialized: true,
+      },
     })
   );
 }
@@ -54,8 +59,11 @@ export function* editTextWidget({
   yield put(textEditorActions.setTextAlignment(textAlignment));
   yield put(textEditorActions.openEditor());
   yield put(
-    setWidgetState(id, {
-      isInitialized: false,
+    widgetsActions.setWidgetState({
+      id,
+      widgetState: {
+        isInitialized: false,
+      },
     })
   );
 
@@ -70,9 +78,12 @@ export function* editTextWidget({
       textAlignment: updatedAlignment,
     } = action.payload;
     yield put(
-      setTextWidget(id, {
-        content: updatedContent,
-        textAlignment: updatedAlignment,
+      widgetsActions.setTextWidget({
+        id,
+        settings: {
+          content: updatedContent,
+          textAlignment: updatedAlignment,
+        },
       })
     );
 
@@ -83,8 +94,11 @@ export function* editTextWidget({
   }
 
   yield put(
-    setWidgetState(id, {
-      isInitialized: true,
+    widgetsActions.setWidgetState({
+      id,
+      widgetState: {
+        isInitialized: true,
+      },
     })
   );
 }
@@ -100,7 +114,7 @@ export function* editInlineTextWidget({
   payload,
 }: ReturnType<typeof editInlineTextWidgetAction>) {
   const { id, content } = payload;
-  yield put(setTextWidget(id, { content }));
+  yield put(widgetsActions.setTextWidget({ id, settings: { content } }));
 
   const dashboardId = yield select(appSelectors.getActiveDashboard);
   yield put(saveDashboard(dashboardId));
