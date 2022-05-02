@@ -43,6 +43,7 @@ export function* cloneWidget({
     widgetSettings = {
       ...widgetSettings,
       datePickerId: null,
+      filterIds: [],
     } as ChartWidget;
   }
 

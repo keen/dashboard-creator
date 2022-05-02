@@ -3,8 +3,10 @@ import { motion } from 'framer-motion';
 import { colors } from '@keen.io/colors';
 
 export const Header = styled.div`
-  display: flex;
   align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 `;
 
 export const Title = styled.div`
@@ -27,10 +29,12 @@ export const BackText = styled.div`
   margin-left: 5px;
 `;
 
-export const Tag = styled.div`
-  margin-left: 10px;
-`;
-
 export const Container = styled.div`
   min-width: 0;
+`;
+
+export const Meta = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 `;

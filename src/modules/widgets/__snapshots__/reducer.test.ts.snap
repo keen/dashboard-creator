@@ -49,6 +49,7 @@ Object {
   "isTitleCover": false,
   "widget": Object {
     "datePickerId": null,
+    "filterIds": Array [],
     "id": "@widget/id",
     "position": Object {
       "h": 2,
@@ -84,6 +85,7 @@ Object {
     "isTitleCover": false,
     "widget": Object {
       "datePickerId": null,
+      "filterIds": Array [],
       "id": "@widget/id",
       "position": Object {
         "h": 2,
