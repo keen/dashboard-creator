@@ -290,6 +290,7 @@ const FilterWidget: FC<Props> = ({
                 >
                   <ReactWindowList
                     height={150}
+                    width="100%"
                     data-testid="scroll-wrapper2"
                     itemData={filterItemData}
                     itemCount={filterItemData.items.length}
