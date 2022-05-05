@@ -1,5 +1,5 @@
 import { WidgetType } from '../../../types';
-import { VisualizationSettings } from '../../../modules/widgets/types';
+import { VisualizationSettings } from '../../../modules/widgets';
 
 export const cardSettings = (
   widgetType: WidgetType,

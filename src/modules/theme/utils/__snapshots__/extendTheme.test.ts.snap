@@ -1,0 +1,327 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`extends theme with provided values 1`] = `
+Object {
+  "axisX": Object {
+    "color": "#77A3BB",
+    "enabled": true,
+    "labels": Object {
+      "enabled": true,
+      "radiusAngle": 0,
+      "typography": Object {
+        "fontColor": "#1D2729",
+        "fontFamily": "Gangster Grotesk, sans-serif",
+        "fontSize": 10,
+        "fontStyle": "normal",
+        "fontWeight": "normal",
+      },
+    },
+    "padding": 5,
+    "stroke": 1,
+    "tickPadding": 10,
+    "tickSize": 10,
+    "title": Object {
+      "alignment": "center",
+      "padding": 20,
+      "typography": Object {
+        "fontColor": "#27566D",
+        "fontFamily": "Lato, sans-serif",
+        "fontSize": 14,
+        "fontStyle": "normal",
+        "fontWeight": "bold",
+      },
+    },
+  },
+  "axisY": Object {
+    "color": "#77A3BB",
+    "enabled": true,
+    "labels": Object {
+      "enabled": true,
+      "radiusAngle": 0,
+      "typography": Object {
+        "fontColor": "#1D2729",
+        "fontFamily": "Gangster Grotesk, sans-serif",
+        "fontSize": 10,
+        "fontStyle": "normal",
+        "fontWeight": "normal",
+      },
+    },
+    "padding": 5,
+    "stroke": 0,
+    "tickPadding": 5,
+    "tickSize": 0,
+    "title": Object {
+      "alignment": "center",
+      "padding": 20,
+      "typography": Object {
+        "fontColor": "#27566D",
+        "fontFamily": "Lato, sans-serif",
+        "fontSize": 14,
+        "fontStyle": "normal",
+        "fontWeight": "bold",
+      },
+    },
+  },
+  "bar": Object {
+    "values": Object {
+      "typography": Object {
+        "fontColor": "green",
+        "fontFamily": "Lato, sans-serif",
+        "fontSize": 10,
+        "fontStyle": "italic",
+        "fontWeight": "normal",
+      },
+    },
+  },
+  "choropleth": Object {
+    "graticule": Object {
+      "color": "#E1E2E4",
+      "enabled": false,
+    },
+    "map": Object {
+      "stroke": "#1D2729",
+    },
+    "sphere": Object {
+      "backgroundColor": "#F2F2F2",
+      "enabled": false,
+    },
+  },
+  "colors": Array [
+    "yellow",
+    "orange",
+  ],
+  "donut": Object {
+    "labels": Object {
+      "enabled": true,
+      "typography": Object {
+        "fontColor": "#1D2729",
+        "fontFamily": "Gangster Grotesk, sans-serif",
+        "fontSize": 12,
+        "fontStyle": "normal",
+        "fontWeight": "normal",
+      },
+    },
+    "total": Object {
+      "enabled": true,
+      "label": Object {
+        "typography": Object {
+          "fontColor": "#273437",
+          "fontFamily": "Lato, sans-serif",
+          "fontSize": 14,
+          "fontStyle": "normal",
+          "fontWeight": "normal",
+        },
+      },
+      "value": Object {
+        "typography": Object {
+          "fontColor": "#31627A",
+          "fontFamily": "Lato, sans-serif",
+          "fontSize": 24,
+          "fontStyle": "normal",
+          "fontWeight": "normal",
+        },
+      },
+    },
+  },
+  "funnel": Object {
+    "header": Object {
+      "backgroundColor": "#F5F5F5",
+      "badge": Object {
+        "enabled": true,
+        "typography": Object {
+          "fontColor": "inherit",
+          "fontFamily": "Lato, sans-serif",
+          "fontSize": 12,
+          "fontStyle": "normal",
+          "fontWeight": "normal",
+        },
+        "variant": "black",
+      },
+      "title": Object {
+        "typography": Object {
+          "fontColor": "#1D2729",
+          "fontFamily": "Lato, sans-serif",
+          "fontSize": 13,
+          "fontStyle": "normal",
+          "fontWeight": "normal",
+        },
+      },
+      "value": Object {
+        "enabled": true,
+        "typography": Object {
+          "fontColor": "#27566D",
+          "fontFamily": "Lato, sans-serif",
+          "fontSize": 20,
+          "fontStyle": "normal",
+          "fontWeight": "normal",
+        },
+      },
+    },
+    "step": Object {
+      "backgroundColor": "#EDEDED",
+    },
+  },
+  "gauge": Object {
+    "border": Object {
+      "backgroundColor": "#27566D",
+    },
+    "labels": Object {
+      "enabled": true,
+      "typography": Object {
+        "fontColor": "#1D2729",
+        "fontFamily": "Lato, sans-serif",
+        "fontSize": 14,
+        "fontStyle": "normal",
+        "fontWeight": "normal",
+      },
+    },
+    "total": Object {
+      "enabled": true,
+      "typography": Object {
+        "fontColor": "#31627A",
+        "fontFamily": "Lato, sans-serif",
+        "fontSize": 60,
+        "fontStyle": "normal",
+        "fontWeight": "normal",
+      },
+    },
+  },
+  "gridX": Object {
+    "color": "#E1E2E4",
+    "enabled": true,
+  },
+  "gridY": Object {
+    "color": "#E1E2E4",
+    "enabled": true,
+  },
+  "hoverBar": Object {
+    "enabled": true,
+    "type": "dark",
+  },
+  "line": Object {
+    "markRadius": 4,
+    "strokeWidth": 2,
+  },
+  "metric": Object {
+    "excerpt": Object {
+      "backgroundColor": "#ECF5F7",
+      "icons": Object {
+        "decrease": Object {
+          "color": "#CB5623",
+          "type": "arrow-down",
+        },
+        "increase": Object {
+          "color": "#487650",
+          "type": "arrow-up",
+        },
+      },
+      "typography": Object {
+        "fontColor": "#1D2729",
+        "fontFamily": "Lato, sans-serif",
+        "fontSize": 14,
+        "fontStyle": "normal",
+        "fontWeight": "normal",
+      },
+    },
+    "icon": Object {
+      "enabled": false,
+      "margins": Object {
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "top": 0,
+      },
+      "position": "top",
+      "style": "solid",
+      "type": "brand",
+    },
+    "prefix": Object {
+      "typography": Object {
+        "fontColor": "#27566D",
+        "fontFamily": "Lato, sans-serif",
+        "fontSize": 20,
+        "fontStyle": "normal",
+        "fontWeight": "normal",
+      },
+    },
+    "suffix": Object {
+      "typography": Object {
+        "fontColor": "#27566D",
+        "fontFamily": "Lato, sans-serif",
+        "fontSize": 20,
+        "fontStyle": "normal",
+        "fontWeight": "normal",
+      },
+    },
+    "value": Object {
+      "typography": Object {
+        "fontColor": "#27566D",
+        "fontFamily": "Lato, sans-serif",
+        "fontSize": 50,
+        "fontStyle": "normal",
+        "fontWeight": "normal",
+      },
+    },
+  },
+  "pie": Object {
+    "labels": Object {
+      "enabled": true,
+      "typography": Object {
+        "fontColor": "#1D2729",
+        "fontFamily": "Gangster Grotesk, sans-serif",
+        "fontSize": 12,
+        "fontStyle": "normal",
+        "fontWeight": "normal",
+      },
+    },
+  },
+  "table": Object {
+    "body": Object {
+      "typography": Object {
+        "fontColor": "#273437",
+        "fontFamily": "Lato, sans-serif",
+        "fontSize": 14,
+        "fontStyle": "normal",
+        "fontWeight": "normal",
+        "lineHeight": "17px",
+      },
+    },
+    "header": Object {
+      "typography": Object {
+        "fontColor": "#FFFFFF",
+        "fontFamily": "Gangster Grotesk, sans-serif",
+        "fontSize": 14,
+        "fontStyle": "normal",
+        "fontWeight": "bold",
+        "lineHeight": "17px",
+      },
+    },
+    "mainColor": "#27566D",
+  },
+  "tooltip": Object {
+    "enabled": true,
+    "labels": Object {
+      "typography": Object {
+        "fontColor": "#1D2729",
+        "fontFamily": "Lato, sans-serif",
+        "fontSize": 12,
+        "fontStyle": "normal",
+        "fontWeight": "normal",
+      },
+    },
+    "mode": "light",
+    "values": Object {
+      "typography": Object {
+        "fontColor": "#1D2729",
+        "fontFamily": "Lato, sans-serif",
+        "fontSize": 12,
+        "fontStyle": "normal",
+        "fontWeight": "bold",
+      },
+    },
+  },
+  "zeroIntersection": Object {
+    "color": "#27566D",
+  },
+}
+`;
