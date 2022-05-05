@@ -75,13 +75,11 @@ test('allows user to filter dashboards based on public criteria', async () => {
           "payload": Object {
             "tags": Array [],
           },
-          "type": "@dashboard/SET_TAGS_FILTERS",
+          "type": "dashboards/setTagsFilters",
         },
         Object {
-          "payload": Object {
-            "filterPublic": true,
-          },
-          "type": "@dashboard/SET_TAGS_FILTERS_PUBLIC",
+          "payload": true,
+          "type": "dashboards/setTagsFiltersPublic",
         },
       ]
     `);
@@ -118,13 +116,11 @@ test('allows user to filter dashboards based on selected tags', async () => {
               "marketing",
             ],
           },
-          "type": "@dashboard/SET_TAGS_FILTERS",
+          "type": "dashboards/setTagsFilters",
         },
         Object {
-          "payload": Object {
-            "filterPublic": false,
-          },
-          "type": "@dashboard/SET_TAGS_FILTERS_PUBLIC",
+          "payload": false,
+          "type": "dashboards/setTagsFiltersPublic",
         },
       ]
     `);
@@ -151,13 +147,11 @@ test('allows user to clear filters', async () => {
           "payload": Object {
             "tags": Array [],
           },
-          "type": "@dashboard/SET_TAGS_FILTERS",
+          "type": "dashboards/setTagsFilters",
         },
         Object {
-          "payload": Object {
-            "filterPublic": false,
-          },
-          "type": "@dashboard/SET_TAGS_FILTERS_PUBLIC",
+          "payload": false,
+          "type": "dashboards/setTagsFiltersPublic",
         },
       ]
     `);

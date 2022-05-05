@@ -6,12 +6,11 @@ import { Query } from '@keen.io/query';
 
 import { editChart } from './editChart';
 
-import { saveDashboard } from '../../../../modules/dashboards';
-
 import { widget as widgetFixture } from '../../fixtures';
 
 import { chartEditorActions } from '../../../chartEditor';
 import { widgetsActions } from '../../index';
+import { dashboardsActions } from '../../../dashboards';
 
 describe('editChart()', () => {
   const widgetId = '@widget/01';
@@ -187,7 +186,7 @@ describe('editChart()', () => {
     });
 
     test('triggers save dashboard action', (result) => {
-      expect(result).toEqual(put(saveDashboard(dashboardId)));
+      expect(result).toEqual(put(dashboardsActions.saveDashboard(dashboardId)));
     });
   });
 

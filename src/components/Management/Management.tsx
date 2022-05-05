@@ -21,31 +21,30 @@ import DashboardDeleteConfirmation from '../DashboardDeleteConfirmation';
 import FilterDashboards from '../FilterDashboards';
 import DashboardListOrder from '../DashboardListOrder';
 
-import {
-  createDashboard,
-  viewDashboard,
-  getDashboardsMetadata,
-  getDashboardsLoadState,
-  showDashboardSettingsModal,
-  getDashboardListOrder,
-  getTagsFilter,
-} from '../../modules/dashboards';
 import { appSelectors, Scopes } from '../../modules/app';
+import {
+  dashboardsActions,
+  dashboardsSelectors,
+} from '../../modules/dashboards';
 
 const Management: FC = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const dashboards = useSelector(getDashboardsMetadata);
-  const dashboardsLoaded = useSelector(getDashboardsLoadState);
-  const dashboardListOrder = useSelector(getDashboardListOrder);
+  const dashboards = useSelector(dashboardsSelectors.getDashboardsMetadata);
+  const dashboardsLoaded = useSelector(
+    dashboardsSelectors.getDashboardsLoadState
+  );
+  const dashboardListOrder = useSelector(
+    dashboardsSelectors.getDashboardListOrder
+  );
   const { permissions: userPermissions } = useSelector(appSelectors.getUser);
-  const dashboardsFilters = useSelector(getTagsFilter);
+  const dashboardsFilters = useSelector(dashboardsSelectors.getTagsFilter);
 
   const [searchPhrase, setSearchPhrase] = useState('');
 
   const createDashbord = useCallback(() => {
     const dashboardId = uuid();
-    dispatch(createDashboard(dashboardId));
+    dispatch(dashboardsActions.createDashboard(dashboardId));
   }, []);
 
   const filteredDashboards = useMemo(() => {
@@ -110,9 +109,11 @@ const Management: FC = () => {
           <DashboardsPlaceholder />
         ) : (
           <DashboardsList
-            onPreviewDashboard={(id) => dispatch(viewDashboard(id))}
+            onPreviewDashboard={(id) =>
+              dispatch(dashboardsActions.viewDashboard(id))
+            }
             onShowDashboardSettings={(id) => {
-              dispatch(showDashboardSettingsModal(id));
+              dispatch(dashboardsActions.showDashboardSettingsModal(id));
             }}
             dashboards={filteredDashboards}
           />

@@ -4,10 +4,10 @@ import { put, take, select } from 'redux-saga/effects';
 
 import { editTextWidget, editInlineTextWidget } from './textWidget';
 import { getWidgetSettings } from '../selectors';
-import { saveDashboard } from '../../dashboards';
 
 import { textEditorActions, textEditorSagaActions } from '../../textEditor';
 import { widgetsActions } from '../index';
+import { dashboardsActions } from '../../dashboards';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
@@ -102,7 +102,7 @@ describe('editTextWidget()', () => {
     });
 
     test('triggers save dashboard action', (result) => {
-      expect(result).toEqual(put(saveDashboard(dashboardId)));
+      expect(result).toEqual(put(dashboardsActions.saveDashboard(dashboardId)));
     });
 
     test('close text editor', (result) => {
@@ -149,7 +149,7 @@ describe('editInlineTextWidget()', () => {
     });
 
     test('triggers save dashboard action', (result) => {
-      expect(result).toEqual(put(saveDashboard(dashboardId)));
+      expect(result).toEqual(put(dashboardsActions.saveDashboard(dashboardId)));
     });
   });
 });

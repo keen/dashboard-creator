@@ -3,14 +3,6 @@
 import { put, call, getContext } from 'redux-saga/effects';
 import { StatusCodes } from 'http-status-codes';
 
-import {
-  registerDashboard,
-  initializeDashboardWidgets as initializeDashboardWidgetsAction,
-  viewPublicDashboard as viewPublicDashboardAction,
-  setDashboardList,
-  setDashboardError,
-} from '../actions';
-
 import { appActions } from '../../app';
 import { prepareDashboard } from './prepareDashboard';
 
@@ -18,6 +10,7 @@ import { DASHBOARD_API } from '../../../constants';
 
 import { APIError } from '../../../api';
 import { DashboardModel, DashboardMetaData, DashboardError } from '../types';
+import { dashboardsActions } from '../index';
 
 /**
  * Flow responsible for initializing public dashboard viewer.
@@ -28,10 +21,10 @@ import { DashboardModel, DashboardMetaData, DashboardError } from '../types';
  */
 export function* viewPublicDashboard({
   payload,
-}: ReturnType<typeof viewPublicDashboardAction>) {
+}: ReturnType<typeof dashboardsActions.viewPublicDashboard>) {
   const { dashboardId } = payload;
 
-  yield put(registerDashboard(dashboardId));
+  yield put(dashboardsActions.registerDashboard(dashboardId));
   yield put(appActions.setActiveDashboard(dashboardId));
 
   try {
@@ -40,7 +33,9 @@ export function* viewPublicDashboard({
       dashboardId
     );
 
-    yield put(setDashboardList([dashboardMeta]));
+    yield put(
+      dashboardsActions.setDashboardList({ dashboards: [dashboardMeta] })
+    );
     const { isPublic } = dashboardMeta;
 
     if (isPublic) {
@@ -54,19 +49,32 @@ export function* viewPublicDashboard({
         responseBody
       );
 
-      yield put(initializeDashboardWidgetsAction(dashboardId, widgetIds));
+      yield put(
+        dashboardsActions.initializeDashboardWidgets(dashboardId, widgetIds)
+      );
     } else {
       yield put(
-        setDashboardError(dashboardId, DashboardError.ACCESS_NOT_PUBLIC)
+        dashboardsActions.setDashboardError({
+          dashboardId,
+          error: DashboardError.ACCESS_NOT_PUBLIC,
+        })
       );
     }
   } catch (err) {
     const error: APIError = err;
     if (error.statusCode === StatusCodes.NOT_FOUND) {
-      yield put(setDashboardError(dashboardId, DashboardError.NOT_EXIST));
+      yield put(
+        dashboardsActions.setDashboardError({
+          dashboardId,
+          error: DashboardError.NOT_EXIST,
+        })
+      );
     } else {
       yield put(
-        setDashboardError(dashboardId, DashboardError.VIEW_PUBLIC_DASHBOARD)
+        dashboardsActions.setDashboardError({
+          dashboardId,
+          error: DashboardError.VIEW_PUBLIC_DASHBOARD,
+        })
       );
     }
   }

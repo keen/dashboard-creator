@@ -2,12 +2,6 @@ import { put, select, all, getContext, call } from 'redux-saga/effects';
 
 import { push } from 'connected-react-router';
 
-import {
-  registerDashboard,
-  initializeDashboardWidgets as initializeDashboardWidgetsAction,
-  editDashboard as editDashboardAction,
-} from '../actions';
-
 import { prepareDashboard } from './prepareDashboard';
 
 import { getDashboard } from '../selectors';
@@ -23,6 +17,7 @@ import {
 import { DASHBOARD_API, ROUTES } from '../../../constants';
 
 import { DashboardModel, DashboardItem } from '../types';
+import { dashboardsActions } from '../index';
 
 /**
  * Flow responsible for rendering dashboard in edit mode
@@ -33,12 +28,12 @@ import { DashboardModel, DashboardItem } from '../types';
  */
 export function* editDashboard({
   payload,
-}: ReturnType<typeof editDashboardAction>) {
+}: ReturnType<typeof dashboardsActions.editDashboard>) {
   const { dashboardId } = payload;
   const dashboard: DashboardItem = yield select(getDashboard, dashboardId);
 
   if (!dashboard) {
-    yield put(registerDashboard(dashboardId));
+    yield put(dashboardsActions.registerDashboard(dashboardId));
 
     yield put(appActions.setActiveDashboard(dashboardId));
     yield put(push(ROUTES.EDITOR));
@@ -56,7 +51,9 @@ export function* editDashboard({
         responseBody
       );
 
-      yield put(initializeDashboardWidgetsAction(dashboardId, widgetIds));
+      yield put(
+        dashboardsActions.initializeDashboardWidgets(dashboardId, widgetIds)
+      );
     } catch (err) {
       console.error(err);
     }

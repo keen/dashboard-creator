@@ -1,9 +1,9 @@
 import { SavedQuery } from '../../queries';
 import { put, select } from 'redux-saga/effects';
 import { initializeChartWidget as initializeChartWidgetAction } from '../actions';
-import { saveDashboard, updateAccessKeyOptions } from '../../dashboards';
 import { appSelectors } from '../../app';
 import { widgetsActions } from '../index';
+import { dashboardsActions } from '../../dashboards';
 
 export function* selectSavedQueryForWidget(
   query: SavedQuery,
@@ -35,8 +35,8 @@ export function* selectSavedQueryForWidget(
   }
 
   yield put(initializeChartWidgetAction(widgetId));
-  yield put(updateAccessKeyOptions());
+  yield put(dashboardsActions.updateAccessKeyOptions());
 
   const dashboardId = yield select(appSelectors.getActiveDashboard);
-  yield put(saveDashboard(dashboardId));
+  yield put(dashboardsActions.saveDashboard(dashboardId));
 }

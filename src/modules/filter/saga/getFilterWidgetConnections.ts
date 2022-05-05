@@ -1,7 +1,7 @@
 import { select } from 'redux-saga/effects';
-import { getDashboard } from '../../dashboards';
 import { FilterConnection } from '../types';
 import { ChartWidget, widgetsSelectors } from '../../widgets';
+import { dashboardsSelectors } from '../../dashboards';
 
 /**
  * Get possible filter widget connections.
@@ -22,7 +22,7 @@ export function* getFilterWidgetConnections(
   const state = yield select();
   const {
     settings: { widgets: widgetsIds },
-  } = getDashboard(state, dashboardId);
+  } = dashboardsSelectors.getDashboard(state, dashboardId);
 
   const widgets: FilterConnection[] = widgetsIds
     .map((widgetId) => widgetsSelectors.getWidget(state, widgetId))

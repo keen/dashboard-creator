@@ -1,11 +1,9 @@
 import { put, select, take } from 'redux-saga/effects';
 
 import { getWidget } from '../selectors';
-
-import { saveDashboard, removeWidgetFromDashboard } from '../../dashboards';
-
 import { appActions, appSelectors } from '../../app';
 import { widgetsActions } from '../index';
+import { dashboardsActions } from '../../dashboards';
 
 /**
  * Flow responsible for image widget setup
@@ -23,7 +21,9 @@ export function* selectImageWidget(widgetId: string) {
 
   if (action.type === appActions.hideImagePicker.type) {
     const dashboardId = yield select(appSelectors.getActiveDashboard);
-    yield put(removeWidgetFromDashboard(dashboardId, widgetId));
+    yield put(
+      dashboardsActions.removeWidgetFromDashboard({ dashboardId, widgetId })
+    );
   } else {
     yield put(
       widgetsActions.setImageWidget({ id: widgetId, link: action.payload.link })
@@ -38,7 +38,7 @@ export function* selectImageWidget(widgetId: string) {
     );
     yield put(appActions.hideImagePicker());
     const dashboardId = yield select(appSelectors.getActiveDashboard);
-    yield put(saveDashboard(dashboardId));
+    yield put(dashboardsActions.saveDashboard(dashboardId));
   }
 }
 
@@ -70,6 +70,6 @@ export function* editImageWidget({
     yield put(appActions.hideImagePicker());
 
     const dashboardId = yield select(appSelectors.getActiveDashboard);
-    yield put(saveDashboard(dashboardId));
+    yield put(dashboardsActions.saveDashboard(dashboardId));
   }
 }

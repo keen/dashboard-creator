@@ -4,11 +4,6 @@ import { Query } from '@keen.io/query';
 import { getWidget, getWidgetSettings } from '../selectors';
 
 import {
-  saveDashboard,
-  updateAccessKeyOptions,
-} from '../../../modules/dashboards';
-
-import {
   FEATURES,
   NOTIFICATION_MANAGER,
   TRANSLATIONS,
@@ -20,6 +15,7 @@ import { chartEditorActions, chartEditorSelectors } from '../../chartEditor';
 import { getConnectedDashboards } from '../../dashboards/saga';
 import { queriesSagas } from '../../queries';
 import { widgetsActions } from '../index';
+import { dashboardsActions } from '../../dashboards';
 
 /**
  * Creates ad-hoc query with date picker and filters modifiers.
@@ -220,10 +216,10 @@ export function* editChartSavedQuery(widgetId: string) {
       );
 
       yield put(widgetsActions.initializeChartWidget(widgetId));
-      yield put(updateAccessKeyOptions());
+      yield put(dashboardsActions.updateAccessKeyOptions());
 
       const dashboardId = yield select(appSelectors.getActiveDashboard);
-      yield put(saveDashboard(dashboardId));
+      yield put(dashboardsActions.saveDashboard(dashboardId));
       yield put(chartEditorActions.resetEditor());
     } else if (action.type === chartEditorActions.confirmSaveQueryUpdate.type) {
       try {
@@ -258,7 +254,7 @@ export function* editChartSavedQuery(widgetId: string) {
         yield put(widgetsActions.initializeChartWidget(widgetId));
 
         const dashboardId = yield select(appSelectors.getActiveDashboard);
-        yield put(saveDashboard(dashboardId));
+        yield put(dashboardsActions.saveDashboard(dashboardId));
         yield put(widgetsActions.savedQueryUpdated(widgetId, queryName));
       } catch (err) {
         const notificationManager = yield getContext(NOTIFICATION_MANAGER);
@@ -293,6 +289,6 @@ export function* editChartSavedQuery(widgetId: string) {
     yield put(widgetsActions.initializeChartWidget(widgetId));
 
     const dashboardId = yield select(appSelectors.getActiveDashboard);
-    yield put(saveDashboard(dashboardId));
+    yield put(dashboardsActions.saveDashboard(dashboardId));
   }
 }

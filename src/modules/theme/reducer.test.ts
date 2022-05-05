@@ -2,8 +2,7 @@ import { Theme } from '@keen.io/charts';
 
 import themeSlice, { initialState } from './reducer';
 import { ReducerState } from './types';
-
-import { createDashboardSettings } from '../dashboards';
+import { createDashboardSettings } from '../dashboards/utils';
 
 const theme = {
   metric: {

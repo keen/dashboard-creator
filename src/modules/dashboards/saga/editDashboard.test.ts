@@ -2,12 +2,6 @@ import sagaHelper from 'redux-saga-testing';
 import { select, put, call, getContext } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
 
-import {
-  initializeDashboardWidgets,
-  registerDashboard,
-  editDashboard as editDashboardAction,
-} from '../actions';
-
 import { prepareDashboard } from './prepareDashboard';
 import { editDashboard } from './editDashboard';
 
@@ -17,11 +11,12 @@ import { createDashboardSettings } from '../utils';
 import { appActions } from '../../app';
 
 import { ROUTES, DASHBOARD_API } from '../../../constants';
+import { dashboardsActions } from '../index';
 
 const dashboardId = '@dashboard/01';
 
 describe('Scenario 1: User succesfully views already serialized dashboard', () => {
-  const action = editDashboardAction(dashboardId);
+  const action = dashboardsActions.editDashboard(dashboardId);
   const test = sagaHelper(editDashboard(action));
 
   test('get dashboard from state', (result) => {
@@ -47,7 +42,7 @@ describe('Scenario 1: User succesfully views already serialized dashboard', () =
 });
 
 describe('Scenario 2: User succesfully views dashboard not serialized in state', () => {
-  const action = editDashboardAction(dashboardId);
+  const action = dashboardsActions.editDashboard(dashboardId);
   const test = sagaHelper(editDashboard(action));
 
   const dashboardModel = {
@@ -69,7 +64,9 @@ describe('Scenario 2: User succesfully views dashboard not serialized in state',
   });
 
   test('triggers dashboard register', (result) => {
-    expect(result).toEqual(put(registerDashboard(dashboardId)));
+    expect(result).toEqual(
+      put(dashboardsActions.registerDashboard(dashboardId))
+    );
   });
 
   test('set current active dashboard', (result) => {
@@ -104,7 +101,12 @@ describe('Scenario 2: User succesfully views dashboard not serialized in state',
 
   test('initializes dashboard widgets', (result) => {
     expect(result).toEqual(
-      put(initializeDashboardWidgets(dashboardId, ['@widget/01', '@widget/02']))
+      put(
+        dashboardsActions.initializeDashboardWidgets(dashboardId, [
+          '@widget/01',
+          '@widget/02',
+        ])
+      )
     );
   });
 });

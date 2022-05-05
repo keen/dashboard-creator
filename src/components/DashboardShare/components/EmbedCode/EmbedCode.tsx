@@ -28,14 +28,11 @@ import {
   TooltipText,
 } from './EmbedCode.styles';
 
-import {
-  exportDashboardToHtml,
-  createCodeSnippet,
-} from '../../../../modules/dashboards';
-
 import { AppContext } from '../../../../contexts';
 import { TOOLTIP_MOTION as MOTION } from '../../../../constants';
 import { TOOLTIP_HIDE } from '../../constants';
+import { dashboardsActions } from '../../../../modules/dashboards';
+import { createCodeSnippet } from '../../../../modules/dashboards/utils';
 
 SyntaxHighlighter.registerLanguage('xml', xml);
 SyntaxHighlighter.registerLanguage('javascript', js);
@@ -212,7 +209,9 @@ const EmbedCode: FC<Props> = ({ dashboardId, publicAccessKey, isPublic }) => {
             <Button
               variant="secondary"
               style="outline"
-              onClick={() => dispatch(exportDashboardToHtml(dashboardId))}
+              onClick={() =>
+                dispatch(dashboardsActions.exportDashboardToHtml(dashboardId))
+              }
             >
               {t('dashboard_share.download_code')}
             </Button>

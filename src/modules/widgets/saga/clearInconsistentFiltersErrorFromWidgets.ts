@@ -1,15 +1,15 @@
 import { clearInconsistentFiltersError as clearInconsistentFiltersErrorAction } from '../actions';
 import { all, put, select } from 'redux-saga/effects';
-import { getDashboardSettings } from '../../dashboards';
 import { getWidget } from '../selectors';
 import { WidgetErrors } from '../types';
 import { widgetsActions } from '../index';
+import { dashboardsSelectors } from '../../dashboards';
 
 export function* clearInconsistentFiltersErrorFromWidgets({
   payload,
 }: ReturnType<typeof clearInconsistentFiltersErrorAction>) {
   const { widgets: widgetIds } = yield select(
-    getDashboardSettings,
+    dashboardsSelectors.getDashboardSettings,
     payload.dashboardId
   );
   const widgets = yield all(

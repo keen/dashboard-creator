@@ -10,12 +10,7 @@ import {
   cancelled,
   getContext,
 } from 'redux-saga/effects';
-import {
-  ADD_WIDGET_TO_DASHBOARD,
-  getDashboard,
-  saveDashboard,
-  removeWidgetFromDashboard,
-} from '../../dashboards';
+
 import { getWidget, getWidgetSettings } from '../selectors';
 
 import { FilterConnection, ReducerState } from '../../filter/types';
@@ -32,6 +27,7 @@ import {
   getFilterWidgetConnections,
 } from '../../filter/saga';
 import { widgetsActions } from '../index';
+import { dashboardsActions, dashboardsSelectors } from '../../dashboards';
 
 /**
  * Apply filter connections updates to connected widgets
@@ -196,7 +192,7 @@ export function* removeFilterConnections(
   const state = yield select();
   const {
     settings: { widgets: widgetsIds },
-  } = getDashboard(state, dashboardId);
+  } = dashboardsSelectors.getDashboard(state, dashboardId);
 
   const connections = widgetsIds
     .map((widgetId) => getWidgetSettings(state, widgetId))
@@ -286,7 +282,7 @@ export function* updateWidgetsDistinction(
   const state = yield select();
   const {
     settings: { widgets: dashboardWidgetsIds },
-  } = getDashboard(state, dashboardId);
+  } = dashboardsSelectors.getDashboard(state, dashboardId);
 
   const { detachedWidgetConnections } = filterSelectors.getFilterSettings(
     state
@@ -519,12 +515,12 @@ export function* editFilterWidget({
     yield call(applyFilterUpdates, filterWidgetId);
 
     yield put(filterActions.closeEditor());
-    yield put(saveDashboard(dashboardId));
+    yield put(dashboardsActions.saveDashboard(dashboardId));
   }
 
   const {
     settings: { widgets: dashboardWidgetsIds },
-  } = yield select(getDashboard, dashboardId);
+  } = yield select(dashboardsSelectors.getDashboard, dashboardId);
 
   yield all(
     dashboardWidgetsIds.map((widgetId: string) =>
@@ -557,7 +553,7 @@ export function* setupFilterWidget(widgetId: string) {
   const dashboardId = yield select(appSelectors.getActiveDashboard);
 
   yield put(filterActions.setupDashboardEventStreams(dashboardId));
-  yield take(ADD_WIDGET_TO_DASHBOARD);
+  yield take(dashboardsActions.addWidgetToDashboard.type);
 
   yield put(filterActions.openEditor());
 
@@ -578,14 +574,19 @@ export function* setupFilterWidget(widgetId: string) {
     yield call(applyFilterUpdates, filterWidgetId);
 
     yield put(filterActions.closeEditor());
-    yield put(saveDashboard(dashboardId));
+    yield put(dashboardsActions.saveDashboard(dashboardId));
   } else {
-    yield put(removeWidgetFromDashboard(dashboardId, filterWidgetId));
+    yield put(
+      dashboardsActions.removeWidgetFromDashboard({
+        dashboardId,
+        widgetId: filterWidgetId,
+      })
+    );
   }
 
   const {
     settings: { widgets: dashboardWidgetsIds },
-  } = yield select(getDashboard, dashboardId);
+  } = yield select(dashboardsSelectors.getDashboard, dashboardId);
 
   yield all(
     dashboardWidgetsIds.map((widgetId: string) =>
@@ -661,7 +662,7 @@ export function* resetFilterWidgets({
 }: ReturnType<typeof widgetsActions.resetFilterWidgets>) {
   const { dashboardId } = payload;
   const state = yield select();
-  const dashboard = getDashboard(state, dashboardId);
+  const dashboard = dashboardsSelectors.getDashboard(state, dashboardId);
 
   if (dashboard) {
     const {

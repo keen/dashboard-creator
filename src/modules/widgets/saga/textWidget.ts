@@ -7,11 +7,10 @@ import {
 
 import { getWidgetSettings } from '../selectors';
 
-import { saveDashboard } from '../../dashboards';
-
 import { textEditorActions, textEditorSagaActions } from '../../textEditor';
 import { appSelectors } from '../../app';
 import { widgetsActions } from '../index';
+import { dashboardsActions } from '../../dashboards';
 
 /**
  * Flow responsible for creating text widget.
@@ -88,7 +87,7 @@ export function* editTextWidget({
     );
 
     const dashboardId = yield select(appSelectors.getActiveDashboard);
-    yield put(saveDashboard(dashboardId));
+    yield put(dashboardsActions.saveDashboard(dashboardId));
 
     yield put(textEditorActions.closeEditor());
   }
@@ -117,5 +116,5 @@ export function* editInlineTextWidget({
   yield put(widgetsActions.setTextWidget({ id, settings: { content } }));
 
   const dashboardId = yield select(appSelectors.getActiveDashboard);
-  yield put(saveDashboard(dashboardId));
+  yield put(dashboardsActions.saveDashboard(dashboardId));
 }

@@ -9,10 +9,6 @@ import { colors } from '@keen.io/colors';
 
 import { RootState } from '../../rootReducer';
 
-import {
-  showDashboardShareModal,
-  resetDashboardFilters,
-} from '../../modules/dashboards';
 import { Scopes, appSelectors } from '../../modules/app';
 
 import TooltipContent from '../TooltipContent';
@@ -30,6 +26,7 @@ import {
 
 import { TOOLTIP_MOTION } from '../../constants';
 import { queriesSelectors } from '../../modules/queries';
+import { dashboardsActions } from '../../modules/dashboards';
 
 type Props = {
   /** Dashboard Id */
@@ -108,7 +105,9 @@ const ViewerNavigation: FC<Props> = ({
       <Aside>
         {hasInterimQueries && (
           <ClearFilters
-            onClick={() => dispatch(resetDashboardFilters(activeDashboard))}
+            onClick={() =>
+              dispatch(dashboardsActions.resetDashboardFilters(activeDashboard))
+            }
           >
             <BodyText
               variant="body2"
@@ -155,7 +154,9 @@ const ViewerNavigation: FC<Props> = ({
                 icon={<Icon type="share" />}
                 onClick={() => {
                   setTooltip(null);
-                  dispatch(showDashboardShareModal(activeDashboard));
+                  dispatch(
+                    dashboardsActions.showDashboardShareModal(activeDashboard)
+                  );
                 }}
               />
               <AnimatePresence>

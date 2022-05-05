@@ -2,11 +2,11 @@ import { fork, put, select, take } from 'redux-saga/effects';
 import { selectImageWidget } from './imageWidget';
 import { setupDatePicker } from './datePickerWidget';
 import { createTextWidget } from './textWidget';
-import { ADD_WIDGET_TO_DASHBOARD, saveDashboard } from '../../dashboards';
 import { appSelectors } from '../../app';
 import { setupFilterWidget } from './filterWidget';
 import { selectQueryForWidget } from './selectQueryForWidget';
 import { widgetsActions } from '../index';
+import { dashboardsActions } from '../../dashboards';
 
 export function* createWidget({
   payload,
@@ -18,9 +18,9 @@ export function* createWidget({
     yield fork(setupDatePicker, id);
   } else if (widgetType === 'text') {
     yield fork(createTextWidget, id);
-    yield take(ADD_WIDGET_TO_DASHBOARD);
+    yield take(dashboardsActions.addWidgetToDashboard.type);
     const dashboardId = yield select(appSelectors.getActiveDashboard);
-    yield put(saveDashboard(dashboardId));
+    yield put(dashboardsActions.saveDashboard(dashboardId));
   } else if (widgetType === 'filter') {
     yield fork(setupFilterWidget, id);
   } else {

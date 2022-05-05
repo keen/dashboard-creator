@@ -16,16 +16,18 @@ import {
 } from './DashboardListOrder.styles';
 
 import {
-  setDashboardListOrder,
-  getDashboardListOrder,
   DASHBOARDS_ORDER,
   DashboardListOrder as DashboardListOrderType,
+  dashboardsSelectors,
+  dashboardsActions,
 } from '../../modules/dashboards';
 
 const DashboardListOrder = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const dashboardListOrder = useSelector(getDashboardListOrder);
+  const dashboardListOrder = useSelector(
+    dashboardsSelectors.getDashboardListOrder
+  );
 
   const [isOpen, setOpen] = useState(false);
   const [selected, setSelected] = useState(dashboardListOrder);
@@ -82,7 +84,9 @@ const DashboardListOrder = () => {
                   key={order}
                   onClick={() => {
                     setOpen(false);
-                    dispatch(setDashboardListOrder(order));
+                    dispatch(
+                      dashboardsActions.setDashboardListOrder({ order })
+                    );
                   }}
                   onMouseEnter={() => {
                     setSelected(order);

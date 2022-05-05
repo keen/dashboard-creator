@@ -17,14 +17,10 @@ import {
 
 import { getWidgetSettings } from '../selectors';
 
-import {
-  getDashboard,
-  saveDashboard,
-  ADD_WIDGET_TO_DASHBOARD,
-} from '../../dashboards';
 import { datePickerActions, datePickerSelectors } from '../../datePicker';
 import { appSelectors } from '../../app';
 import { widgetsActions } from '../index';
+import { dashboardsActions, dashboardsSelectors } from '../../dashboards';
 
 describe('clearDatePickerModifiers()', () => {
   describe('Scenario 1: Resets date picker state and re-initialize connected chart widgets', () => {
@@ -191,13 +187,15 @@ describe('setupDatePicker()', () => {
     });
 
     test('waits until widget is added to dashboard', (result) => {
-      expect(result).toEqual(take(ADD_WIDGET_TO_DASHBOARD));
+      expect(result).toEqual(take(dashboardsActions.addWidgetToDashboard.type));
 
-      return { type: ADD_WIDGET_TO_DASHBOARD };
+      return { type: dashboardsActions.addWidgetToDashboard.type };
     });
 
     test('gets dashboard settings', (result) => {
-      expect(result).toEqual(select(getDashboard, '@dashboard/01'));
+      expect(result).toEqual(
+        select(dashboardsSelectors.getDashboard, '@dashboard/01')
+      );
 
       return {
         settings: { widgets: ['@widget/01', '@widget/02', '@widget/03'] },
@@ -325,7 +323,9 @@ describe('setupDatePicker()', () => {
     });
 
     test('saves dashboards', (result) => {
-      expect(result).toEqual(put(saveDashboard('@dashboard/01')));
+      expect(result).toEqual(
+        put(dashboardsActions.saveDashboard('@dashboard/01'))
+      );
     });
   });
 });
@@ -385,7 +385,9 @@ describe('editDatePickerWidget()', () => {
     });
 
     test('gets dashboard settings', (result) => {
-      expect(result).toEqual(select(getDashboard, '@dashboard/01'));
+      expect(result).toEqual(
+        select(dashboardsSelectors.getDashboard, '@dashboard/01')
+      );
 
       return {
         settings: { widgets: ['@widget/01', '@widget/02', '@widget/03'] },
@@ -490,7 +492,9 @@ describe('editDatePickerWidget()', () => {
     });
 
     test('saves dashboards', (result) => {
-      expect(result).toEqual(put(saveDashboard('@dashboard/01')));
+      expect(result).toEqual(
+        put(dashboardsActions.saveDashboard('@dashboard/01'))
+      );
     });
   });
 });

@@ -26,12 +26,6 @@ import {
 } from './filterWidget';
 
 import { filterActions } from '../../filter';
-import {
-  saveDashboard,
-  getDashboard,
-  removeWidgetFromDashboard,
-  ADD_WIDGET_TO_DASHBOARD,
-} from '../../dashboards';
 
 import { KEEN_ANALYSIS } from '../../../constants';
 import { appSelectors } from '../../app';
@@ -40,6 +34,7 @@ import {
   getFilterWidgetConnections,
 } from '../../filter/saga';
 import { widgetsActions, widgetsSelectors } from '../index';
+import { dashboardsActions, dashboardsSelectors } from '../../dashboards';
 
 describe('applyFilterModifiers()', () => {
   describe('Scenario 1: Apply filter widget modifiers on connected charts', () => {
@@ -766,11 +761,13 @@ describe('editFilterWidget()', () => {
     });
 
     test('saves dashboard', (result) => {
-      expect(result).toEqual(put(saveDashboard(dashboardId)));
+      expect(result).toEqual(put(dashboardsActions.saveDashboard(dashboardId)));
     });
 
     test('get dashboard widgets', (result) => {
-      expect(result).toEqual(select(getDashboard, dashboardId));
+      expect(result).toEqual(
+        select(dashboardsSelectors.getDashboard, dashboardId)
+      );
 
       return {
         settings: { widgets: ['@widget/01', '@widget/02'] },
@@ -831,9 +828,9 @@ describe('setupFilterWidget()', () => {
     });
 
     test('waits until widget is added to dashboard', (result) => {
-      expect(result).toEqual(take(ADD_WIDGET_TO_DASHBOARD));
+      expect(result).toEqual(take(dashboardsActions.addWidgetToDashboard.type));
 
-      return { type: ADD_WIDGET_TO_DASHBOARD };
+      return { type: dashboardsActions.addWidgetToDashboard.type };
     });
 
     test('opens filter widget editor', (result) => {
@@ -867,11 +864,13 @@ describe('setupFilterWidget()', () => {
     });
 
     test('saves dashboard', (result) => {
-      expect(result).toEqual(put(saveDashboard(dashboardId)));
+      expect(result).toEqual(put(dashboardsActions.saveDashboard(dashboardId)));
     });
 
     test('get dashboard widgets', (result) => {
-      expect(result).toEqual(select(getDashboard, dashboardId));
+      expect(result).toEqual(
+        select(dashboardsSelectors.getDashboard, dashboardId)
+      );
 
       return {
         settings: { widgets: ['@widget/01', '@widget/02'] },
@@ -930,9 +929,9 @@ describe('setupFilterWidget()', () => {
     });
 
     test('waits until widget is added to dashboard', (result) => {
-      expect(result).toEqual(take(ADD_WIDGET_TO_DASHBOARD));
+      expect(result).toEqual(take(dashboardsActions.addWidgetToDashboard.type));
 
-      return { type: ADD_WIDGET_TO_DASHBOARD };
+      return { type: dashboardsActions.addWidgetToDashboard.type };
     });
 
     test('opens filter widget editor', (result) => {
@@ -959,7 +958,9 @@ describe('setupFilterWidget()', () => {
 
     test('removes widget from dashboard', (result) => {
       expect(result).toEqual(
-        put(removeWidgetFromDashboard(dashboardId, widgetId))
+        put(
+          dashboardsActions.removeWidgetFromDashboard({ dashboardId, widgetId })
+        )
       );
     });
   });

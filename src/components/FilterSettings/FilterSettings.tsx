@@ -29,13 +29,12 @@ import {
 import { EventStream, TargetProperty, TooltipHint } from './components';
 import WidgetConnections from '../WidgetConnections';
 
-import { getCurrentDashboardChartsCount } from '../../modules/dashboards';
-
 import { ERRORS } from './constants';
 
 import { FilterSettingsError } from './types';
 import { AppContext } from '../../contexts';
 import { filterActions, filterSelectors } from '../../modules/filter';
+import { dashboardsSelectors } from '../../modules/dashboards';
 
 type Props = {
   /* Cancel filter settings */
@@ -60,7 +59,9 @@ const FilterSettings: FC<Props> = ({ onCancel }) => {
     name,
   } = useSelector(filterSelectors.getFilterSettings);
 
-  const chartWidgetsCount = useSelector(getCurrentDashboardChartsCount);
+  const chartWidgetsCount = useSelector(
+    dashboardsSelectors.getCurrentDashboardChartsCount
+  );
 
   const [isEditMode] = useState(!!targetProperty);
   const [filterName, setFilterName] = useState(name);

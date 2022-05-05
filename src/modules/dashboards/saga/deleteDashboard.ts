@@ -5,13 +5,6 @@ import { push } from 'connected-react-router';
 
 import { deleteAccessKey } from './deleteAccessKey';
 
-import {
-  deleteDashboardSuccess,
-  deleteDashboard as deleteDashboardAction,
-  showDeleteConfirmation,
-  hideDeleteConfirmation,
-} from '../actions';
-
 import { getDashboardMeta } from '../selectors';
 
 import { themeActions } from '../../theme';
@@ -21,12 +14,9 @@ import {
   NOTIFICATION_MANAGER,
   ROUTES,
 } from '../../../constants';
-import {
-  CONFIRM_DASHBOARD_DELETE,
-  HIDE_DELETE_CONFIRMATION,
-} from '../constants';
 
 import { appActions, appSelectors } from '../../app';
+import { dashboardsActions } from '../index';
 
 /**
  * Flow responsible for removing dashboard
@@ -37,19 +27,19 @@ import { appActions, appSelectors } from '../../app';
  */
 export function* deleteDashboard({
   payload,
-}: ReturnType<typeof deleteDashboardAction>) {
+}: ReturnType<typeof dashboardsActions.deleteDashboard>) {
   const { dashboardId } = payload;
   const { publicAccessKey } = yield select(getDashboardMeta, dashboardId);
-  yield put(showDeleteConfirmation(dashboardId));
+  yield put(dashboardsActions.showDeleteConfirmation(dashboardId));
   const notificationManager = yield getContext(NOTIFICATION_MANAGER);
 
   const action = yield take([
-    CONFIRM_DASHBOARD_DELETE,
-    HIDE_DELETE_CONFIRMATION,
+    dashboardsActions.confirmDashboardDelete.type,
+    dashboardsActions.hideDeleteConfirmation.type,
   ]);
 
-  if (action.type === CONFIRM_DASHBOARD_DELETE) {
-    yield put(hideDeleteConfirmation());
+  if (action.type === dashboardsActions.confirmDashboardDelete.type) {
+    yield put(dashboardsActions.hideDeleteConfirmation());
     try {
       const dashboardApi = yield getContext(DASHBOARD_API);
       yield dashboardApi.deleteDashboard(dashboardId);
@@ -60,7 +50,7 @@ export function* deleteDashboard({
         yield put(push(ROUTES.MANAGEMENT));
       }
 
-      yield put(deleteDashboardSuccess(dashboardId));
+      yield put(dashboardsActions.deleteDashboardSuccess(dashboardId));
       yield put(themeActions.removeDashboardTheme({ dashboardId }));
 
       yield notificationManager.showNotification({

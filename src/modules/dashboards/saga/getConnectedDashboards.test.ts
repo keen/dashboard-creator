@@ -3,11 +3,7 @@ import { getContext, put } from 'redux-saga/effects';
 import fetchMock from 'jest-fetch-mock';
 import { getConnectedDashboards } from './getConnectedDashboards';
 import { DASHBOARD_API } from '../../../constants';
-import {
-  setConnectedDashboards,
-  setConnectedDashboardsError,
-  setConnectedDashboardsLoading,
-} from '../actions';
+import { dashboardsActions } from '../index';
 
 describe('getConnectedDashboards', () => {
   const savedQuery = 'saved-query';
@@ -41,15 +37,19 @@ describe('getConnectedDashboards', () => {
   });
 
   test('resets connected dashboards', (result) => {
-    expect(result).toEqual(put(setConnectedDashboards([])));
+    expect(result).toEqual(put(dashboardsActions.setConnectedDashboards([])));
   });
 
   test('resets error state', (result) => {
-    expect(result).toEqual(put(setConnectedDashboardsError(false)));
+    expect(result).toEqual(
+      put(dashboardsActions.setConnectedDashboardsError(false))
+    );
   });
 
   test('resets loading state', (result) => {
-    expect(result).toEqual(put(setConnectedDashboardsLoading(true)));
+    expect(result).toEqual(
+      put(dashboardsActions.setConnectedDashboardsLoading(true))
+    );
   });
 
   test('fetch connected dashboards from api', () => {
@@ -58,6 +58,8 @@ describe('getConnectedDashboards', () => {
 
   test('update connected dashboards', (result) => {
     const dashboards = dashboardsMeta.map(({ id, title }) => ({ id, title }));
-    expect(result).toEqual(put(setConnectedDashboards(dashboards)));
+    expect(result).toEqual(
+      put(dashboardsActions.setConnectedDashboards(dashboards))
+    );
   });
 });

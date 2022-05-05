@@ -10,13 +10,6 @@ jest.mock('uuid', () => {
 
 import { cloneDashboard } from './cloneDashboard';
 
-import {
-  updateDashboard,
-  initializeDashboardWidgets,
-  cloneDashboard as cloneDashboardAction,
-  addClonedDashboard,
-} from '../actions';
-
 import { appActions, appSelectors } from '../../app';
 import { themeActions } from '../../theme';
 
@@ -27,9 +20,10 @@ import {
 } from '../../../constants';
 import { DashboardSettings } from '../types';
 import { widgetsActions } from '../../widgets';
+import { dashboardsActions } from '../index';
 
 const dashboardId = '@dashboard/01';
-const action = cloneDashboardAction(dashboardId);
+const action = dashboardsActions.cloneDashboard(dashboardId);
 
 const model = {
   version: '1',
@@ -144,7 +138,7 @@ describe('Scenario 1: User clone dashboard from dashboard view', () => {
   test('triggers addClonedDashboard action', (result) => {
     expect(result).toEqual(
       put(
-        addClonedDashboard({
+        dashboardsActions.addClonedDashboard({
           ...metaData,
           publicAccessKey: null,
           title: 'Clone',
@@ -188,12 +182,16 @@ describe('Scenario 1: User clone dashboard from dashboard view', () => {
   });
 
   test('update cloned dashboard', (result) => {
-    expect(result).toEqual(put(updateDashboard(dashboardId, model)));
+    expect(result).toEqual(
+      put(dashboardsActions.updateDashboard({ dashboardId, settings: model }))
+    );
   });
 
   test('initialize cloned dashboard widgets', (result) => {
     expect(result).toEqual(
-      put(initializeDashboardWidgets(dashboardId, model.widgets))
+      put(
+        dashboardsActions.initializeDashboardWidgets(dashboardId, model.widgets)
+      )
     );
   });
 
@@ -242,7 +240,7 @@ describe('Scenario 2: User clone dashboard from management', () => {
   test('triggers addClonedDashboard action', (result) => {
     expect(result).toEqual(
       put(
-        addClonedDashboard({
+        dashboardsActions.addClonedDashboard({
           ...metaData,
           publicAccessKey: null,
           title: 'Clone',

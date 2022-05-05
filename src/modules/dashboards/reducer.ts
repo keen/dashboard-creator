@@ -1,4 +1,4 @@
-import { DashboardsActions } from './actions';
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import {
   createDashboardMeta,
@@ -8,46 +8,14 @@ import {
 } from './utils';
 
 import {
-  ADD_CLONED_DASHBOARD,
-  ADD_WIDGET_TO_DASHBOARD,
-  CLEAR_TAGS_POOL,
-  CREATE_DASHBOARD,
-  DELETE_DASHBOARD_SUCCESS,
-  FETCH_DASHBOARDS_LIST_SUCCESS,
-  HIDE_DASHBOARD_SETTINGS_MODAL,
-  HIDE_DASHBOARD_SHARE_MODAL,
-  HIDE_DELETE_CONFIRMATION,
-  PREPARE_TAGS_POOL,
-  REGENERATE_ACCESS_KEY,
-  REGENERATE_ACCESS_KEY_SUCCESS,
-  REGENERATE_ACCESS_KEY_ERROR,
-  REGISTER_DASHBOARD,
-  REMOVE_WIDGET_FROM_DASHBOARD,
-  SAVE_DASHBOARD,
-  SAVE_DASHBOARD_ERROR,
-  SAVE_DASHBOARD_METADATA,
-  SAVE_DASHBOARD_METADATA_ERROR,
-  SAVE_DASHBOARD_METADATA_SUCCESS,
-  SAVE_DASHBOARD_SUCCESS,
-  SET_DASHBOARD_ERROR,
-  SET_DASHBOARD_LIST,
-  SET_DASHBOARD_LIST_ORDER,
-  SET_DASHBOARD_PUBLIC_ACCESS,
-  SET_TAGS_FILTERS,
-  SET_TAGS_FILTERS_PUBLIC,
-  SHOW_DASHBOARD_SETTINGS_MODAL,
-  SHOW_DASHBOARD_SHARE_MODAL,
-  SHOW_DELETE_CONFIRMATION,
-  UNREGISTER_DASHBOARD,
-  UPDATE_CACHED_DASHBOARD_IDS,
-  UPDATE_DASHBOARD,
-  UPDATE_DASHBOARD_METADATA,
-  SET_CONNECTED_DASHBOARDS,
-  SET_CONNECTED_DASHBOARDS_LOADING,
-  SET_CONNECTED_DASHBOARDS_ERROR,
-} from './constants';
-
-import { ReducerState } from './types';
+  ConnectedDashboard,
+  Dashboard,
+  DashboardError,
+  DashboardListOrder,
+  DashboardMetaData,
+  ReducerState,
+} from './types';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export const initialState: ReducerState = {
   metadata: {
@@ -84,385 +52,417 @@ export const initialState: ReducerState = {
   dashboardListOrder: 'recent',
 };
 
-const dashboardsReducer = (
-  state: ReducerState = initialState,
-  action: DashboardsActions
-) => {
-  switch (action.type) {
-    case UPDATE_DASHBOARD_METADATA:
-      return {
-        ...state,
-        metadata: {
-          ...state.metadata,
-          data: sortDashboards(
-            state.metadata.data.map((dashboardMeta) => {
-              if (action.payload.dashboardId === dashboardMeta.id) {
-                return {
-                  ...dashboardMeta,
-                  ...action.payload.metadata,
-                };
-              }
-
-              return dashboardMeta;
-            }),
-            state.dashboardListOrder
-          ),
-        },
-      };
-    case SHOW_DELETE_CONFIRMATION:
-      return {
-        ...state,
-        deleteConfirmation: {
-          ...state.deleteConfirmation,
-          dashboardId: action.payload.dashboardId,
-          isVisible: true,
-        },
-      };
-    case HIDE_DELETE_CONFIRMATION:
-      return {
-        ...state,
-        deleteConfirmation: {
-          ...state.deleteConfirmation,
-          dashboardId: null,
-          isVisible: false,
-        },
-      };
-    case SHOW_DASHBOARD_SETTINGS_MODAL:
-      return {
-        ...state,
-        dashboardSettingsModal: {
-          ...state.dashboardSettingsModal,
-          dashboardId: action.payload.dashboardId,
-          isVisible: true,
-        },
-      };
-    case HIDE_DASHBOARD_SETTINGS_MODAL:
-      return {
-        ...state,
-        dashboardSettingsModal: {
-          ...state.dashboardSettingsModal,
-          dashboardId: null,
-          isVisible: false,
-        },
-      };
-    case SHOW_DASHBOARD_SHARE_MODAL:
-      return {
-        ...state,
-        dashboardShareModal: {
-          ...state.dashboardShareModal,
-          dashboardId: action.payload.dashboardId,
-          isVisible: true,
-        },
-      };
-    case HIDE_DASHBOARD_SHARE_MODAL:
-      return {
-        ...state,
-        dashboardShareModal: {
-          ...state.dashboardShareModal,
-          dashboardId: null,
-          isVisible: false,
-        },
-      };
-    case REMOVE_WIDGET_FROM_DASHBOARD:
-      return {
-        ...state,
-        metadata: {
-          ...state.metadata,
-          data: reduceWidgetsCount(
-            action.payload.dashboardId,
-            state.metadata.data,
-            'decrease'
-          ),
-        },
-        items: {
-          ...state.items,
-          [action.payload.dashboardId]: {
-            ...state.items[action.payload.dashboardId],
-            settings: {
-              ...state.items[action.payload.dashboardId].settings,
-              widgets: state.items[
-                action.payload.dashboardId
-              ].settings.widgets.filter((id) => id !== action.payload.widgetId),
-            },
-          },
-        },
-      };
-    case ADD_WIDGET_TO_DASHBOARD:
-      return {
-        ...state,
-        metadata: {
-          ...state.metadata,
-          data: reduceWidgetsCount(
-            action.payload.dashboardId,
-            state.metadata.data,
-            'increase'
-          ),
-        },
-        items: {
-          ...state.items,
-          [action.payload.dashboardId]: {
-            ...state.items[action.payload.dashboardId],
-            settings: {
-              ...state.items[action.payload.dashboardId].settings,
-              widgets: [
-                ...state.items[action.payload.dashboardId].settings.widgets,
-                action.payload.widgetId,
-              ],
-            },
-          },
-        },
-      };
-    case CREATE_DASHBOARD:
-      return {
-        ...state,
-        metadata: {
-          ...state.metadata,
-          data: [
-            ...state.metadata.data,
-            createDashboardMeta(action.payload.dashboardId),
-          ],
-        },
-      };
-    case DELETE_DASHBOARD_SUCCESS:
-      return {
-        ...state,
-        metadata: {
-          ...state.metadata,
-          data: state.metadata.data.filter(
-            ({ id }) => id !== action.payload.dashboardId
-          ),
-        },
-        items: Object.keys(state.items).reduce((acc, dashboardId) => {
-          if (dashboardId !== action.payload.dashboardId) {
-            return {
-              ...acc,
-              [dashboardId]: state.items[dashboardId],
-            };
-          }
-
-          return acc;
-        }, {}),
-      };
-    case REGISTER_DASHBOARD:
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          [action.payload.dashboardId]: {
-            initialized: false,
-            isSaving: false,
-            error: null,
-            settings: null,
-          },
-        },
-      };
-    case SET_DASHBOARD_ERROR:
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          [action.payload.dashboardId]: {
-            ...state.items[action.payload.dashboardId],
-            error: action.payload.error,
-          },
-        },
-      };
-    case SAVE_DASHBOARD:
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          [action.payload.dashboardId]: {
-            ...state.items[action.payload.dashboardId],
-            isSaving: true,
-          },
-        },
-      };
-    case SAVE_DASHBOARD_SUCCESS:
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          [action.payload.dashboardId]: {
-            ...state.items[action.payload.dashboardId],
-            isSaving: false,
-          },
-        },
-      };
-    case SAVE_DASHBOARD_ERROR:
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          [action.payload.dashboardId]: {
-            ...state.items[action.payload.dashboardId],
-            isSaving: false,
-          },
-        },
-      };
-    case UPDATE_DASHBOARD:
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          [action.payload.dashboardId]: {
-            ...state.items[action.payload.dashboardId],
-            initialized: true,
-            settings: action.payload.settings,
-          },
-        },
-      };
-    case SET_DASHBOARD_LIST:
-    case FETCH_DASHBOARDS_LIST_SUCCESS:
-      return {
-        ...state,
-        metadata: {
-          ...state.metadata,
-          isInitiallyLoaded: true,
-          error: null,
-          data: sortDashboards(
-            action.payload.dashboards,
-            state.dashboardListOrder
-          ),
-        },
-      };
-    case SAVE_DASHBOARD_METADATA:
-      return {
-        ...state,
-        metadata: {
-          ...state.metadata,
-          isSavingMetadata: true,
-        },
-      };
-    case SAVE_DASHBOARD_METADATA_SUCCESS:
-    case SAVE_DASHBOARD_METADATA_ERROR:
-      return {
-        ...state,
-        metadata: {
-          ...state.metadata,
-          isSavingMetadata: false,
-        },
-      };
-    case SET_DASHBOARD_LIST_ORDER:
-      return {
-        ...state,
-        metadata: {
-          ...state.metadata,
-          data: sortDashboards(state.metadata.data, action.payload.order),
-        },
-        dashboardListOrder: action.payload.order,
-      };
-    case SET_DASHBOARD_PUBLIC_ACCESS:
-      return {
-        ...state,
-        metadata: {
-          ...state.metadata,
-          data: state.metadata.data.map((dashboardMeta) => {
-            if (action.payload.dashboardId === dashboardMeta.id) {
+const dashboardsSlice = createSlice({
+  name: 'dashboards',
+  initialState,
+  reducers: {
+    updateDashboardMetadata: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        dashboardId: string;
+        metadata: Partial<DashboardMetaData>;
+      }>
+    ) => {
+      state.metadata = {
+        ...state.metadata,
+        data: sortDashboards(
+          state.metadata.data.map((dashboardMeta) => {
+            if (payload.dashboardId === dashboardMeta.id) {
               return {
                 ...dashboardMeta,
-                isPublic: action.payload.isPublic,
-                publicAccessKey: action.payload.accessKey,
+                ...payload.metadata,
               };
             }
 
             return dashboardMeta;
           }),
+          state.dashboardListOrder
+        ),
+      };
+    },
+    showDeleteConfirmation: (
+      state,
+      { payload: dashboardId }: PayloadAction<string>
+    ) => {
+      state.deleteConfirmation = {
+        ...state.deleteConfirmation,
+        dashboardId,
+        isVisible: true,
+      };
+    },
+    hideDeleteConfirmation: (state) => {
+      state.deleteConfirmation = {
+        ...state.deleteConfirmation,
+        dashboardId: null,
+        isVisible: false,
+      };
+    },
+    showDashboardSettingsModal: (
+      state,
+      { payload: dashboardId }: PayloadAction<string>
+    ) => {
+      state.dashboardSettingsModal = {
+        ...state.dashboardSettingsModal,
+        dashboardId,
+        isVisible: true,
+      };
+    },
+    hideDashboardSettingsModal: (state) => {
+      state.dashboardSettingsModal = {
+        ...state.dashboardSettingsModal,
+        dashboardId: null,
+        isVisible: false,
+      };
+    },
+    showDashboardShareModal: (
+      state,
+      { payload: dashboardId }: PayloadAction<string>
+    ) => {
+      state.dashboardShareModal = {
+        ...state.dashboardShareModal,
+        dashboardId,
+        isVisible: true,
+      };
+    },
+    hideDashboardShareModal: (state) => {
+      state.dashboardShareModal = {
+        ...state.dashboardShareModal,
+        dashboardId: null,
+        isVisible: false,
+      };
+    },
+    removeWidgetFromDashboard: (
+      state,
+      { payload }: PayloadAction<{ dashboardId: string; widgetId: string }>
+    ) => {
+      state.metadata = {
+        ...state.metadata,
+        data: reduceWidgetsCount(
+          payload.dashboardId,
+          state.metadata.data,
+          'decrease'
+        ),
+      };
+      state.items = {
+        ...state.items,
+        [payload.dashboardId]: {
+          ...state.items[payload.dashboardId],
+          settings: {
+            ...state.items[payload.dashboardId].settings,
+            widgets: state.items[payload.dashboardId].settings.widgets.filter(
+              (id) => id !== payload.widgetId
+            ),
+          },
         },
       };
-    case ADD_CLONED_DASHBOARD:
-      return {
-        ...state,
-        metadata: {
-          ...state.metadata,
-          data: sortDashboards(
-            [...state.metadata.data, action.payload.dashboardMeta],
-            state.dashboardListOrder
-          ),
+    },
+    addWidgetToDashboard: (
+      state,
+      { payload }: PayloadAction<{ dashboardId: string; widgetId: string }>
+    ) => {
+      state.metadata = {
+        ...state.metadata,
+        data: reduceWidgetsCount(
+          payload.dashboardId,
+          state.metadata.data,
+          'increase'
+        ),
+      };
+      state.items = {
+        ...state.items,
+        [payload.dashboardId]: {
+          ...state.items[payload.dashboardId],
+          settings: {
+            ...state.items[payload.dashboardId].settings,
+            widgets: [
+              ...state.items[payload.dashboardId].settings.widgets,
+              payload.widgetId,
+            ],
+          },
         },
       };
-    case PREPARE_TAGS_POOL:
-      return {
-        ...state,
-        tagsPool: createTagsPool(state.metadata.data),
+    },
+    createDashboard: (
+      state,
+      { payload: dashboardId }: PayloadAction<string>
+    ) => {
+      state.metadata = {
+        ...state.metadata,
+        data: [...state.metadata.data, createDashboardMeta(dashboardId)],
       };
-    case CLEAR_TAGS_POOL:
-      return {
-        ...state,
-        tagsPool: [],
+    },
+    deleteDashboardSuccess: (
+      state,
+      { payload: dashboardId }: PayloadAction<string>
+    ) => {
+      state.metadata = {
+        ...state.metadata,
+        data: state.metadata.data.filter(({ id }) => id !== dashboardId),
       };
-    case SET_TAGS_FILTERS:
-      return {
-        ...state,
-        tagsFilters: {
-          ...state.tagsFilters,
-          tags: action.payload.tags,
+      state.items = Object.keys(state.items).reduce((acc, dashboardId) => {
+        if (dashboardId !== dashboardId) {
+          return {
+            ...acc,
+            [dashboardId]: state.items[dashboardId],
+          };
+        }
+        return acc;
+      }, {});
+    },
+    registerDashboard: (
+      state,
+      { payload: dashboardId }: PayloadAction<string>
+    ) => {
+      state.items = {
+        ...state.items,
+        [dashboardId]: {
+          initialized: false,
+          isSaving: false,
+          error: null,
+          settings: null,
         },
       };
-    case SET_TAGS_FILTERS_PUBLIC:
-      return {
-        ...state,
-        tagsFilters: {
-          ...state.tagsFilters,
-          showOnlyPublicDashboards: action.payload.filterPublic,
+    },
+    setDashboardError: (
+      state,
+      { payload }: PayloadAction<{ dashboardId: string; error: DashboardError }>
+    ) => {
+      state.items = {
+        ...state.items,
+        [payload.dashboardId]: {
+          ...state.items[payload.dashboardId],
+          error: payload.error,
         },
       };
-    case UPDATE_CACHED_DASHBOARD_IDS:
-      return {
-        ...state,
-        cachedDashboardIds: action.payload.dashboardIds,
+    },
+    saveDashboard: (state, { payload: dashboardId }: PayloadAction<string>) => {
+      state.items = {
+        ...state.items,
+        [dashboardId]: {
+          ...state.items[dashboardId],
+          isSaving: true,
+        },
       };
-    case UNREGISTER_DASHBOARD:
+    },
+    saveDashboardSuccess: (
+      state,
+      { payload: dashboardId }: PayloadAction<string>
+    ) => {
+      state.items = {
+        ...state.items,
+        [dashboardId]: {
+          ...state.items[dashboardId],
+          isSaving: false,
+        },
+      };
+    },
+    saveDashboardError: (
+      state,
+      { payload: dashboardId }: PayloadAction<string>
+    ) => {
+      state.items = {
+        ...state.items,
+        [dashboardId]: {
+          ...state.items[dashboardId],
+          isSaving: false,
+        },
+      };
+    },
+    updateDashboard: (
+      state,
+      { payload }: PayloadAction<{ dashboardId: string; settings: Dashboard }>
+    ) => {
+      state.items = {
+        ...state.items,
+        [payload.dashboardId]: {
+          ...state.items[payload.dashboardId],
+          initialized: true,
+          settings: payload.settings,
+        },
+      };
+    },
+    setDashboardList: (
+      state,
+      { payload }: PayloadAction<{ dashboards: DashboardMetaData[] }>
+    ) => {
+      state.metadata = {
+        ...state.metadata,
+        isInitiallyLoaded: true,
+        error: null,
+        data: sortDashboards(payload.dashboards, state.dashboardListOrder),
+      };
+    },
+    fetchDashboardsListSuccess: (
+      state,
+      { payload: dashboards }: PayloadAction<DashboardMetaData[]>
+    ) => {
+      state.metadata = {
+        ...state.metadata,
+        isInitiallyLoaded: true,
+        error: null,
+        data: sortDashboards(dashboards, state.dashboardListOrder),
+      };
+    },
+    saveDashboardMetadata: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        dashboardId: string;
+        metadata: Partial<DashboardMetaData>;
+      }>
+    ) => {
+      state.metadata = {
+        ...state.metadata,
+        isSavingMetadata: true,
+      };
+    },
+    saveDashboardMetadataSuccess: (state) => {
+      state.metadata = {
+        ...state.metadata,
+        isSavingMetadata: false,
+      };
+    },
+    saveDashboardMetadataError: (state) => {
+      state.metadata = {
+        ...state.metadata,
+        isSavingMetadata: false,
+      };
+    },
+    setDashboardListOrder: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        data?: DashboardMetaData[];
+        order: DashboardListOrder;
+      }>
+    ) => {
+      (state.metadata = {
+        ...state.metadata,
+        data: sortDashboards(state.metadata.data, payload.order),
+      }),
+        (state.dashboardListOrder = payload.order);
+    },
+    setDashboardPublicAccess: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        dashboardId: string;
+        isPublic: boolean;
+        accessKey: string;
+      }>
+    ) => {
+      state.metadata = {
+        ...state.metadata,
+        data: state.metadata.data.map((dashboardMeta) => {
+          if (payload.dashboardId === dashboardMeta.id) {
+            return {
+              ...dashboardMeta,
+              isPublic: payload.isPublic,
+              publicAccessKey: payload.accessKey,
+            };
+          }
+          return dashboardMeta;
+        }),
+      };
+    },
+    addClonedDashboard: (
+      state,
+      { payload: dashboardMeta }: PayloadAction<DashboardMetaData>
+    ) => {
+      state.metadata = {
+        ...state.metadata,
+        data: sortDashboards(
+          [...state.metadata.data, dashboardMeta],
+          state.dashboardListOrder
+        ),
+      };
+    },
+    prepareTagsPool: (state) => {
+      state.tagsPool = createTagsPool(state.metadata.data);
+    },
+    clearTagsPool: (state) => {
+      state.tagsPool = [];
+    },
+    setTagsFilters: (state, { payload }: PayloadAction<{ tags: string[] }>) => {
+      state.tagsFilters = {
+        ...state.tagsFilters,
+        tags: payload.tags,
+      };
+    },
+    setTagsFiltersPublic: (
+      state,
+      { payload: filterPublic }: PayloadAction<boolean>
+    ) => {
+      state.tagsFilters = {
+        ...state.tagsFilters,
+        showOnlyPublicDashboards: filterPublic,
+      };
+    },
+    updateCachedDashboardIds: (state, { payload }: PayloadAction<string[]>) => {
+      state.cachedDashboardIds = payload;
+    },
+    unregisterDashboard: (
+      state,
+      { payload: dashboardId }: PayloadAction<string>
+    ) => {
       const items = { ...state.items };
-      delete items[action.payload.dashboardId];
-      return {
-        ...state,
-        items,
+      delete items[dashboardId];
+      state.items = items;
+    },
+    regenerateAccessKey: (
+      state,
+      { payload }: PayloadAction<{ dashboardId: string }>
+    ) => {
+      state.metadata = {
+        ...state.metadata,
+        isRegeneratingAccessKey: true,
       };
-    case REGENERATE_ACCESS_KEY:
-      return {
-        ...state,
-        metadata: {
-          ...state.metadata,
-          isRegeneratingAccessKey: true,
-        },
+    },
+    regenerateAccessKeySuccess: (state) => {
+      state.metadata = {
+        ...state.metadata,
+        isRegeneratingAccessKey: false,
       };
-    case REGENERATE_ACCESS_KEY_SUCCESS:
-    case REGENERATE_ACCESS_KEY_ERROR:
-      return {
-        ...state,
-        metadata: {
-          ...state.metadata,
-          isRegeneratingAccessKey: false,
-        },
+    },
+    regenerateAccessKeyError: (state) => {
+      state.metadata = {
+        ...state.metadata,
+        isRegeneratingAccessKey: false,
       };
-    case SET_CONNECTED_DASHBOARDS:
-      return {
-        ...state,
-        connectedDashboards: {
-          ...state.connectedDashboards,
-          items: action.payload.connectedDashboards,
-        },
+    },
+    setConnectedDashboards: (
+      state,
+      { payload: connectedDashboards }: PayloadAction<ConnectedDashboard[]>
+    ) => {
+      state.connectedDashboards = {
+        ...state.connectedDashboards,
+        items: connectedDashboards,
       };
-    case SET_CONNECTED_DASHBOARDS_LOADING:
-      return {
-        ...state,
-        connectedDashboards: {
-          ...state.connectedDashboards,
-          isLoading: action.payload.isLoading,
-        },
+    },
+    setConnectedDashboardsLoading: (
+      state,
+      { payload: isLoading }: PayloadAction<boolean>
+    ) => {
+      state.connectedDashboards = {
+        ...state.connectedDashboards,
+        isLoading,
       };
-    case SET_CONNECTED_DASHBOARDS_ERROR:
-      return {
-        ...state,
-        connectedDashboards: {
-          ...state.connectedDashboards,
-          isError: action.payload.isError,
-        },
+    },
+    setConnectedDashboardsError: (
+      state,
+      { payload: isError }: PayloadAction<boolean>
+    ) => {
+      state.connectedDashboards = {
+        ...state.connectedDashboards,
+        isError,
       };
-    default:
-      return state;
-  }
-};
+    },
+  },
+});
 
-export default dashboardsReducer;
+export default dashboardsSlice;

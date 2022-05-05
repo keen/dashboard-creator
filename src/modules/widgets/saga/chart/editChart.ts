@@ -2,14 +2,13 @@ import { getContext, put, select, take } from 'redux-saga/effects';
 import { SET_QUERY_EVENT, SET_CHART_SETTINGS } from '@keen.io/query-creator';
 
 import { chartEditorActions, chartEditorSelectors } from '../../../chartEditor';
-
-import { saveDashboard } from '../../../../modules/dashboards';
 import { editChartSavedQuery } from '../chartWidget';
 import { appSelectors } from '../../../app';
 
 import { PUBSUB } from '../../../../constants';
 import { ChartWidget } from '../../types';
 import { widgetsActions } from '../../index';
+import { dashboardsActions } from '../../../dashboards';
 
 /**
  * Flow responsible for editing single chart.
@@ -100,7 +99,7 @@ export function* editChart(id: string, widgetItem: any) {
       yield put(chartEditorActions.resetEditor());
 
       const dashboardId = yield select(appSelectors.getActiveDashboard);
-      yield put(saveDashboard(dashboardId));
+      yield put(dashboardsActions.saveDashboard(dashboardId));
     }
   }
 }

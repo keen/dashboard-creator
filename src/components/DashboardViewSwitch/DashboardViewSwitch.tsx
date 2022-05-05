@@ -19,13 +19,6 @@ import { colors } from '@keen.io/colors';
 import SearchInput from '../SearchInput';
 import PermissionGate from '../PermissionGate';
 
-import {
-  getDashboardsMetadata,
-  sortDashboards,
-  viewDashboard,
-  createDashboard as createDashboardAction,
-} from '../../modules/dashboards';
-
 import { ListItem } from './components';
 
 import {
@@ -43,6 +36,11 @@ import {
 
 import { ROUTES } from '../../constants';
 import { appActions, appSelectors, Scopes } from '../../modules/app';
+import {
+  dashboardsActions,
+  dashboardsSelectors,
+} from '../../modules/dashboards';
+import { sortDashboards } from '../../modules/dashboards/utils';
 
 type Props = {
   /** Dashboard title */
@@ -54,7 +52,7 @@ const DashboardViewSwitch: FC<Props> = ({ title }) => {
   const dispatch = useDispatch();
 
   const dashboardId = useSelector(appSelectors.getActiveDashboard);
-  const dashboards = useSelector(getDashboardsMetadata);
+  const dashboards = useSelector(dashboardsSelectors.getDashboardsMetadata);
 
   const [isOpen, setOpen] = useState(false);
   const [searchPhrase, setSearchPhrase] = useState('');
@@ -80,7 +78,7 @@ const DashboardViewSwitch: FC<Props> = ({ title }) => {
 
   const createDashboard = useCallback(() => {
     const dashboardId = uuid();
-    dispatch(createDashboardAction(dashboardId));
+    dispatch(dashboardsActions.createDashboard(dashboardId));
   }, []);
 
   const containerRef = useRef(null);
@@ -156,7 +154,7 @@ const DashboardViewSwitch: FC<Props> = ({ title }) => {
                       offsetTop={offsetTop}
                       dropdownWidth={dropdownWidth}
                       onClick={() => {
-                        dispatch(viewDashboard(id));
+                        dispatch(dashboardsActions.viewDashboard(id));
                         setOpen(false);
                       }}
                       onMouseEnter={() => {

@@ -5,14 +5,6 @@ import { put, call, getContext } from 'redux-saga/effects';
 import { viewPublicDashboard } from './viewPublicDashboard';
 import { prepareDashboard } from './prepareDashboard';
 
-import {
-  registerDashboard,
-  setDashboardList,
-  setDashboardError,
-  initializeDashboardWidgets,
-  viewPublicDashboard as viewPublicDashboardAction,
-} from '../actions';
-
 import { appActions } from '../../app';
 
 import { createDashboardSettings } from '../utils';
@@ -20,9 +12,10 @@ import { createDashboardSettings } from '../utils';
 import { DashboardModel, DashboardMetaData, DashboardError } from '../types';
 
 import { DASHBOARD_API } from '../../../constants';
+import { dashboardsActions } from '../index';
 
 const dashboardId = '@dashboard/01';
-const action = viewPublicDashboardAction(dashboardId);
+const action = dashboardsActions.viewPublicDashboard(dashboardId);
 
 const dashboardMetadata: DashboardMetaData = {
   id: dashboardId,
@@ -52,7 +45,9 @@ describe('Scenario 1: User access public dashboard', () => {
   };
 
   test('accessed dashboard is registered', (result) => {
-    expect(result).toEqual(put(registerDashboard(dashboardId)));
+    expect(result).toEqual(
+      put(dashboardsActions.registerDashboard(dashboardId))
+    );
   });
 
   test('set active dashboard', (result) => {
@@ -74,7 +69,11 @@ describe('Scenario 1: User access public dashboard', () => {
   });
 
   test('set dashboards list', (result) => {
-    expect(result).toEqual(put(setDashboardList([dashboardMetadata])));
+    expect(result).toEqual(
+      put(
+        dashboardsActions.setDashboardList({ dashboards: [dashboardMetadata] })
+      )
+    );
   });
 
   test('fetch dashboard', () => {
@@ -93,7 +92,12 @@ describe('Scenario 1: User access public dashboard', () => {
 
   test('initializes dashboard widgets', (result) => {
     expect(result).toEqual(
-      put(initializeDashboardWidgets(dashboardId, ['@widget/01', '@widget/02']))
+      put(
+        dashboardsActions.initializeDashboardWidgets(dashboardId, [
+          '@widget/01',
+          '@widget/02',
+        ])
+      )
     );
   });
 });
@@ -105,7 +109,9 @@ describe('Scenario 2: User access not public dashboard', () => {
   };
 
   test('accessed dashboard is registered', (result) => {
-    expect(result).toEqual(put(registerDashboard(dashboardId)));
+    expect(result).toEqual(
+      put(dashboardsActions.registerDashboard(dashboardId))
+    );
   });
 
   test('set active dashboard', (result) => {
@@ -131,13 +137,22 @@ describe('Scenario 2: User access not public dashboard', () => {
 
   test('set dashboards list', (result) => {
     expect(result).toEqual(
-      put(setDashboardList([{ ...dashboardMetadata, isPublic: false }]))
+      put(
+        dashboardsActions.setDashboardList({
+          dashboards: [{ ...dashboardMetadata, isPublic: false }],
+        })
+      )
     );
   });
 
   test('set dashboard error', (result) => {
     expect(result).toEqual(
-      put(setDashboardError(dashboardId, DashboardError.ACCESS_NOT_PUBLIC))
+      put(
+        dashboardsActions.setDashboardError({
+          dashboardId,
+          error: DashboardError.ACCESS_NOT_PUBLIC,
+        })
+      )
     );
   });
 });

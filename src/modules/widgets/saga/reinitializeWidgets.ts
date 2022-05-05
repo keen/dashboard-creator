@@ -4,10 +4,10 @@ import {
 } from '../actions';
 import { all, put, select } from 'redux-saga/effects';
 import { appSelectors } from '../../app';
-import { getDashboardSettings } from '../../dashboards';
 import { WidgetItem } from '../types';
 import { getWidgetSettings } from '../selectors';
 import { widgetsActions } from '../index';
+import { dashboardsSelectors } from '../../dashboards';
 
 /**
  * Flow responsible for re-initializing widgets after updating saved query.
@@ -22,7 +22,10 @@ export function* reinitializeWidgets({
   const { widgetId, queryId } = payload;
   const dashboardId = yield select(appSelectors.getActiveDashboard);
 
-  const { widgets } = yield select(getDashboardSettings, dashboardId);
+  const { widgets } = yield select(
+    dashboardsSelectors.getDashboardSettings,
+    dashboardId
+  );
   const widgetState: Partial<WidgetItem> = {
     isInitialized: false,
     error: null,

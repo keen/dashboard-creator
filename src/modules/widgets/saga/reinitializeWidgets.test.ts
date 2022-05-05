@@ -5,10 +5,10 @@ import {
 import sagaHelper from 'redux-saga-testing';
 import { all, put, select } from 'redux-saga/effects';
 import { appSelectors } from '../../app';
-import { getDashboardSettings } from '../../dashboards';
 import { getWidgetSettings } from '../selectors';
 import { reinitializeWidgets } from './reinitializeWidgets';
 import { widgetsActions } from '../index';
+import { dashboardsSelectors } from '../../dashboards';
 
 const widgetId = '@widget/01';
 const dashboardId = '@dashboard/01';
@@ -31,7 +31,9 @@ describe('reinitializeWidgets()', () => {
     });
 
     test('get dashboard settings', (result) => {
-      expect(result).toEqual(select(getDashboardSettings, dashboardId));
+      expect(result).toEqual(
+        select(dashboardsSelectors.getDashboardSettings, dashboardId)
+      );
 
       return dashboardSettings;
     });

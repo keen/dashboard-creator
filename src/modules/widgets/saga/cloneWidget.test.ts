@@ -4,16 +4,12 @@ import { all, call, put, select, take } from 'redux-saga/effects';
 import { getWidget } from '../selectors';
 import { widget as widgetItem } from '../fixtures';
 import { appSelectors } from '../../app';
-import {
-  addWidgetToDashboard,
-  getDashboard,
-  saveDashboard,
-} from '../../dashboards';
+
 import { findBiggestYPositionOfWidgets } from '../../dashboards/utils/findBiggestYPositionOfWidgets';
-import { UPDATE_DASHBOARD_METADATA } from '../../dashboards/constants';
 import { scrollItemIntoView } from '../../../utils';
 import { cloneWidget } from './cloneWidget';
 import { widgetsActions } from '../index';
+import { dashboardsActions, dashboardsSelectors } from '../../dashboards';
 
 const widgetId = '@widget/01';
 const dashboardId = '@dashboard/01';
@@ -67,7 +63,9 @@ describe('cloneWidget()', () => {
     });
 
     test('get active dashboard data', (result) => {
-      expect(result).toEqual(select(getDashboard, dashboardId));
+      expect(result).toEqual(
+        select(dashboardsSelectors.getDashboard, dashboardId)
+      );
       return dashboardData;
     });
 
@@ -103,16 +101,23 @@ describe('cloneWidget()', () => {
 
     test('trigger addWidgetToDashboard action', (result) => {
       expect(result).toEqual(
-        put(addWidgetToDashboard(dashboardId, `widget/${widgetId}`))
+        put(
+          dashboardsActions.addWidgetToDashboard({
+            dashboardId,
+            widgetId: `widget/${widgetId}`,
+          })
+        )
       );
     });
 
     test('trigger saveDashboard action', (result) => {
-      expect(result).toEqual(put(saveDashboard(dashboardId)));
+      expect(result).toEqual(put(dashboardsActions.saveDashboard(dashboardId)));
     });
 
     test('waits for dashboard metadata update', (result) => {
-      expect(result).toEqual(take(UPDATE_DASHBOARD_METADATA));
+      expect(result).toEqual(
+        take(dashboardsActions.updateDashboardMetadata.type)
+      );
     });
 
     test('calls scroll item into view', (result) => {

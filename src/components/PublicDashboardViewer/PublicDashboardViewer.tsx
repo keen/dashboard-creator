@@ -16,11 +16,6 @@ import {
   ClearFilters,
 } from './PublicDashboardViewer.styles';
 
-import {
-  getDashboard,
-  getDashboardMeta,
-  resetDashboardFilters,
-} from '../../modules/dashboards';
 import { themeSelectors } from '../../modules/theme';
 import { modalMotion } from './motion';
 
@@ -32,6 +27,10 @@ import { RootState } from '../../rootReducer';
 
 import { DASHBOARD_ERROR } from './constants';
 import { queriesSelectors } from '../../modules/queries';
+import {
+  dashboardsActions,
+  dashboardsSelectors,
+} from '../../modules/dashboards';
 
 type Props = {
   /** Dashboard identifer */
@@ -48,7 +47,7 @@ const PublicDashboardViewer: FC<Props> = ({ dashboardId }) => {
     pageBackground,
     error,
   } = useSelector((state: RootState) => {
-    const dashboard = getDashboard(state, dashboardId);
+    const dashboard = dashboardsSelectors.getDashboard(state, dashboardId);
     const themeSettings = themeSelectors.getThemeByDashboardId(
       state,
       dashboardId
@@ -81,7 +80,7 @@ const PublicDashboardViewer: FC<Props> = ({ dashboardId }) => {
   });
 
   const metadata = useSelector((state: RootState) =>
-    getDashboardMeta(state, dashboardId)
+    dashboardsSelectors.getDashboardMeta(state, dashboardId)
   );
   const hasInterimQueries = useSelector((state: RootState) => {
     const interimQueriesLength = queriesSelectors.getInterimQueriesLength(
@@ -102,7 +101,9 @@ const PublicDashboardViewer: FC<Props> = ({ dashboardId }) => {
           )}
           {hasInterimQueries && (
             <ClearFilters
-              onClick={() => dispatch(resetDashboardFilters(dashboardId))}
+              onClick={() =>
+                dispatch(dashboardsActions.resetDashboardFilters(dashboardId))
+              }
             >
               <BodyText
                 variant="body2"

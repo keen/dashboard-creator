@@ -89,11 +89,11 @@ test('allows user to close modal', () => {
     Array [
       Object {
         "payload": undefined,
-        "type": "@dashboard/PREPARE_TAGS_POOL",
+        "type": "dashboards/prepareTagsPool",
       },
       Object {
         "payload": undefined,
-        "type": "@dashboards/HIDE_DASHBOARD_SETTINGS_MODAL",
+        "type": "dashboards/hideDashboardSettingsModal",
       },
     ]
   `);

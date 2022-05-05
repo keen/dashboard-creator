@@ -1,25 +1,13 @@
 import sagaHelper from 'redux-saga-testing';
 import { put, select, take } from 'redux-saga/effects';
 
-import {
-  finishDashboardEdition as finishDashboardEditionAction,
-  hideDashboardSettingsModal,
-  saveDashboard,
-  showDashboardSettingsModal,
-  viewDashboard,
-} from '../actions';
-
 import { getDashboardMeta } from '../selectors';
 import { finishDashboardEdition } from './finishDashboardEdition';
-import {
-  HIDE_DASHBOARD_SETTINGS_MODAL,
-  SAVE_DASHBOARD_METADATA,
-} from '../constants';
-
+import { dashboardsActions } from '../index';
 const dashboardId = '@dashboard/01';
 
 describe('Scenario 1: User successfully saves dashboard when dashboard title exists', () => {
-  const action = finishDashboardEditionAction(dashboardId);
+  const action = dashboardsActions.finishDashboardEdition(dashboardId);
   const test = sagaHelper(finishDashboardEdition(action));
 
   test('get dashboard metadata', (result) => {
@@ -31,16 +19,16 @@ describe('Scenario 1: User successfully saves dashboard when dashboard title exi
   });
 
   test('saves dashboard', (result) => {
-    expect(result).toEqual(put(saveDashboard(dashboardId)));
+    expect(result).toEqual(put(dashboardsActions.saveDashboard(dashboardId)));
   });
 
   test('set dashboard view mode', (result) => {
-    expect(result).toEqual(put(viewDashboard(dashboardId)));
+    expect(result).toEqual(put(dashboardsActions.viewDashboard(dashboardId)));
   });
 });
 
 describe('Scenario 2: User successfully saves dashboard when dashboard title not exists', () => {
-  const action = finishDashboardEditionAction(dashboardId);
+  const action = dashboardsActions.finishDashboardEdition(dashboardId);
   const test = sagaHelper(finishDashboardEdition(action));
 
   test('get dashboard metadata', (result) => {
@@ -52,21 +40,26 @@ describe('Scenario 2: User successfully saves dashboard when dashboard title not
   });
 
   test('shows dashboard settings modal', (result) => {
-    expect(result).toEqual(put(showDashboardSettingsModal(dashboardId)));
+    expect(result).toEqual(
+      put(dashboardsActions.showDashboardSettingsModal(dashboardId))
+    );
   });
 
   test('waits for user action', (result) => {
     expect(result).toEqual(
-      take([HIDE_DASHBOARD_SETTINGS_MODAL, SAVE_DASHBOARD_METADATA])
+      take([
+        dashboardsActions.hideDashboardSettingsModal.type,
+        dashboardsActions.saveDashboardMetadata.type,
+      ])
     );
-    return hideDashboardSettingsModal();
+    return dashboardsActions.hideDashboardSettingsModal();
   });
 
   test('saves dashboard', (result) => {
-    expect(result).toEqual(put(saveDashboard(dashboardId)));
+    expect(result).toEqual(put(dashboardsActions.saveDashboard(dashboardId)));
   });
 
   test('set dashboard view mode', (result) => {
-    expect(result).toEqual(put(viewDashboard(dashboardId)));
+    expect(result).toEqual(put(dashboardsActions.viewDashboard(dashboardId)));
   });
 });

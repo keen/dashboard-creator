@@ -14,12 +14,6 @@ import { ModalHeader, Toggle, Tooltip, Tabs, Alert } from '@keen.io/ui-core';
 import { Icon } from '@keen.io/icons';
 import { colors } from '@keen.io/colors';
 
-import {
-  hideDashboardShareModal,
-  getDashboardMeta,
-  setDashboardPublicAccess,
-} from '../../modules/dashboards';
-
 import { APIContext } from '../../contexts';
 
 import { EmbedCode, ModalContent, PublicLink } from './components';
@@ -45,6 +39,10 @@ import {
 
 import { RootState } from '../../rootReducer';
 import { createPublicDashboardKeyName } from '../../modules/dashboards/utils';
+import {
+  dashboardsActions,
+  dashboardsSelectors,
+} from '../../modules/dashboards';
 
 type Props = {
   /** Dashboard identifier */
@@ -57,7 +55,8 @@ const DashboardShare: FC<Props> = ({ dashboardId }) => {
   const { t } = useTranslation();
 
   const { isPublic, publicAccessKey } = useSelector((state: RootState) => {
-    if (dashboardId) return getDashboardMeta(state, dashboardId);
+    if (dashboardId)
+      return dashboardsSelectors.getDashboardMeta(state, dashboardId);
     return {
       isPublic: false,
       publicAccessKey: null,
@@ -84,12 +83,24 @@ const DashboardShare: FC<Props> = ({ dashboardId }) => {
       .then((res) => {
         if (!res.length && isPublic) {
           setAccessKeyError(t(ACCESS_KEY_ERROR.NOT_EXIST));
-          dispatch(setDashboardPublicAccess(dashboardId, false, null));
+          dispatch(
+            dashboardsActions.setDashboardPublicAccess({
+              dashboardId,
+              isPublic: false,
+              accessKey: null,
+            })
+          );
         }
         if (res.length) {
           const { is_active, key } = res[0];
           if (key !== publicAccessKey)
-            dispatch(setDashboardPublicAccess(dashboardId, isPublic, key));
+            dispatch(
+              dashboardsActions.setDashboardPublicAccess({
+                dashboardId,
+                isPublic,
+                accessKey: key,
+              })
+            );
           if (isPublic && !is_active)
             setAccessKeyError(ACCESS_KEY_ERROR.REVOKE_ERROR);
         }
@@ -104,11 +115,17 @@ const DashboardShare: FC<Props> = ({ dashboardId }) => {
   }, [publicAccessKey]);
 
   const closeHandler = useCallback(() => {
-    dispatch(hideDashboardShareModal());
+    dispatch(dashboardsActions.hideDashboardShareModal());
   }, []);
 
   const handleToggleChange = useCallback(() => {
-    dispatch(setDashboardPublicAccess(dashboardId, !isPublic, publicAccessKey));
+    dispatch(
+      dashboardsActions.setDashboardPublicAccess({
+        dashboardId,
+        isPublic: !isPublic,
+        accessKey: publicAccessKey,
+      })
+    );
   }, [dashboardId, isPublic, publicAccessKey]);
 
   return (

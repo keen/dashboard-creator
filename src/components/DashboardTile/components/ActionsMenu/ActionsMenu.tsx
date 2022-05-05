@@ -7,13 +7,8 @@ import { Container, DeleteDashboard } from './ActionsMenu.styles';
 
 import PermissionGate from '../../../PermissionGate';
 
-import {
-  cloneDashboard,
-  editDashboard,
-  deleteDashboard,
-  showDashboardShareModal,
-} from '../../../../modules/dashboards';
 import { Scopes } from '../../../../modules/app';
+import { dashboardsActions } from '../../../../modules/dashboards';
 
 type Props = {
   /** Dashboard identifer */
@@ -33,7 +28,7 @@ const ActionsMenu: FC<Props> = ({ dashboardId, onClose }) => {
           <DropdownMenu.Item
             onClick={() => {
               onClose();
-              dispatch(showDashboardShareModal(dashboardId));
+              dispatch(dashboardsActions.showDashboardShareModal(dashboardId));
             }}
           >
             {t('actions_menu.share_dashboard')}
@@ -43,7 +38,7 @@ const ActionsMenu: FC<Props> = ({ dashboardId, onClose }) => {
         <DropdownMenu.Item
           onClick={() => {
             onClose();
-            dispatch(editDashboard(dashboardId));
+            dispatch(dashboardsActions.editDashboard(dashboardId));
           }}
         >
           {t('actions_menu.edit_dashboard')}
@@ -51,7 +46,7 @@ const ActionsMenu: FC<Props> = ({ dashboardId, onClose }) => {
         <DropdownMenu.Item
           onClick={() => {
             onClose();
-            dispatch(cloneDashboard(dashboardId));
+            dispatch(dashboardsActions.cloneDashboard(dashboardId));
           }}
         >
           {t('actions_menu.clone_dashboard')}
@@ -59,7 +54,7 @@ const ActionsMenu: FC<Props> = ({ dashboardId, onClose }) => {
         <DropdownMenu.Item
           onClick={() => {
             onClose();
-            dispatch(deleteDashboard(dashboardId));
+            dispatch(dashboardsActions.deleteDashboard(dashboardId));
           }}
         >
           <DeleteDashboard>

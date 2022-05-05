@@ -11,8 +11,6 @@ import {
   checkIfChartWidgetHasInconsistentFilters,
 } from './chartWidget';
 
-import { saveDashboard } from '../../../modules/dashboards';
-
 import { getWidget, getWidgetSettings } from '../selectors';
 
 import { widget as widgetFixture } from '../fixtures';
@@ -24,6 +22,7 @@ import { chartEditorActions, chartEditorSelectors } from '../../chartEditor';
 import { getConnectedDashboards } from '../../dashboards/saga';
 import { queriesSagas } from '../../queries';
 import { widgetsActions } from '../index';
+import { dashboardsActions } from '../../dashboards';
 
 const translationsMock = {
   t: jest.fn().mockImplementation((value) => value),
@@ -575,7 +574,7 @@ describe('editChartSavedQuery()', () => {
     });
 
     test('triggers save dashboard action', (result) => {
-      expect(result).toEqual(put(saveDashboard(dashboardId)));
+      expect(result).toEqual(put(dashboardsActions.saveDashboard(dashboardId)));
     });
   });
 

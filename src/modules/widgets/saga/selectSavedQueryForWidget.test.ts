@@ -1,10 +1,10 @@
 import sagaHelper from 'redux-saga-testing';
 import { put } from 'redux-saga/effects';
 import { initializeChartWidget as initializeChartWidgetAction } from '../actions';
-import { saveDashboard, updateAccessKeyOptions } from '../../dashboards';
 import { SavedQuery } from '../../queries';
 import { widgetsActions } from '../index';
 import { selectSavedQueryForWidget } from './selectSavedQueryForWidget';
+import { dashboardsActions } from '../../dashboards';
 
 const savedQuery: SavedQuery = {
   id: '@query/01',
@@ -55,7 +55,7 @@ describe('selectSavedQueryForWidget()', () => {
     });
 
     test('updates access key options if necessary', (result) => {
-      expect(result).toEqual(put(updateAccessKeyOptions()));
+      expect(result).toEqual(put(dashboardsActions.updateAccessKeyOptions()));
     });
 
     test('gets active dashboard identifier', () => {
@@ -63,7 +63,7 @@ describe('selectSavedQueryForWidget()', () => {
     });
 
     test('triggers save dashboard action', (result) => {
-      expect(result).toEqual(put(saveDashboard(dashboardId)));
+      expect(result).toEqual(put(dashboardsActions.saveDashboard(dashboardId)));
     });
   });
 
@@ -102,7 +102,7 @@ describe('selectSavedQueryForWidget()', () => {
     });
 
     test('updates access key options if necessary', (result) => {
-      expect(result).toEqual(put(updateAccessKeyOptions()));
+      expect(result).toEqual(put(dashboardsActions.updateAccessKeyOptions()));
     });
 
     test('gets active dashboard identifier', () => {
@@ -110,7 +110,7 @@ describe('selectSavedQueryForWidget()', () => {
     });
 
     test('triggers save dashboard action', (result) => {
-      expect(result).toEqual(put(saveDashboard(dashboardId)));
+      expect(result).toEqual(put(dashboardsActions.saveDashboard(dashboardId)));
     });
   });
 });

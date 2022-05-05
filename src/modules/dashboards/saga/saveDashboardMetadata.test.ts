@@ -2,19 +2,12 @@ import sagaHelper from 'redux-saga-testing';
 import { put, getContext } from 'redux-saga/effects';
 
 import { saveDashboardMetadata } from './saveDashboardMetadata';
-
-import {
-  updateDashboardMeta,
-  saveDashboardMeta as saveDashboardMetaAction,
-  saveDashboardMetaSuccess,
-  saveDashboardMetaError,
-} from '../actions';
-
 import { createDashboardSettings } from '../utils';
 
 import { DASHBOARD_API, NOTIFICATION_MANAGER } from '../../../constants';
 
 import { DashboardMetaData } from '../types';
+import { dashboardsActions } from '../index';
 
 const dashboardId = '@dashboard/01';
 
@@ -30,7 +23,10 @@ const metadata: DashboardMetaData = {
 };
 
 describe('Scenario 1: User succesfully saves dashboard metadata', () => {
-  const action = saveDashboardMetaAction(dashboardId, metadata);
+  const action = dashboardsActions.saveDashboardMetadata({
+    dashboardId,
+    metadata,
+  });
   const test = sagaHelper(saveDashboardMetadata(action));
 
   const dashboardModel = {
@@ -75,11 +71,15 @@ describe('Scenario 1: User succesfully saves dashboard metadata', () => {
   });
 
   test('updates dashboard metadata', (result) => {
-    expect(result).toEqual(put(updateDashboardMeta(dashboardId, metadata)));
+    expect(result).toEqual(
+      put(dashboardsActions.updateDashboardMetadata({ dashboardId, metadata }))
+    );
   });
 
   test('calls dashboard save success action', (result) => {
-    expect(result).toEqual(put(saveDashboardMetaSuccess()));
+    expect(result).toEqual(
+      put(dashboardsActions.saveDashboardMetadataSuccess())
+    );
   });
 
   test('calls notification manager', () => {
@@ -93,7 +93,10 @@ describe('Scenario 1: User succesfully saves dashboard metadata', () => {
 });
 
 describe('Scenario 2: Error occured during saving dashboard metadata', () => {
-  const action = saveDashboardMetaAction(dashboardId, metadata);
+  const action = dashboardsActions.saveDashboardMetadata({
+    dashboardId,
+    metadata,
+  });
   const test = sagaHelper(saveDashboardMetadata(action));
 
   const notificationManager = {
@@ -124,7 +127,7 @@ describe('Scenario 2: Error occured during saving dashboard metadata', () => {
   });
 
   test('calls dashboard save error action', (result) => {
-    expect(result).toEqual(put(saveDashboardMetaError()));
+    expect(result).toEqual(put(dashboardsActions.saveDashboardMetadataError()));
   });
 
   test('calls notification manager', () => {

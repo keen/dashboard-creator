@@ -1,11 +1,11 @@
 import sagaHelper from 'redux-saga-testing';
 import { put, take } from 'redux-saga/effects';
 import { chartEditorActions } from '../../chartEditor';
-import { removeWidgetFromDashboard } from '../../dashboards';
 import { initializeChartWidget as initializeChartWidgetAction } from '../actions';
 import { Query } from '@keen.io/query';
 import { createQueryForWidget } from './createQueryForWidget';
 import { widgetsActions } from '../index';
+import { dashboardsActions } from '../../dashboards';
 
 const widgetId = '@widget/01';
 const dashboardId = '@dashboard/01';
@@ -49,7 +49,9 @@ describe('createQueryForWidget()', () => {
 
     test('removes widget from dashboard', (result) => {
       expect(result).toEqual(
-        put(removeWidgetFromDashboard(dashboardId, widgetId))
+        put(
+          dashboardsActions.removeWidgetFromDashboard({ dashboardId, widgetId })
+        )
       );
     });
   });

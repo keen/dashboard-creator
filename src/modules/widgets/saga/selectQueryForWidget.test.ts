@@ -2,10 +2,10 @@ import sagaHelper from 'redux-saga-testing';
 import { call, put, take } from 'redux-saga/effects';
 import { appActions } from '../../app';
 import { queriesActions, SavedQuery } from '../../queries';
-import { removeWidgetFromDashboard } from '../../dashboards';
 import { selectQueryForWidget } from './selectQueryForWidget';
 import { selectSavedQueryForWidget } from './selectSavedQueryForWidget';
 import { createQueryForWidget } from './createQueryForWidget';
+import { dashboardsActions } from '../../dashboards';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
@@ -85,7 +85,9 @@ describe('selectQueryForWidget()', () => {
 
     test('removes widget from dashboard', (result) => {
       expect(result).toEqual(
-        put(removeWidgetFromDashboard(dashboardId, widgetId))
+        put(
+          dashboardsActions.removeWidgetFromDashboard({ dashboardId, widgetId })
+        )
       );
     });
   });

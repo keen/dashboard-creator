@@ -3,9 +3,9 @@ import sagaHelper from 'redux-saga-testing';
 import { put, take } from 'redux-saga/effects';
 
 import { selectImageWidget } from './imageWidget';
-import { saveDashboard, removeWidgetFromDashboard } from '../../dashboards';
 import { appActions } from '../../app';
 import { widgetsActions } from '../index';
+import { dashboardsActions } from '../../dashboards';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
@@ -53,7 +53,7 @@ describe('selectImageWidget()', () => {
     });
 
     test('triggers save dashboard action', (result) => {
-      expect(result).toEqual(put(saveDashboard(dashboardId)));
+      expect(result).toEqual(put(dashboardsActions.saveDashboard(dashboardId)));
     });
   });
 
@@ -78,7 +78,9 @@ describe('selectImageWidget()', () => {
 
     test('removes widget from dashboard', (result) => {
       expect(result).toEqual(
-        put(removeWidgetFromDashboard(dashboardId, widgetId))
+        put(
+          dashboardsActions.removeWidgetFromDashboard({ dashboardId, widgetId })
+        )
       );
     });
   });

@@ -1,13 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { put, select, getContext } from 'redux-saga/effects';
-
-import {
-  saveDashboard as saveDashboardAction,
-  updateDashboardMeta,
-  saveDashboardSuccess,
-  saveDashboardError,
-} from '../actions';
-
 import { dashboardsSelectors } from '../selectors';
 import { computeDashboardMetadata } from '../utils';
 
@@ -19,6 +11,7 @@ import { DASHBOARD_API } from '../../../constants';
 import { Dashboard, DashboardModel, DashboardMetaData } from '../types';
 
 import { RootState } from '../../../rootReducer';
+import { dashboardsActions } from '../index';
 
 /**
  * Flow responsible for saving dashboard model
@@ -28,9 +21,8 @@ import { RootState } from '../../../rootReducer';
  *
  */
 export function* saveDashboard({
-  payload,
-}: ReturnType<typeof saveDashboardAction>) {
-  const { dashboardId } = payload;
+  payload: dashboardId,
+}: ReturnType<typeof dashboardsActions.saveDashboard>) {
   const state: RootState = yield select();
 
   try {
@@ -82,9 +74,14 @@ export function* saveDashboard({
       updatedMetadata
     );
 
-    yield put(updateDashboardMeta(dashboardId, updatedMetadata));
-    yield put(saveDashboardSuccess(dashboardId));
+    yield put(
+      dashboardsActions.updateDashboardMetadata({
+        dashboardId,
+        metadata: updatedMetadata,
+      })
+    );
+    yield put(dashboardsActions.saveDashboardSuccess(dashboardId));
   } catch (err) {
-    yield put(saveDashboardError(dashboardId));
+    yield put(dashboardsActions.saveDashboardError(dashboardId));
   }
 }

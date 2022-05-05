@@ -7,16 +7,10 @@ import {
   datePickerSelectors,
 } from '../../datePicker';
 
-import {
-  getDashboard,
-  saveDashboard,
-  removeWidgetFromDashboard,
-  ADD_WIDGET_TO_DASHBOARD,
-} from '../../dashboards';
-
 import { ChartWidget, DatePickerWidget } from '../types';
 import { appSelectors } from '../../app';
 import { widgetsActions } from '../index';
+import { dashboardsActions, dashboardsSelectors } from '../../dashboards';
 
 /**
  * Apply date picker connections updates to connected widgets
@@ -93,7 +87,7 @@ export function* getDatePickerWidgetConnections(
   const state = yield select();
   const {
     settings: { widgets: widgetsIds },
-  } = getDashboard(state, dashboardId);
+  } = dashboardsSelectors.getDashboard(state, dashboardId);
 
   const widgetsWithoutErrors = widgetsIds
     .map((widgetId) => getWidget(state, widgetId))
@@ -130,7 +124,7 @@ export function* removeDatePickerConnections(
   const state = yield select();
   const {
     settings: { widgets: widgetsIds },
-  } = getDashboard(state, dashboardId);
+  } = dashboardsSelectors.getDashboard(state, dashboardId);
 
   const connections = widgetsIds
     .map((widgetId) => getWidgetSettings(state, widgetId))
@@ -246,7 +240,7 @@ export function* editDatePickerWidget({
 
   const {
     settings: { widgets: dashboardWidgetsIds },
-  } = yield select(getDashboard, dashboardId);
+  } = yield select(dashboardsSelectors.getDashboard, dashboardId);
   const widgetsConnectionsPool = widgetConnections.map(
     ({ widgetId }) => widgetId
   );
@@ -312,7 +306,7 @@ export function* editDatePickerWidget({
     yield call(applyDatePickerUpdates, datePickerWidgetId);
 
     yield put(datePickerActions.closeEditor());
-    yield put(saveDashboard(dashboardId));
+    yield put(dashboardsActions.saveDashboard(dashboardId));
   }
 }
 
@@ -327,11 +321,11 @@ export function* setupDatePicker(widgetId: string) {
   const datePickerWidgetId = widgetId;
   const dashboardId = yield select(appSelectors.getActiveDashboard);
 
-  yield take(ADD_WIDGET_TO_DASHBOARD);
+  yield take(dashboardsActions.addWidgetToDashboard.type);
 
   const {
     settings: { widgets: dashboardWidgetsIds },
-  } = yield select(getDashboard, dashboardId);
+  } = yield select(dashboardsSelectors.getDashboard, dashboardId);
 
   const widgetConnections = yield call(
     getDatePickerWidgetConnections,
@@ -406,9 +400,11 @@ export function* setupDatePicker(widgetId: string) {
     yield call(applyDatePickerUpdates, datePickerWidgetId);
 
     yield put(datePickerActions.closeEditor());
-    yield put(saveDashboard(dashboardId));
+    yield put(dashboardsActions.saveDashboard(dashboardId));
   } else {
-    yield put(removeWidgetFromDashboard(dashboardId, widgetId));
+    yield put(
+      dashboardsActions.removeWidgetFromDashboard({ dashboardId, widgetId })
+    );
   }
 }
 
@@ -424,7 +420,7 @@ export function* resetDatePickerWidgets({
 }: ReturnType<typeof widgetsActions.resetDatePickerWidgets>) {
   const { dashboardId } = payload;
   const state = yield select();
-  const dashboard = getDashboard(state, dashboardId);
+  const dashboard = dashboardsSelectors.getDashboard(state, dashboardId);
 
   if (dashboard) {
     const {

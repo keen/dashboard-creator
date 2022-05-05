@@ -1,8 +1,8 @@
 import { setupDashboardEventStreams as setupDashboardEventStreamsAction } from '../actions';
 import { put, select } from 'redux-saga/effects';
-import { getDashboard } from '../../dashboards';
 import { filterActions } from '../index';
 import { widgetsSelectors } from '../../widgets';
+import { dashboardsSelectors } from '../../dashboards';
 
 /**
  * Set event streams used on dashboard
@@ -19,7 +19,7 @@ export function* setupDashboardEventStreams({
   const state = yield select();
   const {
     settings: { widgets: widgetsIds },
-  } = getDashboard(state, dashboardId);
+  } = dashboardsSelectors.getDashboard(state, dashboardId);
 
   const eventStreams = new Set<string>();
 

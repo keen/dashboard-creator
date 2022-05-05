@@ -2,9 +2,9 @@ import { put, select, take } from 'redux-saga/effects';
 import { chartEditorActions, chartEditorSelectors } from '../../chartEditor';
 import { initializeChartWidget as initializeChartWidgetAction } from '../actions';
 import { appSelectors } from '../../app';
-import { saveDashboard } from '../../dashboards';
 import { cancelWidgetConfiguration } from './cancelWidgetConfiguration';
 import { widgetsActions } from '../index';
+import { dashboardsActions } from '../../dashboards';
 
 /**
  * Flow responsible for creating ad-hoc query for chart widget.
@@ -63,6 +63,6 @@ export function* createQueryForWidget(
     yield put(initializeChartWidgetAction(widgetId));
 
     const dashboardId = yield select(appSelectors.getActiveDashboard);
-    yield put(saveDashboard(dashboardId));
+    yield put(dashboardsActions.saveDashboard(dashboardId));
   }
 }

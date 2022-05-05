@@ -22,22 +22,22 @@ import {
 } from './DashboardDeleteConfirmation.styles';
 import DeleteDisclaimer from '../DeleteDisclaimer';
 
-import {
-  hideDeleteConfirmation,
-  confirmDashboardDelete,
-  getDeleteConfirmation,
-  getDashboardMeta,
-} from '../../modules/dashboards';
-
 import { RootState } from '../../rootReducer';
+import {
+  dashboardsActions,
+  dashboardsSelectors,
+} from '../../modules/dashboards';
 
 const DashboardDeleteConfirmation: FC = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { isVisible, dashboardId } = useSelector(getDeleteConfirmation);
+  const { isVisible, dashboardId } = useSelector(
+    dashboardsSelectors.getDeleteConfirmation
+  );
 
   const { title, isPublic } = useSelector((state: RootState) => {
-    if (dashboardId) return getDashboardMeta(state, dashboardId);
+    if (dashboardId)
+      return dashboardsSelectors.getDashboardMeta(state, dashboardId);
     return {
       isPublic: null,
       title: null,
@@ -51,12 +51,12 @@ const DashboardDeleteConfirmation: FC = () => {
     if (isPublic) {
       setDisclaimerError(false);
       if (disclaimerAccepted) {
-        dispatch(confirmDashboardDelete());
+        dispatch(dashboardsActions.confirmDashboardDelete());
       } else {
         setDisclaimerError(true);
       }
     } else {
-      dispatch(confirmDashboardDelete());
+      dispatch(dashboardsActions.confirmDashboardDelete());
     }
   }, [isPublic, disclaimerAccepted]);
 
@@ -72,7 +72,7 @@ const DashboardDeleteConfirmation: FC = () => {
   return (
     <Modal
       isOpen={isVisible}
-      onClose={() => dispatch(hideDeleteConfirmation())}
+      onClose={() => dispatch(dashboardsActions.hideDeleteConfirmation())}
     >
       {(_, closeHandler) => (
         <>
