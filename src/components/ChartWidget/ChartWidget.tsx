@@ -20,10 +20,10 @@ import { Container, LoaderWrapper } from './ChartWidget.styles';
 
 import { EditorContext } from '../../contexts';
 import {
-  getWidget,
   ChartWidget as ChartWidgetType,
+  WidgetItem,
+  widgetsSelectors,
 } from '../../modules/widgets';
-import { getInterimQuery } from '../../modules/queries';
 import { themeSelectors, themeHooks } from '../../modules/theme';
 import { getPresentationTimezone } from '../../modules/timezone';
 import { RootState } from '../../rootReducer';
@@ -33,7 +33,7 @@ import { RESIZE_WIDGET_EVENT } from '../../constants';
 
 import getChartInput from '../../utils/getChartInput';
 import { createDataviz } from './utils';
-import { WidgetItem } from '../../modules/widgets/types';
+import { queriesSelectors } from '../../modules/queries';
 
 type Props = {
   /** Widget identifier */
@@ -65,14 +65,14 @@ const ChartWidget: FC<Props> = ({ id, disableInteractions }) => {
     data,
     widget,
   } = useSelector((state: RootState) =>
-    getWidget(state, id)
+    widgetsSelectors.getWidget(state, id)
   ) as WidgetItem<ChartWidgetType>;
 
   const { query: widgetQuery } = widget;
   const isSavedQuery = typeof widgetQuery === 'string';
 
   const interimQuery = useSelector((state: RootState) =>
-    getInterimQuery(state, id)
+    queriesSelectors.getInterimQuery(state, id)
   );
 
   const { theme, settings } = useSelector((state: RootState) =>

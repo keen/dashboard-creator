@@ -203,7 +203,7 @@ test('allows user to cancel dashboard delete', () => {
     Array [
       Object {
         "payload": undefined,
-        "type": "@dashboards/HIDE_DELETE_CONFIRMATION",
+        "type": "dashboards/hideDeleteConfirmation",
       },
     ]
   `);

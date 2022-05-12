@@ -6,9 +6,8 @@ import { themeSelectors } from '../selectors';
 import themeSlice from '../reducer';
 import { extendTheme } from '../utils';
 
-import { saveDashboard } from '../../dashboards';
-
 import { ThemeSettings } from '../types';
+import { dashboardsActions } from '../../dashboards';
 
 /**
  * Flow responsible for dashboard theme edition
@@ -74,7 +73,7 @@ export function* editDashboardTheme({
 
     yield put(themeSagaActions.loadDashboardFonts());
 
-    yield put(saveDashboard(dashboardId));
+    yield put(dashboardsActions.saveDashboard(dashboardId));
   }
 
   yield put(

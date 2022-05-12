@@ -110,7 +110,7 @@ test('allows user to close modal', () => {
     Array [
       Object {
         "payload": undefined,
-        "type": "@dashboards/HIDE_DASHBOARD_SHARE_MODAL",
+        "type": "dashboards/hideDashboardShareModal",
       },
     ]
   `);

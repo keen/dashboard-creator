@@ -12,18 +12,7 @@ jest.mock('uuid', () => {
 import { deleteDashboard } from './deleteDashboard';
 import { deleteAccessKey } from './deleteAccessKey';
 
-import {
-  deleteDashboard as deleteDashboardAction,
-  showDeleteConfirmation,
-  hideDeleteConfirmation,
-  deleteDashboardSuccess,
-} from '../actions';
 import { themeActions } from '../../theme';
-
-import {
-  CONFIRM_DASHBOARD_DELETE,
-  HIDE_DELETE_CONFIRMATION,
-} from '../constants';
 
 import {
   NOTIFICATION_MANAGER,
@@ -33,11 +22,12 @@ import {
 import { getDashboardMeta } from '../selectors';
 
 import { appActions, appSelectors } from '../../app';
+import { dashboardsActions } from '../index';
 
 const dashboardId = '@dashboard/01';
 
 describe('deleteDashboard()', () => {
-  const action = deleteDashboardAction(dashboardId);
+  const action = dashboardsActions.deleteDashboard(dashboardId);
 
   const dashboardApiMock = {
     deleteDashboard: jest.fn(),
@@ -58,7 +48,9 @@ describe('deleteDashboard()', () => {
     });
 
     test('triggers show delete confirmation action with dashboard identifer', (result) => {
-      expect(result).toEqual(put(showDeleteConfirmation(dashboardId)));
+      expect(result).toEqual(
+        put(dashboardsActions.showDeleteConfirmation(dashboardId))
+      );
     });
 
     test('gets NotificationManager from context', (result) => {
@@ -67,10 +59,13 @@ describe('deleteDashboard()', () => {
 
     test('waits for specific user action', (result) => {
       expect(result).toEqual(
-        take([CONFIRM_DASHBOARD_DELETE, HIDE_DELETE_CONFIRMATION])
+        take([
+          dashboardsActions.confirmDashboardDelete.type,
+          dashboardsActions.hideDeleteConfirmation.type,
+        ])
       );
 
-      return { type: HIDE_DELETE_CONFIRMATION };
+      return { type: dashboardsActions.hideDeleteConfirmation.type };
     });
 
     test('terminates delete dashboard flow', (result) => {
@@ -89,7 +84,9 @@ describe('deleteDashboard()', () => {
     });
 
     test('triggers show delete confirmation action with dashboard identifer', (result) => {
-      expect(result).toEqual(put(showDeleteConfirmation(dashboardId)));
+      expect(result).toEqual(
+        put(dashboardsActions.showDeleteConfirmation(dashboardId))
+      );
     });
 
     test('gets NotificationManager from context', (result) => {
@@ -100,14 +97,17 @@ describe('deleteDashboard()', () => {
 
     test('waits for specific user action', (result) => {
       expect(result).toEqual(
-        take([CONFIRM_DASHBOARD_DELETE, HIDE_DELETE_CONFIRMATION])
+        take([
+          dashboardsActions.confirmDashboardDelete.type,
+          dashboardsActions.hideDeleteConfirmation.type,
+        ])
       );
 
-      return { type: CONFIRM_DASHBOARD_DELETE };
+      return { type: dashboardsActions.confirmDashboardDelete.type };
     });
 
     test('triggers hides confirmation action', (result) => {
-      expect(result).toEqual(put(hideDeleteConfirmation()));
+      expect(result).toEqual(put(dashboardsActions.hideDeleteConfirmation()));
     });
 
     test('gets DashboardAPI instance from context', (result) => {
@@ -129,7 +129,9 @@ describe('deleteDashboard()', () => {
     });
 
     test('triggers dashboard delete success action with dashboard identifer', (result) => {
-      expect(result).toEqual(put(deleteDashboardSuccess(dashboardId)));
+      expect(result).toEqual(
+        put(dashboardsActions.deleteDashboardSuccess(dashboardId))
+      );
     });
 
     test('triggers dashboard theme removal action with dashboard identifer', (result) => {
@@ -164,7 +166,9 @@ describe('deleteDashboard()', () => {
     });
 
     test('triggers show delete confirmation action with dashboard identifer', (result) => {
-      expect(result).toEqual(put(showDeleteConfirmation(dashboardId)));
+      expect(result).toEqual(
+        put(dashboardsActions.showDeleteConfirmation(dashboardId))
+      );
     });
 
     test('gets NotificationManager from context', (result) => {
@@ -175,14 +179,17 @@ describe('deleteDashboard()', () => {
 
     test('waits for specific user action', (result) => {
       expect(result).toEqual(
-        take([CONFIRM_DASHBOARD_DELETE, HIDE_DELETE_CONFIRMATION])
+        take([
+          dashboardsActions.confirmDashboardDelete.type,
+          dashboardsActions.hideDeleteConfirmation.type,
+        ])
       );
 
-      return { type: CONFIRM_DASHBOARD_DELETE };
+      return { type: dashboardsActions.confirmDashboardDelete.type };
     });
 
     test('triggers hides confirmation action', (result) => {
-      expect(result).toEqual(put(hideDeleteConfirmation()));
+      expect(result).toEqual(put(dashboardsActions.hideDeleteConfirmation()));
     });
 
     test('gets DashboardAPI instance from context', (result) => {
@@ -212,7 +219,9 @@ describe('deleteDashboard()', () => {
     });
 
     test('triggers dashboard delete success action with dashboard identifer', (result) => {
-      expect(result).toEqual(put(deleteDashboardSuccess(dashboardId)));
+      expect(result).toEqual(
+        put(dashboardsActions.deleteDashboardSuccess(dashboardId))
+      );
     });
 
     test('triggers dashboard theme removal action with dashboard identifer', (result) => {
@@ -250,7 +259,9 @@ describe('deleteDashboard()', () => {
     });
 
     test('triggers show delete confirmation action with dashboard identifer', (result) => {
-      expect(result).toEqual(put(showDeleteConfirmation(dashboardId)));
+      expect(result).toEqual(
+        put(dashboardsActions.showDeleteConfirmation(dashboardId))
+      );
     });
 
     test('gets NotificationManager from context', (result) => {
@@ -261,14 +272,17 @@ describe('deleteDashboard()', () => {
 
     test('waits for specific user action', (result) => {
       expect(result).toEqual(
-        take([CONFIRM_DASHBOARD_DELETE, HIDE_DELETE_CONFIRMATION])
+        take([
+          dashboardsActions.confirmDashboardDelete.type,
+          dashboardsActions.hideDeleteConfirmation.type,
+        ])
       );
 
-      return { type: CONFIRM_DASHBOARD_DELETE };
+      return { type: dashboardsActions.confirmDashboardDelete.type };
     });
 
     test('triggers hides confirmation action', (result) => {
-      expect(result).toEqual(put(hideDeleteConfirmation()));
+      expect(result).toEqual(put(dashboardsActions.hideDeleteConfirmation()));
     });
 
     test('gets DashboardAPI instance from context', (result) => {

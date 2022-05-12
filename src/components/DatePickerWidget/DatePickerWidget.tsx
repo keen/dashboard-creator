@@ -40,11 +40,9 @@ import TimezoneLoader from './components/TimezoneLoader';
 import { DEFAULT_TIMEFRAME, ABSOLUTE_TAB, RELATIVE_TAB } from './constants';
 
 import {
-  setDatePickerModifiers,
-  clearDatePickerModifiers,
-  applyDatePickerModifiers,
-  getWidget,
   DatePickerWidget as DatePickerWidgetType,
+  widgetsActions,
+  widgetsSelectors,
 } from '../../modules/widgets';
 
 import { RootState } from '../../rootReducer';
@@ -73,7 +71,7 @@ const DatePickerWidget: FC<Props> = ({
   const dispatch = useDispatch();
   const { modalContainer, widgetsConfiguration } = useContext(AppContext);
   const { isActive, data, widget } = useSelector((state: RootState) =>
-    getWidget(state, id)
+    widgetsSelectors.getWidget(state, id)
   );
   const datePickerWidget = widget as DatePickerWidgetType;
 
@@ -175,7 +173,7 @@ const DatePickerWidget: FC<Props> = ({
             timezone={data?.timezone || timezone}
             onRemove={(e) => {
               e.stopPropagation();
-              dispatch(clearDatePickerModifiers(id));
+              dispatch(widgetsActions.clearDatePickerModifiers(id));
               setLocalData(initialData);
               if (isOpen) setOpen(false);
             }}
@@ -353,8 +351,14 @@ const DatePickerWidget: FC<Props> = ({
             <Bar>
               <Button
                 onClick={() => {
-                  dispatch(setDatePickerModifiers(id, timeframe, timezone));
-                  dispatch(applyDatePickerModifiers(id));
+                  dispatch(
+                    widgetsActions.setDatePickerModifiers(
+                      id,
+                      timeframe,
+                      timezone
+                    )
+                  );
+                  dispatch(widgetsActions.applyDatePickerModifiers(id));
                   setOpen(false);
                 }}
                 size="small"
@@ -364,7 +368,7 @@ const DatePickerWidget: FC<Props> = ({
               </Button>
               <Anchor
                 onClick={() => {
-                  dispatch(clearDatePickerModifiers(id));
+                  dispatch(widgetsActions.clearDatePickerModifiers(id));
                   setLocalData(initialData);
                   setOpen(false);
                 }}

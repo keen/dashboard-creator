@@ -23,8 +23,8 @@ import {
 import WidgetConnections from '../WidgetConnections';
 
 import {
-  getDatePickerSettings,
   datePickerActions,
+  datePickerSelectors,
 } from '../../modules/datePicker';
 
 import { TOOLTIP_MOTION } from '../../constants';
@@ -38,7 +38,9 @@ const DatePickerSettings: FC<Props> = ({ onCancel }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  const { widgetConnections, name } = useSelector(getDatePickerSettings);
+  const { widgetConnections, name } = useSelector(
+    datePickerSelectors.getDatePickerSettings
+  );
 
   const [showHint, setHintVisibility] = useState(false);
   const isEmptyConnectionsList = widgetConnections.length === 0;
@@ -53,7 +55,10 @@ const DatePickerSettings: FC<Props> = ({ onCancel }) => {
 
     for (const connection of widgetConnections) {
       dispatch(
-        datePickerActions.updateConnection(connection.widgetId, updatedStatus)
+        datePickerActions.updateConnection({
+          widgetId: connection.widgetId,
+          isConnected: updatedStatus,
+        })
       );
     }
   };
@@ -149,7 +154,7 @@ const DatePickerSettings: FC<Props> = ({ onCancel }) => {
               )}
               onUpdateConnection={(widgetId, isConnected) =>
                 dispatch(
-                  datePickerActions.updateConnection(widgetId, isConnected)
+                  datePickerActions.updateConnection({ widgetId, isConnected })
                 )
               }
             />
@@ -161,7 +166,7 @@ const DatePickerSettings: FC<Props> = ({ onCancel }) => {
           <Button
             variant="secondary"
             onClick={() => {
-              dispatch(datePickerActions.setName(filterName));
+              dispatch(datePickerActions.setName({ name: filterName }));
               dispatch(datePickerActions.applySettings());
             }}
           >

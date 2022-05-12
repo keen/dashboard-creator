@@ -26,7 +26,7 @@ import { screenBreakpoints } from '@keen.io/ui-core';
 import { APIContext, AppContext } from './contexts';
 import { DashboardAPI } from './api';
 import { NotificationManager } from './modules/notifications';
-import { viewPublicDashboard } from './modules/dashboards';
+import { dashboardsActions } from './modules/dashboards';
 
 import PublicDashboardViewer from './components/PublicDashboardViewer';
 import GlobalStyles from './components/GlobalStyles';
@@ -143,7 +143,7 @@ export class PublicDashboard {
     sagaMiddleware.run(rootSaga);
 
     store.dispatch(timezoneActions.fetchTimezones());
-    store.dispatch(viewPublicDashboard(this.dashboardId));
+    store.dispatch(dashboardsActions.viewPublicDashboard(this.dashboardId));
 
     ReactDOM.render(
       <Provider store={store}>

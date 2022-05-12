@@ -8,16 +8,8 @@ import { Portal } from '@keen.io/ui-core';
 import { Content, EditorContainer } from './Editor.styles';
 
 import {
-  addWidgetToDashboard,
-  removeWidgetFromDashboard,
-  getDashboard,
-  saveDashboard,
-  getDashboardMeta,
-} from '../../modules/dashboards';
-import {
-  createWidget,
   createWidgetId,
-  updateWidgetsPosition,
+  widgetsActions,
   WidgetsPosition,
 } from '../../modules/widgets';
 import { themeSagaActions, themeSelectors } from '../../modules/theme';
@@ -51,6 +43,10 @@ import {
 } from '../../modules/dashboards/actions';
 import { appActions } from '../../modules/app';
 import { chartEditorSelectors } from '../../modules/chartEditor';
+import {
+  dashboardsActions,
+  dashboardsSelectors,
+} from '../../modules/dashboards';
 
 type Props = {
   /** Dashboard identifer */
@@ -82,7 +78,7 @@ const Editor: FC<Props> = ({ dashboardId }) => {
 
   const { widgetsId, isInitialized, gridGap, isSaving } = useSelector(
     (state: RootState) => {
-      const dashboard = getDashboard(state, dashboardId);
+      const dashboard = dashboardsSelectors.getDashboard(state, dashboardId);
       const themeSettings = themeSelectors.getThemeByDashboardId(
         state,
         dashboardId
@@ -126,10 +122,16 @@ const Editor: FC<Props> = ({ dashboardId }) => {
       const { x, y, w, h, minW, minH } = droppedItem;
 
       dispatch(
-        createWidget(widgetId, droppableWidget, { x, y, w, h, minW, minH })
+        widgetsActions.createWidget({
+          id: widgetId,
+          widgetType: droppableWidget,
+          gridPosition: { x, y, w, h, minW, minH },
+        })
       );
-      dispatch(addWidgetToDashboard(dashboardId, widgetId));
-      dispatch(updateWidgetsPosition(gridPositions));
+      dispatch(
+        dashboardsActions.addWidgetToDashboard({ dashboardId, widgetId })
+      );
+      dispatch(widgetsActions.updateWidgetsPosition({ gridPositions }));
     },
     [droppableWidget]
   );
@@ -139,7 +141,9 @@ const Editor: FC<Props> = ({ dashboardId }) => {
     title,
     tags,
     isPublic,
-  } = useSelector((state: RootState) => getDashboardMeta(state, dashboardId));
+  } = useSelector((state: RootState) =>
+    dashboardsSelectors.getDashboardMeta(state, dashboardId)
+  );
 
   return (
     <EditorContext.Provider
@@ -189,19 +193,24 @@ const Editor: FC<Props> = ({ dashboardId }) => {
             gridGap={gridGap}
             onWidgetDrop={addWidgetHandler}
             onWidgetDrag={(gridPositions) => {
-              dispatch(updateWidgetsPosition(gridPositions));
-              dispatch(saveDashboard(dashboardId));
+              dispatch(widgetsActions.updateWidgetsPosition({ gridPositions }));
+              dispatch(dashboardsActions.saveDashboard(dashboardId));
             }}
             onWidgetResize={(gridPositions, widgetId) => {
-              dispatch(updateWidgetsPosition(gridPositions));
-              dispatch(saveDashboard(dashboardId));
+              dispatch(widgetsActions.updateWidgetsPosition({ gridPositions }));
+              dispatch(dashboardsActions.saveDashboard(dashboardId));
               editorPubSub.current.publish(RESIZE_WIDGET_EVENT, {
                 id: widgetId,
               });
             }}
             onRemoveWidget={(widgetId) => {
-              dispatch(removeWidgetFromDashboard(dashboardId, widgetId));
-              dispatch(saveDashboard(dashboardId));
+              dispatch(
+                dashboardsActions.removeWidgetFromDashboard({
+                  dashboardId,
+                  widgetId,
+                })
+              );
+              dispatch(dashboardsActions.saveDashboard(dashboardId));
             }}
           />
         ) : (

@@ -3,23 +3,24 @@ import React, { FC, useContext, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Portal, Modal } from '@keen.io/ui-core';
 
-import {
-  hideDashboardShareModal,
-  getDashboardShareModal,
-} from '../../modules/dashboards';
-
 import { AppContext } from '../../contexts';
 
 import DashboardShare from '../DashboardShare';
+import {
+  dashboardsActions,
+  dashboardsSelectors,
+} from '../../modules/dashboards';
 
 const DashboardShareModal: FC = () => {
   const dispatch = useDispatch();
   const { modalContainer } = useContext(AppContext);
 
-  const { isVisible, dashboardId } = useSelector(getDashboardShareModal);
+  const { isVisible, dashboardId } = useSelector(
+    dashboardsSelectors.getDashboardShareModal
+  );
 
   const closeHandler = useCallback(() => {
-    dispatch(hideDashboardShareModal());
+    dispatch(dashboardsActions.hideDashboardShareModal());
   }, []);
 
   return (

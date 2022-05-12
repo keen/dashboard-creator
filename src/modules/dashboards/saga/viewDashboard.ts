@@ -2,13 +2,6 @@ import { put, select, call, getContext } from 'redux-saga/effects';
 import { StatusCodes } from 'http-status-codes';
 import { push } from 'connected-react-router';
 
-import {
-  setDashboardError,
-  registerDashboard,
-  initializeDashboardWidgets,
-  viewDashboard as viewDashboardAction,
-} from '../actions';
-
 import { prepareDashboard } from './prepareDashboard';
 import { dashboardsSelectors } from '../selectors';
 
@@ -19,6 +12,7 @@ import { APIError } from '../../../api';
 import { DASHBOARD_API, ROUTES } from '../../../constants';
 
 import { DashboardModel, DashboardError } from '../types';
+import { dashboardsActions } from '../index';
 
 /**
  * Flow responsible for rendering dashboard in viewer mode
@@ -29,12 +23,12 @@ import { DashboardModel, DashboardError } from '../types';
  */
 export function* viewDashboard({
   payload,
-}: ReturnType<typeof viewDashboardAction>) {
+}: ReturnType<typeof dashboardsActions.viewDashboard>) {
   const { dashboardId } = payload;
   const dashboard = yield select(dashboardsSelectors.getDashboard, dashboardId);
 
   if (!dashboard) {
-    yield put(registerDashboard(dashboardId));
+    yield put(dashboardsActions.registerDashboard(dashboardId));
     yield put(appActions.setActiveDashboard(dashboardId));
     yield put(push(ROUTES.VIEWER));
 
@@ -51,13 +45,25 @@ export function* viewDashboard({
         responseBody
       );
 
-      yield put(initializeDashboardWidgets(dashboardId, widgetIds));
+      yield put(
+        dashboardsActions.initializeDashboardWidgets(dashboardId, widgetIds)
+      );
     } catch (err) {
       const error: APIError = err;
       if (error.statusCode === StatusCodes.NOT_FOUND) {
-        yield put(setDashboardError(dashboardId, DashboardError.NOT_EXIST));
+        yield put(
+          dashboardsActions.setDashboardError({
+            dashboardId,
+            error: DashboardError.NOT_EXIST,
+          })
+        );
       } else {
-        yield put(setDashboardError(dashboardId, DashboardError.SERVER_ERROR));
+        yield put(
+          dashboardsActions.setDashboardError({
+            dashboardId,
+            error: DashboardError.SERVER_ERROR,
+          })
+        );
       }
     }
   } else {

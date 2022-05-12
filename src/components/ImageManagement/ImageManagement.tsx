@@ -3,8 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 
 import WidgetManagement from '../WidgetManagement';
-
-import { editImageWidget, cloneWidget } from '../../modules/widgets';
+import { widgetsActions } from '../../modules/widgets';
 
 type Props = {
   /** Widget identifier */
@@ -26,8 +25,8 @@ const ImageManagement: FC<Props> = ({
   return (
     <WidgetManagement
       isHoverActive={isHoverActive}
-      onCloneWidget={() => dispatch(cloneWidget(widgetId))}
-      onEditWidget={() => dispatch(editImageWidget(widgetId))}
+      onCloneWidget={() => dispatch(widgetsActions.cloneWidget(widgetId))}
+      onEditWidget={() => dispatch(widgetsActions.editImageWidget(widgetId))}
       onRemoveWidget={onRemoveWidget}
       editButtonLabel={t('widget.edit_image')}
     />

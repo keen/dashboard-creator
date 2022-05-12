@@ -4,16 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { Filters } from '@keen.io/ui-core';
 import { BodyText } from '@keen.io/typography';
 
-import {
-  getTagsPool,
-  prepareTagsPool,
-  clearTagsPool,
-  getTagsFilter,
-  setTagsFilters,
-  setTagsFiltersPublic,
-} from '../../modules/dashboards';
-
 import { Container, Filter } from './FilterDashboards.styles';
+import {
+  dashboardsActions,
+  dashboardsSelectors,
+} from '../../modules/dashboards';
 
 const FilterDashboards = () => {
   const dispatch = useDispatch();
@@ -21,28 +16,32 @@ const FilterDashboards = () => {
   const [isOpen, setOpen] = useState(false);
 
   useEffect(() => {
-    isOpen ? dispatch(prepareTagsPool()) : dispatch(clearTagsPool());
+    isOpen
+      ? dispatch(dashboardsActions.prepareTagsPool())
+      : dispatch(dashboardsActions.clearTagsPool());
   }, [isOpen]);
 
-  const tagsPool = useSelector(getTagsPool);
+  const tagsPool = useSelector(dashboardsSelectors.getTagsPool);
   const onlyPublicDashboardsTag = t('tags_filters.show_only_public_dashboards');
   const specialTagsPool = [onlyPublicDashboardsTag];
-  const { showOnlyPublicDashboards, tags } = useSelector(getTagsFilter);
+  const { showOnlyPublicDashboards, tags } = useSelector(
+    dashboardsSelectors.getTagsFilter
+  );
 
   const onUpdateTags = (filters: string[]) => {
     const selectedTags = filters.filter(
       (filter) => !specialTagsPool.includes(filter)
     );
-    dispatch(setTagsFilters(selectedTags));
+    dispatch(dashboardsActions.setTagsFilters({ tags: selectedTags }));
     if (filters.includes(onlyPublicDashboardsTag)) {
-      return dispatch(setTagsFiltersPublic(true));
+      return dispatch(dashboardsActions.setTagsFiltersPublic(true));
     }
-    dispatch(setTagsFiltersPublic(false));
+    dispatch(dashboardsActions.setTagsFiltersPublic(false));
   };
 
   const onClearTags = () => {
-    dispatch(setTagsFilters([]));
-    dispatch(setTagsFiltersPublic(false));
+    dispatch(dashboardsActions.setTagsFilters({ tags: [] }));
+    dispatch(dashboardsActions.setTagsFiltersPublic(false));
   };
 
   const activeFilters = useMemo(() => {

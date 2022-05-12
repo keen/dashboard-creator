@@ -2,6 +2,84 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.10.1](https://github.com/keen/explorer/compare/v4.10.0...v4.10.1) (2022-02-08)
+
+
+### Bug Fixes
+
+* 🐛 handle undefined with connected widgets ([25f9382](https://github.com/keen/explorer/commit/25f93828d1e2d24479bf4a1be136713fe3cadba1))
+
+## [4.10.0](https://github.com/keen/explorer/compare/v4.9.1...v4.10.0) (2022-01-24)
+
+
+### Features
+
+* 🎸 Gauge widget - go to settings message ([3db1e51](https://github.com/keen/explorer/commit/3db1e5114edd53bfbfaf48245062932754582e1c))
+* 🎸 Query creator - filter suggestions ([cf2e569](https://github.com/keen/explorer/commit/cf2e56924ecb3306765ffa7a2413d3cb0c668ed7))
+* 🎸 Table chart pagination ([9069ec3](https://github.com/keen/explorer/commit/9069ec30e7133d91b36877eb5e21e56b22fab948))
+* 🎸 theme section for Gauge ([94e2e67](https://github.com/keen/explorer/commit/94e2e670eb5cb2dfecd368d0fbc21e5caa64d672))
+
+
+### Bug Fixes
+
+* 🐛 cropped actions menu ([2a02809](https://github.com/keen/explorer/commit/2a02809c599f23df70a008ae25f371ed9da0e5cd))
+* 🐛 empty target value for Gauge ([07fa2ab](https://github.com/keen/explorer/commit/07fa2abc918cc5105df6a15f6359633cd42c2194))
+* 🐛 Extraction input - remove value behaviour fix ([9951c4f](https://github.com/keen/explorer/commit/9951c4fff2e1630292f1463476fcc24d2e725448))
+* 🐛 filter property list ([32a88bc](https://github.com/keen/explorer/commit/32a88bc09bb9bca1ae7252351378a82a9f2d4b22))
+* 🐛 remove obsolete class ([4605ff9](https://github.com/keen/explorer/commit/4605ff9541317ec0f11dbdf154d4ce379fd2d171))
+
+### [4.9.1](https://github.com/keen/explorer/compare/v4.9.0...v4.9.1) (2021-11-24)
+
+
+### Bug Fixes
+
+* 🐛 freeze widget picker ([3df384c](https://github.com/keen/explorer/commit/3df384cae417cd732f45d3e21a988695558908d4))
+
+## [4.9.0](https://github.com/keen/explorer/compare/v4.8.0...v4.9.0) (2021-11-24)
+
+
+### Features
+
+* 🎸 update deps ([2105d52](https://github.com/keen/explorer/commit/2105d5236ff9d3f227b090ee18c3d2f3019fed1e))
+
+## [4.8.0](https://github.com/keen/explorer/compare/v4.7.0...v4.8.0) (2021-11-24)
+
+
+### Features
+
+* 🎸 datepicker calendar ([fe14c06](https://github.com/keen/explorer/commit/fe14c0633c8b6e53a53d91fa135d99d15864d81f))
+* 🎸 heatmap enhancements ([101d580](https://github.com/keen/explorer/commit/101d5808180ccde0062578d697bf5403241453ce))
+* 🎸 scroll to cloned/added widget ([482a9bb](https://github.com/keen/explorer/commit/482a9bbe9fd6a225a195df29ab8235dd37c8609a))
+* 🎸 Table row selection ([59bd7e3](https://github.com/keen/explorer/commit/59bd7e34b5e3d39b30db913084270e4335ee5739))
+
+
+### Bug Fixes
+
+* 🐛 add box shadow to ReactWindowList ([49dd025](https://github.com/keen/explorer/commit/49dd02562c387f5a4275eec2601102d24b04c9a3))
+* 🐛 add scrolling shadow to FilterWidget ([c804eda](https://github.com/keen/explorer/commit/c804edaccf83aafcb5a2bde24313c83ea7d3d334))
+* 🐛 charts color palette ([41305ca](https://github.com/keen/explorer/commit/41305cacd5e2add3c563b1d82d032441e1cfca31))
+* 🐛 Color suggestions fix in theming ([4e70b4b](https://github.com/keen/explorer/commit/4e70b4b3f456506afc28915d4092302aa31bae57))
+* 🐛 Missing colors added to palette, colors order fix ([f3deb13](https://github.com/keen/explorer/commit/f3deb139c49f7cc5a6050fdf28fec774c88ff63c))
+* 🐛 QueryPicker tags ([3fb35bb](https://github.com/keen/explorer/commit/3fb35bb07c6828e8e130bad9036e55af3b2e056e))
+* 🐛 Rollup missing initialize fix ([c278130](https://github.com/keen/explorer/commit/c2781306f742de839c37a48235fe06660b09b3e7))
+* 🐛 table chart edit mode ([96c02ed](https://github.com/keen/explorer/commit/96c02edce79077567c1115d7532b91ea21e9f035))
+
+## [4.7.0](https://github.com/keen/explorer/compare/v4.6.2...v4.7.0) (2021-10-29)
+
+
+### Features
+
+* 🎸 scrolling shadows added ([23e45f9](https://github.com/keen/explorer/commit/23e45f94af7636bb848c5df148c95218ac7167c1))
+
+
+### Bug Fixes
+
+* 🐛 edit chart widget flow ([12903a7](https://github.com/keen/explorer/commit/12903a799d1b1503162133556e14e3b5272a3420))
+* 🐛 Marker size slider ([1698108](https://github.com/keen/explorer/commit/1698108267e9f02f23c53b4b4fd50e6c6c65686d))
+* 🐛 merge fix - package updated ([9fb3008](https://github.com/keen/explorer/commit/9fb300864950800c20ba52f1a5aea8a432c2ef5b))
+
+### [4.6.2](https://github.com/keen/explorer/compare/v4.6.1...v4.6.2) (2021-10-28)
+
 ### [4.6.1](https://github.com/keen/explorer/compare/v4.5.1...v4.6.1) (2021-10-28)
 
 ### [4.5.1-rc.0](https://github.com/keen/explorer/compare/v4.4.0-rc.11...v4.5.1-rc.0) (2021-10-20)

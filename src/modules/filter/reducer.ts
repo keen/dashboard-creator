@@ -1,21 +1,5 @@
-import { ReducerState } from './types';
-import { FilterActions } from './actions';
-
-import {
-  OPEN_EDITOR,
-  CLOSE_EDITOR,
-  RESET_EDITOR,
-  SET_EDITOR_CONNECTIONS,
-  SET_EDITOR_DETACHED_CONNECTIONS,
-  UPDATE_CONNECTION,
-  SET_TARGET_PROPERTY,
-  SET_EVENT_STREAM,
-  SET_EVENT_STREAM_SCHEMA,
-  SET_EVENT_STREAMS_POOL,
-  SET_SCHEMA_PROCESSING,
-  SET_SCHEMA_PROCESSING_ERROR,
-  SET_NAME,
-} from './constants';
+import { FilterConnection, ReducerState, SchemaPropertiesList } from './types';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export const initialState: ReducerState = {
   isEditorOpen: false,
@@ -36,96 +20,84 @@ export const initialState: ReducerState = {
   targetProperty: null,
 };
 
-const filterReducer = (
-  state: ReducerState = initialState,
-  action: FilterActions
-) => {
-  switch (action.type) {
-    case RESET_EDITOR:
-      return initialState;
-    case UPDATE_CONNECTION:
-      return {
-        ...state,
-        widgetConnections: state.widgetConnections.map((widgetConnection) => {
+const filterSlice = createSlice({
+  name: 'filter',
+  initialState,
+  reducers: {
+    resetEditor: (state) => {
+      state = initialState;
+      return state;
+    },
+    updateConnection: (
+      state,
+      { payload }: PayloadAction<{ widgetId: string; isConnected: boolean }>
+    ) => {
+      state.widgetConnections = state.widgetConnections.map(
+        (widgetConnection) => {
           const { widgetId } = widgetConnection;
-          if (widgetId === action.payload.widgetId) {
+          if (widgetId === payload.widgetId) {
             return {
               ...widgetConnection,
-              isConnected: action.payload.isConnected,
+              isConnected: payload.isConnected,
             };
           }
           return widgetConnection;
-        }),
+        }
+      );
+    },
+    setEditorDetachedConnections: (
+      state,
+      { payload }: PayloadAction<FilterConnection[]>
+    ) => {
+      state.detachedWidgetConnections = payload;
+    },
+    setEditorConnections: (
+      state,
+      { payload }: PayloadAction<FilterConnection[]>
+    ) => {
+      state.widgetConnections = payload;
+    },
+    openEditor: (state) => {
+      state.isEditorOpen = true;
+    },
+    closeEditor: (state) => {
+      state.isEditorOpen = false;
+    },
+    setEventStream: (state, { payload }: PayloadAction<string>) => {
+      state.eventStream = payload;
+    },
+    setTargetProperty: (state, { payload }: PayloadAction<string>) => {
+      state.targetProperty = payload;
+    },
+    setName: (state, { payload }: PayloadAction<string>) => {
+      state.name = payload;
+    },
+    setEventStreamSchema: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        schema: Record<string, string>;
+        schemaTree: Record<string, any>;
+        schemaList: SchemaPropertiesList;
+      }>
+    ) => {
+      state.eventStreamSchema = {
+        schema: payload.schema,
+        tree: payload.schemaTree,
+        list: payload.schemaList,
       };
-    case SET_EDITOR_DETACHED_CONNECTIONS:
-      return {
-        ...state,
-        detachedWidgetConnections: action.payload.detachedWidgetConnections,
-      };
-    case SET_EDITOR_CONNECTIONS:
-      return {
-        ...state,
-        widgetConnections: action.payload.widgetConnections,
-      };
-    case OPEN_EDITOR:
-      return {
-        ...state,
-        isEditorOpen: true,
-      };
-    case CLOSE_EDITOR:
-      return {
-        ...state,
-        widgetConnections: [],
-        isEditorOpen: false,
-      };
-    case SET_EVENT_STREAM:
-      return {
-        ...state,
-        eventStream: action.payload.eventStream,
-      };
-    case SET_TARGET_PROPERTY:
-      return {
-        ...state,
-        targetProperty: action.payload.targetProperty,
-      };
-    case SET_NAME:
-      return {
-        ...state,
-        name: action.payload.name,
-      };
-    case SET_EVENT_STREAM_SCHEMA:
-      return {
-        ...state,
-        eventStreamSchema: {
-          schema: action.payload.schema,
-          tree: action.payload.schemaTree,
-          list: action.payload.schemaList,
-        },
-      };
-    case SET_EVENT_STREAMS_POOL:
-      return {
-        ...state,
-        eventStreamsPool: action.payload.eventStreams,
-      };
-    case SET_SCHEMA_PROCESSING_ERROR:
-      return {
-        ...state,
-        schemaProcessing: {
-          ...state.schemaProcessing,
-          error: action.payload.processingError,
-        },
-      };
-    case SET_SCHEMA_PROCESSING:
-      return {
-        ...state,
-        schemaProcessing: {
-          ...state.schemaProcessing,
-          inProgress: action.payload.isProcessingSchema,
-        },
-      };
-    default:
-      return state;
-  }
-};
+    },
+    setEventStreamsPool: (state, { payload }: PayloadAction<string[]>) => {
+      state.eventStreamsPool = payload;
+    },
+    setSchemaProcessingError: (state, { payload }: PayloadAction<boolean>) => {
+      state.schemaProcessing.error = payload;
+    },
+    setSchemaProcessing: (state, { payload }: PayloadAction<boolean>) => {
+      state.schemaProcessing.inProgress = payload;
+    },
+  },
+});
 
-export default filterReducer;
+export default filterSlice;

@@ -7,7 +7,7 @@ import { themeSelectors } from '../selectors';
 import themeSlice from '../reducer';
 
 import { appSelectors } from '../../app';
-import { createDashboardSettings } from '../../dashboards';
+import { createDashboardSettings } from '../../dashboards/utils';
 
 describe('Scenario 1: User successfuly updates dashboard theme', () => {
   const dashboardId = '@dashboard/01';

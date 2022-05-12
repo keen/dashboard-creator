@@ -3,17 +3,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Portal, Modal, ModalHeader } from '@keen.io/ui-core';
 
-import {
-  getDashboardSettingsModal,
-  hideDashboardSettingsModal,
-  DashboardMetaData,
-  prepareTagsPool,
-  clearTagsPool,
-} from '../../modules/dashboards';
-
 import DashboardSettings from '../DashboardSettings';
 
 import { AppContext } from '../../contexts';
+import {
+  DashboardMetaData,
+  dashboardsActions,
+  dashboardsSelectors,
+} from '../../modules/dashboards';
 
 type Props = {
   /** Save dashboard event handler */
@@ -25,14 +22,18 @@ const DashboardSettingsModal: FC<Props> = ({ onSaveDashboard }) => {
   const { modalContainer } = useContext(AppContext);
   const { t } = useTranslation();
 
-  const { isVisible, dashboardId } = useSelector(getDashboardSettingsModal);
+  const { isVisible, dashboardId } = useSelector(
+    dashboardsSelectors.getDashboardSettingsModal
+  );
 
   const closeHandler = useCallback(() => {
-    dispatch(hideDashboardSettingsModal());
+    dispatch(dashboardsActions.hideDashboardSettingsModal());
   }, []);
 
   useEffect(() => {
-    isVisible ? dispatch(prepareTagsPool()) : dispatch(clearTagsPool());
+    isVisible
+      ? dispatch(dashboardsActions.prepareTagsPool())
+      : dispatch(dashboardsActions.clearTagsPool());
   }, [isVisible]);
 
   return (

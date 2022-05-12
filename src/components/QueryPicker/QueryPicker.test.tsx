@@ -12,9 +12,9 @@ import QueryPicker from './QueryPicker';
 
 import { DashboardAPI } from '../../api';
 
-import { SELECT_SAVED_QUERY } from '../../modules/queries';
 import { savedQueriesResponse } from '../../modules/queries/fixtures';
 import { APIContext } from '../../contexts';
+import { queriesActions } from '../../modules/queries';
 
 const render = (overProps: any = {}, keenAnalysisInstance: any = {}) => {
   const props = {
@@ -84,7 +84,7 @@ test('allows user to select saved query', async () => {
 
     expect(store.getActions()).toEqual([
       expect.objectContaining({
-        type: SELECT_SAVED_QUERY,
+        type: queriesActions.selectSavedQuery.type,
       }),
     ]);
   });

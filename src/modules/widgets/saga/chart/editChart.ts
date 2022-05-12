@@ -2,17 +2,13 @@ import { getContext, put, select, take } from 'redux-saga/effects';
 import { SET_QUERY_EVENT, SET_CHART_SETTINGS } from '@keen.io/query-creator';
 
 import { chartEditorActions, chartEditorSelectors } from '../../../chartEditor';
-import {
-  initializeChartWidget as initializeChartWidgetAction,
-  finishChartWidgetConfiguration,
-  setWidgetState,
-} from '../../actions';
-import { saveDashboard } from '../../../../modules/dashboards';
 import { editChartSavedQuery } from '../chartWidget';
 import { appSelectors } from '../../../app';
 
 import { PUBSUB } from '../../../../constants';
 import { ChartWidget } from '../../types';
+import { widgetsActions } from '../../index';
+import { dashboardsActions } from '../../../dashboards';
 
 /**
  * Flow responsible for editing single chart.
@@ -85,25 +81,25 @@ export function* editChart(id: string, widgetItem: any) {
         data: null,
       };
 
-      yield put(setWidgetState(id, widgetState));
+      yield put(widgetsActions.setWidgetState({ id, widgetState }));
       yield put(
-        finishChartWidgetConfiguration(
+        widgetsActions.finishChartWidgetConfiguration({
           id,
-          querySettings,
-          widgetType,
+          query: querySettings,
+          visualizationType: widgetType,
           chartSettings,
-          widgetSettings
-        )
+          widgetSettings,
+        })
       );
 
-      yield put(initializeChartWidgetAction(id));
+      yield put(widgetsActions.initializeChartWidget(id));
 
       yield put(chartEditorActions.closeEditor());
       yield take(chartEditorActions.editorUnmounted.type);
       yield put(chartEditorActions.resetEditor());
 
       const dashboardId = yield select(appSelectors.getActiveDashboard);
-      yield put(saveDashboard(dashboardId));
+      yield put(dashboardsActions.saveDashboard(dashboardId));
     }
   }
 }

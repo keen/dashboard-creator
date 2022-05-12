@@ -1,20 +1,6 @@
 import { put, select, call, getContext } from 'redux-saga/effects';
 
-import {
-  initializeChartWidget as initializeChartWidgetAction,
-  setWidgetState,
-  setWidgetLoading,
-  setChartWidgetVisualization,
-} from '../../actions';
-
 import { widgetsSelectors } from '../../selectors';
-
-import {
-  serializeSavedQuery,
-  addInterimQuery,
-  removeInterimQuery,
-  getInterimQuery,
-} from '../../../../modules/queries';
 
 import {
   prepareChartWidgetQuery,
@@ -29,6 +15,9 @@ import {
   WidgetErrors,
   AnalysisError,
 } from '../../types';
+import { queriesActions, queriesSelectors } from '../../../queries';
+import { serializeSavedQuery } from '../../../queries/serializers';
+import { widgetsActions } from '../../index';
 
 /**
  * Flow responsible for initializing chart widget.
@@ -39,7 +28,7 @@ import {
  */
 export function* initializeChartWidget({
   payload,
-}: ReturnType<typeof initializeChartWidgetAction>) {
+}: ReturnType<typeof widgetsActions.initializeChartWidget>) {
   const { id } = payload;
   const chartWidget: WidgetItem<ChartWidget> = yield select(
     widgetsSelectors.getWidget,
@@ -51,7 +40,7 @@ export function* initializeChartWidget({
       prepareChartWidgetQuery,
       chartWidget
     );
-    yield put(setWidgetLoading(id, true));
+    yield put(widgetsActions.setWidgetLoading({ id, isLoading: true }));
 
     const widgetHasInconsistentFilters = yield call(
       checkIfChartWidgetHasInconsistentFilters,
@@ -76,12 +65,19 @@ export function* initializeChartWidget({
     }
 
     if (hasQueryModifiers) {
-      yield put(addInterimQuery(id, analysisResult));
-      yield put(setWidgetState(id, { isInitialized: true }));
+      yield put(
+        queriesActions.addInterimQuery({ widgetId: id, data: analysisResult })
+      );
+      yield put(
+        widgetsActions.setWidgetState({
+          id,
+          widgetState: { isInitialized: true },
+        })
+      );
     } else {
-      const interimQuery = yield select(getInterimQuery, id);
+      const interimQuery = yield select(queriesSelectors.getInterimQuery, id);
       if (interimQuery) {
-        yield put(removeInterimQuery(id));
+        yield put(queriesActions.removeInterimQuery(id));
       }
 
       if (isSavedQueryWidget) {
@@ -89,7 +85,12 @@ export function* initializeChartWidget({
           visualization: { type, chartSettings, widgetSettings },
         } = serializeSavedQuery(analysisResult);
         yield put(
-          setChartWidgetVisualization(id, type, chartSettings, widgetSettings)
+          widgetsActions.setChartWidgetVisualization({
+            id,
+            visualizationType: type,
+            chartSettings,
+            widgetSettings,
+          })
         );
       }
 
@@ -98,7 +99,7 @@ export function* initializeChartWidget({
         data: analysisResult,
       };
 
-      yield put(setWidgetState(id, widgetState));
+      yield put(widgetsActions.setWidgetState({ id, widgetState }));
     }
   } catch (err) {
     const { body, error_code: code } = err;
@@ -112,15 +113,18 @@ export function* initializeChartWidget({
     }
 
     yield put(
-      setWidgetState(id, {
-        isInitialized: true,
-        error: {
-          message: errorMessage,
-          code: errorCode,
+      widgetsActions.setWidgetState({
+        id,
+        widgetState: {
+          isInitialized: true,
+          error: {
+            message: errorMessage,
+            code: errorCode,
+          },
         },
       })
     );
   } finally {
-    yield put(setWidgetLoading(id, false));
+    yield put(widgetsActions.setWidgetLoading({ id, isLoading: false }));
   }
 }

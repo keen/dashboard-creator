@@ -1,11 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import queriesReducer, { initialState } from './reducer';
+import { initialState } from './reducer';
 
-import {
-  addInterimQuery,
-  removeInterimQuery,
-  removeInterimQueries,
-} from './actions';
+import { queriesActions, queriesReducer } from './index';
 
 test('adds interim query based on widget identifer', () => {
   const widgetId = '@widget/01';
@@ -17,7 +13,7 @@ test('adds interim query based on widget identifer', () => {
     result: 100,
   };
 
-  const action = addInterimQuery(widgetId, data);
+  const action = queriesActions.addInterimQuery({ widgetId, data });
   const { interimQueries } = queriesReducer(initialState, action);
 
   expect(interimQueries).toMatchInlineSnapshot(`
@@ -35,7 +31,7 @@ test('adds interim query based on widget identifer', () => {
 
 test('removes specific interim query', () => {
   const widgetId = '@widget/01';
-  const action = removeInterimQuery(widgetId);
+  const action = queriesActions.removeInterimQuery(widgetId);
 
   const state = {
     ...initialState,
@@ -56,7 +52,7 @@ test('removes specific interim query', () => {
 });
 
 test('removes all interim queries', () => {
-  const action = removeInterimQueries();
+  const action = queriesActions.removeInterimQueries();
   const state = {
     ...initialState,
     interimQueries: {

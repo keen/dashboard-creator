@@ -6,13 +6,13 @@ import configureStore from 'redux-mock-store';
 import { PubSub } from '@keen.io/pubsub';
 import { KeenDataviz } from '@keen.io/dataviz';
 
-import { createDashboardSettings } from '../../modules/dashboards';
 import { EditorContext } from '../../contexts';
 
 import { RESIZE_WIDGET_EVENT } from '../../constants';
 
 import ChartWidget from './ChartWidget';
 import { WidgetType } from '../../types';
+import { createDashboardSettings } from '../../modules/dashboards/utils';
 
 const renderMock = jest.fn();
 const destroyMock = jest.fn();

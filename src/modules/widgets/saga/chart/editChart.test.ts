@@ -6,17 +6,11 @@ import { Query } from '@keen.io/query';
 
 import { editChart } from './editChart';
 
-import {
-  initializeChartWidget as initializeChartWidgetAction,
-  setWidgetState,
-  finishChartWidgetConfiguration,
-} from '../../actions';
-
-import { saveDashboard } from '../../../../modules/dashboards';
-
 import { widget as widgetFixture } from '../../fixtures';
 
 import { chartEditorActions } from '../../../chartEditor';
+import { widgetsActions } from '../../index';
+import { dashboardsActions } from '../../../dashboards';
 
 describe('editChart()', () => {
   const widgetId = '@widget/01';
@@ -139,11 +133,14 @@ describe('editChart()', () => {
     test('updates widget state', (result) => {
       expect(result).toEqual(
         put(
-          setWidgetState(widgetId, {
-            isInitialized: false,
-            isConfigured: false,
-            error: null,
-            data: null,
+          widgetsActions.setWidgetState({
+            id: widgetId,
+            widgetState: {
+              isInitialized: false,
+              isConfigured: false,
+              error: null,
+              data: null,
+            },
           })
         )
       );
@@ -155,19 +152,21 @@ describe('editChart()', () => {
         visualization: { type, chartSettings, widgetSettings },
       } = chartEditor;
 
-      const action = finishChartWidgetConfiguration(
-        widgetId,
-        querySettings,
-        type,
+      const action = widgetsActions.finishChartWidgetConfiguration({
+        id: widgetId,
+        query: querySettings,
+        visualizationType: type,
         chartSettings,
-        widgetSettings
-      );
+        widgetSettings,
+      });
 
       expect(result).toEqual(put(action));
     });
 
     test('initializes chart widget', (result) => {
-      expect(result).toEqual(put(initializeChartWidgetAction(widgetId)));
+      expect(result).toEqual(
+        put(widgetsActions.initializeChartWidget(widgetId))
+      );
     });
 
     test('close chart editor', (result) => {
@@ -187,7 +186,7 @@ describe('editChart()', () => {
     });
 
     test('triggers save dashboard action', (result) => {
-      expect(result).toEqual(put(saveDashboard(dashboardId)));
+      expect(result).toEqual(put(dashboardsActions.saveDashboard(dashboardId)));
     });
   });
 

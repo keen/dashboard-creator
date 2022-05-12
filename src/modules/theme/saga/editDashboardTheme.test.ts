@@ -6,8 +6,8 @@ import { editDashboardTheme } from './editDashboardTheme';
 import { themeSagaActions } from '../actions';
 import { themeSelectors } from '../selectors';
 import themeSlice from '../reducer';
-
-import { createDashboardSettings, saveDashboard } from '../../dashboards';
+import { createDashboardSettings } from '../../dashboards/utils';
+import { dashboardsActions } from '../../dashboards';
 
 describe('Scenario 1: User successfuly updates dashboard theme', () => {
   const dashboardId = '@dashboard/01';
@@ -114,7 +114,7 @@ describe('Scenario 1: User successfuly updates dashboard theme', () => {
   });
 
   test('save dashboard', (result) => {
-    expect(result).toEqual(put(saveDashboard(dashboardId)));
+    expect(result).toEqual(put(dashboardsActions.saveDashboard(dashboardId)));
   });
 
   test('hides theme editor modal', (result) => {

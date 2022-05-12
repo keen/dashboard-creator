@@ -1,11 +1,7 @@
 import { put, getContext } from 'redux-saga/effects';
 import { DASHBOARD_API } from '../../../constants';
 import { sortConnectedDashboards } from '../utils';
-import {
-  setConnectedDashboards,
-  setConnectedDashboardsLoading,
-  setConnectedDashboardsError,
-} from '../actions';
+import { dashboardsActions } from '../index';
 
 type DashboardMetaData = {
   id: string;
@@ -21,9 +17,9 @@ type DashboardMetaData = {
 export function* getConnectedDashboards(queryName: string) {
   const { baseUrl, readKey } = yield getContext(DASHBOARD_API);
 
-  yield put(setConnectedDashboards([]));
-  yield put(setConnectedDashboardsError(false));
-  yield put(setConnectedDashboardsLoading(true));
+  yield put(dashboardsActions.setConnectedDashboards([]));
+  yield put(dashboardsActions.setConnectedDashboardsError(false));
+  yield put(dashboardsActions.setConnectedDashboardsLoading(true));
 
   try {
     const response: DashboardMetaData[] = yield fetch(
@@ -36,12 +32,16 @@ export function* getConnectedDashboards(queryName: string) {
     ).then((res) => res.json());
 
     const dashboards = response.map(({ title, id }) => ({ title, id }));
-    yield put(setConnectedDashboards(sortConnectedDashboards(dashboards)));
+    yield put(
+      dashboardsActions.setConnectedDashboards(
+        sortConnectedDashboards(dashboards)
+      )
+    );
   } catch (error) {
-    yield put(setConnectedDashboardsLoading(false));
-    yield put(setConnectedDashboardsError(true));
-    yield put(setConnectedDashboards([]));
+    yield put(dashboardsActions.setConnectedDashboardsLoading(false));
+    yield put(dashboardsActions.setConnectedDashboardsError(true));
+    yield put(dashboardsActions.setConnectedDashboards([]));
   } finally {
-    yield put(setConnectedDashboardsLoading(false));
+    yield put(dashboardsActions.setConnectedDashboardsLoading(false));
   }
 }

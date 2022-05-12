@@ -14,10 +14,8 @@ import {
   extendTheme,
   ThemeEditorSection,
 } from '../../modules/theme';
-import {
-  DashboardSettings,
-  extendDashboardSettings,
-} from '../../modules/dashboards';
+import { DashboardSettings } from '../../modules/dashboards';
+import { extendDashboardSettings } from '../../modules/dashboards/utils';
 
 const ThemeEditor: FC = () => {
   const { t } = useTranslation();

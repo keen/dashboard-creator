@@ -1,316 +1,371 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { WidgetsActions } from './actions';
-
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RawDraftContentState } from 'draft-js';
+import { Query } from '@keen.io/query';
+import { WidgetType } from '../../types';
 import { serializeWidget } from './serializers';
-import { reduceWidgetsPosition } from './reduceWidgetsPosition';
-import { createWidget } from './utils';
-
+import { createWidget, reduceWidgetsPosition } from './utils';
 import {
-  APPLY_FILTER_WIDGET,
-  CONFIGURE_FILTER_WIDGET,
-  FINISH_CHART_WIDGET_CONFIGURATION,
-  SET_CHART_WIDGET_VISUALIZATION,
-  REGISTER_WIDGETS,
-  REMOVE_WIDGET,
-  SET_DATE_PICKER_WIDGET,
-  SET_FILTER_PROPERTY_LIST,
-  SET_IMAGE_WIDGET,
-  SET_TEXT_WIDGET,
-  SET_WIDGET_LOADING,
-  SET_WIDGET_STATE,
-  UPDATE_CHART_WIDGET_DATE_PICKER_CONNECTION,
-  UPDATE_CHART_WIDGET_FILTERS_CONNECTIONS,
-  UPDATE_WIDGETS_POSITION,
-  CLEAR_FILTER_DATA,
-  CREATE_WIDGET,
-  SAVE_CLONED_WIDGET,
-  UNREGISTER_WIDGET,
-} from './constants';
-
-import { FilterWidget, ReducerState } from './types';
+  ChartWidget,
+  DatePickerWidget,
+  FilterWidget,
+  GridPosition,
+  ImageWidget,
+  ReducerState,
+  TextWidget,
+  Widget,
+  WidgetItem,
+  WidgetsPosition,
+} from './types';
 
 export const initialState: ReducerState = {
   items: {},
 };
 
-const widgetsReducer = (
-  state: ReducerState = initialState,
-  action: WidgetsActions
-) => {
-  switch (action.type) {
-    case REMOVE_WIDGET:
+const widgetsSlice = createSlice({
+  name: 'widgets',
+  initialState,
+  reducers: {
+    removeWidget: (state, { payload }: PayloadAction<string>) => {
       const {
-        items: { [action.payload.id]: widget, ...restItems },
+        items: { [payload]: widget, ...restItems },
       } = state;
-      return {
-        ...state,
-        items: restItems,
+      state.items = {
+        ...restItems,
       };
-    case UPDATE_CHART_WIDGET_DATE_PICKER_CONNECTION:
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          [action.payload.id]: {
-            ...state.items[action.payload.id],
-            widget: {
-              ...state.items[action.payload.id].widget,
-              datePickerId: action.payload.datePickerId,
+    },
+    updateChartWidgetDatePickerConnections: (
+      state,
+      { payload }: PayloadAction<{ id: string; datePickerId: string | null }>
+    ) => {
+      state.items = {
+        ...state.items,
+        [payload.id]: {
+          ...state.items[payload.id],
+          widget: {
+            ...state.items[payload.id].widget,
+            datePickerId: payload.datePickerId,
+          } as ChartWidget,
+        },
+      };
+    },
+    updateChartWidgetFiltersConnections: (
+      state,
+      { payload }: PayloadAction<{ id: string; filterIds: string[] }>
+    ) => {
+      state.items = {
+        ...state.items,
+        [payload.id]: {
+          ...state.items[payload.id],
+          widget: {
+            ...state.items[payload.id].widget,
+            filterIds: payload.filterIds,
+          } as ChartWidget,
+        },
+      };
+    },
+    setChartWidgetVisualization: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        id: string;
+        visualizationType: string;
+        chartSettings: Record<string, any>;
+        widgetSettings: Record<string, any>;
+      }>
+    ) => {
+      state.items = {
+        ...state.items,
+        [payload.id]: {
+          ...state.items[payload.id],
+          widget: {
+            ...state.items[payload.id].widget,
+            settings: {
+              visualizationType: payload.visualizationType,
+              chartSettings: payload.chartSettings,
+              widgetSettings: payload.widgetSettings,
             },
-          },
+          } as ChartWidget,
         },
       };
-    case UPDATE_CHART_WIDGET_FILTERS_CONNECTIONS:
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          [action.payload.id]: {
-            ...state.items[action.payload.id],
-            widget: {
-              ...state.items[action.payload.id].widget,
-              filterIds: action.payload.filterIds,
+    },
+    finishChartWidgetConfiguration: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        id: string;
+        query: string | Query;
+        visualizationType: string;
+        chartSettings: Record<string, any>;
+        widgetSettings: Record<string, any>;
+      }>
+    ) => {
+      state.items = {
+        ...state.items,
+        [payload.id]: {
+          ...state.items[payload.id],
+          isConfigured: true,
+          widget: {
+            ...state.items[payload.id].widget,
+            query: payload.query,
+            settings: {
+              visualizationType: payload.visualizationType,
+              chartSettings: payload.chartSettings,
+              widgetSettings: payload.widgetSettings,
             },
-          },
+          } as ChartWidget,
         },
       };
-    case SET_CHART_WIDGET_VISUALIZATION:
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          [action.payload.id]: {
-            ...state.items[action.payload.id],
-            widget: {
-              ...state.items[action.payload.id].widget,
-              settings: {
-                visualizationType: action.payload.visualizationType,
-                chartSettings: action.payload.chartSettings,
-                widgetSettings: action.payload.widgetSettings,
-              },
+    },
+    setWidgetLoading: (
+      state,
+      { payload }: PayloadAction<{ id: string; isLoading: boolean }>
+    ) => {
+      state.items = {
+        ...state.items,
+        [payload.id]: {
+          ...state.items[payload.id],
+          isLoading: payload.isLoading,
+        },
+      };
+    },
+    setWidgetState: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        id: string;
+        widgetState: Partial<Omit<WidgetItem, 'widget'>>;
+      }>
+    ) => {
+      state.items = {
+        ...state.items,
+        [payload.id]: {
+          ...state.items[payload.id],
+          ...payload.widgetState,
+        },
+      };
+    },
+    createWidget: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        id: string;
+        widgetType: WidgetType;
+        gridPosition: GridPosition;
+      }>
+    ) => {
+      state.items = {
+        ...state.items,
+        [payload.id]: createWidget(payload, false),
+      };
+    },
+    updateWidgetsPosition: (
+      state,
+      { payload }: PayloadAction<{ gridPositions: WidgetsPosition }>
+    ) => {
+      state.items = {
+        ...state.items,
+        ...reduceWidgetsPosition(state.items, payload.gridPositions),
+      };
+    },
+    registerWidgets: (
+      state,
+      { payload }: PayloadAction<{ widgets: Widget[] }>
+    ) => {
+      state.items = {
+        ...state.items,
+        ...payload.widgets.reduce(
+          (acc, widget) => ({
+            ...acc,
+            [widget.id]: serializeWidget(widget, true),
+          }),
+          {}
+        ),
+      };
+    },
+    setTextWidget: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        id: string;
+        settings: {
+          content: RawDraftContentState;
+          textAlignment?: 'left' | 'center' | 'right';
+        };
+      }>
+    ) => {
+      state.items = {
+        ...state.items,
+        [payload.id]: {
+          ...state.items[payload.id],
+          widget: {
+            ...state.items[payload.id].widget,
+            settings: {
+              ...state.items[payload.id].widget.settings,
+              ...payload.settings,
             },
-          },
+          } as TextWidget,
         },
       };
-    case FINISH_CHART_WIDGET_CONFIGURATION:
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          [action.payload.id]: {
-            ...state.items[action.payload.id],
-            isConfigured: true,
-            widget: {
-              ...state.items[action.payload.id].widget,
-              query: action.payload.query,
-              settings: {
-                visualizationType: action.payload.visualizationType,
-                chartSettings: action.payload.chartSettings,
-                widgetSettings: action.payload.widgetSettings,
-              },
+    },
+    setDatePickerWidget: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        id: string;
+        widgetConnections: string[];
+        name: string;
+      }>
+    ) => {
+      state.items = {
+        ...state.items,
+        [payload.id]: {
+          ...state.items[payload.id],
+          widget: {
+            ...state.items[payload.id].widget,
+            settings: {
+              widgets: payload.widgetConnections,
+              name: payload.name,
             },
-          },
+          } as DatePickerWidget,
         },
       };
-    case SET_WIDGET_LOADING: {
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          [action.payload.id]: {
-            ...state.items[action.payload.id],
-            isLoading: action.payload.isLoading,
-          },
-        },
-      };
-    }
-    case SET_WIDGET_STATE: {
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          [action.payload.id]: {
-            ...state.items[action.payload.id],
-            ...action.payload.widgetState,
-          },
-        },
-      };
-    }
-    case CREATE_WIDGET:
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          [action.payload.id]: createWidget(action.payload, false),
-        },
-      };
-    case UPDATE_WIDGETS_POSITION:
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          ...reduceWidgetsPosition(state.items, action.payload.gridPositions),
-        },
-      };
-    case REGISTER_WIDGETS:
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          ...action.payload.widgets.reduce(
-            (acc, widget) => ({
-              ...acc,
-              [widget.id]: serializeWidget(widget, true),
-            }),
-            {}
-          ),
-        },
-      };
-    case SET_TEXT_WIDGET:
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          [action.payload.id]: {
-            ...state.items[action.payload.id],
-            widget: {
-              ...state.items[action.payload.id].widget,
-              settings: {
-                ...state.items[action.payload.id].widget.settings,
-                ...action.payload.settings,
-              },
+    },
+    setImageWidget: (
+      state,
+      { payload }: PayloadAction<{ id: string; link: string }>
+    ) => {
+      state.items = {
+        ...state.items,
+        [payload.id]: {
+          ...state.items[payload.id],
+          isConfigured: true,
+          widget: {
+            ...state.items[payload.id].widget,
+            settings: {
+              link: payload.link,
             },
-          },
+          } as ImageWidget,
         },
       };
-    case SET_DATE_PICKER_WIDGET:
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          [action.payload.id]: {
-            ...state.items[action.payload.id],
-            widget: {
-              ...state.items[action.payload.id].widget,
-              settings: {
-                widgets: action.payload.widgetConnections,
-                name: action.payload.name,
-              },
+    },
+    configureFilterWidget: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        id: string;
+        widgetConnections: string[];
+        eventStream: string;
+        targetProperty: string;
+        name?: string;
+      }>
+    ) => {
+      state.items = {
+        ...state.items,
+        [payload.id]: {
+          ...state.items[payload.id],
+          widget: {
+            ...state.items[payload.id].widget,
+            settings: {
+              widgets: payload.widgetConnections,
+              eventStream: payload.eventStream,
+              targetProperty: payload.targetProperty,
+              name: payload.name,
             },
+          } as FilterWidget,
+        },
+      };
+    },
+    setFilterPropertyList: (
+      state,
+      { payload }: PayloadAction<{ filterId: string; propertyList: string[] }>
+    ) => {
+      state.items = {
+        ...state.items,
+        [payload.filterId]: {
+          ...state.items[payload.filterId],
+          data: {
+            ...state.items[payload.filterId].data,
+            propertyList: payload.propertyList,
           },
         },
       };
-    case SET_IMAGE_WIDGET:
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          [action.payload.id]: {
-            ...state.items[action.payload.id],
-            isConfigured: true,
-            widget: {
-              ...state.items[action.payload.id].widget,
-              settings: {
-                link: action.payload.link,
-              },
-            },
-          },
-        },
-      };
-    case CONFIGURE_FILTER_WIDGET:
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          [action.payload.id]: {
-            ...state.items[action.payload.id],
-            widget: {
-              ...state.items[action.payload.id].widget,
-              settings: {
-                widgets: action.payload.widgetConnections,
-                eventStream: action.payload.eventStream,
-                targetProperty: action.payload.targetProperty,
-                name: action.payload.name,
-              },
-            },
-          },
-        },
-      };
-    case SET_FILTER_PROPERTY_LIST:
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          [action.payload.filterId]: {
-            ...state.items[action.payload.filterId],
-            data: {
-              ...state.items[action.payload.filterId].data,
-              propertyList: action.payload.propertyList,
-            },
-          },
-        },
-      };
-    case APPLY_FILTER_WIDGET:
-      const filterWidget = state.items[action.payload.filterId]
-        .widget as FilterWidget;
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          [action.payload.filterId]: {
-            ...state.items[action.payload.filterId],
-            isActive: true,
-            data: {
-              ...state.items[action.payload.filterId].data,
-              filter: {
-                propertyName: filterWidget.settings.targetProperty,
-                operator: 'in',
-                propertyValue: action.payload.propertyValue,
-              },
-            },
-          },
-        },
-      };
-    case CLEAR_FILTER_DATA: {
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          [action.payload.filterId]: {
-            ...state.items[action.payload.filterId],
-            data: null,
-            isActive: false,
-          },
-        },
-      };
-    }
-    case SAVE_CLONED_WIDGET:
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          [action.payload.id]: {
-            ...action.payload.widgetItem,
-            widget: {
-              ...action.payload.widgetSettings,
-              id: action.payload.id,
-              position: {
-                ...action.payload.widgetSettings.position,
-              },
-            },
-          },
-        },
-      };
-    case UNREGISTER_WIDGET:
-      const items = { ...state.items };
-      delete items[action.payload.widgetId];
-      return {
-        ...state,
-        items,
-      };
-    default:
-      return state;
-  }
-};
+    },
+    applyFilterWidget: (
+      state,
+      { payload }: PayloadAction<{ filterId: string; propertyValue: string[] }>
+    ) => {
+      const filterWidget = state.items[payload.filterId].widget as FilterWidget;
 
-export default widgetsReducer;
+      state.items = {
+        ...state.items,
+        [payload.filterId]: {
+          ...state.items[payload.filterId],
+          isActive: true,
+          data: {
+            ...state.items[payload.filterId].data,
+            filter: {
+              propertyName: filterWidget.settings.targetProperty,
+              operator: 'in',
+              propertyValue: payload.propertyValue,
+            },
+          },
+        },
+      };
+    },
+    clearFilterData: (
+      state,
+      { payload }: PayloadAction<{ filterId: string }>
+    ) => {
+      state.items = {
+        ...state.items,
+        [payload.filterId]: {
+          ...state.items[payload.filterId],
+          data: null,
+          isActive: false,
+        },
+      };
+    },
+    saveClonedWidget: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        id: string;
+        widgetSettings: Widget;
+        widgetItem: WidgetItem;
+      }>
+    ) => {
+      state.items = {
+        ...state.items,
+        [payload.id]: {
+          ...payload.widgetItem,
+          widget: {
+            ...payload.widgetSettings,
+            id: payload.id,
+            position: {
+              ...payload.widgetSettings.position,
+            },
+          },
+        },
+      };
+    },
+    unregisterWidget: (
+      state,
+      { payload }: PayloadAction<{ widgetId: string }>
+    ) => {
+      const items = { ...state.items };
+      delete items[payload.widgetId];
+      state.items = items;
+    },
+  },
+});
+
+export default widgetsSlice;

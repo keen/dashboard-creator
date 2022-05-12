@@ -1,15 +1,13 @@
 import { put, select } from 'redux-saga/effects';
 import { Theme } from '@keen.io/charts';
-
-import { updateDashboard } from '../actions';
-
 import { serializeDashboard } from '../serializers';
-import { registerWidgets } from '../../widgets';
 
 import { themeActions, themeSagaActions, themeSelectors } from '../../theme';
 import { enhanceDashboard } from '../utils';
 
 import { DashboardModel } from '../types';
+import { widgetsActions } from '../../widgets';
+import { dashboardsActions } from '../index';
 
 /**
  * Prepares dashboard model to be used in application
@@ -32,8 +30,13 @@ export function* prepareDashboard(
   const serializedDashboard = serializeDashboard(restProperties);
   const { widgets } = dashboard;
 
-  yield put(registerWidgets(widgets));
-  yield put(updateDashboard(dashboardId, serializedDashboard));
+  yield put(widgetsActions.registerWidgets({ widgets }));
+  yield put(
+    dashboardsActions.updateDashboard({
+      dashboardId,
+      settings: serializedDashboard,
+    })
+  );
   yield put(themeActions.setDashboardTheme({ dashboardId, settings, theme }));
 
   yield put(themeSagaActions.loadDashboardFonts());

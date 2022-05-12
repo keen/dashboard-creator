@@ -15,11 +15,10 @@ jest.mock('uuid', () => {
 });
 
 import { dashboardsMeta } from '../../modules/dashboards/fixtures';
-
-import { createDashboard } from '../../modules/dashboards';
 import { Scopes } from '../../modules/app';
 
 import DashboardViewSwitch from './DashboardViewSwitch';
+import { dashboardsActions } from '../../modules/dashboards';
 
 const render = (overProps: any = {}, storeState: any = {}) => {
   const mockStore = configureStore([]);
@@ -173,6 +172,8 @@ test('allows user to create new dashbord', async () => {
     store.clearActions();
     fireEvent.click(dashboardButton);
 
-    expect(store.getActions()).toEqual([createDashboard('@dashboard/01')]);
+    expect(store.getActions()).toEqual([
+      dashboardsActions.createDashboard('@dashboard/01'),
+    ]);
   });
 });
