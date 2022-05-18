@@ -1,41 +1,20 @@
-import {
-  openEditor,
-  closeEditor,
-  applySettings,
-  updateConnection,
-  setEditorConnections,
-  setName,
-} from './actions';
-
-import datePickerReducer from './reducer';
-import { getDatePickerSettings } from './selectors';
 import { datePickerSaga } from './saga';
-
-import { APPLY_EDITOR_SETTINGS, CLOSE_EDITOR } from './constants';
-
+import { datePickerSelectors } from './selectors';
 import { DatePickerConnection, ReducerState } from './types';
+import datePickerSlice from './reducer';
+import { applySettings } from './actions';
 
 const datePickerActions = {
-  openEditor,
-  closeEditor,
+  ...datePickerSlice.actions,
   applySettings,
-  updateConnection,
-  setEditorConnections,
-  setName,
 };
+const datePickerReducer = datePickerSlice.reducer;
 
 export {
-  getDatePickerSettings,
   datePickerReducer,
-  openEditor,
-  closeEditor,
-  applySettings,
-  updateConnection,
-  setEditorConnections,
-  datePickerSaga,
-  APPLY_EDITOR_SETTINGS,
-  CLOSE_EDITOR,
   datePickerActions,
+  datePickerSaga,
+  datePickerSelectors,
 };
 
 export type { ReducerState, DatePickerConnection };

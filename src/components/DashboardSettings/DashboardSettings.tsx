@@ -23,10 +23,7 @@ import {
 
 import {
   DashboardMetaData,
-  getDashboardMeta,
-  getDashboardMetaSaving,
-  getDashboardsMetadata,
-  getTagsPool,
+  dashboardsSelectors,
 } from '../../modules/dashboards';
 import { RootState } from '../../rootReducer';
 
@@ -43,11 +40,13 @@ const DashboardSettings: FC<Props> = ({ onSave, onClose, dashboardId }) => {
   const { t } = useTranslation();
 
   const dashboardMeta = useSelector((state: RootState) =>
-    getDashboardMeta(state, dashboardId)
+    dashboardsSelectors.getDashboardMeta(state, dashboardId)
   );
-  const dashboards = useSelector(getDashboardsMetadata);
-  const tagsPool = useSelector(getTagsPool);
-  const isSavingDashboardMeta = useSelector(getDashboardMetaSaving);
+  const dashboards = useSelector(dashboardsSelectors.getDashboardsMetadata);
+  const tagsPool = useSelector(dashboardsSelectors.getTagsPool);
+  const isSavingDashboardMeta = useSelector(
+    dashboardsSelectors.getDashboardMetaSaving
+  );
 
   const { title, tags } = dashboardMeta;
   const [dashboardSettings, setDashboardSettings] = useState({ title, tags });

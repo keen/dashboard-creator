@@ -26,17 +26,17 @@ import WidgetCover from './components/WidgetCover';
 import { cardSettings } from './utils';
 
 import {
-  editDatePickerWidget,
-  getWidget,
   VisualizationSettings,
+  widgetsActions,
+  widgetsSelectors,
 } from '../../modules/widgets';
-import { getDashboardSettings } from '../../modules/dashboards';
 import { editFilterWidget } from '../../modules/widgets/actions';
 import { appSelectors } from '../../modules/app';
 import { themeSelectors } from '../../modules/theme';
 
 import { RootState } from '../../rootReducer';
 import { RenderOptions } from './types';
+import { dashboardsSelectors } from '../../modules/dashboards';
 
 type Props = {
   /** Widget identifier */
@@ -205,7 +205,9 @@ const Widget: FC<Props> = ({
     isDetached,
     isTitleCover,
     isInitialized,
-  } = useSelector((rootState: RootState) => getWidget(rootState, id));
+  } = useSelector((rootState: RootState) =>
+    widgetsSelectors.getWidget(rootState, id)
+  );
 
   const visualizationSettings = settings as VisualizationSettings;
 
@@ -213,7 +215,10 @@ const Widget: FC<Props> = ({
     if (!isTitleCover) return;
 
     const activeDashboard = appSelectors.getActiveDashboard(state);
-    const { widgets } = getDashboardSettings(state, activeDashboard);
+    const { widgets } = dashboardsSelectors.getDashboardSettings(
+      state,
+      activeDashboard
+    );
     const index = widgets.findIndex((item) => item === id);
 
     return `${t('widget_item.chart')} ${index + 1}`;
@@ -225,7 +230,7 @@ const Widget: FC<Props> = ({
     onEditWidget = () => dispatch(editFilterWidget(id));
   }
   if (widgetType === 'date-picker') {
-    onEditWidget = () => dispatch(editDatePickerWidget(id));
+    onEditWidget = () => dispatch(widgetsActions.editDatePickerWidget(id));
   }
 
   const { settings: dashboardWidgetSettings } = useSelector(

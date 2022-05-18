@@ -22,13 +22,12 @@ import {
 
 import { TOOLTIP_MOTION } from '../../../../constants';
 
-import {
-  getDashboardAccessKeyRegenerating,
-  getDashboardMeta,
-  regenerateAccessKey,
-} from '../../../../modules/dashboards';
 import { AppContext } from '../../../../contexts';
 import { RootState } from '../../../../rootReducer';
+import {
+  dashboardsActions,
+  dashboardsSelectors,
+} from '../../../../modules/dashboards';
 
 type Props = {
   dashboardId: string;
@@ -40,10 +39,10 @@ const PublicLink: FC<Props> = ({ dashboardId, isPublic = true }) => {
   const [tooltip, setTooltip] = useState(false);
   const { createSharedDashboardUrl } = useContext(AppContext);
   const { publicAccessKey } = useSelector((state: RootState) =>
-    getDashboardMeta(state, dashboardId)
+    dashboardsSelectors.getDashboardMeta(state, dashboardId)
   );
   const isRegenerating = useSelector((state: RootState) =>
-    getDashboardAccessKeyRegenerating(state)
+    dashboardsSelectors.getDashboardAccessKeyRegenerating(state)
   );
   const dispatch = useDispatch();
 
@@ -79,7 +78,11 @@ const PublicLink: FC<Props> = ({ dashboardId, isPublic = true }) => {
           <Link
             isDisabled={isRegenerating}
             onClick={() =>
-              isRegenerating ? null : dispatch(regenerateAccessKey(dashboardId))
+              isRegenerating
+                ? null
+                : dispatch(
+                    dashboardsActions.regenerateAccessKey({ dashboardId })
+                  )
             }
           >
             {t('dashboard_share.regenerate_link')}

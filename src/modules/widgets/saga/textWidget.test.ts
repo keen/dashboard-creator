@@ -2,25 +2,19 @@
 import sagaHelper from 'redux-saga-testing';
 import { put, take, select } from 'redux-saga/effects';
 
-import {
-  setWidgetState,
-  editTextWidget as editTextWidgetAction,
-  editInlineTextWidget as editInlineTextWidgetAction,
-  setTextWidget,
-} from '../actions';
-
 import { editTextWidget, editInlineTextWidget } from './textWidget';
 import { getWidgetSettings } from '../selectors';
-import { saveDashboard } from '../../dashboards';
 
 import { textEditorActions, textEditorSagaActions } from '../../textEditor';
+import { widgetsActions } from '../index';
+import { dashboardsActions } from '../../dashboards';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
 
 describe('editTextWidget()', () => {
   describe('Scenario 1: User edits text widget in editor', () => {
-    const action = editTextWidgetAction(widgetId);
+    const action = widgetsActions.editTextWidget(widgetId);
     const test = sagaHelper(editTextWidget(action));
 
     const textWidgetContent = {
@@ -65,8 +59,11 @@ describe('editTextWidget()', () => {
     test('updates widget state', (result) => {
       expect(result).toEqual(
         put(
-          setWidgetState(widgetId, {
-            isInitialized: false,
+          widgetsActions.setWidgetState({
+            id: widgetId,
+            widgetState: {
+              isInitialized: false,
+            },
           })
         )
       );
@@ -89,9 +86,12 @@ describe('editTextWidget()', () => {
     test('set text widget settings', (result) => {
       expect(result).toEqual(
         put(
-          setTextWidget(widgetId, {
-            content: textWidgetContent,
-            textAlignment: 'left',
+          widgetsActions.setTextWidget({
+            id: widgetId,
+            settings: {
+              content: textWidgetContent,
+              textAlignment: 'left',
+            },
           })
         )
       );
@@ -102,7 +102,7 @@ describe('editTextWidget()', () => {
     });
 
     test('triggers save dashboard action', (result) => {
-      expect(result).toEqual(put(saveDashboard(dashboardId)));
+      expect(result).toEqual(put(dashboardsActions.saveDashboard(dashboardId)));
     });
 
     test('close text editor', (result) => {
@@ -127,12 +127,20 @@ describe('editInlineTextWidget()', () => {
   };
 
   describe('Scenario 1: User edits inline text widget', () => {
-    const action = editInlineTextWidgetAction(widgetId, textWidgetContent);
+    const action = widgetsActions.editInlineTextWidget(
+      widgetId,
+      textWidgetContent
+    );
     const test = sagaHelper(editInlineTextWidget(action));
 
     test('set text widget settings', (result) => {
       expect(result).toEqual(
-        put(setTextWidget(widgetId, { content: textWidgetContent }))
+        put(
+          widgetsActions.setTextWidget({
+            id: widgetId,
+            settings: { content: textWidgetContent },
+          })
+        )
       );
     });
 
@@ -141,7 +149,7 @@ describe('editInlineTextWidget()', () => {
     });
 
     test('triggers save dashboard action', (result) => {
-      expect(result).toEqual(put(saveDashboard(dashboardId)));
+      expect(result).toEqual(put(dashboardsActions.saveDashboard(dashboardId)));
     });
   });
 });

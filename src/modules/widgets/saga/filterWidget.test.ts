@@ -25,65 +25,41 @@ import {
   resetFilterWidgets,
 } from './filterWidget';
 
-import {
-  updateChartWidgetFiltersConnections,
-  setWidgetState,
-  editFilterWidget as editFilterWidgetAction,
-  unapplyFilterWidget as unapplyFilterWidgetAction,
-  setFilterWidget as setFilterWidgetAction,
-  applyFilterModifiers as applyFilterModifiersAction,
-  configureFilerWidget,
-  initializeChartWidget,
-  setFilterPropertyList,
-  resetFilterWidgets as resetFilterWidgetsAction,
-} from '../actions';
-
-import {
-  resetEditor,
-  getFilterWidgetConnections,
-  getDetachedFilterWidgetConnections,
-  setEventStream,
-  setTargetProperty,
-  setupDashboardEventStreams,
-  openEditor,
-  closeEditor,
-  setEditorDetachedConnections,
-  setEditorConnections,
-  APPLY_EDITOR_SETTINGS,
-  CLOSE_EDITOR,
-  SET_EVENT_STREAM,
-  filterActions,
-} from '../../filter';
-import { getWidgetSettings, getWidget } from '../../widgets';
-import {
-  saveDashboard,
-  getDashboard,
-  removeWidgetFromDashboard,
-  ADD_WIDGET_TO_DASHBOARD,
-} from '../../dashboards';
+import { filterActions } from '../../filter';
 
 import { KEEN_ANALYSIS } from '../../../constants';
 import { appSelectors } from '../../app';
+import {
+  getDetachedFilterWidgetConnections,
+  getFilterWidgetConnections,
+} from '../../filter/saga';
+import { widgetsActions, widgetsSelectors } from '../index';
+import { dashboardsActions, dashboardsSelectors } from '../../dashboards';
 
 describe('applyFilterModifiers()', () => {
   describe('Scenario 1: Apply filter widget modifiers on connected charts', () => {
     const widgetId = '@filter/01';
-    const action = applyFilterModifiersAction(widgetId);
+    const action = widgetsActions.applyFilterModifiers(widgetId);
 
     const test = sagaHelper(applyFilterModifiers(action));
 
     test('set filter widget active state', (result) => {
       expect(result).toEqual(
         put(
-          setWidgetState(widgetId, {
-            isActive: true,
+          widgetsActions.setWidgetState({
+            id: widgetId,
+            widgetState: {
+              isActive: true,
+            },
           })
         )
       );
     });
 
     test('get filter widget settings', (result) => {
-      expect(result).toEqual(select(getWidgetSettings, widgetId));
+      expect(result).toEqual(
+        select(widgetsSelectors.getWidgetSettings, widgetId)
+      );
 
       return {
         settings: {
@@ -96,15 +72,21 @@ describe('applyFilterModifiers()', () => {
       expect(result).toEqual(
         all([
           put(
-            setWidgetState('@widget/01', {
-              isInitialized: false,
-              error: null,
+            widgetsActions.setWidgetState({
+              id: '@widget/01',
+              widgetState: {
+                isInitialized: false,
+                error: null,
+              },
             })
           ),
           put(
-            setWidgetState('@widget/02', {
-              isInitialized: false,
-              error: null,
+            widgetsActions.setWidgetState({
+              id: '@widget/02',
+              widgetState: {
+                isInitialized: false,
+                error: null,
+              },
             })
           ),
         ])
@@ -114,8 +96,8 @@ describe('applyFilterModifiers()', () => {
     test('reinitializes chart widgets', (result) => {
       expect(result).toEqual(
         all([
-          put(initializeChartWidget('@widget/01')),
-          put(initializeChartWidget('@widget/02')),
+          put(widgetsActions.initializeChartWidget('@widget/01')),
+          put(widgetsActions.initializeChartWidget('@widget/02')),
         ])
       );
     });
@@ -125,7 +107,7 @@ describe('applyFilterModifiers()', () => {
 describe('setFilterWidget()', () => {
   describe('Scenario 1: Succesfully set filter widget settings', () => {
     const widgetId = '@filter/01';
-    const action = setFilterWidgetAction(widgetId);
+    const action = widgetsActions.setFilterWidget(widgetId);
 
     const test = sagaHelper(setFilterWidget(action));
 
@@ -134,7 +116,7 @@ describe('setFilterWidget()', () => {
     };
 
     test('get filter widget settings', (result) => {
-      expect(result).toEqual(select(getWidget, widgetId));
+      expect(result).toEqual(select(widgetsSelectors.getWidget, widgetId));
 
       return {
         widget: {
@@ -150,7 +132,10 @@ describe('setFilterWidget()', () => {
 
     test('get connected chart widgets settings', (result) => {
       expect(result).toEqual(
-        all([select(getWidget, '@widget/01'), select(getWidget, '@widget/02')])
+        all([
+          select(widgetsSelectors.getWidget, '@widget/01'),
+          select(widgetsSelectors.getWidget, '@widget/02'),
+        ])
       );
 
       return [
@@ -180,8 +165,11 @@ describe('setFilterWidget()', () => {
     test('set filter widget loading state', (result) => {
       expect(result).toEqual(
         put(
-          setWidgetState(widgetId, {
-            isLoading: true,
+          widgetsActions.setWidgetState({
+            id: widgetId,
+            widgetState: {
+              isLoading: true,
+            },
           })
         )
       );
@@ -212,14 +200,17 @@ describe('setFilterWidget()', () => {
     test('sorts filter values alphabetically and sets them for filter widget ', (result) => {
       expect(result).toEqual(
         put(
-          setFilterPropertyList(widgetId, [
-            '12Australia',
-            '33venezuela',
-            'algeria',
-            'Angola',
-            'argentina',
-            'Armenia',
-          ])
+          widgetsActions.setFilterPropertyList({
+            filterId: widgetId,
+            propertyList: [
+              '12Australia',
+              '33venezuela',
+              'algeria',
+              'Angola',
+              'argentina',
+              'Armenia',
+            ],
+          })
         )
       );
     });
@@ -227,8 +218,11 @@ describe('setFilterWidget()', () => {
     test('set filter widget loading state', (result) => {
       expect(result).toEqual(
         put(
-          setWidgetState(widgetId, {
-            isLoading: false,
+          widgetsActions.setWidgetState({
+            id: widgetId,
+            widgetState: {
+              isLoading: false,
+            },
           })
         )
       );
@@ -239,12 +233,12 @@ describe('setFilterWidget()', () => {
 describe('unapplyFilterWidget()', () => {
   describe('Scenario 1: User unapply filter widget settings', () => {
     const widgetId = '@filter/01';
-    const action = unapplyFilterWidgetAction(widgetId);
+    const action = widgetsActions.unapplyFilterWidget(widgetId);
 
     const test = sagaHelper(unapplyFilterWidget(action));
 
     test('get filter widget settings', (result) => {
-      expect(result).toEqual(select(getWidget, widgetId));
+      expect(result).toEqual(select(widgetsSelectors.getWidget, widgetId));
 
       return {
         data: {
@@ -258,7 +252,12 @@ describe('unapplyFilterWidget()', () => {
 
     test('removes filter data from widget', (result) => {
       expect(result).toEqual(
-        put(setWidgetState(widgetId, { isActive: false, data: {} }))
+        put(
+          widgetsActions.setWidgetState({
+            id: widgetId,
+            widgetState: { isActive: false, data: {} },
+          })
+        )
       );
     });
 
@@ -266,15 +265,21 @@ describe('unapplyFilterWidget()', () => {
       expect(result).toEqual(
         all([
           put(
-            setWidgetState('@widget/01', {
-              isInitialized: false,
-              error: null,
+            widgetsActions.setWidgetState({
+              id: '@widget/01',
+              widgetState: {
+                isInitialized: false,
+                error: null,
+              },
             })
           ),
           put(
-            setWidgetState('@widget/02', {
-              isInitialized: false,
-              error: null,
+            widgetsActions.setWidgetState({
+              id: '@widget/02',
+              widgetState: {
+                isInitialized: false,
+                error: null,
+              },
             })
           ),
         ])
@@ -284,8 +289,8 @@ describe('unapplyFilterWidget()', () => {
     test('reinitializes chart widgets', (result) => {
       expect(result).toEqual(
         all([
-          put(initializeChartWidget('@widget/01')),
-          put(initializeChartWidget('@widget/02')),
+          put(widgetsActions.initializeChartWidget('@widget/01')),
+          put(widgetsActions.initializeChartWidget('@widget/02')),
         ])
       );
     });
@@ -345,10 +350,16 @@ describe('removeFilterConnections()', () => {
       expect(result).toEqual(
         all([
           put(
-            updateChartWidgetFiltersConnections('@widget/01', ['@filter/02'])
+            widgetsActions.updateChartWidgetFiltersConnections({
+              id: '@widget/01',
+              filterIds: ['@filter/02'],
+            })
           ),
           put(
-            updateChartWidgetFiltersConnections('@widget/02', ['@filter/02'])
+            widgetsActions.updateChartWidgetFiltersConnections({
+              id: '@widget/02',
+              filterIds: ['@filter/02'],
+            })
           ),
         ])
       );
@@ -364,7 +375,9 @@ describe('removeConnectionFromFilter()', () => {
     const test = sagaHelper(removeConnectionFromFilter(filterId, widgetId));
 
     test('get filter widget settings', (result) => {
-      expect(result).toEqual(select(getWidgetSettings, filterId));
+      expect(result).toEqual(
+        select(widgetsSelectors.getWidgetSettings, filterId)
+      );
 
       return {
         settings: {
@@ -377,7 +390,14 @@ describe('removeConnectionFromFilter()', () => {
 
     test('updates filter widget connections', (result) => {
       expect(result).toEqual(
-        put(configureFilerWidget(filterId, ['@widget/02'], 'logins', 'user.id'))
+        put(
+          widgetsActions.configureFilterWidget({
+            id: filterId,
+            widgetConnections: ['@widget/02'],
+            eventStream: 'logins',
+            targetProperty: 'user.id',
+          })
+        )
       );
     });
   });
@@ -453,21 +473,32 @@ describe('updateWidgetsDistinction()', () => {
     test('updates widgets distinction', (result) => {
       expect(result).toEqual(
         all([
-          put(setWidgetState('@widget/03', { isFadeOut: true })),
           put(
-            setWidgetState('@widget/01', {
-              isFadeOut: false,
-              isHighlighted: true,
-              isTitleCover: true,
-              isDetached: false,
+            widgetsActions.setWidgetState({
+              id: '@widget/03',
+              widgetState: { isFadeOut: true },
             })
           ),
           put(
-            setWidgetState('@widget/02', {
-              isFadeOut: false,
-              isHighlighted: false,
-              isTitleCover: true,
-              isDetached: true,
+            widgetsActions.setWidgetState({
+              id: '@widget/01',
+              widgetState: {
+                isFadeOut: false,
+                isHighlighted: true,
+                isTitleCover: true,
+                isDetached: false,
+              },
+            })
+          ),
+          put(
+            widgetsActions.setWidgetState({
+              id: '@widget/02',
+              widgetState: {
+                isFadeOut: false,
+                isHighlighted: false,
+                isTitleCover: true,
+                isDetached: true,
+              },
             })
           ),
         ])
@@ -504,13 +535,13 @@ describe('synchronizeFilterConnections()', () => {
     );
 
     test('wait for event stream change', (result) => {
-      expect(result).toEqual(take(SET_EVENT_STREAM));
+      expect(result).toEqual(take(filterActions.setEventStream.type));
 
-      return setEventStream('logins');
+      return filterActions.setEventStream('logins');
     });
 
     test('resets target property', (result) => {
-      expect(result).toEqual(put(setTargetProperty(null)));
+      expect(result).toEqual(put(filterActions.setTargetProperty(null)));
     });
 
     test('creates filter widget connections', (result) => {
@@ -536,12 +567,16 @@ describe('synchronizeFilterConnections()', () => {
 
     test('set detached widget connections', (result) => {
       expect(result).toEqual(
-        put(setEditorDetachedConnections(detachedWidgetConnections))
+        put(
+          filterActions.setEditorDetachedConnections(detachedWidgetConnections)
+        )
       );
     });
 
     test('set widget connections', (result) => {
-      expect(result).toEqual(put(setEditorConnections(widgetConnections)));
+      expect(result).toEqual(
+        put(filterActions.setEditorConnections(widgetConnections))
+      );
     });
 
     test('updates widget distinction', (result) => {
@@ -557,7 +592,7 @@ describe('editFilterWidget()', () => {
     const dashboardId = '@dashboard/01';
     const widgetId = '@filter/01';
 
-    const action = editFilterWidgetAction(widgetId);
+    const action = widgetsActions.editFilterWidget(widgetId);
     const test = sagaHelper(editFilterWidget(action));
 
     const widgetConnections = [
@@ -585,11 +620,15 @@ describe('editFilterWidget()', () => {
     });
 
     test('creates event streams pool', (result) => {
-      expect(result).toEqual(put(setupDashboardEventStreams(dashboardId)));
+      expect(result).toEqual(
+        put(filterActions.setupDashboardEventStreams(dashboardId))
+      );
     });
 
     test('get filter widget settings', (result) => {
-      expect(result).toEqual(select(getWidgetSettings, widgetId));
+      expect(result).toEqual(
+        select(widgetsSelectors.getWidgetSettings, widgetId)
+      );
 
       return {
         settings: {
@@ -623,20 +662,24 @@ describe('editFilterWidget()', () => {
 
     test('set detached widget connections', (result) => {
       expect(result).toEqual(
-        put(setEditorDetachedConnections(detachedWidgetConnections))
+        put(
+          filterActions.setEditorDetachedConnections(detachedWidgetConnections)
+        )
       );
     });
 
     test('set event stream', (result) => {
-      expect(result).toEqual(put(setEventStream('logins')));
+      expect(result).toEqual(put(filterActions.setEventStream('logins')));
     });
 
     test('set target property', (result) => {
-      expect(result).toEqual(put(setTargetProperty('user.id')));
+      expect(result).toEqual(put(filterActions.setTargetProperty('user.id')));
     });
 
     test('set widget connections', (result) => {
-      expect(result).toEqual(put(setEditorConnections(widgetConnections)));
+      expect(result).toEqual(
+        put(filterActions.setEditorConnections(widgetConnections))
+      );
     });
 
     test('set filter widget name', (result) => {
@@ -650,7 +693,7 @@ describe('editFilterWidget()', () => {
     });
 
     test('opens filter widget editor', (result) => {
-      expect(result).toEqual(put(openEditor()));
+      expect(result).toEqual(put(filterActions.openEditor()));
     });
 
     test('creates filter widget connections watcher', (result) => {
@@ -660,9 +703,11 @@ describe('editFilterWidget()', () => {
     });
 
     test('waits for user action', (result) => {
-      expect(result).toEqual(take([APPLY_EDITOR_SETTINGS, CLOSE_EDITOR]));
+      expect(result).toEqual(
+        take([filterActions.applySettings.type, filterActions.closeEditor.type])
+      );
 
-      return { type: APPLY_EDITOR_SETTINGS };
+      return { type: filterActions.applySettings.type };
     });
 
     test('cancel widget connections watcher', (result) => {
@@ -698,7 +743,10 @@ describe('editFilterWidget()', () => {
       expect(result).toEqual(
         all([
           put(
-            updateChartWidgetFiltersConnections('@widget/02', ['@filter/02'])
+            widgetsActions.updateChartWidgetFiltersConnections({
+              id: '@widget/02',
+              filterIds: ['@filter/02'],
+            })
           ),
         ])
       );
@@ -709,15 +757,17 @@ describe('editFilterWidget()', () => {
     });
 
     test('closes filter widget editor', (result) => {
-      expect(result).toEqual(put(closeEditor()));
+      expect(result).toEqual(put(filterActions.closeEditor()));
     });
 
     test('saves dashboard', (result) => {
-      expect(result).toEqual(put(saveDashboard(dashboardId)));
+      expect(result).toEqual(put(dashboardsActions.saveDashboard(dashboardId)));
     });
 
     test('get dashboard widgets', (result) => {
-      expect(result).toEqual(select(getDashboard, dashboardId));
+      expect(result).toEqual(
+        select(dashboardsSelectors.getDashboard, dashboardId)
+      );
 
       return {
         settings: { widgets: ['@widget/01', '@widget/02'] },
@@ -728,19 +778,25 @@ describe('editFilterWidget()', () => {
       expect(result).toEqual(
         all([
           put(
-            setWidgetState('@widget/01', {
-              isHighlighted: false,
-              isFadeOut: false,
-              isDetached: false,
-              isTitleCover: false,
+            widgetsActions.setWidgetState({
+              id: '@widget/01',
+              widgetState: {
+                isHighlighted: false,
+                isFadeOut: false,
+                isDetached: false,
+                isTitleCover: false,
+              },
             })
           ),
           put(
-            setWidgetState('@widget/02', {
-              isHighlighted: false,
-              isFadeOut: false,
-              isDetached: false,
-              isTitleCover: false,
+            widgetsActions.setWidgetState({
+              id: '@widget/02',
+              widgetState: {
+                isHighlighted: false,
+                isFadeOut: false,
+                isDetached: false,
+                isTitleCover: false,
+              },
             })
           ),
         ])
@@ -748,7 +804,7 @@ describe('editFilterWidget()', () => {
     });
 
     test('reset filter editor state', (result) => {
-      expect(result).toEqual(put(resetEditor()));
+      expect(result).toEqual(put(filterActions.resetEditor()));
     });
   });
 });
@@ -766,17 +822,19 @@ describe('setupFilterWidget()', () => {
     });
 
     test('creates event streams pool', (result) => {
-      expect(result).toEqual(put(setupDashboardEventStreams(dashboardId)));
+      expect(result).toEqual(
+        put(filterActions.setupDashboardEventStreams(dashboardId))
+      );
     });
 
     test('waits until widget is added to dashboard', (result) => {
-      expect(result).toEqual(take(ADD_WIDGET_TO_DASHBOARD));
+      expect(result).toEqual(take(dashboardsActions.addWidgetToDashboard.type));
 
-      return { type: ADD_WIDGET_TO_DASHBOARD };
+      return { type: dashboardsActions.addWidgetToDashboard.type };
     });
 
     test('opens filter widget editor', (result) => {
-      expect(result).toEqual(put(openEditor()));
+      expect(result).toEqual(put(filterActions.openEditor()));
     });
 
     test('creates filter widget connections watcher', (result) => {
@@ -786,9 +844,11 @@ describe('setupFilterWidget()', () => {
     });
 
     test('waits for user action', (result) => {
-      expect(result).toEqual(take([APPLY_EDITOR_SETTINGS, CLOSE_EDITOR]));
+      expect(result).toEqual(
+        take([filterActions.applySettings.type, filterActions.closeEditor.type])
+      );
 
-      return { type: APPLY_EDITOR_SETTINGS };
+      return { type: filterActions.applySettings.type };
     });
 
     test('cancel widget connections watcher', (result) => {
@@ -800,15 +860,17 @@ describe('setupFilterWidget()', () => {
     });
 
     test('closes filter widget editor', (result) => {
-      expect(result).toEqual(put(closeEditor()));
+      expect(result).toEqual(put(filterActions.closeEditor()));
     });
 
     test('saves dashboard', (result) => {
-      expect(result).toEqual(put(saveDashboard(dashboardId)));
+      expect(result).toEqual(put(dashboardsActions.saveDashboard(dashboardId)));
     });
 
     test('get dashboard widgets', (result) => {
-      expect(result).toEqual(select(getDashboard, dashboardId));
+      expect(result).toEqual(
+        select(dashboardsSelectors.getDashboard, dashboardId)
+      );
 
       return {
         settings: { widgets: ['@widget/01', '@widget/02'] },
@@ -819,19 +881,25 @@ describe('setupFilterWidget()', () => {
       expect(result).toEqual(
         all([
           put(
-            setWidgetState('@widget/01', {
-              isHighlighted: false,
-              isFadeOut: false,
-              isDetached: false,
-              isTitleCover: false,
+            widgetsActions.setWidgetState({
+              id: '@widget/01',
+              widgetState: {
+                isHighlighted: false,
+                isFadeOut: false,
+                isDetached: false,
+                isTitleCover: false,
+              },
             })
           ),
           put(
-            setWidgetState('@widget/02', {
-              isHighlighted: false,
-              isFadeOut: false,
-              isDetached: false,
-              isTitleCover: false,
+            widgetsActions.setWidgetState({
+              id: '@widget/02',
+              widgetState: {
+                isHighlighted: false,
+                isFadeOut: false,
+                isDetached: false,
+                isTitleCover: false,
+              },
             })
           ),
         ])
@@ -839,7 +907,7 @@ describe('setupFilterWidget()', () => {
     });
 
     test('reset filter editor state', (result) => {
-      expect(result).toEqual(put(resetEditor()));
+      expect(result).toEqual(put(filterActions.resetEditor()));
     });
   });
 
@@ -855,17 +923,19 @@ describe('setupFilterWidget()', () => {
     });
 
     test('creates event streams pool', (result) => {
-      expect(result).toEqual(put(setupDashboardEventStreams(dashboardId)));
+      expect(result).toEqual(
+        put(filterActions.setupDashboardEventStreams(dashboardId))
+      );
     });
 
     test('waits until widget is added to dashboard', (result) => {
-      expect(result).toEqual(take(ADD_WIDGET_TO_DASHBOARD));
+      expect(result).toEqual(take(dashboardsActions.addWidgetToDashboard.type));
 
-      return { type: ADD_WIDGET_TO_DASHBOARD };
+      return { type: dashboardsActions.addWidgetToDashboard.type };
     });
 
     test('opens filter widget editor', (result) => {
-      expect(result).toEqual(put(openEditor()));
+      expect(result).toEqual(put(filterActions.openEditor()));
     });
 
     test('creates filter widget connections watcher', (result) => {
@@ -875,9 +945,11 @@ describe('setupFilterWidget()', () => {
     });
 
     test('waits for user action', (result) => {
-      expect(result).toEqual(take([APPLY_EDITOR_SETTINGS, CLOSE_EDITOR]));
+      expect(result).toEqual(
+        take([filterActions.applySettings.type, filterActions.closeEditor.type])
+      );
 
-      return { type: CLOSE_EDITOR };
+      return { type: filterActions.closeEditor.type };
     });
 
     test('cancel widget connections watcher', (result) => {
@@ -886,7 +958,9 @@ describe('setupFilterWidget()', () => {
 
     test('removes widget from dashboard', (result) => {
       expect(result).toEqual(
-        put(removeWidgetFromDashboard(dashboardId, widgetId))
+        put(
+          dashboardsActions.removeWidgetFromDashboard({ dashboardId, widgetId })
+        )
       );
     });
   });
@@ -895,7 +969,7 @@ describe('setupFilterWidget()', () => {
 describe('resetFilterWidgets()', () => {
   describe('Scenario 1: Resets all filter widgets state', () => {
     const dashboardId = '@dashboard/01';
-    const action = resetFilterWidgetsAction('@dashboard/01');
+    const action = widgetsActions.resetFilterWidgets('@dashboard/01');
     const test = sagaHelper(resetFilterWidgets(action));
 
     test('gets application state', (result) => {
@@ -951,8 +1025,18 @@ describe('resetFilterWidgets()', () => {
     test('reset filter widgets states', (result) => {
       expect(result).toEqual(
         all([
-          put(setWidgetState('@filter/01', { isActive: false, data: null })),
-          put(setWidgetState('@filter/03', { isActive: false, data: null })),
+          put(
+            widgetsActions.setWidgetState({
+              id: '@filter/01',
+              widgetState: { isActive: false, data: null },
+            })
+          ),
+          put(
+            widgetsActions.setWidgetState({
+              id: '@filter/03',
+              widgetState: { isActive: false, data: null },
+            })
+          ),
         ])
       );
     });

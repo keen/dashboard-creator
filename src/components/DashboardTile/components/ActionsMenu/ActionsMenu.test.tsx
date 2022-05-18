@@ -111,10 +111,8 @@ test('allows user to share dashbord', () => {
   expect(store.getActions()).toMatchInlineSnapshot(`
     Array [
       Object {
-        "payload": Object {
-          "dashboardId": "@dashboard/id",
-        },
-        "type": "@dashboards/SHOW_DASHBOARD_SHARE_MODAL",
+        "payload": "@dashboard/id",
+        "type": "dashboards/showDashboardShareModal",
       },
     ]
   `);

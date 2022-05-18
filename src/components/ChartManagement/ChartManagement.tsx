@@ -5,11 +5,9 @@ import { useDispatch } from 'react-redux';
 import WidgetManagement from '../WidgetManagement';
 
 import {
-  editChartWidget,
-  cloneWidget,
   WidgetError,
   WidgetErrors,
-  createNewChart,
+  widgetsActions,
 } from '../../modules/widgets';
 
 type Props = {
@@ -35,13 +33,14 @@ const ChartManagement: FC<Props> = ({
     error?.code === WidgetErrors.SAVED_QUERY_NOT_EXIST ||
     error?.code === WidgetErrors.STREAM_NOT_EXIST;
 
-  const handleCreateNewChart = () => dispatch(createNewChart(widgetId));
+  const handleCreateNewChart = () =>
+    dispatch(widgetsActions.createNewChart(widgetId));
 
   return (
     <WidgetManagement
       isHoverActive={isHoverActive}
-      onCloneWidget={() => dispatch(cloneWidget(widgetId))}
-      onEditWidget={() => dispatch(editChartWidget(widgetId))}
+      onCloneWidget={() => dispatch(widgetsActions.cloneWidget(widgetId))}
+      onEditWidget={() => dispatch(widgetsActions.editChartWidget(widgetId))}
       onRemoveWidget={onRemoveWidget}
       onCreateWidget={disableManagement && handleCreateNewChart}
       editAllowed={!disableManagement}

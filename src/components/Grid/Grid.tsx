@@ -14,9 +14,9 @@ import { Container } from './Grid.styles';
 import Widget, { DRAG_HANDLE_ELEMENT } from '../Widget';
 
 import {
-  getWidgetsPosition,
   WidgetsPosition,
   GridPosition,
+  widgetsSelectors,
 } from '../../modules/widgets';
 import { RootState } from '../../rootReducer';
 import { getDroppingItemSize, getGridItemStyles } from '../../utils';
@@ -65,7 +65,7 @@ const Grid: FC<Props> = ({
   isEditorMode = false,
 }) => {
   const widgets = useSelector((state: RootState) =>
-    getWidgetsPosition(state, widgetsId)
+    widgetsSelectors.getWidgetsPosition(state, widgetsId)
   );
 
   const [draggedWidget, setDraggedWidget] = useState<string>(null);

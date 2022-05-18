@@ -4,11 +4,7 @@ import { useDispatch } from 'react-redux';
 import { DropdownMenu } from '@keen.io/ui-core';
 
 import { Container, DeleteDashboard } from './ActionsMenu.styles';
-
-import {
-  cloneDashboard,
-  deleteDashboard,
-} from '../../../../modules/dashboards';
+import { dashboardsActions } from '../../../../modules/dashboards';
 
 type Props = {
   /** Dashboard identifer */
@@ -27,7 +23,7 @@ const ActionsMenu: FC<Props> = ({ dashboardId, onClose }) => {
         <DropdownMenu.Item
           onClick={() => {
             onClose();
-            dispatch(cloneDashboard(dashboardId));
+            dispatch(dashboardsActions.cloneDashboard(dashboardId));
           }}
         >
           {t('actions_menu.clone_dashboard')}
@@ -35,7 +31,7 @@ const ActionsMenu: FC<Props> = ({ dashboardId, onClose }) => {
         <DropdownMenu.Item
           onClick={() => {
             onClose();
-            dispatch(deleteDashboard(dashboardId));
+            dispatch(dashboardsActions.deleteDashboard(dashboardId));
           }}
         >
           <DeleteDashboard>

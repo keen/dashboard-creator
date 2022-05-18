@@ -9,9 +9,7 @@ import { Navigation, Error, Content } from './Viewer.styles';
 
 import {
   dashboardsSelectors,
-  editDashboard,
-  resetDashboardFilters,
-  showDashboardSettingsModal,
+  dashboardsActions,
 } from '../../modules/dashboards';
 import { themeSelectors } from '../../modules/theme';
 import { Scopes } from '../../modules/app';
@@ -88,7 +86,7 @@ const Viewer: FC<Props> = ({ dashboardId }) => {
 
   useEffect(() => {
     return () => {
-      dispatch(resetDashboardFilters(dashboardId));
+      dispatch(dashboardsActions.resetDashboardFilters(dashboardId));
     };
   }, [dashboardId]);
 
@@ -101,13 +99,17 @@ const Viewer: FC<Props> = ({ dashboardId }) => {
             title={title}
             tags={tags}
             isPublic={isPublic}
-            onEditDashboard={() => dispatch(editDashboard(dashboardId))}
+            onEditDashboard={() =>
+              dispatch(dashboardsActions.editDashboard(dashboardId))
+            }
             onBack={() => {
               dispatch(appActions.setActiveDashboard(null));
               dispatch(push(ROUTES.MANAGEMENT));
             }}
             onShowSettings={() => {
-              dispatch(showDashboardSettingsModal(dashboardId));
+              dispatch(
+                dashboardsActions.showDashboardSettingsModal(dashboardId)
+              );
             }}
           />
         </Navigation>

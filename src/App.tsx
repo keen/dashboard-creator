@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { Container, Content, DropdownContainer } from './App.styles';
 
-import { DashboardMetaData, saveDashboardMeta } from './modules/dashboards';
+import { DashboardMetaData, dashboardsActions } from './modules/dashboards';
 
 import PageLoader from './components/PageLoader';
 import ToastNotifications from './components/ToastNotifications';
@@ -62,7 +62,9 @@ const App: FC = () => {
       <ToastNotifications />
       <DashboardSettingsModal
         onSaveDashboard={(dashboardId: string, metadata: DashboardMetaData) =>
-          dispatch(saveDashboardMeta(dashboardId, metadata))
+          dispatch(
+            dashboardsActions.saveDashboardMetadata({ dashboardId, metadata })
+          )
         }
       />
       <DashboardShareModal />

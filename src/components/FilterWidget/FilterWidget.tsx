@@ -23,18 +23,13 @@ import {
   ListOverflow,
 } from './FilterWidget.styles';
 
-import { getWidget } from '../../modules/widgets';
 import { RootState } from '../../rootReducer';
 import { getEventPath, getRelativeBoundingRect } from '../../utils';
-import {
-  applyFilterModifiers,
-  applyFilterWidget,
-  setFilterWidget,
-  unapplyFilterWidget,
-} from '../../modules/widgets/actions';
+
 import { FilterWidget as FilterWidgetType } from '../../modules/widgets/types';
 import { DROPDOWN_CONTAINER_ID } from '../../constants';
 import { FilterItem, SearchTags } from './components';
+import { widgetsActions, widgetsSelectors } from '../../modules/widgets';
 
 type Props = {
   /** Widget identifier */
@@ -71,7 +66,9 @@ const FilterWidget: FC<Props> = ({
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  const widget = useSelector((state: RootState) => getWidget(state, id));
+  const widget = useSelector((state: RootState) =>
+    widgetsSelectors.getWidget(state, id)
+  );
 
   const filterWidget = widget.widget as FilterWidgetType;
   const [isOpen, setOpen] = useState(false);
@@ -135,7 +132,7 @@ const FilterWidget: FC<Props> = ({
 
   useEffect(() => {
     if (isOpen && !widget.data) {
-      dispatch(setFilterWidget(widget.widget.id));
+      dispatch(widgetsActions.setFilterWidget(widget.widget.id));
     }
     if (widget.data && widget.data.filter) {
       setActiveProperties(widget.data.filter.propertyValue);
@@ -173,10 +170,15 @@ const FilterWidget: FC<Props> = ({
 
   const applyFilter = () => {
     if (activeProperties.length === 0) {
-      dispatch(unapplyFilterWidget(widget.widget.id));
+      dispatch(widgetsActions.unapplyFilterWidget(widget.widget.id));
     } else {
-      dispatch(applyFilterWidget(widget.widget.id, activeProperties));
-      dispatch(applyFilterModifiers(widget.widget.id));
+      dispatch(
+        widgetsActions.applyFilterWidget({
+          filterId: widget.widget.id,
+          propertyValue: activeProperties,
+        })
+      );
+      dispatch(widgetsActions.applyFilterModifiers(widget.widget.id));
     }
     setOpen(false);
   };
@@ -290,6 +292,7 @@ const FilterWidget: FC<Props> = ({
                 >
                   <ReactWindowList
                     height={150}
+                    width="100%"
                     data-testid="scroll-wrapper2"
                     itemData={filterItemData}
                     itemCount={filterItemData.items.length}
@@ -323,7 +326,9 @@ const FilterWidget: FC<Props> = ({
                 </Button>
                 <FilterButtonSecondary
                   onClick={() => {
-                    dispatch(unapplyFilterWidget(widget.widget.id));
+                    dispatch(
+                      widgetsActions.unapplyFilterWidget(widget.widget.id)
+                    );
                     setOpen(false);
                   }}
                 >

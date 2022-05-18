@@ -1,30 +1,28 @@
 import { serializeSavedQuery } from './serializers';
-import queriesReducer from './reducer';
-import {
-  selectSavedQuery,
-  createQuery,
-  addInterimQuery,
-  removeInterimQuery,
-  removeInterimQueries,
-} from './actions';
+import queriesSlice from './reducer';
+import { selectSavedQuery, createQuery } from './actions';
+
 import { getInterimQuery, getInterimQueriesLength } from './selectors';
-import { SELECT_SAVED_QUERY, CREATE_QUERY } from './constants';
 import { updateSaveQuery } from './saga';
 import { SavedQuery, QueryVisualization, SavedQueryAPIResponse } from './types';
 
-export {
-  serializeSavedQuery,
+const queriesReducer = queriesSlice.reducer;
+const queriesActions = {
+  ...queriesSlice.actions,
   selectSavedQuery,
   createQuery,
-  addInterimQuery,
-  removeInterimQuery,
-  removeInterimQueries,
-  updateSaveQuery,
-  queriesReducer,
-  getInterimQuery,
-  getInterimQueriesLength,
-  SELECT_SAVED_QUERY,
-  CREATE_QUERY,
 };
+
+const queriesSelectors = {
+  serializeSavedQuery,
+  getInterimQueriesLength,
+  getInterimQuery,
+};
+
+const queriesSagas = {
+  updateSaveQuery,
+};
+
+export { queriesSelectors, queriesActions, queriesSagas, queriesReducer };
 
 export type { SavedQuery, SavedQueryAPIResponse, QueryVisualization };

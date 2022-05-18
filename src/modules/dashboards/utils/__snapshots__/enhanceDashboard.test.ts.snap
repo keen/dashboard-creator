@@ -1,0 +1,56 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Enhances dashboard model with provided properties 1`] = `
+Object {
+  "settings": Object {
+    "colorPalette": "default",
+    "legend": Object {
+      "typography": Object {
+        "fontColor": "#1D2729",
+        "fontFamily": "Gangster Grotesk, Arial, Helvetica, sans-serif",
+        "fontSize": 10,
+        "fontStyle": "normal",
+        "fontWeight": "normal",
+      },
+    },
+    "page": Object {
+      "background": "#f1f5f8",
+      "chartTitlesFont": "Gangster Grotesk",
+      "gridGap": 20,
+      "visualizationsFont": "Lato",
+    },
+    "subtitle": Object {
+      "typography": Object {
+        "fontColor": "green",
+        "fontFamily": "Gangster Grotesk, Arial, Helvetica, sans-serif",
+        "fontSize": 14,
+        "fontStyle": "italic",
+        "fontWeight": "normal",
+      },
+    },
+    "tiles": Object {
+      "background": "#ffffff",
+      "borderColor": "none",
+      "borderRadius": 0,
+      "borderWidth": 0,
+      "hasShadow": true,
+      "padding": 20,
+    },
+    "title": Object {
+      "typography": Object {
+        "fontColor": "red",
+        "fontFamily": "Gangster Grotesk, Arial, Helvetica, sans-serif",
+        "fontSize": 20,
+        "fontStyle": "normal",
+        "fontWeight": "normal",
+      },
+    },
+  },
+  "theme": Object {
+    "colors": Array [
+      "yellow",
+      "orange",
+    ],
+  },
+}
+`;

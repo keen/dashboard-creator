@@ -3,15 +3,7 @@ import { put, select, getContext } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
 import { v4 as uuid } from 'uuid';
 
-import {
-  updateDashboard,
-  initializeDashboardWidgets,
-  cloneDashboard as cloneDashboardAction,
-  addClonedDashboard,
-} from '../actions';
-
 import { appActions, appSelectors } from '../../app';
-import { registerWidgets } from '../../widgets';
 import { themeActions, themeSelectors } from '../../theme';
 
 import { serializeDashboard } from '../serializers';
@@ -24,6 +16,8 @@ import {
 } from '../../../constants';
 
 import { DashboardModel } from '../types';
+import { widgetsActions } from '../../widgets';
+import { dashboardsActions } from '../index';
 
 /**
  * Flow responsible for cloning dashboard model instance
@@ -34,7 +28,7 @@ import { DashboardModel } from '../types';
  */
 export function* cloneDashboard({
   payload,
-}: ReturnType<typeof cloneDashboardAction>) {
+}: ReturnType<typeof dashboardsActions.cloneDashboard>) {
   const { dashboardId } = payload;
 
   const notificationManager = yield getContext(NOTIFICATION_MANAGER);
@@ -66,7 +60,7 @@ export function* cloneDashboard({
 
     yield dashboardApi.saveDashboard(newDashboardId, newModel, newMetaData);
 
-    yield put(addClonedDashboard(newMetaData));
+    yield put(dashboardsActions.addClonedDashboard(newMetaData));
 
     let dashboardTheme = theme;
     if (!dashboardTheme) {
@@ -92,10 +86,18 @@ export function* cloneDashboard({
 
     if (activeDashboard) {
       const serializedDashboard = serializeDashboard(newModel);
-      yield put(registerWidgets(uniqueIdWidgets));
-      yield put(updateDashboard(newDashboardId, serializedDashboard));
+      yield put(widgetsActions.registerWidgets({ widgets: uniqueIdWidgets }));
       yield put(
-        initializeDashboardWidgets(newDashboardId, serializedDashboard.widgets)
+        dashboardsActions.updateDashboard({
+          dashboardId: newDashboardId,
+          settings: serializedDashboard,
+        })
+      );
+      yield put(
+        dashboardsActions.initializeDashboardWidgets(
+          newDashboardId,
+          serializedDashboard.widgets
+        )
       );
 
       yield put(appActions.setActiveDashboard(newDashboardId));

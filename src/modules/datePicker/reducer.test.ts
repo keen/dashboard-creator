@@ -1,13 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import datePickerReducer, { initialState } from './reducer';
-
-import {
-  updateConnection,
-  setEditorConnections,
-  openEditor,
-  closeEditor,
-  setName,
-} from './actions';
+import { initialState } from './reducer';
+import { datePickerActions, datePickerReducer } from './index';
 
 const widgetId = '@widget/01';
 const widgetConnection = {
@@ -18,7 +11,10 @@ const widgetConnection = {
 };
 
 test('updates widgets connection', () => {
-  const action = updateConnection(widgetId, true);
+  const action = datePickerActions.updateConnection({
+    widgetId,
+    isConnected: true,
+  });
   const state = {
     ...initialState,
     widgetConnections: [widgetConnection],
@@ -38,7 +34,9 @@ test('updates widgets connection', () => {
 });
 
 test('sets editor connection', () => {
-  const action = setEditorConnections([widgetConnection]);
+  const action = datePickerActions.setEditorConnections({
+    widgetConnections: [widgetConnection],
+  });
   const { widgetConnections } = datePickerReducer(initialState, action);
   expect(widgetConnections).toMatchInlineSnapshot(`
     Array [
@@ -53,13 +51,13 @@ test('sets editor connection', () => {
 });
 
 test('opens date picker editor', () => {
-  const action = openEditor();
+  const action = datePickerActions.openEditor();
   const { isEditorOpen } = datePickerReducer(initialState, action);
   expect(isEditorOpen).toEqual(true);
 });
 
 test('closes date picker editor', () => {
-  const action = closeEditor();
+  const action = datePickerActions.closeEditor();
   const state = datePickerReducer(initialState, action);
   expect(state).toMatchInlineSnapshot(`
     Object {
@@ -72,7 +70,7 @@ test('closes date picker editor', () => {
 
 test('sets date picker widget name', () => {
   const widgetName = '@name';
-  const action = setName(widgetName);
+  const action = datePickerActions.setName({ name: widgetName });
   const { name } = datePickerReducer(initialState, action);
   expect(name).toEqual(widgetName);
 });

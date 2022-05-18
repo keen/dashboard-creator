@@ -15,12 +15,12 @@ import ChartEditor from './ChartEditor';
 import { AppContext } from '../../../../contexts';
 import { createBodyElementById } from '../../../../utils/test/createBodyElementById';
 
-import { createDashboardSettings } from '../../../../modules/dashboards';
 import {
   chartEditorActions,
   chartEditorInitialState,
   EditorSection,
 } from '../../../../modules/chartEditor';
+import { createDashboardSettings } from '../../../../modules/dashboards/utils';
 
 const render = (storeState: any = {}, overProps: any = {}) => {
   const props = {

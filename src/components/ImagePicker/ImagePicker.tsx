@@ -14,8 +14,8 @@ import {
 
 import { isLink } from '../../utils';
 
-import { saveImage } from '../../modules/widgets';
 import { appActions } from '../../modules/app';
+import { widgetsActions } from '../../modules/widgets';
 
 const ImagePicker: FC = () => {
   const dispatch = useDispatch();
@@ -29,7 +29,7 @@ const ImagePicker: FC = () => {
       setError(true);
     } else {
       setError(false);
-      dispatch(saveImage(url));
+      dispatch(widgetsActions.saveImage(url));
     }
   }, []);
 

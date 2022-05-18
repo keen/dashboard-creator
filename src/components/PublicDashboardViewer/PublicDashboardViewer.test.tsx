@@ -5,10 +5,8 @@ import configureStore from 'redux-mock-store';
 
 import PublicDashboardViewer from './PublicDashboardViewer';
 
-import {
-  DashboardError,
-  createDashboardSettings,
-} from '../../modules/dashboards';
+import { DashboardError } from '../../modules/dashboards';
+import { createDashboardSettings } from '../../modules/dashboards/utils';
 
 const render = (storeState: any = {}, overProps: any = {}) => {
   const props = {

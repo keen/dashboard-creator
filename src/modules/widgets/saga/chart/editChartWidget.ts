@@ -2,15 +2,13 @@ import { call, getContext, put, select } from 'redux-saga/effects';
 
 import { chartEditorActions } from '../../../chartEditor';
 import { getWidget } from '../../selectors';
-import {
-  editChartWidget as editChartWidgetAction,
-  setWidgetState,
-} from '../../actions';
+
 import { checkStreamsConsistency } from './checkStreamsConsistency';
 import { editChart } from './editChart';
 
 import { NOTIFICATION_MANAGER, TRANSLATIONS } from '../../../../constants';
 import { WidgetErrors } from '../../types';
+import { widgetsActions } from '../../index';
 
 /**
  * Flow responsible for editing chart widget.
@@ -21,7 +19,7 @@ import { WidgetErrors } from '../../types';
  */
 export function* editChartWidget({
   payload,
-}: ReturnType<typeof editChartWidgetAction>) {
+}: ReturnType<typeof widgetsActions.editChartWidget>) {
   const { id } = payload;
 
   const state = yield select();
@@ -57,11 +55,14 @@ export function* editChartWidget({
     });
 
     yield put(
-      setWidgetState(id, {
-        isInitialized: true,
-        error: {
-          message: errorMessage,
-          code: errorCode,
+      widgetsActions.setWidgetState({
+        id,
+        widgetState: {
+          isInitialized: true,
+          error: {
+            message: errorMessage,
+            code: errorCode,
+          },
         },
       })
     );

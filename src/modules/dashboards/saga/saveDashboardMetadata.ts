@@ -1,17 +1,11 @@
 import { put, getContext } from 'redux-saga/effects';
 
-import {
-  updateDashboardMeta,
-  saveDashboardMeta as saveDashboardMetaAction,
-  saveDashboardMetaSuccess,
-  saveDashboardMetaError,
-} from '../actions';
-
 import { computeDashboardMetadata } from '../utils';
 
 import { DASHBOARD_API, NOTIFICATION_MANAGER } from '../../../constants';
 
 import { DashboardModel } from '../types';
+import { dashboardsActions } from '../index';
 
 /**
  * Flow responsible for saving dashboard metadata
@@ -23,7 +17,7 @@ import { DashboardModel } from '../types';
  */
 export function* saveDashboardMetadata({
   payload,
-}: ReturnType<typeof saveDashboardMetaAction>) {
+}: ReturnType<typeof dashboardsActions.saveDashboardMetadata>) {
   const { dashboardId, metadata } = payload;
   const notificationManager = yield getContext(NOTIFICATION_MANAGER);
 
@@ -44,8 +38,10 @@ export function* saveDashboardMetadata({
       updatedMetadata
     );
 
-    yield put(updateDashboardMeta(dashboardId, metadata));
-    yield put(saveDashboardMetaSuccess());
+    yield put(
+      dashboardsActions.updateDashboardMetadata({ dashboardId, metadata })
+    );
+    yield put(dashboardsActions.saveDashboardMetadataSuccess());
 
     yield notificationManager.showNotification({
       type: 'info',
@@ -53,7 +49,7 @@ export function* saveDashboardMetadata({
       autoDismiss: true,
     });
   } catch (err) {
-    yield put(saveDashboardMetaError());
+    yield put(dashboardsActions.saveDashboardMetadataError());
     yield notificationManager.showNotification({
       type: 'error',
       message: 'notifications.dashboard_meta_error',

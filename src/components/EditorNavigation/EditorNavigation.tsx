@@ -17,14 +17,11 @@ import TooltipContent from '../TooltipContent';
 import DashboardDetails from '../DashboardDetails';
 import PermissionGate from '../PermissionGate';
 
-import {
-  showDashboardShareModal,
-  showDashboardSettingsModal,
-} from '../../modules/dashboards';
 import { appSelectors, Scopes } from '../../modules/app';
 
 import { TOOLTIP_MOTION } from '../../constants';
 import { TOOLTIP } from './constants';
+import { dashboardsActions } from '../../modules/dashboards';
 
 type Props = {
   /** Back to management view */
@@ -63,7 +60,9 @@ const EditorNavigation: FC<Props> = ({ title, tags, isPublic, onBack }) => {
             icon={<Icon type="settings" />}
             onClick={() => {
               setTooltip(null);
-              dispatch(showDashboardSettingsModal(activeDashboard));
+              dispatch(
+                dashboardsActions.showDashboardSettingsModal(activeDashboard)
+              );
             }}
           />
           <AnimatePresence>
@@ -90,7 +89,9 @@ const EditorNavigation: FC<Props> = ({ title, tags, isPublic, onBack }) => {
               icon={<Icon type="share" />}
               onClick={() => {
                 setTooltip(null);
-                dispatch(showDashboardShareModal(activeDashboard));
+                dispatch(
+                  dashboardsActions.showDashboardShareModal(activeDashboard)
+                );
               }}
             />
             <AnimatePresence>

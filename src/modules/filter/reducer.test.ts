@@ -1,31 +1,17 @@
-import filterReducer, { initialState } from './reducer';
-
-import {
-  openEditor,
-  closeEditor,
-  resetEditor,
-  setTargetProperty,
-  setEventStream,
-  setEditorConnections,
-  setEditorDetachedConnections,
-  updateConnection,
-  setEventStreamSchema,
-  setEventStreamsPool,
-  setSchemaProcessing,
-  setSchemaProcessingError,
-} from './actions';
+import { initialState } from './reducer';
 
 import { FilterConnection, SchemaPropertiesList } from './types';
+import { filterActions, filterReducer } from './index';
 
 test('opens filter editor', () => {
-  const action = openEditor();
+  const action = filterActions.openEditor();
   const { isEditorOpen } = filterReducer(initialState, action);
 
   expect(isEditorOpen).toEqual(true);
 });
 
 test('close filter editor', () => {
-  const action = closeEditor();
+  const action = filterActions.closeEditor();
   const { isEditorOpen } = filterReducer(
     { ...initialState, isEditorOpen: true },
     action
@@ -35,7 +21,7 @@ test('close filter editor', () => {
 });
 
 test('close filter editor', () => {
-  const action = resetEditor();
+  const action = filterActions.resetEditor();
   const state = filterReducer(
     { ...initialState, isEditorOpen: true, targetProperty: 'country' },
     action
@@ -45,14 +31,14 @@ test('close filter editor', () => {
 });
 
 test('set target property', () => {
-  const action = setTargetProperty('keen.id');
+  const action = filterActions.setTargetProperty('keen.id');
   const { targetProperty } = filterReducer(initialState, action);
 
   expect(targetProperty).toEqual('keen.id');
 });
 
 test('set event stream', () => {
-  const action = setEventStream('purchases');
+  const action = filterActions.setEventStream('purchases');
   const { eventStream } = filterReducer(initialState, action);
 
   expect(eventStream).toEqual('purchases');
@@ -68,7 +54,7 @@ test('set filter widget detached connections', () => {
     },
   ];
 
-  const action = setEditorDetachedConnections(connections);
+  const action = filterActions.setEditorDetachedConnections(connections);
   const { detachedWidgetConnections } = filterReducer(initialState, action);
 
   expect(detachedWidgetConnections).toEqual(connections);
@@ -84,7 +70,7 @@ test('set filter widget connections', () => {
     },
   ];
 
-  const action = setEditorConnections(connections);
+  const action = filterActions.setEditorConnections(connections);
   const { widgetConnections } = filterReducer(initialState, action);
 
   expect(widgetConnections).toEqual(connections);
@@ -100,7 +86,10 @@ test('updates filter widget connections', () => {
     },
   ];
 
-  const action = updateConnection('@widget/01', false);
+  const action = filterActions.updateConnection({
+    widgetId: '@widget/01',
+    isConnected: false,
+  });
   const { widgetConnections } = filterReducer(
     { ...initialState, widgetConnections: connections },
     action
@@ -119,14 +108,14 @@ test('updates filter widget connections', () => {
 test('set event streams pool', () => {
   const streams = ['logins', 'pageviews'];
 
-  const action = setEventStreamsPool(streams);
+  const action = filterActions.setEventStreamsPool(streams);
   const { eventStreamsPool } = filterReducer(initialState, action);
 
   expect(eventStreamsPool).toEqual(streams);
 });
 
 test('set schema processing state', () => {
-  const action = setSchemaProcessing(false);
+  const action = filterActions.setSchemaProcessing(false);
   const { schemaProcessing } = filterReducer(
     { ...initialState, schemaProcessing: { inProgress: true, error: null } },
     action
@@ -141,7 +130,7 @@ test('set schema processing state', () => {
 });
 
 test('set schema processing error', () => {
-  const action = setSchemaProcessingError(true);
+  const action = filterActions.setSchemaProcessingError(true);
   const { schemaProcessing } = filterReducer(
     { ...initialState, schemaProcessing: { inProgress: false, error: null } },
     action
@@ -173,7 +162,11 @@ test('set event stream schema', () => {
     { path: 'user.id', type: 'string' },
   ];
 
-  const action = setEventStreamSchema(schema, schemaTree, schemaList);
+  const action = filterActions.setEventStreamSchema({
+    schema,
+    schemaTree,
+    schemaList,
+  });
   const { eventStreamSchema } = filterReducer(initialState, action);
 
   expect(eventStreamSchema).toMatchInlineSnapshot(`

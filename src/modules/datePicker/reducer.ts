@@ -1,14 +1,6 @@
-import { ReducerState } from './types';
+import { DatePickerConnection, ReducerState } from './types';
 
-import { DatePickerActions } from './actions';
-
-import {
-  OPEN_EDITOR,
-  CLOSE_EDITOR,
-  SET_EDITOR_CONNECTIONS,
-  UPDATE_CONNECTION,
-  SET_NAME,
-} from './constants';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export const initialState: ReducerState = {
   isEditorOpen: false,
@@ -16,50 +8,45 @@ export const initialState: ReducerState = {
   name: '',
 };
 
-const datePickerReducer = (
-  state: ReducerState = initialState,
-  action: DatePickerActions
-) => {
-  switch (action.type) {
-    case UPDATE_CONNECTION:
-      return {
-        ...state,
-        widgetConnections: state.widgetConnections.map((widgetConnection) => {
+const datePickerSlice = createSlice({
+  name: 'datePicker',
+  initialState,
+  reducers: {
+    openEditor: (state) => {
+      state.isEditorOpen = true;
+    },
+    closeEditor: (state) => {
+      state.name = '';
+      state.widgetConnections = [];
+      state.isEditorOpen = false;
+    },
+    setName: (state, { payload }: PayloadAction<{ name: string }>) => {
+      state.name = payload.name;
+    },
+    setEditorConnections: (
+      state,
+      { payload }: PayloadAction<{ widgetConnections: DatePickerConnection[] }>
+    ) => {
+      state.widgetConnections = payload.widgetConnections;
+    },
+    updateConnection: (
+      state,
+      { payload }: PayloadAction<{ widgetId: string; isConnected: boolean }>
+    ) => {
+      state.widgetConnections = state.widgetConnections.map(
+        (widgetConnection) => {
           const { widgetId } = widgetConnection;
-          if (widgetId === action.payload.widgetId) {
+          if (widgetId === payload.widgetId) {
             return {
               ...widgetConnection,
-              isConnected: action.payload.isConnected,
+              isConnected: payload.isConnected,
             };
           }
           return widgetConnection;
-        }),
-      };
-    case SET_EDITOR_CONNECTIONS:
-      return {
-        ...state,
-        widgetConnections: action.payload.widgetConnections,
-      };
-    case OPEN_EDITOR:
-      return {
-        ...state,
-        isEditorOpen: true,
-      };
-    case SET_NAME:
-      return {
-        ...state,
-        name: action.payload.name,
-      };
-    case CLOSE_EDITOR:
-      return {
-        ...state,
-        name: '',
-        widgetConnections: [],
-        isEditorOpen: false,
-      };
-    default:
-      return state;
-  }
-};
+        }
+      );
+    },
+  },
+});
 
-export default datePickerReducer;
+export default datePickerSlice;

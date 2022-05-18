@@ -5,6 +5,7 @@ import { UI_LAYERS } from '@keen.io/ui-core';
 
 export const Container = styled.div`
   position: relative;
+  cursor: pointer;
 `;
 
 export const Title = styled.div<{

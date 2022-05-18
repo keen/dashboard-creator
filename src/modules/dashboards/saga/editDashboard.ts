@@ -2,23 +2,22 @@ import { put, select, all, getContext, call } from 'redux-saga/effects';
 
 import { push } from 'connected-react-router';
 
-import {
-  registerDashboard,
-  initializeDashboardWidgets as initializeDashboardWidgetsAction,
-  editDashboard as editDashboardAction,
-} from '../actions';
-
 import { prepareDashboard } from './prepareDashboard';
 
 import { getDashboard } from '../selectors';
 
 import { appActions } from '../../app';
-import { getWidget, WidgetItem, FilterWidget } from '../../widgets';
+import {
+  WidgetItem,
+  FilterWidget,
+  widgetsSelectors,
+  widgetsActions,
+} from '../../widgets';
 
 import { DASHBOARD_API, ROUTES } from '../../../constants';
 
 import { DashboardModel, DashboardItem } from '../types';
-import { clearFilterData } from '../../widgets/actions';
+import { dashboardsActions } from '../index';
 
 /**
  * Flow responsible for rendering dashboard in edit mode
@@ -29,12 +28,12 @@ import { clearFilterData } from '../../widgets/actions';
  */
 export function* editDashboard({
   payload,
-}: ReturnType<typeof editDashboardAction>) {
+}: ReturnType<typeof dashboardsActions.editDashboard>) {
   const { dashboardId } = payload;
   const dashboard: DashboardItem = yield select(getDashboard, dashboardId);
 
   if (!dashboard) {
-    yield put(registerDashboard(dashboardId));
+    yield put(dashboardsActions.registerDashboard(dashboardId));
 
     yield put(appActions.setActiveDashboard(dashboardId));
     yield put(push(ROUTES.EDITOR));
@@ -52,7 +51,9 @@ export function* editDashboard({
         responseBody
       );
 
-      yield put(initializeDashboardWidgetsAction(dashboardId, widgetIds));
+      yield put(
+        dashboardsActions.initializeDashboardWidgets(dashboardId, widgetIds)
+      );
     } catch (err) {
       console.error(err);
     }
@@ -60,13 +61,15 @@ export function* editDashboard({
     const widgets = dashboard.settings.widgets;
     if (widgets && widgets.length > 0) {
       const connectedWidgets = yield all(
-        widgets.map((id: string) => select(getWidget, id))
+        widgets.map((id: string) => select(widgetsSelectors.getWidget, id))
       );
       const filtersToReset: WidgetItem<FilterWidget>[] = connectedWidgets.filter(
         (widget: WidgetItem<FilterWidget>) => widget.widget.type === 'filter'
       );
       yield all(
-        filtersToReset.map((filter) => put(clearFilterData(filter.widget.id)))
+        filtersToReset.map((filter) =>
+          put(widgetsActions.clearFilterData({ filterId: filter.widget.id }))
+        )
       );
     }
     yield put(appActions.setActiveDashboard(dashboardId));

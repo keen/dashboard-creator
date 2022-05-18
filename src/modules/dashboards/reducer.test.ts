@@ -1,42 +1,10 @@
-import dashboardsReducer, { initialState } from './reducer';
-
-import {
-  saveDashboard,
-  registerDashboard,
-  updateDashboard,
-  updateDashboardMeta,
-  addWidgetToDashboard,
-  removeWidgetFromDashboard,
-  fetchDashboardListSuccess,
-  showDashboardSettingsModal,
-  hideDashboardSettingsModal,
-  showDashboardShareModal,
-  hideDashboardShareModal,
-  setDashboardError,
-  saveDashboardMeta,
-  saveDashboardMetaSuccess,
-  saveDashboardMetaError,
-  setDashboardListOrder,
-  setDashboardPublicAccess,
-  regenerateAccessKey,
-  addClonedDashboard,
-  prepareTagsPool,
-  clearTagsPool,
-  setTagsFiltersPublic,
-  setTagsFilters,
-  setConnectedDashboards,
-  setConnectedDashboardsError,
-  setConnectedDashboardsLoading,
-  updateCachedDashboardIds,
-  createDashboard,
-} from './actions';
-
+import { dashboardsActions, dashboardsReducer, initialState } from './index';
 import { dashboardsMeta } from './fixtures';
 
 import { DashboardError } from './types';
 
 test('creates dashboard', () => {
-  const action = createDashboard('@dashboard/01');
+  const action = dashboardsActions.createDashboard('@dashboard/01');
   const {
     metadata: { data },
   } = dashboardsReducer(initialState, action);
@@ -55,7 +23,7 @@ test('creates dashboard', () => {
 });
 
 test('updates cached dashboards identifiers', () => {
-  const action = updateCachedDashboardIds(['@dashboard/01']);
+  const action = dashboardsActions.updateCachedDashboardIds(['@dashboard/01']);
   const { cachedDashboardIds } = dashboardsReducer(initialState, action);
 
   expect(cachedDashboardIds).toMatchInlineSnapshot(`
@@ -78,10 +46,10 @@ test('set dashboard error', () => {
     },
   };
 
-  const action = setDashboardError(
-    '@dashboard/01',
-    DashboardError.ACCESS_NOT_PUBLIC
-  );
+  const action = dashboardsActions.setDashboardError({
+    dashboardId: '@dashboard/01',
+    error: DashboardError.ACCESS_NOT_PUBLIC,
+  });
   const { items } = dashboardsReducer(state, action);
 
   expect(items).toMatchInlineSnapshot(`
@@ -109,7 +77,7 @@ test('updates dashboard save indicator', () => {
     },
   };
 
-  const action = saveDashboard('@dashboard/01');
+  const action = dashboardsActions.saveDashboard('@dashboard/01');
   const { items } = dashboardsReducer(state, action);
 
   expect(items).toMatchInlineSnapshot(`
@@ -125,9 +93,12 @@ test('updates dashboard save indicator', () => {
 });
 
 test('updates dashboard metadata and sort it by recent', () => {
-  const action = updateDashboardMeta('@dashboard/01', {
-    title: 'Title',
-    queries: 30,
+  const action = dashboardsActions.updateDashboardMetadata({
+    dashboardId: '@dashboard/01',
+    metadata: {
+      title: 'Title',
+      queries: 30,
+    },
   });
   const state = {
     ...initialState,
@@ -199,7 +170,7 @@ test('updates dashboard metadata and sort it by recent', () => {
 });
 
 test('register a new dashboard', () => {
-  const action = registerDashboard('@dashboard/01');
+  const action = dashboardsActions.registerDashboard('@dashboard/01');
   const { items } = dashboardsReducer(initialState, action);
 
   expect(items).toMatchInlineSnapshot(`
@@ -231,7 +202,10 @@ test('updates settings for dashboard', () => {
     widgets: ['@widget/01'],
   };
 
-  const action = updateDashboard('@dashboard/01', dashboardSettings);
+  const action = dashboardsActions.updateDashboard({
+    dashboardId: '@dashboard/01',
+    settings: dashboardSettings,
+  });
   const { items } = dashboardsReducer(state, action);
 
   expect(items).toMatchInlineSnapshot(`
@@ -252,7 +226,10 @@ test('updates settings for dashboard', () => {
 });
 
 test('add widget to dashboard', () => {
-  const action = addWidgetToDashboard('@dashboard/01', '@widget/01');
+  const action = dashboardsActions.addWidgetToDashboard({
+    dashboardId: '@dashboard/01',
+    widgetId: '@widget/01',
+  });
   const state = {
     ...initialState,
     metadata: {
@@ -291,7 +268,10 @@ test('add widget to dashboard', () => {
 });
 
 test('removes widget from dashboard', () => {
-  const action = removeWidgetFromDashboard('@dashboard/01', '@widget/01');
+  const action = dashboardsActions.removeWidgetFromDashboard({
+    dashboardId: '@dashboard/01',
+    widgetId: '@widget/01',
+  });
   const state = {
     ...initialState,
     metadata: {
@@ -330,7 +310,7 @@ test('removes widget from dashboard', () => {
 });
 
 test('serializes dashboards metadata', () => {
-  const action = fetchDashboardListSuccess(dashboardsMeta);
+  const action = dashboardsActions.fetchDashboardsListSuccess(dashboardsMeta);
   const { metadata } = dashboardsReducer(initialState, action);
 
   expect(metadata).toMatchInlineSnapshot(`
@@ -383,7 +363,7 @@ test('opens dashboard settings', () => {
       data: dashboardsMeta,
     },
   };
-  const action = showDashboardSettingsModal('@dashboard/01');
+  const action = dashboardsActions.showDashboardSettingsModal('@dashboard/01');
   const { dashboardSettingsModal } = dashboardsReducer(state, action);
 
   expect(dashboardSettingsModal).toMatchInlineSnapshot(`
@@ -402,7 +382,7 @@ test('closes dashboard settings', () => {
       data: dashboardsMeta,
     },
   };
-  const action = hideDashboardSettingsModal();
+  const action = dashboardsActions.hideDashboardSettingsModal();
   const { dashboardSettingsModal } = dashboardsReducer(state, action);
 
   expect(dashboardSettingsModal).toMatchInlineSnapshot(`
@@ -421,7 +401,7 @@ test('opens dashboard share modal', () => {
       data: dashboardsMeta,
     },
   };
-  const action = showDashboardShareModal('@dashboard/01');
+  const action = dashboardsActions.showDashboardShareModal('@dashboard/01');
   const { dashboardShareModal } = dashboardsReducer(state, action);
 
   expect(dashboardShareModal).toMatchInlineSnapshot(`
@@ -440,7 +420,7 @@ test('closes dashboard share modal', () => {
       data: dashboardsMeta,
     },
   };
-  const action = hideDashboardShareModal();
+  const action = dashboardsActions.hideDashboardShareModal();
   const { dashboardShareModal } = dashboardsReducer(state, action);
 
   expect(dashboardShareModal).toMatchInlineSnapshot(`
@@ -452,7 +432,10 @@ test('closes dashboard share modal', () => {
 });
 
 test('return state for saving dashboard metadata', () => {
-  const action = saveDashboardMeta('@dashboardId', dashboardsMeta[0]);
+  const action = dashboardsActions.saveDashboardMetadata({
+    dashboardId: '@dashboardId',
+    metadata: dashboardsMeta[0],
+  });
   const { metadata } = dashboardsReducer(initialState, action);
   expect(metadata).toMatchInlineSnapshot(`
     Object {
@@ -464,7 +447,7 @@ test('return state for saving dashboard metadata', () => {
     }
   `);
 
-  const actionSuccess = saveDashboardMetaSuccess();
+  const actionSuccess = dashboardsActions.saveDashboardMetadataSuccess();
   const { metadata: metadataSuccess } = dashboardsReducer(
     initialState,
     actionSuccess
@@ -479,7 +462,7 @@ test('return state for saving dashboard metadata', () => {
     }
   `);
 
-  const actionError = saveDashboardMetaError();
+  const actionError = dashboardsActions.saveDashboardMetadataError();
   const { metadata: metadataError } = dashboardsReducer(
     initialState,
     actionError
@@ -496,7 +479,7 @@ test('return state for saving dashboard metadata', () => {
 });
 
 test('set order for dashboard list', () => {
-  const action = setDashboardListOrder('az');
+  const action = dashboardsActions.setDashboardListOrder({ order: 'az' });
   const { dashboardListOrder } = dashboardsReducer(initialState, action);
 
   expect(dashboardListOrder).toBe('az');
@@ -514,7 +497,11 @@ test('set public access to the dashboard', () => {
       data: dashboardsMeta,
     },
   };
-  const action = setDashboardPublicAccess(dashboardId, isPublicTest, accessKey);
+  const action = dashboardsActions.setDashboardPublicAccess({
+    dashboardId,
+    isPublic: isPublicTest,
+    accessKey,
+  });
   const {
     metadata: { data },
   } = dashboardsReducer(state, action);
@@ -529,14 +516,14 @@ test('set public access to the dashboard', () => {
 
 test('regenerate access key for the dashboard', () => {
   const dashboardId = '@dashboard/01';
-  const action = regenerateAccessKey(dashboardId);
+  const action = dashboardsActions.regenerateAccessKey({ dashboardId });
 
   expect(action).toMatchInlineSnapshot(`
     Object {
       "payload": Object {
         "dashboardId": "@dashboard/01",
       },
-      "type": "@dashboards/REGENERATE_ACCESS_KEY",
+      "type": "dashboards/regenerateAccessKey",
     }
     `);
 });
@@ -553,7 +540,7 @@ test('add cloned dashboard to the list', () => {
     publicAccessKey: null,
     savedQueries: [],
   };
-  const action = addClonedDashboard(newDashboard);
+  const action = dashboardsActions.addClonedDashboard(newDashboard);
   const {
     metadata: { data },
   } = dashboardsReducer(initialState, action);
@@ -608,7 +595,7 @@ test('prepare tagsPool', () => {
     },
   };
 
-  const action = prepareTagsPool();
+  const action = dashboardsActions.prepareTagsPool();
   const { tagsPool } = dashboardsReducer(state, action);
 
   expect(tagsPool).toMatchInlineSnapshot(`
@@ -620,14 +607,16 @@ test('prepare tagsPool', () => {
 });
 
 test('clear tagsPool', () => {
-  const action = clearTagsPool();
+  const action = dashboardsActions.clearTagsPool();
   const { tagsPool } = dashboardsReducer(initialState, action);
 
   expect(tagsPool).toMatchInlineSnapshot(`Array []`);
 });
 
 test('set tagsFilters tags', () => {
-  const action = setTagsFilters(['sales', 'marketing']);
+  const action = dashboardsActions.setTagsFilters({
+    tags: ['sales', 'marketing'],
+  });
   const {
     tagsFilters: { tags },
   } = dashboardsReducer(initialState, action);
@@ -641,7 +630,7 @@ test('set tagsFilters tags', () => {
 });
 
 test('set tagsFilters showOnlyPublicDashboards', () => {
-  const action = setTagsFiltersPublic(true);
+  const action = dashboardsActions.setTagsFiltersPublic(true);
   const {
     tagsFilters: { showOnlyPublicDashboards },
   } = dashboardsReducer(initialState, action);
@@ -664,7 +653,7 @@ test('set dashboards connections', () => {
       title: '@dashboard-3',
     },
   ];
-  const action = setConnectedDashboards(dashboards);
+  const action = dashboardsActions.setConnectedDashboards(dashboards);
   const {
     connectedDashboards: { items },
   } = dashboardsReducer(initialState, action);
@@ -673,7 +662,7 @@ test('set dashboards connections', () => {
 });
 
 test('set dashboards connections error', () => {
-  const action = setConnectedDashboardsError(true);
+  const action = dashboardsActions.setConnectedDashboardsError(true);
   const {
     connectedDashboards: { isError },
   } = dashboardsReducer(initialState, action);
@@ -682,7 +671,7 @@ test('set dashboards connections error', () => {
 });
 
 test('set dashboards connections loading', () => {
-  const action = setConnectedDashboardsLoading(true);
+  const action = dashboardsActions.setConnectedDashboardsLoading(true);
   const {
     connectedDashboards: { isLoading },
   } = dashboardsReducer(initialState, action);

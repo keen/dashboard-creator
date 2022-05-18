@@ -43,7 +43,7 @@ test('allows user sort dashboards as A - Z', () => {
         "payload": Object {
           "order": "az",
         },
-        "type": "@dashboards/SET_DASHBOARD_LIST_ORDER",
+        "type": "dashboards/setDashboardListOrder",
       },
     ]
   `);

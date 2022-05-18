@@ -4,17 +4,19 @@ import { useTranslation } from 'react-i18next';
 import { Modal, ModalHeader } from '@keen.io/ui-core';
 
 import FilterSettings from '../FilterSettings';
-
-import { getFilterSettings, closeEditor } from '../../modules/filter';
+import { filterActions, filterSelectors } from '../../modules/filter';
 
 const FilterModal: FC = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  const { isEditorOpen } = useSelector(getFilterSettings);
+  const { isEditorOpen } = useSelector(filterSelectors.getFilterSettings);
 
   return (
-    <Modal isOpen={isEditorOpen} onClose={() => dispatch(closeEditor())}>
+    <Modal
+      isOpen={isEditorOpen}
+      onClose={() => dispatch(filterActions.closeEditor())}
+    >
       {(_, closeHandler) => (
         <>
           <ModalHeader onClose={closeHandler}>

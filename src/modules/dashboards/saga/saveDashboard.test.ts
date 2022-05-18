@@ -11,12 +11,6 @@ jest.mock('uuid', () => {
 
 import { saveDashboard } from './saveDashboard';
 
-import {
-  saveDashboard as saveDashboardAction,
-  updateDashboardMeta,
-  saveDashboardSuccess,
-  saveDashboardError,
-} from '../actions';
 import { dashboardsSelectors } from '../selectors';
 
 import { themeSelectors } from '../../theme';
@@ -25,6 +19,7 @@ import { serializeWidget, Widget } from '../../widgets';
 import { DASHBOARD_API } from '../../../constants';
 
 import { DashboardSettings, DashboardMetaData } from '../types';
+import { dashboardsActions } from '../index';
 
 const dashboardId = '@dashboard/01';
 
@@ -114,7 +109,7 @@ beforeAll(() => {
 });
 
 describe('Scenario 1: User succesfully saved dashboard', () => {
-  const action = saveDashboardAction(dashboardId);
+  const action = dashboardsActions.saveDashboard(dashboardId);
   const test = sagaHelper(saveDashboard(action));
 
   test('get state', (result) => {
@@ -167,17 +162,24 @@ describe('Scenario 1: User succesfully saved dashboard', () => {
 
   test('updates dashboard metadata', (result) => {
     expect(result).toEqual(
-      put(updateDashboardMeta(dashboardId, updatedMetadata))
+      put(
+        dashboardsActions.updateDashboardMetadata({
+          dashboardId,
+          metadata: updatedMetadata,
+        })
+      )
     );
   });
 
   test('notifies about save success', (result) => {
-    expect(result).toEqual(put(saveDashboardSuccess(dashboardId)));
+    expect(result).toEqual(
+      put(dashboardsActions.saveDashboardSuccess(dashboardId))
+    );
   });
 });
 
 describe('Scenario 2: Error occured during dashboard save', () => {
-  const action = saveDashboardAction(dashboardId);
+  const action = dashboardsActions.saveDashboard(dashboardId);
   const test = sagaHelper(saveDashboard(action));
 
   test('get state', (result) => {
@@ -195,6 +197,8 @@ describe('Scenario 2: Error occured during dashboard save', () => {
   });
 
   test('notifies about save error', (result) => {
-    expect(result).toEqual(put(saveDashboardError(dashboardId)));
+    expect(result).toEqual(
+      put(dashboardsActions.saveDashboardError(dashboardId))
+    );
   });
 });

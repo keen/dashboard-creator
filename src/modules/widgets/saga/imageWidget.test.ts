@@ -2,17 +2,10 @@
 import sagaHelper from 'redux-saga-testing';
 import { put, take } from 'redux-saga/effects';
 
-import {
-  setWidgetState,
-  setImageWidget as setImageWidgetAction,
-  saveImage,
-} from '../actions';
 import { selectImageWidget } from './imageWidget';
-
-import { SAVE_IMAGE } from '../constants';
-
-import { saveDashboard, removeWidgetFromDashboard } from '../../dashboards';
 import { appActions } from '../../app';
+import { widgetsActions } from '../index';
+import { dashboardsActions } from '../../dashboards';
 
 const dashboardId = '@dashboard/01';
 const widgetId = '@widget/01';
@@ -28,21 +21,26 @@ describe('selectImageWidget()', () => {
 
     test('waits until user save new image', (result) => {
       expect(result).toEqual(
-        take([SAVE_IMAGE, appActions.hideImagePicker.type])
+        take([widgetsActions.saveImage.type, appActions.hideImagePicker.type])
       );
 
-      return saveImage(link);
+      return widgetsActions.saveImage(link);
     });
 
     test('configures image widget', (result) => {
-      const action = setImageWidgetAction(widgetId, link);
+      const action = widgetsActions.setImageWidget({ id: widgetId, link });
 
       expect(result).toEqual(put(action));
     });
 
     test('sets widget state', (result) => {
       expect(result).toEqual(
-        put(setWidgetState(widgetId, { isConfigured: true }))
+        put(
+          widgetsActions.setWidgetState({
+            id: widgetId,
+            widgetState: { isConfigured: true },
+          })
+        )
       );
     });
 
@@ -55,7 +53,7 @@ describe('selectImageWidget()', () => {
     });
 
     test('triggers save dashboard action', (result) => {
-      expect(result).toEqual(put(saveDashboard(dashboardId)));
+      expect(result).toEqual(put(dashboardsActions.saveDashboard(dashboardId)));
     });
   });
 
@@ -68,7 +66,7 @@ describe('selectImageWidget()', () => {
 
     test('waits until user close image picker', (result) => {
       expect(result).toEqual(
-        take([SAVE_IMAGE, appActions.hideImagePicker.type])
+        take([widgetsActions.saveImage.type, appActions.hideImagePicker.type])
       );
 
       return appActions.hideImagePicker();
@@ -80,7 +78,9 @@ describe('selectImageWidget()', () => {
 
     test('removes widget from dashboard', (result) => {
       expect(result).toEqual(
-        put(removeWidgetFromDashboard(dashboardId, widgetId))
+        put(
+          dashboardsActions.removeWidgetFromDashboard({ dashboardId, widgetId })
+        )
       );
     });
   });

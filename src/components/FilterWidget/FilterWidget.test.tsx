@@ -4,14 +4,10 @@ import { fireEvent, render as rtlRender } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 
 import FilterWidget from './FilterWidget';
-import {
-  APPLY_FILTER_MODIFIERS,
-  APPLY_FILTER_WIDGET,
-  SET_FILTER_WIDGET,
-  UNAPPLY_FILTER_WIDGET,
-} from '../../modules/widgets/constants';
+
 import { createBodyElementById } from '../../utils/test/createBodyElementById';
 import { DROPDOWN_CONTAINER_ID } from '../../constants';
+import { widgetsActions } from '../../modules/widgets';
 
 const render = (storeState: any = {}, overProps: any = {}) => {
   const widgetId = '@widget/01';
@@ -129,7 +125,7 @@ test('should fetch available property values if filter data is empty', () => {
   fireEvent.click(filterWidget);
   expect(store.dispatch).toHaveBeenCalledWith({
     payload: { widgetId: widgetId },
-    type: SET_FILTER_WIDGET,
+    type: widgetsActions.setFilterWidget.type,
   });
 });
 
@@ -185,11 +181,11 @@ test('should apply checked values base on applied filter property values', () =>
   fireEvent.click(applyBtn);
   expect(store.dispatch).toHaveBeenNthCalledWith(1, {
     payload: { filterId: '@widget/01', propertyValue: ['Warsaw'] },
-    type: APPLY_FILTER_WIDGET,
+    type: widgetsActions.applyFilterWidget.type,
   });
   expect(store.dispatch).toHaveBeenNthCalledWith(2, {
     payload: { id: '@widget/01' },
-    type: APPLY_FILTER_MODIFIERS,
+    type: widgetsActions.applyFilterModifiers.type,
   });
 });
 
@@ -205,7 +201,7 @@ test('should allow to unapply filter widget selected properties', () => {
   fireEvent.click(applyBtn);
   expect(store.dispatch).toHaveBeenCalledWith({
     payload: { filterId: '@widget/01' },
-    type: UNAPPLY_FILTER_WIDGET,
+    type: widgetsActions.unapplyFilterWidget.type,
   });
 });
 

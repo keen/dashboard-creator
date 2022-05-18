@@ -1,20 +1,16 @@
-import widgetsReducer, { initialState } from './reducer';
+import { initialState } from './reducer';
 
-import {
-  createWidget,
-  removeWidget,
-  setWidgetState,
-  setWidgetLoading,
-  updateWidgetsPosition,
-  finishChartWidgetConfiguration,
-  saveClonedWidget,
-} from './actions';
 import { widget } from './fixtures';
+import { widgetsActions, widgetsReducer } from './index';
 
 const gridPosition = { x: 1, y: 2, w: 4, h: 2 };
 
 test('creates visualization widget', () => {
-  const action = createWidget('@widget/id', 'visualization', gridPosition);
+  const action = widgetsActions.createWidget({
+    id: '@widget/id',
+    widgetType: 'visualization',
+    gridPosition,
+  });
   const { items } = widgetsReducer(initialState, action);
 
   expect(items).toMatchSnapshot();
@@ -28,7 +24,7 @@ test('removes widget', () => {
     },
   };
 
-  const action = removeWidget('@widget/id');
+  const action = widgetsActions.removeWidget('@widget/id');
   const { items } = widgetsReducer(state, action);
 
   expect(items['@widget/id']).toBeUndefined();
@@ -45,13 +41,13 @@ test('finishes visualization widget configuration', () => {
   const query = 'purchases';
   const chartSettings = { layout: 'vertical' };
 
-  const action = finishChartWidgetConfiguration(
-    '@widget/id',
+  const action = widgetsActions.finishChartWidgetConfiguration({
+    id: '@widget/id',
     query,
-    'bar',
+    visualizationType: 'bar',
     chartSettings,
-    {}
-  );
+    widgetSettings: {},
+  });
   const {
     items: { ['@widget/id']: widgetItem },
   } = widgetsReducer(state, action);
@@ -67,7 +63,10 @@ test('set widget loading state', () => {
     },
   };
 
-  const action = setWidgetLoading('@widget/id', true);
+  const action = widgetsActions.setWidgetLoading({
+    id: '@widget/id',
+    isLoading: true,
+  });
   const {
     items: { ['@widget/id']: widgetItem },
   } = widgetsReducer(state, action);
@@ -84,7 +83,9 @@ test('updates widget position', () => {
     },
   };
 
-  const action = updateWidgetsPosition([{ ...gridPosition, i: '@widget/id' }]);
+  const action = widgetsActions.updateWidgetsPosition({
+    gridPositions: [{ ...gridPosition, i: '@widget/id' }],
+  });
   const {
     items: { ['@widget/id']: widgetItem },
   } = widgetsReducer(state, action);
@@ -103,9 +104,12 @@ test('set widget state', () => {
     },
   };
 
-  const action = setWidgetState('@widget/id', {
-    isConfigured: true,
-    isInitialized: true,
+  const action = widgetsActions.setWidgetState({
+    id: '@widget/id',
+    widgetState: {
+      isConfigured: true,
+      isInitialized: true,
+    },
   });
   const {
     items: { ['@widget/id']: widgetItem },
@@ -125,7 +129,11 @@ test('save cloned widget', () => {
     },
   };
 
-  const action = saveClonedWidget('@widget/id', widget.widget, widget);
+  const action = widgetsActions.saveClonedWidget({
+    id: '@widget/id',
+    widgetSettings: widget.widget,
+    widgetItem: widget,
+  });
   const { items } = widgetsReducer(state, action);
 
   expect(items).toMatchSnapshot();
