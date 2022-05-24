@@ -67,7 +67,7 @@ export function* widgetsSaga() {
   );
   yield takeEvery(widgetsActions.setFilterWidget.type, setFilterWidget);
   yield takeEvery(
-    widgetsActions.applyDatePickerModifiers.type,
+    widgetsActions.applyFilterModifiers.type,
     applyFilterModifiers
   );
   yield takeEvery(
