@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.10.2](https://github.com/keen/explorer/compare/v4.10.1...v4.10.2) (2022-05-18)
+
+
+### Bug Fixes
+
+* 🐛 visualization widget clone ([9795090](https://github.com/keen/explorer/commit/97950906ee6d44d7e0a038f647fb2d30671c3c97))
+
 ### [4.10.1](https://github.com/keen/explorer/compare/v4.10.0...v4.10.1) (2022-02-08)
 
 
