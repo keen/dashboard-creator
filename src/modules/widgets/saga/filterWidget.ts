@@ -624,7 +624,7 @@ export function* unapplyFilterWidget({
       settings: { widgets },
     },
   } = yield select(getWidget, filterId);
-  const dataWithoutFilter = data;
+  const dataWithoutFilter = { ...data };
   delete dataWithoutFilter.filter;
 
   yield put(
