@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.10.4](https://github.com/keen/explorer/compare/v4.10.3...v4.10.4) (2022-06-01)
+
+
+### Bug Fixes
+
+* 🐛 Apply and reset filters ([c30e819](https://github.com/keen/explorer/commit/c30e819db4c7a7726637a570f3c1be2497d3dd44))
+
 ### [4.10.3](https://github.com/keen/explorer/compare/v4.10.2...v4.10.3) (2022-05-27)
 
 ### [4.10.2](https://github.com/keen/explorer/compare/v4.10.1...v4.10.2) (2022-05-18)
