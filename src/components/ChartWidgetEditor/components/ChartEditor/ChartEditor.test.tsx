@@ -68,6 +68,7 @@ const render = (storeState: any = {}, overProps: any = {}) => {
   const appContext = {
     notificationPubSub: new PubSub(),
     analyticsApiUrl: '@keen-api-url',
+    timezonesApiUrl: '@timezones-api-url',
     modalContainer: '#modal-root',
     project: {
       id: '@project-id',

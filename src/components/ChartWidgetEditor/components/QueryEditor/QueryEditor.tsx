@@ -19,11 +19,12 @@ type Props = {
 
 const QueryEditor: FC<Props> = ({ isEditMode, initialQueryInitialized }) => {
   const dispatch = useDispatch();
-  const { disableQueryFilterSuggestions } = useContext(AppContext);
   const {
     modalContainer,
     analyticsApiUrl,
-    project: { id, userKey, masterKey },
+    timezonesApiUrl,
+    disableQueryFilterSuggestions,
+    project: { id, userKey, masterKey, protocol },
   } = useContext(AppContext);
 
   const defaultTimezoneForQuery = useSelector(getDefaultTimezone);
@@ -46,6 +47,7 @@ const QueryEditor: FC<Props> = ({ isEditMode, initialQueryInitialized }) => {
       projectId={id}
       readKey={userKey}
       masterKey={masterKey}
+      httpProtocol={protocol}
       modalContainer={modalContainer}
       onUpdateChartSettings={setChartSettings}
       defaultTimezoneForQuery={defaultTimezoneForQuery}
@@ -67,6 +69,7 @@ const QueryEditor: FC<Props> = ({ isEditMode, initialQueryInitialized }) => {
         }
       }}
       host={analyticsApiUrl}
+      timezonesHost={timezonesApiUrl}
     />
   );
 };

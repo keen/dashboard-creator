@@ -12,6 +12,7 @@ import {
   KEEN_ANALYSIS,
   NOTIFICATION_MANAGER,
   ANALYTICS_API_HOST,
+  TIMEZONES_API_HOST,
   FEATURES,
 } from './constants';
 import { Features } from './types';
@@ -22,6 +23,7 @@ type SagaContext = {
   keenAnalysis: any;
   notificationManager: NotificationManager;
   analyticsApiHost: string;
+  timezonesApiHost: string;
   features?: Features;
 };
 
@@ -31,6 +33,7 @@ const createSagaMiddleware = ({
   i18n,
   notificationManager,
   analyticsApiHost,
+  timezonesApiHost,
   features = {},
 }: SagaContext) =>
   createMiddleware({
@@ -41,6 +44,7 @@ const createSagaMiddleware = ({
       [PUBSUB]: getPubSub(),
       [NOTIFICATION_MANAGER]: notificationManager,
       [ANALYTICS_API_HOST]: analyticsApiHost,
+      [TIMEZONES_API_HOST]: timezonesApiHost,
       [FEATURES]: features,
     },
   });

@@ -3,7 +3,7 @@ import { getContext, put } from 'redux-saga/effects';
 import { StatusCodes } from 'http-status-codes';
 
 import { timezoneSlice } from '../reducer';
-import { ANALYTICS_API_HOST } from '../../../constants';
+import { KEEN_ANALYSIS, TIMEZONES_API_HOST } from '../../../constants';
 
 /**
  * Fetch collection of timezones from API
@@ -13,9 +13,12 @@ import { ANALYTICS_API_HOST } from '../../../constants';
 export function* fetchTimezonesHandler() {
   try {
     yield put(timezoneSlice.actions.setTimezonesLoading(true));
-    const analyticsApiHost = yield getContext(ANALYTICS_API_HOST);
+    const timezonesApiHost = yield getContext(TIMEZONES_API_HOST);
+    const {
+      config: { protocol },
+    } = yield getContext(KEEN_ANALYSIS);
     const response: Response = yield fetch(
-      `https://${analyticsApiHost}/timezones`
+      `${protocol}://${timezonesApiHost}/timezones`
     );
 
     if (response.status === StatusCodes.OK) {
