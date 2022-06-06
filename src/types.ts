@@ -36,6 +36,7 @@ export type DashboardCreatorOptions = {
     masterKey: string;
     accessKey: string;
     id: string;
+    protocol?: 'http' | 'https';
   };
   backend?: BackendSettings;
   translations?: TranslationsSettings;
@@ -47,6 +48,7 @@ export type DashboardCreatorOptions = {
   widgetsConfiguration?: WidgetsConfiguration;
   features?: Features;
   disableQueryFilterSuggestions?: boolean;
+  timezonesHost?: string;
 };
 
 export type PublicDashboardOptions = {
@@ -60,6 +62,7 @@ export type PublicDashboardOptions = {
   modalContainer: string;
   translations?: TranslationsSettings;
   widgetsConfiguration: WidgetsConfiguration;
+  timezonesHost?: string;
 };
 
 export type TranslationsSettings = {

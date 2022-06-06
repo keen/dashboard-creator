@@ -6,7 +6,7 @@ import { fetchTimezonesHandler } from './fetchTimezonesHandler';
 
 import { timezoneSlice } from '../reducer';
 
-import { ANALYTICS_API_HOST } from '../../../constants';
+import { TIMEZONES_API_HOST, KEEN_ANALYSIS } from '../../../constants';
 
 describe('Scenario 1: Successfully fetch timezones collection', () => {
   const test = sagaHelper(fetchTimezonesHandler());
@@ -17,6 +17,11 @@ describe('Scenario 1: Successfully fetch timezones collection', () => {
       utc_offset: '+02:00',
     },
   ];
+  const keenAnalysis = {
+    config: {
+      protocol: 'http',
+    },
+  };
 
   test('set timezone loading state', (result) => {
     expect(result).toEqual(
@@ -24,8 +29,14 @@ describe('Scenario 1: Successfully fetch timezones collection', () => {
     );
   });
 
-  test('get analytics API host from context', (result) => {
-    expect(result).toEqual(getContext(ANALYTICS_API_HOST));
+  test('get timezones API host from context', (result) => {
+    expect(result).toEqual(getContext(TIMEZONES_API_HOST));
+  });
+
+  test('gets Keen API client from context', (result) => {
+    expect(result).toEqual(getContext(KEEN_ANALYSIS));
+
+    return keenAnalysis;
   });
 
   test('performs request for timezones collection', () => {
@@ -68,8 +79,8 @@ describe('Scenario 2: Error occured during fetch of timezones collection', () =>
     );
   });
 
-  test('get analytics API host from context', (result) => {
-    expect(result).toEqual(getContext(ANALYTICS_API_HOST));
+  test('get timezones API host from context', (result) => {
+    expect(result).toEqual(getContext(TIMEZONES_API_HOST));
   });
 
   test('performs request for timezones collection', () => {

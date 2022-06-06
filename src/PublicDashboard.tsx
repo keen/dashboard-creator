@@ -68,6 +68,9 @@ export class PublicDashboard {
   /** Widgets configuration **/
   private widgetsConfiguration = {};
 
+  /** Timezones API url */
+  private timezonesApiUrl = 'api.keen.io';
+
   constructor(config: PublicDashboardOptions) {
     const {
       container,
@@ -77,6 +80,7 @@ export class PublicDashboard {
       backend,
       translations,
       widgetsConfiguration,
+      timezonesHost,
     } = config;
 
     if (backend?.analyticsApiUrl)
@@ -93,6 +97,9 @@ export class PublicDashboard {
     this.accessKey = accessKey;
     this.translationsSettings = translations || {};
     this.widgetsConfiguration = widgetsConfiguration;
+    if (timezonesHost) {
+      this.timezonesApiUrl = timezonesHost;
+    }
   }
 
   render() {
@@ -117,6 +124,7 @@ export class PublicDashboard {
       keenAnalysis,
       i18n,
       analyticsApiHost: this.analyticsApiUrl,
+      timezonesApiHost: this.timezonesApiUrl,
       notificationManager: new NotificationManager({
         pubsub: notificationPubSub,
         eventName: SHOW_TOAST_NOTIFICATION_EVENT,
@@ -160,6 +168,7 @@ export class PublicDashboard {
                   notificationPubSub,
                   project: projectSettings,
                   analyticsApiUrl: this.analyticsApiUrl,
+                  timezonesApiUrl: this.timezonesApiUrl,
                   modalContainer: this.modalContainer,
                   widgetsConfiguration: this.widgetsConfiguration,
                 }}

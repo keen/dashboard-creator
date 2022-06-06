@@ -71,6 +71,9 @@ export class DashboardCreator {
   /** Project identifer */
   private readonly projectId: string;
 
+  /** Http protocol */
+  private readonly protocol?: 'http' | 'https';
+
   /** Dashboards API url */
   private dashboardsApiUrl = 'dashboard-service.k-n.io';
 
@@ -110,6 +113,9 @@ export class DashboardCreator {
   /** View change event handler */
   private onViewChange?: ViewUpdateHandler = null;
 
+  /** Timezones API url */
+  private timezonesApiUrl = 'api.keen.io';
+
   constructor(config: DashboardCreatorOptions) {
     const {
       container,
@@ -127,9 +133,10 @@ export class DashboardCreator {
       features,
       onViewChange,
       disableQueryFilterSuggestions,
+      timezonesHost,
     } = config;
 
-    const { id, masterKey, accessKey } = project;
+    const { id, masterKey, accessKey, protocol = 'https' } = project;
 
     if (backend?.analyticsApiUrl)
       this.analyticsApiUrl = backend.analyticsApiUrl;
@@ -143,6 +150,7 @@ export class DashboardCreator {
     this.projectId = id;
     this.masterKey = masterKey;
     this.accessKey = accessKey;
+    this.protocol = protocol;
     this.translationsSettings = translations || {};
     this.themeSettings = theme || {};
     this.createSharedDashboardUrl = createSharedDashboardUrl;
@@ -150,6 +158,9 @@ export class DashboardCreator {
       this.cachedDashboardsNumber = cachedDashboardsNumber;
     }
     this.defaultTimezoneForQuery = defaultTimezoneForQuery;
+    if (timezonesHost) {
+      this.timezonesApiUrl = timezonesHost;
+    }
     this.disableTimezoneSelection = disableTimezoneSelection;
     this.disableQueryFilterSuggestions = disableQueryFilterSuggestions;
     this.widgetsConfiguration = widgetsConfiguration;
@@ -185,6 +196,7 @@ export class DashboardCreator {
       masterKey: this.masterKey,
       readKey: this.accessKey,
       host: this.analyticsApiUrl,
+      protocol: this?.protocol,
     });
   }
 
@@ -224,6 +236,7 @@ export class DashboardCreator {
         eventName: SHOW_TOAST_NOTIFICATION_EVENT,
       }),
       analyticsApiHost: this.analyticsApiUrl,
+      timezonesApiHost: this.timezonesApiUrl,
       features: this.features,
     });
 
@@ -273,6 +286,7 @@ export class DashboardCreator {
       id: this.projectId,
       userKey: this.accessKey,
       masterKey: this.masterKey,
+      protocol: this.protocol,
     };
 
     ReactDOM.render(
@@ -291,6 +305,7 @@ export class DashboardCreator {
                   chartEventsPubSub,
                   project: projectSettings,
                   analyticsApiUrl: this.analyticsApiUrl,
+                  timezonesApiUrl: this.timezonesApiUrl,
                   modalContainer: this.modalContainer,
                   createSharedDashboardUrl: this.createSharedDashboardUrl,
                   widgetsConfiguration: this.widgetsConfiguration,
