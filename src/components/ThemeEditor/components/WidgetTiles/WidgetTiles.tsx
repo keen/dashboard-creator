@@ -9,7 +9,7 @@ import {
   Toggle,
 } from '@keen.io/ui-core';
 import { BodyText } from '@keen.io/typography';
-import { colors as keenColors } from '@keen.io/colors/dist/colors';
+import { colors as keenColors } from '@keen.io/colors';
 import {
   useDynamicContentPosition,
   useOnParentScroll,
