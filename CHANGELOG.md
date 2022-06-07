@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.10.7](https://github.com/keen/explorer/compare/v4.10.6...v4.10.7) (2022-06-07)
+
 ### [4.10.6](https://github.com/keen/explorer/compare/v4.10.5...v4.10.6) (2022-06-07)
 
 ### [4.10.5](https://github.com/keen/explorer/compare/v4.10.4...v4.10.5) (2022-06-06)
