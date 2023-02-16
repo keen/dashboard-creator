@@ -146,7 +146,8 @@ dashboardCreator.destroy();
 
 1.  checkout repository
 2.  run `yarn` - to install project dependencies
-3.  run application in development mode `yarn start:dashboard-creator`
+3.  create a `config.js` file (use `config.template.js`) and provide `Keen` credentials
+4.  run application in development mode `yarn start:dashboard-creator`
 
 ### npm scripts
 
