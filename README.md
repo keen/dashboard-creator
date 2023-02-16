@@ -166,3 +166,13 @@ This project uses [Conventional Commits](https://www.conventionalcommits.org) to
 | Command      | Description                        |
 | ------------ | ---------------------------------- |
 | `npx git-cz` | run commit command line interface. |
+
+### deployments
+
+The all commits pushed into `main` branch will be picked by CircleCI workflow that perform npm packages version and publish.
+
+##### test environments
+
+The all commits pushed into `develop` branch will be picked by CircleCI workflow that allows to deploy artifiact on specific test environment.
+
+
